@@ -1,0 +1,45 @@
+@php
+    $content = [
+        'page_title' => 'Complete the Sentence',
+        'title' => 'Complete the Sentence',
+        'subtitle' => 'Drag the words into the correct blanks',
+        'desktop_game_width' => 60,
+        'desktop_pool_width' => 40,
+        'sentences' => [
+            "<span class='mr-1 inline-block font-extrabold text-blue-600 dark:text-blue-400'>Check-in Agent:</span> {{1}} I see your passport, please?",
+            "<span class='mr-1 inline-block font-extrabold text-blue-600 dark:text-blue-400'>Check-in Agent:</span> {{2}} you checking any bags today?",
+            "<span class='mr-1 inline-block font-extrabold text-blue-600 dark:text-blue-400'>Check-in Agent:</span> {{3}} you pack your bag yourself?",
+            "<span class='mr-1 inline-block font-extrabold text-blue-600 dark:text-blue-400'>Check-in Agent:</span> {{4}} your bag on the scales.",
+            "<span class='mr-1 inline-block font-extrabold text-blue-600 dark:text-blue-400'>Check-in Agent:</span> The flight will be {{5}} to board at 10:35.",
+            "<span class='mr-1 inline-block font-extrabold text-emerald-600 dark:text-emerald-400'>Security Officer:</span> {{6}} your items in the tray.",
+            "<span class='mr-1 inline-block font-extrabold text-emerald-600 dark:text-emerald-400'>Security Officer:</span> {{7}} this way, please.",
+            "<span class='mr-1 inline-block font-extrabold text-emerald-600 dark:text-emerald-400'>Security Officer:</span> {{8}} your shoes and belt.",
+            "<span class='mr-1 inline-block font-extrabold text-emerald-600 dark:text-emerald-400'>Security Officer:</span> {{9}} you wearing any jewelry?",
+            "<span class='mr-1 inline-block font-extrabold text-emerald-600 dark:text-emerald-400'>Security Officer:</span> {{10}} you open your bag, please?",
+            "<span class='mr-1 inline-block font-extrabold text-pink-600 dark:text-pink-400'>Flight Attendant:</span> Please place your bags in the {{11}}.",
+            "<span class='mr-1 inline-block font-extrabold text-pink-600 dark:text-pink-400'>Flight Attendant:</span> Please fasten your {{12}} when we switch on the sign.",
+            "<span class='mr-1 inline-block font-extrabold text-pink-600 dark:text-pink-400'>Captain:</span> We are about to {{13}}.",
+            "<span class='mr-1 inline-block font-extrabold text-pink-600 dark:text-pink-400'>Captain:</span> We are experiencing some {{14}}.",
+            "<span class='mr-1 inline-block font-extrabold text-pink-600 dark:text-pink-400'>Flight Attendant:</span> The cabin crew will shortly {{15}} with drinks and snacks.",
+        ],
+        'answers' => [
+            'May',
+            'Are',
+            'Did',
+            'Place',
+            'ready',
+            'Put',
+            'Come',
+            'Take off',
+            'Are',
+            'Could',
+            'overhead compartment',
+            'seatbelt',
+            'take off',
+            'turbulence',
+            'come through',
+        ],
+    ];
+@endphp
+
+@include('slider.game.drag-and-drop-blanks', ['content' => $content])
