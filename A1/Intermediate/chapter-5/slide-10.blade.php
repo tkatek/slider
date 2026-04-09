@@ -1,14 +1,15 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Writing Time";
-$customSubtitle = "Write 5 sentences , using the prompts provided";
+$customSubtitle = "Write 5 sentences, reporting a health issue you have
+Using the prompts provided:";
 
 // ✅ Put the 4 sentences in the INPUT placeholder (not the subtitle)
 $customPlaceholder =
     "I have…\n" .
     "I need…\n" .
     "The pharmacist gave me…\n" .
-    "It costs…\n";
+    "It costs…\n".
     "I take it…";
 
 if (auth()->check()){

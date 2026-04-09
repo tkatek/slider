@@ -10,9 +10,9 @@ $content = [
             'showCC' => false,
             'subtitles' => [
                 ['start' => 0, 'end' => 2,  'text' => 'When is your birthday?'],
-                ['start' => 2, 'end' => 4,  'text' => "It's on july 18th"],
-                ['start' => 4, 'end' => 6,  'text' => 'My birthday is on May 24th'],
-                ['start' => 6, 'end' => 8,  'text' => 'Happy birthday'],
+                ['start' => 2.5, 'end' => 4,  'text' => "It's on july 18th"],
+                ['start' => 4.5, 'end' => 6,  'text' => 'My birthday is on May 24th'],
+                ['start' => 6.5, 'end' => 8,  'text' => 'Happy birthday'],
 
             ],
         ],

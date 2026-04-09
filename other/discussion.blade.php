@@ -41,7 +41,7 @@
                                     </span>
 
                                         <p class="text-lg sm:text-xl font-extrabold leading-[1.2] text-slate-900 dark:text-slate-100">
-                                            {{ $card['text'] }}
+                                            {!! $card['text'] !!}
                                         </p>
                                     </div>
                                 </div>

@@ -1,8 +1,8 @@
 @php
     $content = [
-        'page_title' => 'Services & Facilities Vocabulary',
-        'title'      => 'Services & Facilities Vocabulary',
-        'subtitle'   => 'Useful words and phrases for talking about hotel services, facilities, and guest support.',
+        'page_title' => 'New Vocabulary',
+        'title'      => 'New Vocabulary',
+        'subtitle'   => '1️⃣ Check-Out Vocabulary',
         'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-5',
 
         'items' => [

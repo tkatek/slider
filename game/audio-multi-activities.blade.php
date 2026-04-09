@@ -253,8 +253,8 @@
         <main class="relative z-10 mx-auto flex w-full max-w-[1320px] items-start box-border px-4 py-4 sm:px-8 sm:py-6">
             <section class="flex w-full flex-col rounded-[2rem] border border-slate-300/60 bg-white/85 p-4 shadow-xl shadow-slate-900/8 backdrop-blur-xl dark:border-slate-200/20 dark:bg-white/10 dark:shadow-none sm:p-6">
                 <div class="mb-4 grid gap-4 lg:gap-6 lg:grid-cols-[max-content_minmax(0,1fr)] lg:items-start">
-                    <div class="header-spacing  space-y-6 my-8">
-                        <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">
+                    <div class="header-spacing space-y-4 my-4 sm:my-5">
+                        <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4">
                             <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
                                 {{$content['title']}}
                             </span>
@@ -263,15 +263,15 @@
                             {{$content['subtitle']}}
                         </p>
                     </div>
-                    <div class="rounded-2xl border border-indigo-100 bg-indigo-50/90 px-4 py-3 shadow-sm dark:border-indigo-700/60 dark:bg-indigo-900/30 sm:px-5 sm:py-3.5">
-                        <div class="flex items-center gap-4">
+                    <div class="rounded-2xl border border-indigo-100 bg-indigo-50/90 px-3 py-2.5 shadow-sm dark:border-indigo-700/60 dark:bg-indigo-900/30 sm:px-5 sm:py-3.5">
+                        <div class="flex items-center gap-3 sm:gap-4">
                             <button
                                     id="slide10PlayAudioBtn"
                                     type="button"
-                                    class="play-hit audio-listen-btn inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 transition-all duration-150 active:scale-95 hover:scale-[1.06] focus-visible:ring-4 focus-visible:ring-indigo-300/40"
+                                    class="play-hit audio-listen-btn inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 transition-all duration-150 active:scale-95 hover:scale-[1.06] focus-visible:ring-4 focus-visible:ring-indigo-300/40"
                                     aria-label="Play audio"
                             >
-                                <svg class="static-icon h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <svg class="static-icon h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path d="M8 5v14l11-7-11-7z"/>
                                 </svg>
 
@@ -280,13 +280,13 @@
                                 <span class="wave-bar" style="animation-delay:.3s"></span>
                             </button>
 
-                            <div class="flex-1 flex flex-col gap-2">
-                                <div class="ama-audio-track mt-1 cursor-pointer" id="slide10ProgressTrack" aria-label="Audio progress">
+                            <div class="flex-1 flex flex-col gap-1.5 sm:gap-2 min-w-0">
+                                <div class="ama-audio-track cursor-pointer" id="slide10ProgressTrack" aria-label="Audio progress">
                                     <div class="ama-audio-fill" id="slide10ProgressFill"></div>
                                     <div class="ama-audio-knob" id="slide10ProgressKnob"></div>
                                 </div>
 
-                                <div class="flex justify-between text-[11px] font-extrabold text-indigo-700 dark:text-indigo-200">
+                                <div class="flex justify-between text-[10px] sm:text-[11px] font-extrabold text-indigo-700 dark:text-indigo-200">
                                     <span id="slide10CurrentTime">0:00</span>
                                     <span id="slide10TotalTime">0:00</span>
                                 </div>

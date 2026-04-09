@@ -13,6 +13,10 @@
             margin: 0 1px;
         }
 
+        .dark .wave-bar {
+            background: #ffffff;
+        }
+
         .ctrl-btn.speaking .wave-bar {
             display: block;
             animation: waveGrowth 0.6s infinite ease-in-out;
@@ -24,6 +28,10 @@
 
         .ctrl-btn {
             color: #000000;
+        }
+
+        .dark .ctrl-btn {
+            color: #ffffff;
         }
 
         @keyframes waveGrowth {
@@ -125,14 +133,6 @@
 
             </div>
 
-            @if(($content['show_footer_image'] ?? 0) == 1 && !empty($content['footer_image']))
-                <div id="footerImageContainer" class="mt-4 sm:mt-5 flex justify-center">
-                    <div class="relative w-full max-w-[680px] lg:w-[540px] lg:max-w-[540px] p-1 sm:p-2">
-                        <img src="{{ $content['footer_image'] }}" class="block w-full h-auto rounded-[24px] object-contain" draggable="false" />
-                    </div>
-                </div>
-            @endif
-
             <div class="mt-5 sm:mt-6 flex justify-center">
                 <button id="showDialogBtn" type="button" class="inline-flex items-center gap-2 rounded-xl border-2 border-slate-900 bg-white px-5 py-3 text-sm sm:text-base font-black uppercase tracking-[0.08em] text-slate-900 shadow-[6px_6px_0_rgba(2,6,23,0.1)] transition hover:-translate-y-0.5 active:translate-y-0 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-100">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
@@ -141,6 +141,14 @@
                     <span>Show Dialog</span>
                 </button>
             </div>
+
+            @if(($content['show_footer_image'] ?? 0) == 1 && !empty($content['footer_image']))
+                <div id="footerImageContainer" class="mt-4 sm:mt-5 flex justify-center">
+                    <div class="relative w-full max-w-[680px] lg:w-[540px] lg:max-w-[540px] p-1 sm:p-2">
+                        <img src="{{ $content['footer_image'] }}" class="block w-full h-auto rounded-[24px] object-contain" draggable="false" />
+                    </div>
+                </div>
+            @endif
 
         </section>
     </main>

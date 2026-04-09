@@ -24,11 +24,11 @@ $content = [
     ],
 
     'scramble' => [
-        'stomach',
-        'ache',
-        'sick',
-        'recommend',
-        'medicine',
+        'Stomach',
+        'Ache',
+        'Sick',
+        'Recommend',
+        'Medicine',
     ],
 ];
 ?>

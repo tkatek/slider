@@ -20,59 +20,49 @@ $content = [
 
     'questions' => [
         [
-            'number'   => 1,
-            'type'     => 'mcq',
-            'question' => 'What does the writer usually do in the summer?',
+            'prompt'  => 'What does the writer usually do in the summer?',
+            'correct' => 'Teaches English',
             'options'  => [
                 'Travels to Ireland',
                 'Teaches English',
                 'Learns to surf',
             ],
-            'correct'  => 1,
         ],
         [
-            'number'   => 2,
-            'type'     => 'mcq',
-            'question' => 'What is the writer going to do this summer?',
+            'prompt'  => 'What is the writer going to do this summer?',
+            'correct' => 'Have a holiday',
             'options'  => [
                 'Work at a school',
                 'Stay at home',
                 'Have a holiday',
             ],
-            'correct'  => 2,
         ],
         [
-            'number'   => 3,
-            'type'     => 'mcq',
-            'question' => 'Where is the writer going to travel?',
+            'prompt'  => 'Where is the writer going to travel?',
+            'correct' => 'Ireland',
             'options'  => [
                 'Spain',
                 'Ireland',
                 'France',
             ],
-            'correct'  => 1,
         ],
         [
-            'number'   => 4,
-            'type'     => 'mcq',
-            'question' => 'How will the writer travel?',
+            'prompt'  => 'How will the writer travel?',
+            'correct' => 'By campervan',
             'options'  => [
                 'By plane',
                 'By campervan',
                 'By train',
             ],
-            'correct'  => 1,
         ],
         [
-            'number'   => 5,
-            'type'     => 'mcq',
-            'question' => 'Who has a new house?',
+            'prompt'  => 'Who has a new house?',
+            'correct' => 'Joe',
             'options'  => [
                 'Cathy',
                 'Joe',
                 'The teacher',
             ],
-            'correct'  => 1,
         ],
     ],
 ];

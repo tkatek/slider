@@ -1,16 +1,17 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "A quick wrap-up";
-$customSubtitle = "Write 3 sentences about your next holiday, include the follwing:
+$customSubtitle = "Complete these sentences:
+Next holiday, I’m going to ............
+I am going to travel by ............
+I am going to ...........
+";
+
+// Use \n for line breaks in the placeholder
+$customPlaceholder = "Write 3 sentences about your next holiday, include the follwing:
 Where are you going to?
 How are you going to go there?
 What are you going to do there?";
-
-// Use \n for line breaks in the placeholder
-$customPlaceholder = "Complete these sentences:
- Next holiday, I’m going to ____.
- I am going to travel by ____.
-I am going to ...........";
 
 if (auth()->check()){
     $user = auth()->user();

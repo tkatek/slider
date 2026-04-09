@@ -205,12 +205,12 @@
         $compactText = (bool)($content['compact_text'] ?? $compactLayout);
     @endphp
     <div class="font-sans relative isolate min-h-[100dvh] overflow-x-hidden overflow-y-auto dark:text-slate-100 {{ $compactText ? 'is-compact-text' : '' }}">
-        <main class="w-full max-w-7xl min-h-[100dvh] px-4 sm:px-8 mx-auto {{ $compactLayout ? 'py-5 sm:py-7' : 'py-8 sm:py-12' }} pb-28 flex flex-col">
+        <main class="w-full max-w-7xl min-h-[100dvh] px-4 sm:px-8 mx-auto {{ $compactLayout ? 'py-4 sm:py-7' : 'py-6 sm:py-10' }} pb-28 flex flex-col">
             <section class="{{ $compactLayout ? 'p-1 sm:p-3' : 'p-2 sm:p-6' }} flex-1 flex flex-col">
-                <div class="grid place-items-center text-center {{ $compactLayout ? 'gap-5 sm:gap-6' : 'gap-8' }} flex-1 auto-rows-max">
+                <div class="grid place-items-center text-center {{ $compactLayout ? 'gap-4 sm:gap-6' : 'gap-5 sm:gap-8' }} flex-1 auto-rows-max">
 
-                    <div id="titleBlock" class="header-spacing text-center {{ $compactLayout ? 'space-y-4 my-4 sm:my-5' : 'space-y-6 my-8' }}">
-                        <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black {{ $compactLayout ? 'mb-3' : 'mb-5' }}">
+                    <div id="titleBlock" class="header-spacing text-center {{ $compactLayout ? 'space-y-3 my-3 sm:my-5' : 'space-y-4 my-4 sm:my-6' }}">
+                        <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black {{ $compactLayout ? 'mb-2.5 sm:mb-3' : 'mb-3 sm:mb-5' }}">
                             <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
                                 {{ $content['title'] ?? 'Exercise' }}
                             </span>
@@ -223,14 +223,14 @@
                         @endif
                     </div>
 
-                    <div id="statusRow" class="w-full max-w-3xl rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-lg overflow-hidden">
+                    <div id="statusRow" class="w-full max-w-[19.5rem] sm:max-w-3xl rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-lg overflow-hidden">
                         <div class="grid grid-cols-4">
                             @foreach(['Question' => 'qCount', 'Correct' => 'correctCount', 'Mistakes' => 'mistakesCount', 'Time' => 'timer'] as $label => $id)
-                                <div class="px-3 py-3 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
+                                <div class="px-1.5 py-2 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
                                     <div class="hidden sm:inline-block text-[11px] sm:text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                                         {{ $label }}
                                     </div>
-                                    <div class="font-black text-base sm:text-lg">
+                                    <div class="font-black text-xs sm:text-lg">
                                         @if($label == 'Correct')
                                             ✅
                                         @elseif($label == 'Mistakes')
@@ -247,17 +247,17 @@
                         </div>
                     </div>
 
-                    <section id="gameCard" class="relative w-full max-w-5xl {{ $compactLayout ? 'p-3 sm:p-4 min-h-[360px]' : 'p-4 sm:p-6 min-h-[420px]' }} flex-1">
+                    <section id="gameCard" class="relative w-full max-w-5xl {{ $compactLayout ? 'p-2.5 sm:p-4 min-h-[360px]' : 'p-3 sm:p-6 min-h-[420px]' }} flex-1">
                         <div id="questionPanel" class="h-full overflow-hidden rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl">
                             <div class="h-full {{ $compactLayout ? 'p-4 sm:p-5' : 'p-5 sm:p-6' }} text-left">
-                                <div class="flex flex-wrap items-center justify-between gap-3">
-                                    <div class="text-sm sm:text-base font-extrabold text-slate-500 dark:text-slate-400">
+                                <div class="flex items-center justify-between gap-2 sm:gap-3">
+                                    <div class="min-w-0 text-[11px] sm:text-base font-extrabold text-slate-500 dark:text-slate-400">
                                         Complete the sentence:
                                     </div>
 
                                     <button
                                         id="btnRevealCorrection"
-                                        class="dropdown-btn-primary dropdown-btn-reveal"
+                                        class="dropdown-btn-primary dropdown-btn-reveal shrink-0 whitespace-nowrap px-2.5 py-1.5 text-[11px] sm:px-3 sm:py-2 sm:text-xs"
                                     >
                                         Reveal correction
                                     </button>
@@ -282,7 +282,7 @@
                                         id="btnAutoCheck"
                                         class="dropdown-btn-warning py-3"
                                     >
-                                        Auto Check ✨ (<span id="autoCheckBadge">2</span>)
+                                        Hint ✨ (<span id="autoCheckBadge">2</span>)
                                     </button>
 
                                     <button
@@ -306,47 +306,49 @@
                             <div class="absolute inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm"></div>
 
                             <div class="relative min-h-full w-full flex items-center justify-center p-4 sm:p-6">
-                                <div class="w-full max-w-lg max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 dark:border-slate-700/70 bg-white/95 dark:bg-slate-900/95 shadow-2xl">
-                                    <div class="p-6 sm:p-8 text-center">
-                                        <div class="text-6xl mb-3">🎉</div>
+                                <div class="w-full max-w-[42rem] lg:max-w-[46rem] max-h-[88dvh] overflow-y-auto rounded-3xl border border-slate-200/70 dark:border-slate-700/70 bg-white/95 dark:bg-slate-900/95 shadow-2xl">
+                                    <div class="p-5 sm:p-7 lg:p-8 text-center">
+                                        <div class="flex items-center justify-center gap-2 sm:block">
+                                            <div class="text-3xl sm:text-6xl">🎉</div>
 
-                                        <h2 class="text-2xl sm:text-3xl font-black dark:text-white">
-                                            Done!
-                                        </h2>
+                                            <h2 class="text-2xl sm:mt-5 sm:text-4xl leading-none font-black dark:text-white">
+                                                Done
+                                            </h2>
+                                        </div>
 
-                                        <div class="mt-5 w-full grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                            <div class="p-3 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
-                                                <div class="text-xs font-bold text-slate-500 dark:text-slate-400">Score</div>
-                                                <div id="finalScore" class="text-xl font-black text-slate-900 dark:text-white">0</div>
+                                        <div class="mt-5 sm:mt-8 w-full grid grid-cols-3 gap-2 sm:gap-4">
+                                            <div class="p-2.5 sm:p-5 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
+                                                <div class="text-[9px] sm:text-xs font-bold uppercase tracking-[0.12em] sm:tracking-[0.14em] text-slate-500 dark:text-slate-400">Score</div>
+                                                <div id="finalScore" class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">0</div>
                                             </div>
-                                            <div class="p-3 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
-                                                <div class="text-xs font-bold text-slate-500 dark:text-slate-400">Time</div>
-                                                <div id="finalTime" class="text-xl font-black text-slate-900 dark:text-white">00:00</div>
+                                            <div class="p-2.5 sm:p-5 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
+                                                <div class="text-[9px] sm:text-xs font-bold uppercase tracking-[0.12em] sm:tracking-[0.14em] text-slate-500 dark:text-slate-400">Time</div>
+                                                <div id="finalTime" class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">00:00</div>
                                             </div>
-                                            <div class="p-3 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
-                                                <div class="text-xs font-bold text-slate-500 dark:text-slate-400">Mistakes</div>
-                                                <div id="finalMistakes" class="text-xl font-black text-slate-900 dark:text-white">0</div>
+                                            <div class="p-2.5 sm:p-5 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
+                                                <div class="text-[9px] sm:text-xs font-bold uppercase tracking-[0.12em] sm:tracking-[0.14em] text-slate-500 dark:text-slate-400">Mistakes</div>
+                                                <div id="finalMistakes" class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">0</div>
                                             </div>
                                         </div>
 
-                                        <div class="mt-5 rounded-2xl border border-slate-200/70 bg-white/80 p-4 text-left shadow dark:border-slate-700 dark:bg-slate-800/80">
+                                        <div class="mt-4 sm:mt-6 rounded-2xl border border-slate-200/70 bg-white/80 p-3 sm:p-4 text-left shadow dark:border-slate-700 dark:bg-slate-800/80">
                                             <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                                                 Corrections
                                             </div>
-                                            <div id="finalCorrection" class="mt-3 text-base font-bold leading-[1.85] text-slate-900 dark:text-white"></div>
+                                            <div id="finalCorrection" class="mt-3 text-[15px] sm:text-base font-bold leading-[1.75] sm:leading-[1.85] text-slate-900 dark:text-white"></div>
                                         </div>
 
-                                        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <div class="mt-5 sm:mt-8 grid grid-cols-2 gap-2.5 sm:gap-4">
                                             <button
                                                 id="btnReset"
-                                                class="dropdown-btn-secondary w-full px-8 py-3 text-sm"
+                                                class="dropdown-btn-secondary w-full px-4 py-3 sm:px-8 text-sm"
                                             >
                                                 Restart 🔁
                                             </button>
 
                                             <button
                                                 id="btnContinue"
-                                                class="dropdown-btn-primary w-full px-8 py-3 text-sm"
+                                                class="dropdown-btn-primary w-full px-4 py-3 sm:px-8 text-sm"
                                             >
                                                 Continue ⚡
                                             </button>

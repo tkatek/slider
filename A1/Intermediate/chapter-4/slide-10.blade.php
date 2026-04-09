@@ -1,6 +1,6 @@
 <?php
 $content=[
-    'video'=>materialAsset('slider/A1/Intermediate/chapter-4/videos/at-the-doctor.mp4'),
+    'video'=>materialAsset('slider/A1/Intermediate/chapter-4/videos/at-doctor-encrypted/at-doctor.m3u8'),
     'thumbnail'=>materialAsset('slider/A1/Intermediate/chapter-4/videos/thumbnail-at-the-doctor.webp'),
     'isQuiz' => 1,
     'questions' => [
@@ -8,12 +8,12 @@ $content=[
             'time' => 18000,
             'type' => 'multiple_choice',
             'question' => "What is the patient’s full name?",
-            'options' => ['John Gray', 'John Burke', 'Dr Burke', 'Mr Gray'],
+            'options' => ['Carl Gray', 'Carl Walker', 'Dr Burke', 'Mr Gray'],
             'correct_answer' => 1,
             'points' => 10
         ],
         [
-            'time' => 50000,
+            'time' => 51500,
             'type' => 'multiple_choice',
             'question' => 'How does the patient feel?',
             'options' => ['I have the flu.', 'I feel terrible.', 'I need medicine.', 'I have an allergy.'],
@@ -21,7 +21,7 @@ $content=[
             'points' => 10
         ],
         [
-            'time' => 52000,
+            'time' => 55000,
             'type' => 'multiple_choice',
             'question' => 'Which symptom does the patient mention?',
             'options' => ['Stomachache', 'Sore throat', 'Ear pain', 'Runny nose'],
@@ -29,7 +29,7 @@ $content=[
             'points' => 10
         ],
         [
-            'time' => 70000,
+            'time' => 72000,
             'type' => 'multiple_choice',
             'question' => 'What does the doctor say the patient has?',
             'options' => ['The flu', 'A cold', 'An allergy', 'Only a fever'],
@@ -51,28 +51,29 @@ $content=[
         ],
     ],
     'subtitles' => [
-        ['start' => 5,  'end' => 16, 'text' => 'Hi, my name is John Burke.'],
-        ['start' => 16, 'end' => 30, 'text' => 'I have an appointment to see Dr Gray.'],
-        ['start' => 30, 'end' => 33, 'text' => 'Of course.'],
-        ['start' => 33, 'end' => 41, 'text' => 'Please take a seat, Mr Burke.'],
-        ['start' => 41, 'end' => 42, 'text' => 'The doctor will see you soon.'],
-        ['start' => 42, 'end' => 43, 'text' => 'Mr Burke?'],
-        ['start' => 43, 'end' => 44, 'text' => 'The doctor will see you now.'],
-        ['start' => 44, 'end' => 45, 'text' => 'Great, thanks.'],
-        ['start' => 45, 'end' => 46, 'text' => 'Dr Gray: What seems to be the trouble, Mr Burke?'],
-        ['start' => 46, 'end' => 55, 'text' => 'I feel terrible. My body aches, I have a runny nose and a bad cough.'],
-        ['start' => 55, 'end' => 56, 'text' => 'I see.'],
-        ['start' => 56, 'end' => 63, 'text' => 'Yes, your temperature is very high, too.'],
-        ['start' => 63, 'end' => 66, 'text' => 'You have a fever.'],
-        ['start' => 66, 'end' => 70, 'text' => 'It looks like you have the flu.'],
-        ['start' => 70, 'end' => 71, 'text' => 'Do you have any allergies?'],
-        ['start' => 71, 'end' => 73, 'text' => 'I don’t think so.'],
-        ['start' => 73, 'end' => 75, 'text' => 'OK, great.'],
-        ['start' => 75, 'end' => 80, 'text' => 'I’m going to prescribe some medicine.'],
-        ['start' => 80, 'end' => 88, 'text' => 'Please take it twice every day.'],
-        ['start' => 88, 'end' => 91, 'text' => 'Once in the morning and once before bed.'],
-        ['start' => 91, 'end' => 93, 'text' => 'You should feel better in a few days.'],
-        ['start' => 93, 'end' => 96, 'text' => 'Great, thank you.'],
+        ['start' => 7,  'end' => 9, 'text' => 'Hi, my name is Carl Walker.'],
+        ['start' => 9, 'end' => 11, 'text' => 'I have an appointment with Dr White.'],
+        ['start' => 11.5, 'end' => 14.5, 'text' => 'Of course Mr Walker please take a seat'],
+        ['start' => 14.5, 'end' => 17, 'text' => 'The doctor will see you soon.'],
+        ['start' => 24, 'end' => 26, 'text' => 'First time here?'],
+        ['start' => 33.5, 'end' => 34.5, 'text' => 'Mr Walker?'],
+        ['start' => 34.5, 'end' => 37, 'text' => 'The doctor will see you now.'],
+        ['start' => 37, 'end' => 38, 'text' => 'Great.'],
+        ['start' => 43, 'end' => 46, 'text' => 'What seems to be the trouble, Mr Walker?'],
+        ['start' => 48.5, 'end' => 51, 'text' => 'I feel terrible. My body aches'],
+        ['start' => 52, 'end' => 54.5, 'text' => 'I have a runny nose and a bad cough.'],
+        ['start' => 57.5, 'end' => 58, 'text' => 'I see.'],
+        ['start' => 63, 'end' => 66, 'text' => 'Yes, your temperature is very high, too.'],
+        ['start' => 68, 'end' => 69, 'text' => 'You have a fever.'],
+        ['start' => 69.5, 'end' => 71, 'text' => 'It looks like you have the flu.'],
+        ['start' => 72, 'end' => 74, 'text' => 'Do you have any allergies?'],
+        ['start' => 75.5, 'end' => 77, 'text' => 'I don’t think so.'],
+        ['start' => 79, 'end' => 81, 'text' => 'OK, great.'],
+        ['start' => 81, 'end' => 83.5, 'text' => 'I’m going to prescribe some medicine.'],
+        ['start' => 83.5, 'end' => 86, 'text' => 'Please take it twice every day.'],
+        ['start' => 87, 'end' => 90, 'text' => 'Once in the morning and once before bed.'],
+        ['start' => 93, 'end' => 95, 'text' => 'You should feel better in a few days.'],
+        ['start' => 96, 'end' => 98, 'text' => 'Great, thank you.'],
     ]
 
 

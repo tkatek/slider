@@ -12,7 +12,7 @@ $content = [
     'scramble'   => [
         'Do I take this with water?',
         'Do I take this with food?',
-        'How many do I need to take?',
+        'How many times do i need to take this?',
         'I need something for a sore throat.',
     ],
 ];

@@ -1,6 +1,10 @@
 @extends("slider.simple-layout")
 @section("title", $content['page_title'] ?? $content['title'] ?? 'Guess Who')
 
+@php
+    $gridClass = trim((string)($content['grid_class'] ?? 'grid-cols-2 md:grid-cols-5'));
+@endphp
+
 @section("style")
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -36,6 +40,22 @@
             z-index: 10;
         }
         .show-x { opacity: 1; }
+
+        .correct-check {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+            font-size: 4rem;
+            font-weight: 900;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .show-check { opacity: 1; }
 
         .bg-card-blue { background-color: #e3f2fd; }
         .bg-card-green { background-color: #e8f5e9; }
@@ -131,6 +151,7 @@
                 card.innerHTML = `
                     <img class="h-[140px] w-full rounded-lg object-contain dark:brightness-90 dark:contrast-110" src="${p.img}" alt="${p.label}">
                     <span class="text-base font-bold text-slate-500 dark:text-slate-100">${p.label}</span>
+                    <div class="correct-check">✅</div>
                     <div class="wrong-x">❌</div>
                 `;
                 grid.appendChild(card);
@@ -158,6 +179,7 @@
                 state.busy = true;
                 playSfx("correct");
                 el.classList.add('correct-glow');
+                el.querySelector('.correct-check').classList.add('show-check');
                 setTimeout(() => {
                     el.remove();
                     state.curIndex++;
@@ -234,7 +256,7 @@
         </section>
 
         <main class="mx-auto flex max-w-7xl items-center justify-center px-4 py-5 sm:px-8 sm:py-6 md:px-8">
-            <div id="cardGrid" class="grid w-full grid-cols-2 gap-6 md:grid-cols-5 "></div>
+            <div id="cardGrid" class="grid w-full {{ $gridClass }} gap-6"></div>
         </main>
 
         <div id="victoryOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-white/95 backdrop-blur-xl opacity-0 pointer-events-none dark:bg-slate-900/95">

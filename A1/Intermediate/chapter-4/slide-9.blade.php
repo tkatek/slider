@@ -4,25 +4,32 @@ $content = [
     'subtitle'   => 'Practice 2',
     'type'       => 'audio',
 
-    'audio'      => materialAsset('slider/A1/Intermediate/chapter-4/audios/slide9.mpeg'),
+    'audio'      => materialAsset('slider/A1/Intermediate/chapter-4/audios/slide-9.mp3'),
 
     'script' => [
-        "I feel terrible today. I ate too much last night and my stomach doesn’t feel well at all.",
-        'You should take something for it.',
-        'This pain in my head is terrible.',
-        'Let me get you some aspirin.',
-        'Thanks. That’s just what I need.',
-        'I’m not going to school today. I’ve got to see the dentist. My tooth is really bothering me.',
-        'Oh, that’s too bad.',
-        'I think I’ll stay in bed today. I think I hurt myself carrying those bags on the weekend. My back is killing me.',
-        'Can I give you a massage? Maybe that will help.',
-        'Oh, yeah. Thanks. I’ll try anything.',
-        'How do you feel?',
-        'Sorry. I can’t talk.',
-        'Let me get you some hot lemon tea. That should help.',
-        'Thanks.',
-        'I need to go to the drugstore. I have a bad cold and my head is all stuffed up.',
-        'Oh, that’s too bad. I hope you feel better soon.',
+        "I feel terrible today. I ate too much last night and my stomach doesn’t feel well at all.
+        \nYou should take something for it.",
+
+        "This pain in my head is terrible.
+        \nLet me get you some aspirin.
+        \nThanks, That’s just what I need.",
+
+        "I’m not going to school today. I’ve got to see the dentist. My tooth is really bothering me.
+        \nOh, that’s too bad.",
+
+        "I think I’ll stay in bed today. I think I hurt myself carrying those bags on the weekend. My back is killing me.
+        \nCan I give you a massage? Maybe that will help.
+        \nOh, yeah. Thanks. I’ll try anything.",
+
+        "How do you feel?
+        \nSorry. I can’t talk.
+        \nLet me get you some hot lemon tea. That should help.
+        \nThanks.",
+
+        "I need to go to the drugstore. I have a bad cold and my head is all stuffed up.
+        \nOh, that’s too bad. I hope you feel better soon.",
+
+
     ],
 
     'image_panel_col_class'  => 'sm:col-span-0',

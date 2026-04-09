@@ -3,8 +3,9 @@ $content = [
     'page_title'    => 'Packing Categories',
     'title'         => 'What should you take?',
     'subtitle'      => 'Drag each word into the correct place and sentence group',
+    'row_heading'   => 'Trips',
 
-    'places' => [
+    'rows' => [
         [
             'key'   => 'beach',
             'title' => 'On a beach vacation',
@@ -22,7 +23,7 @@ $content = [
         ],
     ],
 
-    'phrases' => [
+    'columns' => [
         [
             'key'   => 'need',
             'title' => 'I need to take',
@@ -41,25 +42,25 @@ $content = [
     ],
 
     'items' => [
-        ['text' => 'A bathing suit',     'place' => 'beach',     'phrase' => 'need',    'placed' => true],
-        ['text' => 'Sandals',            'place' => 'beach',     'phrase' => 'should'],
-        ['text' => 'A towel',            'place' => 'beach',     'phrase' => 'need'],
-        ['text' => 'Insect repellent',   'place' => 'camping',   'phrase' => 'should'],
-        ['text' => 'A tent',             'place' => 'camping',   'phrase' => 'have_to', 'placed' => true],
-        ['text' => 'A sleeping bag',     'place' => 'camping',   'phrase' => 'have_to'],
-        ['text' => 'A first-aid kit',    'place' => 'camping',   'phrase' => 'should'],
-        ['text' => 'A brush',            'place' => 'overnight', 'phrase' => 'need'],
-        ['text' => 'A hair dryer',       'place' => 'overnight', 'phrase' => 'should'],
-        ['text' => 'Makeup',             'place' => 'overnight', 'phrase' => 'should'],
-        ['text' => 'Shampoo',            'place' => 'overnight', 'phrase' => 'need'],
-        ['text' => 'A pair of scissors', 'place' => 'camping', 'phrase' => 'should'],
-        ['text' => 'Pajamas',            'place' => 'overnight', 'phrase' => 'have_to'],
-        ['text' => 'Sunscreen',          'place' => 'beach',     'phrase' => 'should',  'placed' => true],
-        ['text' => 'A toothbrush',       'place' => 'overnight', 'phrase' => 'have_to'],
-        ['text' => 'Toothpaste',         'place' => 'overnight', 'phrase' => 'need'],
-        ['text' => 'Soap',               'place' => 'overnight', 'phrase' => 'should'],
-        ['text' => 'A razor',            'place' => 'overnight', 'phrase' => 'should'],
-        ['text' => 'Batteries',          'place' => 'camping',   'phrase' => 'need'],
+        ['text' => 'A bathing suit',     'row' => 'beach',     'column' => 'need',    'placed' => true],
+        ['text' => 'Sandals',            'row' => 'beach',     'column' => 'should'],
+        ['text' => 'A towel',            'row' => 'beach',     'column' => 'need'],
+        ['text' => 'Insect repellent',   'row' => 'camping',   'column' => 'should'],
+        ['text' => 'A tent',             'row' => 'camping',   'column' => 'have_to', 'placed' => true],
+        ['text' => 'A sleeping bag',     'row' => 'camping',   'column' => 'have_to'],
+        ['text' => 'A first-aid kit',    'row' => 'camping',   'column' => 'should'],
+        ['text' => 'A brush',            'row' => 'overnight', 'column' => 'need'],
+        ['text' => 'A hair dryer',       'row' => 'overnight', 'column' => 'should'],
+        ['text' => 'Makeup',             'row' => 'overnight', 'column' => 'should'],
+        ['text' => 'Shampoo',            'row' => 'overnight', 'column' => 'need'],
+        ['text' => 'A pair of scissors', 'row' => 'camping', 'column' => 'should'],
+        ['text' => 'Pajamas',            'row' => 'overnight', 'column' => 'have_to'],
+        ['text' => 'Sunscreen',          'row' => 'beach',     'column' => 'should',  'placed' => true],
+        ['text' => 'A toothbrush',       'row' => 'overnight', 'column' => 'have_to'],
+        ['text' => 'Toothpaste',         'row' => 'overnight', 'column' => 'need'],
+        ['text' => 'Soap',               'row' => 'overnight', 'column' => 'should'],
+        ['text' => 'A razor',            'row' => 'overnight', 'column' => 'should'],
+        ['text' => 'Batteries',          'row' => 'camping',   'column' => 'need'],
     ],
 ];
 ?>

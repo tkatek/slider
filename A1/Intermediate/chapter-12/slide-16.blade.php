@@ -1,7 +1,13 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "My Boarding Experience";
-$customSubtitle = "Write 5–6 simple sentences about boarding the plane, Include:\nWhere you wait\nWho you speak to\nYour seat number\nOne instruction you hear\nWhat you do before takeoff";
+$customSubtitle = "Write 5–6 simple sentences about boarding the plane, Include:
+1. Where you wait
+2. Who you speak to
+3. Your seat number
+4. One instruction you hear
+5. What you do before takeoff";
+
 
 $customPlaceholder =
     "I wait in the ______ lounge.\n" .

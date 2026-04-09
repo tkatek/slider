@@ -1,50 +1,107 @@
 <?php
-// 1. MODIFY THESE TO CHANGE THE TEXT
-$customTitle = "Writing";
-$customSubtitle = "Fill-in with the missing words
-
- ";
-
-
-// Use \n for line breaks in the placeholder
-$customPlaceholder = "Type here";
-
-if (auth()->check()){
-    $user = auth()->user();
-} else {
-    $user = \App\Models\User::create([
-        "id" => Str::uuid()->toString(),
-        "name" => \Faker\Factory::create()->firstName(),
-        "last_name" => \Faker\Factory::create()->lastName(),
-        "email" => \Faker\Factory::create()->email(),
-        "role_id" => 4
-    ]);
-    auth()->login($user, true);
-}
-
-$userAvatar = $user->getFirstMediaUrl('avatars', 'thumb');
-if (!$userAvatar) {
-    $userAvatar = "https://ui-avatars.com/api/?name=" . urlencode($user->name) . "&background=6366f1&color=fff&bold=true";
-}
-
-$pusher = [
-    "key" => config('chatify.pusher.key'),
-    "cluster" => config('chatify.pusher.options.cluster'),
-    "channel" => "slide-$slide->id",
-];
-
-$finalTitle = $customTitle ?? $slideItems->where('title', 'title')->first()->content ?? 'Writing Time';
-$finalSubtitle = $customSubtitle ?? $slideItems->where('title', 'subtitle')->first()->content ?? 'Share your thoughts';
-
 $content = [
-    'pusher' => $pusher,
-    'user' => $user,
-    'user_avatar' => $userAvatar,
-    'title' => $finalTitle,
-    'subtitle' => $finalSubtitle,
-    'page_title' => $finalTitle,
-    'placeholder' => $customPlaceholder // Added this line
+
+    'page_title' => 'Writing',
+    'title'      => 'Writing',
+    'subtitle'      => 'Fill-in with the missing words',
+     'audio'      => materialAsset('slider/A1/Intermediate/chapter-10/audios/slide13.mp3'),
+
+    'transcript' => [
+        'Check-in agent: Good morning. Can I have your ticket, please?',
+        'Passenger: Here you are.',
+        'Check-in agent: May I see your passport, please?',
+        'Passenger: Here you are.',
+        'Check-in agent: Would you like a window or an aisle seat?',
+        'Passenger: An aisle seat, please.',
+        'Check-in agent: Would you like to upgrade to first class?',
+        'Passenger: No, thank you.',
+        'Check-in agent: Do you have any baggage?',
+        'Passenger: Yes, this suitcase and this carry-on bag.',
+        "Check-in agent: Here's your boarding pass. Have a nice flight.",
+        'Passenger: Thank you.',
+    ],
+
+    'questions' => [
+        [
+            'number' => 1,
+            'prompt' => 'Good morning. Can I have your ticket, please?',
+            'type' => 'missing_words',
+            'sentence' => 'Here {{1}}.',
+            'blanks' => [
+                [
+                    'answer' => 'you are',
+                    'placeholder' => '',
+                    'label' => 'Answer phrase',
+                ],
+            ],
+        ],
+        [
+            'number' => 2,
+            'prompt' => 'May I see your passport, please?',
+            'type' => 'missing_words',
+            'sentence' => '{{1}} you are.',
+            'blanks' => [
+                [
+                    'answer' => 'Here',
+                    'placeholder' => '',
+                    'label' => 'Answer word',
+                ],
+            ],
+        ],
+        [
+            'number' => 3,
+            'prompt' => 'Would you like a window or an aisle seat?',
+            'type' => 'missing_words',
+            'sentence' => 'An {{1}}, please.',
+            'blanks' => [
+                [
+                    'answer' => 'aisle seat',
+                    'placeholder' => '',
+                    'label' => 'Seat type',
+                ],
+            ],
+        ],
+        [
+            'number' => 4,
+            'prompt' => 'Would you like to upgrade to first class?',
+            'type' => 'missing_words',
+            'sentence' => 'No, {{1}}.',
+            'blanks' => [
+                [
+                    'answer' => 'thank you',
+                    'placeholder' => '',
+                    'label' => 'Polite refusal',
+                ],
+            ],
+        ],
+        [
+            'number' => 5,
+            'prompt' => 'Do you have any baggage?',
+            'type' => 'missing_words',
+            'sentence' => 'Yes, this {{1}} and this carry-on bag.',
+            'blanks' => [
+                [
+                    'answer' => 'suitcase',
+                    'placeholder' => '',
+                    'label' => 'Baggage item',
+                ],
+            ],
+        ],
+        [
+            'number' => 6,
+            'prompt' => "Here's your boarding pass. Have a nice flight.",
+            'type' => 'missing_words',
+            'sentence' => '{{1}}.',
+            'blanks' => [
+                [
+                    'answer' => 'Thank you',
+                    'placeholder' => '',
+                    'label' => 'Closing response',
+                ],
+            ],
+        ],
+    ],
 ];
 ?>
 
-@include("slider.chat.live", compact("content"))
+@include('slider.listening.listening-type-answer', ['content' => $content])

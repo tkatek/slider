@@ -1,54 +1,60 @@
 <?php
-// 1. MODIFY THESE TO CHANGE THE TEXT
-$customTitle = "Writing Time";
-$customSubtitle = "Write an e-mail to your friend telling him about your next holiday to Morocco. You can use
-the prompts provided as follows";
-
-// ✅ Put the 4 sentences in the INPUT placeholder (not the subtitle)
-$customPlaceholder =
-    "I’m going to go to..........(when).\n" .
-    "I’ going to stay for..........(How long).\n" .
-    "I’ve booked a ....................(Type of holiday).\n" .
-    "I’m going to travel by........(Type of transportation).\n" .
-    "I am going to stay at .............(accommodation).\n" .
-    "It is going to cost....................(How much?$)\n";
-
-if (auth()->check()){
-    $user = auth()->user();
-} else {
-    $user = \App\Models\User::create([
-        "id" => Str::uuid()->toString(),
-        "name" => \Faker\Factory::create()->firstName(),
-        "last_name" => \Faker\Factory::create()->lastName(),
-        "email" => \Faker\Factory::create()->email(),
-        "role_id" => 4
-    ]);
-    auth()->login($user, true);
-}
-
-$userAvatar = $user->getFirstMediaUrl('avatars', 'thumb');
-if (!$userAvatar) {
-    $userAvatar = "https://ui-avatars.com/api/?name=" . urlencode($user->name) . "&background=6366f1&color=fff&bold=true";
-}
-
-$pusher = [
-    "key" => config('chatify.pusher.key'),
-    "cluster" => config('chatify.pusher.options.cluster'),
-    "channel" => "slide-$slide->id",
-];
-
-$finalTitle = $customTitle ?? $slideItems->where('title', 'title')->first()->content ?? 'Writing Time';
-$finalSubtitle = $customSubtitle ?? $slideItems->where('title', 'subtitle')->first()->content ?? 'Share your thoughts';
-
 $content = [
-    'pusher' => $pusher,
-    'user' => $user,
-    'user_avatar' => $userAvatar,
-    'title' => $finalTitle,
-    'subtitle' => $finalSubtitle,
-    'page_title' => $finalTitle,
-    'placeholder' => $customPlaceholder
+    'title'    => 'Listening time',
+    'subtitle' => "Elliot tells Louise about a holiday he’s planned. Listen and choose the correct answers",
+    'type'=>'audio',
+    'audio'    => materialAsset("slider/A1/Intermediate/chapter-8/audios/slide9.mp3"),
+    'script'   => [
+        "ELLIOT: Hi, Louise! Here's your coffee.",
+        'LOUISE: Thanks, Elliot. When is our next meeting?',
+        'ELLIOT: In half an hour.',
+        'LOUISE: Good. You look happy today.',
+        'ELLIOT: Yes, I feel happy.',
+        'LOUISE: Oh! Good news?',
+        "ELLIOT: Yes! I'm going to go on holiday!",
+        'LOUISE: Really? Where are you going to go?',
+        'ELLIOT: Stockholm in Sweden. One week.',
+        'LOUISE: Very nice!',
+        'ELLIOT: Yes. The travel agent had cheap tickets and a hotel.',
+        'LOUISE: Lucky you!',
+        "ELLIOT: Yes. We're going to stay in a nice hotel. It has a swimming pool and free Wi-Fi.",
+        'LOUISE: When are you going to go?',
+        'ELLIOT: At the end of next month.',
+        'LOUISE: End of May? The weather is warmer then.',
+        'ELLIOT: Really?',
+        'LOUISE: Yes. I have a friend in Stockholm. Her name is Karin. You can email her for help. I can give you her email address.',
+        "ELLIOT: That's great! Thanks, Louise!",
+        'LOUISE: No problem.',
+    ],
+
+    'questions' => [
+        [
+            'prompt'  => 'Elliot booked his holiday ___.',
+            'correct' => 'at a travel agency',
+            'options' => ['online', 'at a travel agency'],
+        ],
+        [
+            'prompt'  => 'He’s going to Stockholm for a ___.',
+            'correct' => 'weekend',
+            'options' => ['weekend', 'week'],
+        ],
+        [
+            'prompt'  => 'He’s going to stay in a ___.',
+            'correct' => '3-star hotel',
+            'options' => ['3-star hotel', '4-star hotel'],
+        ],
+        [
+            'prompt'  => 'Elliot is going in ___.',
+            'correct' => 'May',
+            'options' => ['March', 'May'],
+        ],
+        [
+            'prompt'  => '___ has a friend called Karin in Stockholm.',
+            'correct' => 'Elliot',
+            'options' => ['Louise', 'Elliot'],
+        ],
+    ],
 ];
 ?>
 
-@include("slider.chat.live", compact("content"))
+@include('slider.game.multi-choice-all-in-one', ['content' => $content])

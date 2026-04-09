@@ -13,6 +13,12 @@
     $readingCompact = array_key_exists('reading_compact', $content)
         ? !empty($content['reading_compact'])
         : $gameType === 'reading';
+    $readingAllowHtml = array_key_exists('reading_allow_html', $content)
+        ? !empty($content['reading_allow_html'])
+        : false;
+    $showReadingBadge = array_key_exists('show_reading_badge', $content)
+        ? !empty($content['show_reading_badge'])
+        : true;
     $headerWrapClass = trim((string) ($content['header_wrap_class'] ?? 'header-spacing w-full text-center space-y-2 mt-1 mb-2 sm:mt-2 sm:mb-3'));
     $titleClass = trim((string) ($content['title_class'] ?? 'w-full whitespace-normal lg:whitespace-nowrap tracking-tight text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-2'));
     $subtitleClass = trim((string) ($content['subtitle_class'] ?? 'text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100'));
@@ -21,12 +27,18 @@
         ? array_values(array_filter(array_map(static fn ($paragraph) => trim((string) $paragraph), $rawReadingPassage), static fn ($paragraph) => $paragraph !== ''))
         : array_values(array_filter(
             array_map('trim', preg_split('/\R{2,}/', trim((string) $rawReadingPassage)) ?: []),
-            static fn ($paragraph) => $paragraph !== ''
+            static fn ($paragraph) => $paragraph !== '' 
         ));
-    $enableImageZoom = $content['enable_image_zoom'] ?? true; 
+    $enableImageZoom = true;
+    if (array_key_exists('enable_image_zoom', $content)) {
+        $normalizedEnableImageZoom = filter_var($content['enable_image_zoom'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        $enableImageZoom = $normalizedEnableImageZoom ?? (bool) $content['enable_image_zoom'];
+    }
     $imagePlain = $content['image_plain'] ?? false;
     $imageScale = (float) ($content['image_scale'] ?? 1);
     $imageExtraScale = (float) ($content['image_extra_scale'] ?? 1);
+    $imageAspectRatio = trim((string) ($content['image_aspect_ratio'] ?? ''));
+    $imageFitClass = trim((string) ($content['image_fit_class'] ?? 'object-contain'));
     $imageRadius = $content['image_radius'] ?? 'rounded-[1.6rem]';
     $imagePanelColClass = $content['image_panel_col_class']
         ?? ($gameType === 'image' ? 'sm:col-span-7' : ($gameType === 'emoji' ? '' : ($gameType === 'reading' ? 'sm:col-span-6' : 'sm:col-span-5')));
@@ -40,6 +52,12 @@
     $statusRowWidth = $content['status_row_width'] ?? 'max-w-5xl';
     $gameCardWidth = $content['game_card_width'] ?? ($gameType === 'emoji' ||  $gameType === 'audio'||  $gameType === 'questions_only'? 'max-w-5xl' : 'max-w-[92rem]');
     $imageOptionTileClass = trim((string) ($content['image_option_tile_class'] ?? ''));
+    $showImageOptionLabel = array_key_exists('show_image_option_label', $content)
+        ? (bool) $content['show_image_option_label']
+        : true;
+    $shuffleOptions = array_key_exists('shuffle_options', $content)
+        ? (bool) $content['shuffle_options']
+        : true;
     $rawScript = $content['script'] ?? [];
     $scriptLines = is_array($rawScript)
         ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $rawScript), static fn ($line) => $line !== ''))
@@ -57,7 +75,7 @@
     $hasAnyScript = $scriptLines !== [] || $hasQuestionScript;
 @endphp
 
-@section("style")
+@section("style")     
     <style>
         .modal-scroll::-webkit-scrollbar{height:10px;width:10px}
         .modal-scroll::-webkit-scrollbar-thumb{background:rgba(148,163,184,.55);border-radius:999px}
@@ -107,20 +125,46 @@
             align-items:center;
             justify-content:center;
             border-radius:.9rem;
-            border:1px solid rgba(226,232,240,.9);
-            background:rgba(255,255,255,.98);
-            color:#334155;
-            transition:background-color .18s ease, border-color .18s ease, color .18s ease;
+            border:1px solid rgba(251,146,60,.35);
+            background:rgba(255,237,213,.95);
+            color:#c2410c;
+            box-shadow:0 8px 22px rgba(234,88,12,.10);
+            cursor:pointer;
+            user-select:none;
+            -webkit-tap-highlight-color:transparent;
+            touch-action:manipulation;
+            transition:background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
+        }
+
+        .game-modal-close:focus-visible{
+            outline:2px solid rgba(249,115,22,.45);
+            outline-offset:2px;
         }
 
         .game-modal-close:hover{
-            background:#f8fafc;
+            background:rgb(254 215 170);
+            border-color:rgb(253 186 116);
+            color:#9a3412;
+            transform:scale(1.04);
+            box-shadow:0 10px 24px rgba(234,88,12,.14);
         }
 
         .dark .game-modal-close{
-            border-color:rgba(51,65,85,.9);
-            background:rgba(15,23,42,.98);
-            color:#f8fafc;
+            border-color:rgba(194,65,12,.45);
+            background:rgba(154,52,18,.35);
+            color:rgb(254 215 170);
+            box-shadow:0 8px 22px rgba(120,53,15,.16);
+        }
+
+        .dark .game-modal-close:hover{
+            background:rgba(154,52,18,.5);
+            color:rgb(254 237 213);
+        }
+
+        .game-modal-close-sm{
+            height:2.25rem;
+            width:2.25rem;
+            border-radius:.75rem;
         }
 
         .mca-btn-primary,
@@ -291,6 +335,58 @@
             pointer-events: none;
         }
 
+        .mca-inline-audio-box{
+            padding:.75rem .85rem;
+        }
+
+        .mca-inline-audio-row{
+            display:flex;
+            align-items:center;
+            gap:.75rem;
+        }
+
+        .mca-inline-audio-main{
+            flex:1;
+            min-width:0;
+            display:flex;
+            align-items:center;
+            gap:.65rem;
+        }
+
+        .mca-inline-audio-progress{
+            flex:1;
+            min-width:0;
+            display:flex;
+            flex-direction:column;
+            gap:.35rem;
+        }
+
+        .mca-inline-audio-btn{
+            height:2.5rem;
+            width:2.5rem;
+            flex-shrink:0;
+        }
+
+        .mca-inline-audio-icon{
+            height:1rem;
+            width:1rem;
+        }
+
+        .mca-inline-audio-track{
+            margin-top:0;
+            height:8px;
+        }
+
+        .mca-inline-audio-times{
+            font-size:10px;
+        }
+
+        .mca-inline-script-btn{
+            flex-shrink:0;
+            padding:.32rem .62rem;
+            font-size:.7rem;
+        }
+
         .game-modal-primary-btn{
             background:linear-gradient(135deg, #9333ea, #4f46e5, #2563eb);
         }
@@ -439,6 +535,77 @@
             color:#e2e8f0;
         }
 
+        .reading-rich-block{
+            margin:0;
+            min-width:0;
+        }
+
+        .reading-rich-block + .reading-rich-block{
+            margin-top:.4rem;
+        }
+
+        .reading-rich-block table{
+            width:100%;
+            border-collapse:separate;
+            border-spacing:0;
+            overflow:hidden;
+            border-radius:1rem;
+            border:1px solid rgba(148,163,184,.28);
+            background:rgba(255,255,255,.92);
+            box-shadow:0 16px 40px -34px rgba(15,23,42,.28);
+        }
+
+        .dark .reading-rich-block table{
+            border-color:rgba(71,85,105,.78);
+            background:rgba(15,23,42,.86);
+        }
+
+        .reading-rich-block th,
+        .reading-rich-block td{
+            padding:.72rem .8rem;
+            text-align:left;
+            font-size:.88rem;
+            line-height:1.4;
+            border-right:1px solid rgba(226,232,240,.82);
+            border-bottom:1px solid rgba(226,232,240,.82);
+        }
+
+        .dark .reading-rich-block th,
+        .dark .reading-rich-block td{
+            border-right-color:rgba(71,85,105,.82);
+            border-bottom-color:rgba(71,85,105,.82);
+        }
+
+        .reading-rich-block th{
+            background:linear-gradient(135deg, rgba(59,130,246,.13), rgba(99,102,241,.10));
+            font-weight:900;
+            color:#0f172a;
+            letter-spacing:.02em;
+        }
+
+        .dark .reading-rich-block th{
+            background:linear-gradient(135deg, rgba(59,130,246,.18), rgba(99,102,241,.16));
+            color:#f8fafc;
+        }
+
+        .reading-rich-block td{
+            font-weight:700;
+            color:#334155;
+        }
+
+        .dark .reading-rich-block td{
+            color:#e2e8f0;
+        }
+
+        .reading-rich-block tr:last-child td{
+            border-bottom:none;
+        }
+
+        .reading-rich-block th:last-child,
+        .reading-rich-block td:last-child{
+            border-right:none;
+        }
+
         .reading-copy p:first-child::first-letter{
             float:left;
             margin:.08rem .5rem 0 0;
@@ -495,6 +662,41 @@
                 padding:1.5rem;
             }
 
+            .mca-inline-audio-box{
+                padding:.875rem 1.1rem;
+            }
+
+            .mca-inline-audio-row{
+                gap:1rem;
+            }
+
+            .mca-inline-audio-main{
+                gap:.75rem;
+            }
+
+            .mca-inline-audio-btn{
+                height:3rem;
+                width:3rem;
+            }
+
+            .mca-inline-audio-icon{
+                height:1.25rem;
+                width:1.25rem;
+            }
+
+            .mca-inline-audio-track{
+                height:10px;
+            }
+
+            .mca-inline-audio-times{
+                font-size:11px;
+            }
+
+            .mca-inline-script-btn{
+                padding:.375rem .75rem;
+                font-size:.75rem;
+            }
+
             .reading-pane{
                 padding:1.15rem;
             }
@@ -523,7 +725,7 @@
             }
 
             .reading-pane.is-plain,
-            .reading-pane.is-compact{
+            .reading-pane.is-compact{ 
                 padding:1.05rem 1.15rem;
             }
 
@@ -532,7 +734,7 @@
             }
 
             .reading-copy p{
-                font-size:1rem;
+                font-size:1.2rem;
             }
         }
     </style>
@@ -614,10 +816,12 @@
                                         <div class="reading-pane{{ $readingAlign === 'left' ? ' is-left' : '' }}{{ $readingPlain ? ' is-plain' : '' }}{{ $readingCompact ? ' is-compact' : '' }}">
                                             <div class="reading-card{{ $readingPlain ? ' is-plain-mode' : '' }}">
                                                 <div class="reading-header">
-                                                    <div class="reading-badge">
-                                                        <span class="reading-badge-dot"></span>
-                                                        <span>Reading Passage</span>
-                                                    </div>
+                                                    @if($showReadingBadge)
+                                                        <div class="reading-badge">
+                                                            <span class="reading-badge-dot"></span>
+                                                            <span>Reading Passage</span>
+                                                        </div>
+                                                    @endif
 
                                                 @if($readingTitle !== '')
                                                     <h2 class="reading-title">{{ $readingTitle }}</h2>
@@ -626,7 +830,11 @@
 
                                                 <div class="reading-copy">
                                                     @forelse($readingPassage as $paragraph)
-                                                        <p>{{ $paragraph }}</p>
+                                                        @if($readingAllowHtml)
+                                                            <div class="reading-rich-block">{!! $paragraph !!}</div>
+                                                        @else
+                                                            <p>{{ $paragraph }}</p>
+                                                        @endif
                                                     @empty
                                                         <p>Add `passage` or `reading` in `$content` to show the reading text here.</p>
                                                     @endforelse
@@ -647,7 +855,7 @@
                                                             data-default-src="{{ $content['image'] ?? '' }}"
                                                             alt="{{ $content['title'] ?? 'Question image' }}"
                                                             draggable="false"
-                                                            class="h-full w-full object-contain {{ $imageRadius }} {{ $enableImageZoom ? 'transition-transform duration-150 ease-out will-change-transform' : '' }}"
+                                                            class="h-full w-full {{ $imageFitClass }} {{ $imageRadius }} {{ $enableImageZoom ? 'transition-transform duration-150 ease-out will-change-transform' : '' }}"
                                                     >
                                                 </div>
                                             @else
@@ -666,7 +874,7 @@
                                                                 data-default-src="{{ $content['image'] ?? '' }}"
                                                                 alt="{{ $content['title'] ?? 'Question image' }}"
                                                                 draggable="false"
-                                                                class="h-full w-full object-contain {{ $enableImageZoom ? 'transition-transform duration-150 ease-out will-change-transform' : '' }}"
+                                                                class="h-full w-full {{ $imageFitClass }} {{ $enableImageZoom ? 'transition-transform duration-150 ease-out will-change-transform' : '' }}"
                                                         >
                                                     </div>
                                                 </div>
@@ -683,28 +891,28 @@
 
                             <div class="{{ $answerPanelColClass }} {{ ($gameType !== 'questions_only' && $gameType !== 'audio') ? 'border-t border-slate-200/70 dark:border-slate-800 sm:border-t-0 sm:border-l' : '' }}">
                                 <div class="{{ $answerPanelInnerClass }}">
-                                    <div class="flex flex-wrap items-center justify-between gap-3">
-                                        <div class="text-sm sm:text-base font-extrabold text-slate-500 dark:text-slate-400">
+                                    <div class="flex items-center justify-between gap-2 sm:gap-3">
+                                        <div class="min-w-0 text-[11px] sm:text-base font-extrabold text-slate-500 dark:text-slate-400">
                                             {{ $questionPromptLabel }}
                                         </div>
 
                                         <button
                                                 id="btnRevealCorrection"
-                                                class="mca-btn-primary mca-btn-reveal"
+                                                class="mca-btn-primary mca-btn-reveal shrink-0 whitespace-nowrap"
                                         >
                                                 Reveal correction
                                         </button>
                                     </div>
 
-                                    <div id="inlineAudioBox" class="hidden mt-4 mb-4 rounded-2xl border border-indigo-100 bg-indigo-50/90 px-4 py-3 shadow-sm dark:border-indigo-700/60 dark:bg-indigo-900/30 sm:px-5 sm:py-3.5">
-                                        <div class="flex items-start gap-4">
+                                    <div id="inlineAudioBox" class="mca-inline-audio-box hidden mt-4 mb-4 rounded-2xl border border-indigo-100 bg-indigo-50/90 shadow-sm dark:border-indigo-700/60 dark:bg-indigo-900/30">
+                                        <div class="mca-inline-audio-row">
                                             <button
                                                     id="btnPlayInlineAudio"
                                                     type="button"
-                                                    class="play-hit audio-listen-btn inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 transition-all duration-150 active:scale-95 hover:scale-[1.06] focus-visible:ring-4 focus-visible:ring-indigo-300/40"
+                                                    class="play-hit audio-listen-btn mca-inline-audio-btn inline-flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 transition-all duration-150 active:scale-95 hover:scale-[1.06] focus-visible:ring-4 focus-visible:ring-indigo-300/40"
                                                     aria-label="Play audio"
                                             >
-                                                <svg class="static-icon h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                <svg class="static-icon mca-inline-audio-icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                     <path d="M8 5v14l11-7-11-7z"/>
                                                 </svg>
 
@@ -713,15 +921,14 @@
                                                 <span class="wave-bar" style="animation-delay:.3s"></span>
                                             </button>
 
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center gap-3">
-                                                    <div class="flex-1 flex flex-col gap-2 min-w-0">
-                                                        <div class="mca-audio-track mt-1 cursor-pointer" id="inlineQuestionAudioProgressTrack" aria-label="Audio progress">
+                                            <div class="mca-inline-audio-main">
+                                                    <div class="mca-inline-audio-progress">
+                                                        <div class="mca-audio-track mca-inline-audio-track cursor-pointer" id="inlineQuestionAudioProgressTrack" aria-label="Audio progress">
                                                             <div class="mca-audio-fill" id="inlineQuestionAudioProgressFill"></div>
                                                             <div class="mca-audio-knob" id="inlineQuestionAudioProgressKnob"></div>
                                                         </div>
 
-                                                        <div class="flex justify-between text-[11px] font-extrabold text-indigo-700 dark:text-indigo-200">
+                                                        <div class="mca-inline-audio-times flex justify-between font-extrabold text-indigo-700 dark:text-indigo-200">
                                                             <span id="inlineQuestionAudioCurrentTime">0:00</span>
                                                             <span id="inlineQuestionAudioTotalTime">0:00</span>
                                                         </div>
@@ -729,12 +936,11 @@
                                                     @if($hasAnyScript)
                                                         <button id="btnReplayAudio"
                                                                 type="button"
-                                                                class="mca-btn-primary mca-btn-script shrink-0">
+                                                                class="mca-btn-primary mca-btn-script mca-inline-script-btn">
                                                             <span>Script</span>
                                                             <span>📄</span>
                                                         </button>
                                                     @endif
-                                                </div>
                                             </div>
                                         </div>
                                         @if(false && $hasAnyScript)
@@ -797,48 +1003,55 @@
                         </div>
 
                         <div id="resultsOverlay" class="hidden fixed inset-0 z-50">
-                            <div class="absolute inset-0 bg-slate-950/40 dark:bg-black/70 backdrop-blur-sm"></div>
+                            <div id="resultsBackdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm dark:bg-black/60"></div>
 
-                            <div class="game-modal-shell">
-                                <div class="game-modal-card max-w-3xl max-h-[88dvh] overflow-y-auto">
-                                    <div class="relative p-6 sm:p-8 lg:p-10 text-center">
-                                        <div class="text-5xl sm:text-6xl">🎉</div>
+                            <div class="relative z-10 flex min-h-full w-full items-center justify-center p-4 sm:p-6">
+                                <div class="pointer-events-auto relative w-full max-w-lg max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 bg-white/95 shadow-2xl dark:border-slate-700/70 dark:bg-slate-900/95">
+                                    <button
+                                            id="btnCloseResults"
+                                            type="button"
+                                            class="game-modal-close game-modal-close-sm absolute right-3 top-3 z-20"
+                                            aria-label="Close results"
+                                    >
+                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
+                                        </svg>
+                                    </button>
 
-                                        <h2 class="mt-5 text-3xl sm:text-4xl lg:text-[2.6rem] leading-none font-black text-slate-900 dark:text-white">
-                                            Done
+                                    <div class="p-6 text-center sm:p-8">
+                                        <div class="mb-3 text-6xl">🎉</div>
+
+                                        <h2 class="text-2xl font-black text-slate-900 dark:text-white sm:text-3xl">
+                                            Done!
                                         </h2>
 
-                                        <p class="mt-3 mx-auto max-w-xl text-sm sm:text-base font-semibold leading-[1.7] text-slate-500 dark:text-slate-400">
-                                            Review your results, then continue when you are ready.
-                                        </p>
-
-                                        <div class="mt-8 w-full grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                                        <div class="mt-5 grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
                                             @foreach(['Score' => 'finalScore', 'Time' => 'finalTime', 'Mistakes' => 'finalMistakes'] as $l => $id)
-                                                <div class="game-modal-stat p-4 sm:p-5">
-                                                    <div class="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ $l }}</div>
-                                                    <div id="{{ $id }}" class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">0</div>
+                                                <div class="rounded-2xl border border-slate-200/70 bg-white/80 p-3 shadow dark:border-slate-700 dark:bg-slate-800/80">
+                                                    <div class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ $l }}</div>
+                                                    <div id="{{ $id }}" class="text-xl font-black text-slate-900 dark:text-white">0</div>
                                                 </div>
                                             @endforeach
                                         </div>
 
-                                        <div class="mt-6 rounded-2xl border border-slate-200/70 bg-white/80 p-4 text-left shadow dark:border-slate-700 dark:bg-slate-800/80">
+                                        <div id="resultsCorrectionCard" class="hidden mt-6 rounded-2xl border border-slate-200/70 bg-white/80 p-3 sm:p-4 text-left shadow dark:border-slate-700 dark:bg-slate-800/80">
                                             <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                                                 Corrections
                                             </div>
-                                            <div id="finalCorrection" class="mt-3 text-base font-bold leading-[1.85] text-slate-900 dark:text-white"></div>
+                                            <div id="finalCorrection" class="mt-3 text-[15px] sm:text-base font-bold leading-[1.75] sm:leading-[1.85] text-slate-900 dark:text-white"></div>
                                         </div>
 
-                                        <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                        <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
                                             <button
-                                                    id="btnRestartPopup"
-                                                    class="game-modal-secondary-btn w-full px-8 py-4"
+                                                    id="btnReviewPopup"
+                                                    class="game-modal-secondary-btn w-full px-8 py-3 text-sm"
                                             >
-                                                Restart 🔁
+                                                Review correction
                                             </button>
 
                                             <button
                                                     id="btnContinue"
-                                                    class="game-modal-primary-btn w-full px-8 py-4"
+                                                    class="game-modal-primary-btn w-full px-8 py-3 text-sm"
                                             >
                                                 Continue ⚡
                                             </button>
@@ -853,23 +1066,25 @@
                                 <div id="scriptBackdrop" class="absolute inset-0 bg-slate-950/40 dark:bg-black/70 backdrop-blur-sm"></div>
 
                                 <div class="game-modal-shell">
-                                    <div class="game-modal-card max-w-3xl text-left">
+                                    <div class="game-modal-card relative max-w-3xl text-left">
                                         <div class="flex items-center justify-between p-3 sm:p-4 border-b border-slate-200/60 dark:border-slate-700/40">
-                                                <div class="min-w-0">
-                                                    <div class="font-black text-sm sm:text-base text-slate-900 dark:text-slate-50">
-                                                        Script
-                                                    </div>
+                                            <div class="min-w-0">
+                                                <div class="font-black text-sm sm:text-base text-slate-900 dark:text-slate-50">
+                                                    Script
                                                 </div>
-
-                                                <button
-                                                        id="btnCloseScript"
-                                                        type="button"
-                                                        class="mca-btn-secondary"
-                                                        aria-label="Close script"
-                                                >
-                                                    Close
-                                                </button>
                                             </div>
+
+                                            <button
+                                                    id="btnCloseScript"
+                                                    type="button"
+                                                    class="game-modal-close game-modal-close-sm ml-3 shrink-0"
+                                                    aria-label="Close script"
+                                            >
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                                                    <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
+                                                </svg>
+                                            </button>
+                                        </div>
 
                                             <div class="modal-scroll max-h-[70vh] overflow-auto p-3 sm:p-4">
                                                 <div id="scriptList" class="space-y-2"></div>
@@ -903,9 +1118,12 @@
             const ENABLE_IMAGE_ZOOM = @json($enableImageZoom);
             const IMAGE_SCALE = @json($imageScale);
             const IMAGE_EXTRA_SCALE = @json($imageExtraScale);
+            const IMAGE_ASPECT_RATIO = @json($imageAspectRatio);
             const OPTIONS_BANK = @json($optionsBank);
             const OPTIONS_GRID_CLASS = @json($optionsGridClass);
             const IMAGE_OPTION_TILE_CLASS = @json($imageOptionTileClass);
+            const SHOW_IMAGE_OPTION_LABEL = @json($showImageOptionLabel);
+            const SHUFFLE_OPTIONS = @json($shuffleOptions);
             const GLOBAL_SCRIPT_LINES = @json($scriptLines);
             const HAS_SCRIPT = @json($hasAnyScript);
 
@@ -918,6 +1136,7 @@
             let wrongedQuestions = new Set();
             let completedQuestions = new Set();
             let revealedQuestions = new Set();
+            let selectedCorrectValues = new Map();
 
             const optionLabelMap = (OPTIONS_BANK || []).reduce((acc, item) => {
                 const key = String(item?.key ?? item?.value ?? '');
@@ -934,6 +1153,8 @@
             const questionAudio = document.getElementById('questionAudio');
             const btnPlayAudio = document.getElementById('btnPlayAudio');
             const btnReplayAudio = document.getElementById('btnReplayAudio');
+            const resultsOverlay = document.getElementById('resultsOverlay');
+            const resultsBackdrop = document.getElementById('resultsBackdrop');
             const scriptOverlay = document.getElementById('scriptOverlay');
             const scriptBackdrop = document.getElementById('scriptBackdrop');
             const btnCloseScript = document.getElementById('btnCloseScript');
@@ -942,7 +1163,10 @@
             const inlineQuestionAudio = document.getElementById('inlineQuestionAudio');
             const btnPlayInlineAudio = document.getElementById('btnPlayInlineAudio');
             const finalCorrection = document.getElementById('finalCorrection');
+            const resultsCorrectionCard = document.getElementById('resultsCorrectionCard');
             const btnRevealCorrection = document.getElementById('btnRevealCorrection');
+            const btnReviewPopup = document.getElementById('btnReviewPopup');
+            const btnCloseResults = document.getElementById('btnCloseResults');
             const btnPrev = document.getElementById('btnPrev');
             const btnNext = document.getElementById('btnNext');
             const characterAudios = Array.from(document.querySelectorAll('.character-audio'));
@@ -1103,7 +1327,7 @@
                     textWrap.className = 'min-w-0 flex-1';
 
                     const text = document.createElement('div');
-                    text.className = 'text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200';
+                    text.className = 'text-xs sm:text-sm font-semibold leading-relaxed whitespace-pre-line text-slate-700 dark:text-slate-200';
                     text.textContent = line;
 
                     textWrap.appendChild(text);
@@ -1132,6 +1356,17 @@
             function syncImageViewportAspectRatio() {
                 if (!imageViewport || !questionImage) return;
 
+                if (IMAGE_ASPECT_RATIO) {
+                    const parts = String(IMAGE_ASPECT_RATIO).split('/').map((part) => Number(part.trim()));
+                    const forcedWidth = parts[0];
+                    const forcedHeight = parts[1];
+                    const forcedRatio = forcedWidth > 0 && forcedHeight > 0 ? forcedWidth / forcedHeight : 1;
+
+                    imageViewport.style.aspectRatio = IMAGE_ASPECT_RATIO;
+                    imageViewport.style.width = `min(100%, calc(72vh * ${forcedRatio} * ${IMAGE_SCALE}))`;
+                    return;
+                }
+
                 const { naturalWidth, naturalHeight } = questionImage;
                 if (!naturalWidth || !naturalHeight) return;
 
@@ -1140,15 +1375,21 @@
                 imageViewport.style.width = `min(100%, calc(72vh * ${ratio} * ${IMAGE_SCALE}))`;
             }
 
-            function resetImageZoom() {
+            function applyImageBaseTransform() {
                 if (!questionImage) return;
 
                 questionImage.style.transformOrigin = '50% 50%';
-                questionImage.style.transform = `scale(${IMAGE_EXTRA_SCALE})`;
+                questionImage.style.transform = ENABLE_IMAGE_ZOOM
+                    ? `scale(${IMAGE_EXTRA_SCALE})`
+                    : 'none';
+            }
+
+            function resetImageZoom() {
+                applyImageBaseTransform();
             }
 
             function updateImageZoom(event) {
-                if (!imageViewport || !questionImage) return;
+                if (!ENABLE_IMAGE_ZOOM || !imageViewport || !questionImage) return;
 
                 const rect = imageViewport.getBoundingClientRect();
                 if (!rect.width || !rect.height) return;
@@ -1161,10 +1402,7 @@
             }
 
             function hideImageZoom() {
-                if (!questionImage) return;
-
-                questionImage.style.transformOrigin = '50% 50%';
-                questionImage.style.transform = `scale(${IMAGE_EXTRA_SCALE})`;
+                applyImageBaseTransform();
             }
 
             function startTimer() {
@@ -1186,12 +1424,34 @@
                     .to("#toastOne", { opacity: 0, y: -10, duration: 0.3 }, "+=1");
             }
 
+            function setResultsCorrectionVisible(visible) {
+                if (!resultsCorrectionCard) return;
+                resultsCorrectionCard.classList.toggle('hidden', !visible);
+
+                if (visible && finalCorrection) {
+                    finalCorrection.innerHTML = buildAllCorrectionsHTML();
+                }
+            }
+
+            function openResultsOverlay(showCorrection = false) {
+                document.getElementById('finalScore').textContent = `${firstTryCorrect}/${QUESTIONS.length}`;
+                document.getElementById('finalTime').textContent = document.getElementById('timer').textContent;
+                document.getElementById('finalMistakes').textContent = wrongTries;
+                setResultsCorrectionVisible(showCorrection);
+                resultsOverlay?.classList.remove('hidden');
+            }
+
+            function closeResultsOverlay() {
+                resultsOverlay?.classList.add('hidden');
+            }
+
             function restartGame() {
                 stopQuestionAudio();
                 stopInlineQuestionAudio();
                 stopCharacterAudios();
                 if (scriptOverlay) scriptOverlay.classList.add('hidden');
-                document.getElementById('resultsOverlay').classList.add('hidden');
+                closeResultsOverlay();
+                setResultsCorrectionVisible(false);
                 idx = 0;
                 firstTryCorrect = 0;
                 wrongTries = 0;
@@ -1199,6 +1459,7 @@
                 wrongedQuestions = new Set();
                 completedQuestions = new Set();
                 revealedQuestions = new Set();
+                selectedCorrectValues = new Map();
                 startTime = Date.now();
                 document.getElementById('correctCount').textContent = '0';
                 document.getElementById('mistakesCount').textContent = '0';
@@ -1208,14 +1469,7 @@
 
             function finishGame() {
                 clearInterval(timerInt);
-
-                document.getElementById('finalScore').textContent = `${firstTryCorrect}/${QUESTIONS.length}`;
-                document.getElementById('finalTime').textContent = document.getElementById('timer').textContent;
-                document.getElementById('finalMistakes').textContent = wrongTries;
-                if (finalCorrection) finalCorrection.innerHTML = buildAllCorrectionsHTML();
-
-                document.getElementById('resultsOverlay').classList.remove('hidden');
-
+                openResultsOverlay(false);
                 play(audio.success);
             }
 
@@ -1259,36 +1513,50 @@
                     .replace(/>/g, '&gt;');
             }
 
-            function getExpectedOption(question) {
+            function getExpectedOptions(question) {
                 const options = Array.isArray(question?.options) ? question.options.map(normalizeOption) : [];
-                const expectedValue = String(question?.correct ?? '');
-                const matchedOption = options.find((option) =>
-                    String(option.value) === expectedValue || String(option.label) === expectedValue
-                );
+                const rawCorrectValues = Array.isArray(question?.correct)
+                    ? question.correct
+                    : [question?.correct];
 
-                if (matchedOption) {
-                    return matchedOption;
-                }
+                const seen = new Set();
 
-                return normalizeOption(expectedValue);
+                return rawCorrectValues
+                    .map((correctValue) => {
+                        const expectedValue = String(correctValue ?? '');
+                        const matchedOption = options.find((option) =>
+                            String(option.value) === expectedValue || String(option.label) === expectedValue
+                        );
+
+                        return matchedOption || normalizeOption(expectedValue);
+                    })
+                    .filter((option) => {
+                        const key = String(option?.value ?? option?.label ?? '');
+                        if (!key || seen.has(key)) return false;
+                        seen.add(key);
+                        return true;
+                    });
             }
 
-            function getExpectedValue(question) {
-                const expectedOption = getExpectedOption(question);
-                return String(expectedOption?.value ?? '');
+            function getExpectedValues(question) {
+                return new Set(
+                    getExpectedOptions(question).map((option) => String(option?.value ?? ''))
+                );
             }
 
             function buildCorrectionHTML(question, isRevealed) {
                 if (!question) return '';
 
-                const answer = getExpectedOption(question);
+                const answers = getExpectedOptions(question);
                 const answerClass = isRevealed
                     ? 'bg-rose-100/80 text-rose-900 ring-1 ring-rose-300/70 dark:bg-rose-400/10 dark:text-rose-100 dark:ring-rose-300/30'
                     : 'bg-emerald-100/80 text-emerald-900 ring-1 ring-emerald-300/70 dark:bg-emerald-400/10 dark:text-emerald-100 dark:ring-emerald-300/30';
 
                 return `
                     <span>${escapeHtml(getQuestionPrompt(question))}</span>
-                    <span class="inline-flex rounded-xl px-3 py-1 ${answerClass}">${escapeHtml(answer.label || answer.value || '')}</span>
+                    ${answers.map((answer) => `
+                        <span class="inline-flex rounded-xl px-3 py-1 ${answerClass}">${escapeHtml(answer.label || answer.value || '')}</span>
+                    `).join('')}
                 `;
             }
 
@@ -1364,12 +1632,6 @@
                     "bg-white/90 text-xs font-black text-slate-900 shadow-md dark:border-slate-700/50 dark:bg-slate-900/85 dark:text-slate-50";
                 badge.textContent = String.fromCharCode(65 + visualIndex);
 
-                const label = document.createElement('div');
-                label.className =
-                    "pointer-events-none absolute inset-x-2 bottom-2 rounded-xl border border-white/70 bg-white/90 px-3 py-2 text-center text-xs font-black " +
-                    "text-slate-900 shadow-md dark:border-slate-700/50 dark:bg-slate-900/85 dark:text-slate-50";
-                label.textContent = option.label || option.value || 'Option';
-
                 const srOnly = document.createElement('span');
                 srOnly.className = 'sr-only';
                 srOnly.textContent = option.label || option.value || 'Option';
@@ -1377,7 +1639,14 @@
                 button.appendChild(srOnly);
                 button.appendChild(inner);
                 button.appendChild(badge);
-                button.appendChild(label);
+                if (SHOW_IMAGE_OPTION_LABEL) {
+                    const label = document.createElement('div');
+                    label.className =
+                        "pointer-events-none absolute inset-x-2 bottom-2 rounded-xl border border-white/70 bg-white/90 px-3 py-2 text-center text-xs font-black " +
+                        "text-slate-900 shadow-md dark:border-slate-700/50 dark:bg-slate-900/85 dark:text-slate-50";
+                    label.textContent = option.label || option.value || 'Option';
+                    button.appendChild(label);
+                }
                 button.onclick = () => answerChoice(option.value, button);
 
                 return button;
@@ -1453,11 +1722,26 @@
                 const grid = document.getElementById('optionsGrid');
                 grid.innerHTML = "";
                 setOptionsGridLayout(grid);
+                const expectedValues = getExpectedValues(q);
+                const selectedValues = selectedCorrectValues.get(idx) || new Set();
+                const isCompletedQuestion = completedQuestions.has(idx);
 
-                shuffle((q.options || []).map(normalizeOption)).forEach((option, visualIndex) => {
+                const renderedOptions = SHUFFLE_OPTIONS
+                    ? shuffle((q.options || []).map(normalizeOption))
+                    : (q.options || []).map(normalizeOption);
+
+                renderedOptions.forEach((option, visualIndex) => {
                     const button = OPTION_TYPE === 'image'
                         ? renderImageOption(option, visualIndex)
                         : renderTextOption(option);
+
+                    const optionValue = String(option.value);
+                    if (selectedValues.has(optionValue) || (isCompletedQuestion && expectedValues.has(optionValue))) {
+                        markCorrect(button);
+                        button.disabled = true;
+                    } else if (isCompletedQuestion) {
+                        button.disabled = true;
+                    }
 
                     grid.appendChild(button);
                 });
@@ -1465,32 +1749,44 @@
 
             function answerChoice(selectedValue, button) {
                 const q = QUESTIONS[idx];
-                const expectedValue = getExpectedValue(q);
                 const actualValue = String(selectedValue);
+                const expectedValues = getExpectedValues(q);
 
-                if (actualValue === expectedValue) {
+                if (expectedValues.has(actualValue)) {
+                    const selectedValues = selectedCorrectValues.get(idx) || new Set();
+                    if (selectedValues.has(actualValue)) return;
+
+                    selectedValues.add(actualValue);
+                    selectedCorrectValues.set(idx, selectedValues);
+
                     play(audio.correct);
                     markCorrect(button);
-                    completedQuestions.add(idx);
+                    button.disabled = true;
 
-                    if (!wrongedQuestions.has(idx)) {
-                        firstTryCorrect++;
-                    }
+                    if (selectedValues.size >= expectedValues.size) {
+                        completedQuestions.add(idx);
 
-                    updateStatusUI();
-
-                    Array.from(document.getElementById('optionsGrid').children).forEach((optionButton) => {
-                        optionButton.disabled = true;
-                    });
-
-                    setTimeout(() => {
-                        if (idx < QUESTIONS.length - 1) {
-                            idx += 1;
-                            renderQuestion();
-                        } else {
-                            finishGame();
+                        if (!wrongedQuestions.has(idx)) {
+                            firstTryCorrect++;
                         }
-                    }, 600);
+
+                        updateStatusUI();
+
+                        Array.from(document.getElementById('optionsGrid').children).forEach((optionButton) => {
+                            optionButton.disabled = true;
+                        });
+
+                        setTimeout(() => {
+                            if (idx < QUESTIONS.length - 1) {
+                                idx += 1;
+                                renderQuestion();
+                            } else {
+                                finishGame();
+                            }
+                        }, 600);
+                    } else {
+                        updateStatusUI();
+                    }
                 } else {
                     play(audio.wrong);
 
@@ -1508,8 +1804,8 @@
                 if (hintsLeft <= 0) return;
 
                 const btns = Array.from(document.getElementById('optionsGrid').children);
-                const expectedValue = getExpectedValue(QUESTIONS[idx]);
-                const wrong = btns.find((btn) => btn.dataset.value !== expectedValue && !btn.disabled);
+                const expectedValues = getExpectedValues(QUESTIONS[idx]);
+                const wrong = btns.find((btn) => !expectedValues.has(String(btn.dataset.value)) && !btn.disabled);
 
                 if (wrong) {
                     hintsLeft--;
@@ -1534,16 +1830,16 @@
                 wrongTries += newlyRevealed;
                 updateStatusUI();
                 clearInterval(timerInt);
-                document.getElementById('finalScore').textContent = `${firstTryCorrect}/${QUESTIONS.length}`;
-                document.getElementById('finalTime').textContent = document.getElementById('timer').textContent;
-                document.getElementById('finalMistakes').textContent = wrongTries;
-                if (finalCorrection) finalCorrection.innerHTML = buildAllCorrectionsHTML();
-                document.getElementById('resultsOverlay').classList.remove('hidden');
+                openResultsOverlay(true);
                 showToast("Corrections revealed", "📘");
             }
 
             document.getElementById('btnRestart').onclick = restartGame;
-            document.getElementById('btnRestartPopup').onclick = restartGame;
+            btnReviewPopup?.addEventListener('click', () => {
+                setResultsCorrectionVisible(true);
+            });
+            btnCloseResults?.addEventListener('click', closeResultsOverlay);
+            resultsBackdrop?.addEventListener('click', closeResultsOverlay);
             btnRevealCorrection?.addEventListener('click', revealCorrection);
             btnPrev?.addEventListener('click', () => {
                 if (idx <= 0) return;
@@ -1585,6 +1881,13 @@
                 };
             }
 
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeResultsOverlay();
+                    scriptOverlay?.classList.add('hidden');
+                }
+            });
+
             document.getElementById('btnContinue').onclick = () => {
                 stopQuestionAudio();
                 stopCharacterAudios();
@@ -1609,6 +1912,13 @@
                 });
             }  
 
+            if (imageViewport && questionImage) {
+                window.addEventListener('resize', () => {
+                    syncImageViewportAspectRatio();
+                    resetImageZoom();
+                });
+            }
+
             if (ENABLE_IMAGE_ZOOM && imageViewport && questionImage) {
                 imageViewport.addEventListener('mouseenter', (event) => {
                     updateImageZoom(event);
@@ -1616,10 +1926,6 @@
 
                 imageViewport.addEventListener('mousemove', updateImageZoom);
                 imageViewport.addEventListener('mouseleave', hideImageZoom);
-                window.addEventListener('resize', () => {
-                    syncImageViewportAspectRatio();
-                    resetImageZoom();
-                });
             }
 
             renderQuestion();

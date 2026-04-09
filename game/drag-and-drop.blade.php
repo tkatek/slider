@@ -18,10 +18,10 @@
 
         :root{
             --pool-safe-space: 300px;
-            --layout-bottom-safe-space: 0px;
+            --layout-bottom-safe-space: 0px; 
         }
 
-        body > div.isolate.relative{
+        body > div.isolate.relative{   
             padding-bottom: var(--layout-bottom-safe-space);
         }
 
@@ -235,7 +235,7 @@
                 }
 
                 #poolBar > div{
-                    padding: .85rem !important;
+                    padding: 0 !important;
                     border-radius: 1.25rem !important;
                 }
 
@@ -435,8 +435,8 @@
 
     @if($type === 'image')
         <main class="w-full" style="--dd-game-width: {{ $desktopGameWidth }}%; --dd-pool-width: {{ $desktopPoolWidth }}%;">
-            <div class="header-spacing text-center space-y-6 my-8">
-                <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">
+            <div class="header-spacing text-center space-y-4 my-4 sm:my-5">
+                <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4">
                     <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
                         {{ ($content['title'] ?? 'Practice') }}
                     </span>
@@ -446,14 +446,14 @@
                 </p>
             </div>
 
-            <div class="mx-auto mb-5 w-full max-w-3xl overflow-hidden rounded-3xl border border-slate-200/70 bg-white/60 shadow-lg backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
+            <div class="mx-auto mb-4 sm:mb-5 w-full max-w-[19.5rem] sm:max-w-3xl overflow-hidden rounded-3xl border border-slate-200/70 bg-white/60 shadow-lg backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
                 <div class="grid grid-cols-4">
                     @foreach(['Tiles' => 'gameProgressCount', 'Correct' => 'correctCount', 'Mistakes' => 'mistakesCount', 'Time' => 'timer'] as $label => $id)
-                        <div class="px-3 py-3 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
+                        <div class="px-1.5 py-2 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
                             <div class="hidden sm:inline-block text-[11px] sm:text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                                 {{ $label }}
                             </div>
-                            <div class="font-black text-base sm:text-lg">
+                            <div class="font-black text-xs sm:text-lg">
                                 @if($label === 'Tiles')
                                     🧩
                                 @elseif($label === 'Correct')
@@ -618,8 +618,8 @@
         </main>
     @else
         <main class="w-full" style="--dd-game-width: {{ $desktopGameWidth }}%; --dd-pool-width: {{ $desktopPoolWidth }}%;">
-            <div class="header-spacing text-center space-y-6 my-8">
-                <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">
+            <div class="header-spacing text-center space-y-4 my-4 sm:my-5">
+                <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4">
                     <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
                         {{ $content['title']  }}
                     </span>
@@ -629,14 +629,14 @@
                 </p>
             </div>
 
-            <div class="mx-auto mb-5 w-full max-w-3xl overflow-hidden rounded-3xl border border-slate-200/70 bg-white/60 shadow-lg backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
+            <div class="mx-auto mb-4 sm:mb-5 w-full max-w-[19.5rem] sm:max-w-3xl overflow-hidden rounded-3xl border border-slate-200/70 bg-white/60 shadow-lg backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
                 <div class="grid grid-cols-4">
                     @foreach(['Tiles' => 'gameProgressCount', 'Correct' => 'correctCount', 'Mistakes' => 'mistakesCount', 'Time' => 'timer'] as $label => $id)
-                        <div class="px-3 py-3 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
+                        <div class="px-1.5 py-2 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
                             <div class="hidden sm:inline-block text-[11px] sm:text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                                 {{ $label }}
                             </div>
-                            <div class="font-black text-base sm:text-lg">
+                            <div class="font-black text-xs sm:text-lg">
                                 @if($label === 'Tiles')
                                     🧩
                                 @elseif($label === 'Correct')
@@ -842,6 +842,7 @@
         const GAME_TYPE = @json($type);
         const POOL_ITEM_TYPE = @json($poolItemType);
         const categoriesData = @json($normalizedCategories);
+        const STICKY_POOL_VISIBLE_CAP = Number(@json($content['sticky_pool_visible_cap'] ?? 0));
 
         const SFX = {
             enabled: true,
@@ -995,14 +996,21 @@
             getVisibleCap(){
                 if (this.isImageType) return Number.POSITIVE_INFINITY;
 
+                const stickyCap = Number.isFinite(STICKY_POOL_VISIBLE_CAP) && STICKY_POOL_VISIBLE_CAP > 0
+                    ? STICKY_POOL_VISIBLE_CAP
+                    : 0;
+                const w = window.innerWidth || 1024;
+
+                if (stickyCap > 0 && w < 1024) {
+                    return stickyCap;
+                }
+
                 if (this.isImagePoolType) {
-                    const w = window.innerWidth || 1024;
                     if (w < 640) return 6;
                     if (w < 1024) return 10;
                     return 12;
                 }
 
-                const w = window.innerWidth || 1024;
                 if (w < 640) return 6;
                 if (w < 1024) return 8;
                 return 12;
@@ -1234,9 +1242,9 @@
             refreshPoolVisibility(){
                 const cap = this.getVisibleCap();
                 const tiles = Array.from(this.poolContent.querySelectorAll('.draggable-item:not(.locked)'));
-                const isMobilePool = (window.innerWidth || 1024) < 640 && Number.isFinite(cap);
+                const isStickyBottomPool = (window.innerWidth || 1024) < 1024 && Number.isFinite(cap);
 
-                if (!isMobilePool) {
+                if (!isStickyBottomPool) {
                     this.poolStartIndex = 0;
                     tiles.forEach((t) => t.classList.remove('hidden'));
                     this.updatePoolPager(tiles.length, cap, false);

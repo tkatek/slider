@@ -10,11 +10,11 @@ $content = [
     'people' => [
         'left'  => [
             'name'  => 'Receptionist',
-            'image' => materialAsset("slider/A1/Advanced/chapter-3/img/slide9/1.webp"),
+            'image' => materialAsset("slider/A1/Advanced/chapter-3/img/receptionist.webp"),
         ],
         'right' => [
             'name'  => 'Daniel Adams',
-            'image' => materialAsset("slider/A1/Advanced/chapter-3/img/slide9/2.webp"),
+            'image' => materialAsset("slider/A1/Advanced/chapter-3/img/daniel.webp"),
         ],
     ],
 

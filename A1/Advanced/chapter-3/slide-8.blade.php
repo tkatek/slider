@@ -1,8 +1,8 @@
 @php
     $content = [
-        'page_title' => 'Services & Facilities Vocabulary',
-        'title'      => 'Services & Facilities Vocabulary',
-        'subtitle'   => 'Useful words and phrases for talking about hotel services, facilities, and guest support.',
+        'page_title' => 'New Vocabulary',
+        'title'      => 'New Vocabulary',
+        'subtitle'   => '3️⃣ Polite Expressions',
         'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4',
 
         'items' => [
@@ -10,7 +10,7 @@
                 'text'     => 'I’d like to…',
                 'subtitle' => 'A polite request.',
                 'emoji'    => '🙏',
-                'sound'    => materialAsset('slider/A1/Advanced/chapter-3/audios/slide8/id-like-to.mp3'),
+                'sound'    => materialAsset('slider/A1/Advanced/chapter-3/audios/slide8/like-to.mp3'),
             ],
             [
                 'text'     => 'May I…?',
@@ -28,7 +28,7 @@
                 'text'     => 'One moment, please.',
                 'subtitle' => 'Asking someone to wait.',
                 'emoji'    => '⏳',
-                'sound'    => materialAsset('slider/A1/Advanced/chapter-3/audios/slide8/one-moment-please.mp3'),
+                'sound'    => materialAsset('slider/A1/Advanced/chapter-3/audios/slide8/one-moment.mp3'),
             ],
             [
                 'text'     => 'Here you are.',
@@ -40,13 +40,13 @@
                 'text'     => 'Thank you for your stay.',
                 'subtitle' => 'A polite closing.',
                 'emoji'    => '😊',
-                'sound'    => materialAsset('slider/A1/Advanced/chapter-3/audios/slide8/thank-you-for-your-stay.mp3'),
+                'sound'    => materialAsset('slider/A1/Advanced/chapter-3/audios/slide8/thank-you.mp3'),
             ],
             [
                 'text'     => 'Hope to see you again.',
                 'subtitle' => 'A polite goodbye.',
                 'emoji'    => '👋',
-                'sound'    => materialAsset('slider/A1/Advanced/chapter-3/audios/slide8/hope-to-see-you-again.mp3'),
+                'sound'    => materialAsset('slider/A1/Advanced/chapter-3/audios/slide8/hope-again.mp3'),
             ],
         ],
     ];

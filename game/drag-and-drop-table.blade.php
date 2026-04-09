@@ -17,6 +17,11 @@
             75% { transform: translateX(6px); }
         }
 
+        @keyframes waveGrowth {
+            0%,100% { height: 7px; }
+            50% { height: 15px; }
+        }
+
         #ddShell,
         #ddShell *{
             user-select: none;
@@ -57,6 +62,14 @@
             -webkit-touch-callout: none;
         }
 
+        .play-hit {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .play-hit:focus-visible {
+            outline: none;
+        }
+
         .ddt-btn-primary{
             display:inline-flex;
             align-items:center;
@@ -79,6 +92,18 @@
 
         .ddt-btn-primary:active{
             transform:scale(.95);
+        }
+
+        .ddt-btn-reveal{
+            color:rgb(154 52 18);
+            border-color:rgb(253 186 116);
+            background:rgb(255 237 213);
+            box-shadow:0 8px 22px rgba(234,88,12,.10);
+        }
+
+        .ddt-btn-reveal:hover{
+            background:rgb(254 215 170);
+            box-shadow:0 10px 24px rgba(234,88,12,.14);
         }
 
         .ddt-btn-secondary{
@@ -116,14 +141,119 @@
             background:rgb(51 65 85);
         }
 
+        .ddt-btn-script{
+            background: linear-gradient(135deg, #4f46e5, #3b82f6);
+            box-shadow: 0 10px 24px rgba(59,130,246,.14);
+        }
+
+        .ddt-btn-script:hover{
+            box-shadow: 0 12px 28px rgba(59,130,246,.20);
+        }
+
+        .dark .ddt-btn-reveal{
+            color:rgb(254 215 170);
+            border-color:rgba(194, 65, 12, .45);
+            background:rgba(154, 52, 18, .35);
+        }
+
+        .dark .ddt-btn-reveal:hover{
+            background:rgba(154, 52, 18, .5);
+        }
+
+        .ddt-modal-close{
+            display:inline-flex;
+            height:2.9rem;
+            width:2.9rem;
+            align-items:center;
+            justify-content:center;
+            border-radius:.9rem;
+            border:1px solid rgba(251,146,60,.35);
+            background:rgba(255,237,213,.95);
+            color:#c2410c;
+            box-shadow:0 8px 22px rgba(234,88,12,.10);
+            transition:background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
+        }
+
+        .ddt-modal-close:hover{
+            background:rgb(254 215 170);
+            border-color:rgb(253 186 116);
+            color:#9a3412;
+            transform:scale(1.04);
+            box-shadow:0 10px 24px rgba(234,88,12,.14);
+        }
+
+        .dark .ddt-modal-close{
+            border-color:rgba(194,65,12,.45);
+            background:rgba(154,52,18,.35);
+            color:rgb(254 215 170);
+            box-shadow:0 8px 22px rgba(120,53,15,.16);
+        }
+
+        .dark .ddt-modal-close:hover{
+            background:rgba(154,52,18,.5);
+            color:rgb(254 237 213);
+        }
+
+        .wave-bar{
+            display:none;
+            width:3px;
+            height:10px;
+            background:currentColor;
+            border-radius:999px;
+            margin:0 1px;
+        }
+
+        .audio-listen-btn.playing .wave-bar{
+            display:block;
+            animation:waveGrowth .6s infinite ease-in-out;
+        }
+
+        .audio-listen-btn.playing .static-icon{
+            display:none;
+        }
+
+        .ddt-native-audio{
+            display:none;
+        }
+
+        .ddt-audio-track{
+            position:relative;
+            height:10px;
+            width:100%;
+            border-radius:999px;
+            overflow:hidden;
+            background:rgba(199,210,254,0.55);
+        }
+
+        .dark .ddt-audio-track{
+            background:rgba(99,102,241,0.25);
+        }
+
+        .ddt-audio-fill{
+            height:100%;
+            width:0%;
+            border-radius:999px;
+            background:linear-gradient(90deg, #4f46e5 0%, #8b5cf6 100%);
+        }
+
+        .ddt-audio-knob{
+            position:absolute;
+            top:50%;
+            transform:translate(-50%, -50%);
+            width:14px;
+            height:14px;
+            border-radius:9999px;
+            background:white;
+            border:2px solid #4f46e5;
+            box-shadow:0 6px 14px rgba(2,6,23,0.18);
+            left:0%;
+            pointer-events:none;
+        }
+
         .dropzone.active-drop {
             box-shadow: 0 0 0 4px rgba(99,102,241,.16);
             border-color: rgba(99,102,241,.32);
             transform: translateY(-1px);
-        }
-
-        .desktop-phrase-headings {
-            display: none;
         }
 
         .table-head-chip{
@@ -151,6 +281,18 @@
             box-shadow: none;
         }
 
+        .table-corner-panel{
+            border-color: rgba(196,181,253,.5);
+            background: linear-gradient(135deg, rgba(147,51,234,.95), rgba(99,102,241,.9));
+            box-shadow: 0 14px 28px -22px rgba(109,40,217,.48);
+        }
+
+        .dark .table-corner-panel{
+            border-color: rgba(167,139,250,.3);
+            background: linear-gradient(135deg, rgba(107,33,168,.88), rgba(79,70,229,.82));
+            box-shadow: none;
+        }
+
         .table-cell-shell{
             border-radius: 1rem;
             border: 1px solid rgba(226,232,240,.82);
@@ -173,7 +315,160 @@
         }
 
         .table-dropzone{
-            min-height: 82px;
+            min-height: 50px;
+            width: 100%;
+            align-items: flex-start;
+        }
+
+        .table-dropzone .empty-state{
+            min-height: 30px;
+        }
+
+        .table-dropzone .word-tile{
+            max-width: 100%;
+            flex: 0 1 auto;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .mobile-row-nav{
+            display: none;
+        }
+
+        .mobile-row-tabs{
+            display: flex;
+            gap: .55rem;
+            overflow-x: auto;
+            padding-bottom: .1rem;
+            scrollbar-width: none;
+        }
+
+        .mobile-row-tabs::-webkit-scrollbar{
+            display: none;
+        }
+
+        .mobile-row-tab{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: .4rem;
+            min-width: max-content;
+            border-radius: 999px;
+            border: 1px solid rgba(165,180,252,.5);
+            background: rgba(255,255,255,.88);
+            color: rgb(51 65 85);
+            padding: .55rem .9rem;
+            font-size: .7rem;
+            font-weight: 900;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            box-shadow: 0 10px 24px rgba(15,23,42,.08);
+            transition: transform .18s ease, background .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
+        }
+
+        .mobile-row-tab.is-active{
+            border-color: rgba(79,70,229,.65);
+            background: linear-gradient(135deg, rgba(79,70,229,.96), rgba(59,130,246,.94));
+            color: #fff;
+            box-shadow: 0 14px 28px rgba(79,70,229,.18);
+        }
+
+        .mobile-row-status{
+            border-radius: 999px;
+            border: 1px solid rgba(226,232,240,.85);
+            background: rgba(255,255,255,.8);
+            padding: .35rem .7rem;
+            font-size: .65rem;
+            font-weight: 900;
+            color: rgb(71 85 105);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .dark .mobile-row-tab{
+            border-color: rgba(99,102,241,.28);
+            background: rgba(15,23,42,.78);
+            color: rgb(226 232 240);
+        }
+
+        .dark .mobile-row-tab.is-active{
+            border-color: rgba(129,140,248,.55);
+            color: #fff;
+        }
+
+        .dark .mobile-row-status{
+            border-color: rgba(71,85,105,.8);
+            background: rgba(15,23,42,.72);
+            color: rgb(203 213 225);
+        }
+
+        .table-scroll-shell{
+            border-radius: 2rem;
+            border: 1px solid rgba(226,232,240,.82);
+            background: rgba(255,255,255,.7);
+            box-shadow: 0 20px 48px rgba(2,6,23,.08);
+            backdrop-filter: blur(18px);
+            overflow-x: auto;
+        }
+
+        .dark .table-scroll-shell{
+            border-color: rgba(71,85,105,.72);
+            background: rgba(2,6,23,.34);
+        }
+
+        .dd-table{
+            width: 100%;
+            min-width: 0;
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .dd-table thead th{
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            padding: .9rem .75rem;
+            background: rgba(248,250,252,.96);
+            backdrop-filter: blur(16px);
+        }
+
+        .dark .dd-table thead th{
+            background: rgba(15,23,42,.94);
+        }
+
+        .dd-table tbody th,
+        .dd-table tbody td{
+            padding: .85rem;
+            vertical-align: top;
+            border-top: 1px solid rgba(226,232,240,.72);
+        }
+
+        .dd-table tbody th{
+            min-width: 220px;
+            width: 220px;
+        }
+
+        .dd-table tbody td{
+            min-width: 220px;
+            width: 220px;
+            overflow: hidden;
+        }
+
+        .dark .dd-table tbody th,
+        .dark .dd-table tbody td{
+            border-top-color: rgba(71,85,105,.62);
+        }
+
+        .table-corner-head{
+            min-width: 220px;
+            width: 220px;
+        }
+
+        .table-column-title{
+            min-width: 220px;
+            width: 220px;
         }
 
         .revealed-answer{
@@ -183,15 +478,7 @@
             box-shadow: 0 0 0 2px rgba(148,163,184,.24);
         }
 
-        @media (min-width: 768px) {
-            .desktop-phrase-headings {
-                display: grid;
-                grid-template-columns: 220px repeat(3, minmax(0, 1fr));
-                gap: .75rem;
-            }
-        }
-
-        @media (min-width: 1024px){
+        @media (min-width: 1280px){
             #ddGameColumn{
                 width: var(--dd-game-width, 76%);
                 max-width: var(--dd-game-width, 76%);
@@ -206,16 +493,24 @@
         }
 
         @media (min-width: 1280px) {
-            .desktop-phrase-headings {
-                grid-template-columns: 250px repeat(3, minmax(0, 1fr));
+            .table-dropzone{
+                min-height: 54px;
             }
 
-            .table-dropzone{
-                min-height: 96px;
+            .dd-table tbody th,
+            .table-corner-head{
+                min-width: 250px;
+                width: 250px;
+            }
+
+            .dd-table tbody td,
+            .table-column-title{
+                min-width: 250px;
+                width: 250px;
             }
         }
 
-        @media (max-width: 1023.98px) {
+        @media (max-width: 1279.98px) {
             #ddbWordBankPanel {
                 max-height: min(35vh, 310px);
             }
@@ -225,6 +520,86 @@
                 overflow-y: auto;
                 overflow-x: hidden;
                 align-content: start;
+            }
+        }
+
+        @media (max-width: 1023.98px) {
+            .mobile-row-nav{
+                display: grid;
+                gap: .7rem;
+            }
+
+            .table-scroll-shell{
+                overflow: visible;
+                border: 0;
+                background: transparent;
+                box-shadow: none;
+                backdrop-filter: none;
+            }
+
+            .dd-table,
+            .dd-table tbody,
+            .dd-table tr,
+            .dd-table th,
+            .dd-table td{
+                display: block;
+                width: 100%;
+            }
+
+            .dd-table{
+                min-width: 0;
+            }
+
+            .dd-table thead{
+                display: none;
+            }
+
+            .dd-table tbody{
+                display: grid;
+                gap: .8rem;
+            }
+
+            .dd-table .table-row{
+                border-radius: 1.4rem;
+                border: 1px solid rgba(226,232,240,.85);
+                background: rgba(255,255,255,.72);
+                box-shadow: 0 16px 34px rgba(15,23,42,.08);
+                padding: .75rem;
+                backdrop-filter: blur(14px);
+            }
+
+            .dark .dd-table .table-row{
+                border-color: rgba(71,85,105,.72);
+                background: rgba(2,6,23,.38);
+                box-shadow: none;
+            }
+
+            .dd-table .table-row.mobile-row-hidden{
+                display: none;
+            }
+
+            .dd-table tbody th,
+            .dd-table tbody td{
+                min-width: 0;
+                width: 100%;
+                padding: 0;
+                border-top: 0;
+            }
+
+            .dd-table tbody th{
+                margin-bottom: .65rem;
+            }
+
+            .dd-table tbody td + td{
+                margin-top: .55rem;
+            }
+
+            .table-place-panel{
+                border-radius: 1rem;
+            }
+
+            .table-cell-shell{
+                border-radius: .95rem;
             }
         }
 
@@ -238,7 +613,55 @@
             }
 
             .table-dropzone{
-                min-height: 70px;
+                min-height: 44px;
+            }
+
+            .dd-table thead th{
+                padding: .7rem .55rem;
+            }
+
+            .dd-table tbody th,
+            .dd-table tbody td{
+                padding: .6rem;
+            }
+
+            .mobile-row-nav{
+                gap: .55rem;
+            }
+
+            .mobile-row-tab{
+                padding: .48rem .78rem;
+                font-size: .62rem;
+            }
+
+            .mobile-row-status{
+                padding: .28rem .58rem;
+                font-size: .58rem;
+            }
+
+            .dd-table .table-row{
+                padding: .62rem;
+                border-radius: 1.1rem;
+            }
+
+            .table-place-panel{
+                padding: .7rem !important;
+            }
+
+            .table-cell-shell{
+                padding: .45rem !important;
+            }
+
+            .table-dropzone{
+                min-height: 40px;
+                padding: .45rem !important;
+                gap: .35rem !important;
+            }
+
+            .empty-state{
+                min-height: 24px !important;
+                font-size: 8px !important;
+                letter-spacing: .14em !important;
             }
         }
     </style>
@@ -250,18 +673,73 @@
         $itemsForJs = [];
         $desktopGameWidth = (float) ($content['desktop_game_width'] ?? 76);
         $desktopPoolWidth = (float) ($content['desktop_pool_width'] ?? 24);
+        $audioPosition = (string) ($content['audio_position'] ?? 'above-stats');
+        $audioBelowStats = $audioPosition === 'below-stats';
+        $playerAudio = !empty($content['audio']) ? $content['audio'] : (!empty($content['audio_src']) ? $content['audio_src'] : null);
+        $rawScript = $content['script'] ?? ($content['audio_transcript'] ?? []);
+        $scriptLines = is_array($rawScript)
+            ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $rawScript), static fn ($line) => $line !== ''))
+            : array_values(array_filter(
+                array_map('trim', preg_split('/(?<=[.!?])\s+/', trim((string) $rawScript)) ?: []),
+                static fn ($line) => $line !== ''
+            ));
+        $hasScript = $scriptLines !== [];
+        $rawRows = $content['rows'] ?? $content['places'] ?? [];
+        $rawColumns = $content['columns'] ?? $content['phrases'] ?? [];
+
+        $rows = [];
+        foreach (array_values($rawRows) as $index => $row) {
+            $label = trim((string) ($row['title'] ?? $row['label'] ?? $row['name'] ?? $row['short'] ?? ('Row ' . ($index + 1))));
+            $key = trim((string) ($row['key'] ?? ''));
+
+            if ($key === '') {
+                $key = \Illuminate\Support\Str::slug($label, '_');
+            }
+
+            if ($key === '') {
+                $key = 'row_' . ($index + 1);
+            }
+
+            $row['key'] = $key;
+            $row['label'] = $label;
+            $row['short_label'] = trim((string) ($row['short'] ?? $row['short_label'] ?? $label));
+            $rows[] = $row;
+        }
+
+        $columns = [];
+        foreach (array_values($rawColumns) as $index => $column) {
+            $label = trim((string) ($column['title'] ?? $column['label'] ?? $column['name'] ?? $column['short'] ?? ('Column ' . ($index + 1))));
+            $key = trim((string) ($column['key'] ?? ''));
+
+            if ($key === '') {
+                $key = \Illuminate\Support\Str::slug($label, '_');
+            }
+
+            if ($key === '') {
+                $key = 'column_' . ($index + 1);
+            }
+
+            $column['key'] = $key;
+            $column['label'] = $label;
+            $column['short_label'] = trim((string) ($column['short'] ?? $column['short_label'] ?? $label));
+            $columns[] = $column;
+        }
 
         foreach (($content['items'] ?? []) as $index => $item) {
             $key = 'item-' . $index;
-            $zoneKey = ($item['place'] ?? '') . '__' . ($item['phrase'] ?? '');
+            $itemRow = (string) ($item['row'] ?? $item['place'] ?? '');
+            $itemColumn = (string) ($item['column'] ?? $item['phrase'] ?? '');
+            $zoneKey = $itemRow . '__' . $itemColumn;
 
             $item['key'] = $key;
+            $item['place'] = $itemRow;
+            $item['phrase'] = $itemColumn;
 
             $itemsForJs[] = [
                 'key'    => $key,
                 'text'   => $item['text'],
-                'place'  => $item['place'],
-                'phrase' => $item['phrase'],
+                'place'  => $itemRow,
+                'phrase' => $itemColumn,
                 'placed' => (bool)($item['placed'] ?? false),
             ];
 
@@ -272,8 +750,8 @@
     @endphp
 
     <main class="w-full" style="--dd-game-width: {{ $desktopGameWidth }}%; --dd-pool-width: {{ $desktopPoolWidth }}%;">
-        <div class="header-spacing text-center space-y-6 my-8">
-            <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">
+        <div class="header-spacing text-center space-y-3 {{ $audioBelowStats && !empty($playerAudio) ? 'my-3 sm:my-4' : 'my-4 sm:my-5' }}">
+            <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4">
                 <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
                     {{ $content['title'] }}
                 </span>
@@ -283,14 +761,67 @@
             </p>
         </div>
 
-        <div class="mx-auto mb-5 w-full max-w-3xl overflow-hidden rounded-3xl border border-slate-200/70 bg-white/60 shadow-lg backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
+        @if(!empty($playerAudio) && !$audioBelowStats)
+            <div class="mx-auto mb-4 w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+                <div class="rounded-2xl border border-indigo-100 bg-indigo-50/90 px-3 py-2 shadow-sm dark:border-indigo-700/60 dark:bg-indigo-900/30 sm:px-4 sm:py-3">
+                    <div class="flex items-center gap-2.5 sm:gap-3">
+                        <button
+                                id="ddtPlayAudioBtn"
+                                type="button"
+                                class="play-hit audio-listen-btn inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 transition-all duration-150 active:scale-95 hover:scale-[1.06] focus-visible:ring-4 focus-visible:ring-indigo-300/40"
+                                aria-label="Play audio"
+                        >
+                            <svg class="static-icon h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M8 5v14l11-7-11-7z"/>
+                            </svg>
+
+                            <span class="wave-bar" style="animation-delay:.1s"></span>
+                            <span class="wave-bar" style="animation-delay:.2s"></span>
+                            <span class="wave-bar" style="animation-delay:.3s"></span>
+                        </button>
+
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 sm:gap-2.5">
+                                <div class="flex-1 min-w-0 flex flex-col gap-1 sm:gap-1.5">
+                                    <div class="ddt-audio-track cursor-pointer" id="ddtProgressTrack" aria-label="Audio progress">
+                                        <div class="ddt-audio-fill" id="ddtProgressFill"></div>
+                                        <div class="ddt-audio-knob" id="ddtProgressKnob"></div>
+                                    </div>
+
+                                    <div class="flex justify-between text-[10px] sm:text-[11px] font-extrabold text-indigo-700 dark:text-indigo-200">
+                                        <span id="ddtCurrentTime">0:00</span>
+                                        <span id="ddtTotalTime">0:00</span>
+                                    </div>
+                                </div>
+
+                                @if($hasScript)
+                                    <button
+                                            id="ddtShowScriptBtn"
+                                            type="button"
+                                            class="ddt-btn-primary ddt-btn-script shrink-0 px-2.5 py-1.5 text-[11px] sm:px-3 sm:text-xs"
+                                    >
+                                        <span>Script</span>
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <audio id="ddtPromptAudio" class="ddt-native-audio" preload="metadata">
+                        <source src="{{ $playerAudio }}" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+        @endif
+
+        <div class="mx-auto {{ $audioBelowStats && !empty($playerAudio) ? 'mb-2.5 sm:mb-3' : 'mb-4 sm:mb-5' }} w-full max-w-[19.5rem] sm:max-w-3xl overflow-hidden rounded-3xl border border-slate-200/70 bg-white/60 shadow-lg backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
             <div class="grid grid-cols-4">
                 @foreach(['Tiles' => 'gameProgressCount', 'Correct' => 'correctCount', 'Mistakes' => 'mistakesCount', 'Time' => 'timer'] as $label => $id)
-                    <div class="px-3 py-3 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
+                    <div class="px-1.5 py-2 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
                         <div class="hidden sm:inline-block text-[11px] sm:text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                             {{ $label }}
                         </div>
-                        <div class="font-black text-base sm:text-lg">
+                        <div class="font-black text-xs sm:text-lg">
                             @if($label === 'Tiles')
                                 🧩
                             @elseif($label === 'Correct')
@@ -307,74 +838,158 @@
             </div>
         </div>
 
-        <div id="ddShell" class="mx-auto flex w-full flex-col px-4 py-5 pb-[calc(min(35vh,310px)+16px)] sm:px-6 sm:py-6 sm:pb-[calc(min(35vh,310px)+20px)] lg:flex-row lg:items-start lg:justify-center lg:gap-5 lg:px-8 lg:pb-0">
-            <section id="ddGameColumn" class="w-full flex-1 flex flex-col">
-                <div class="grid place-items-center text-center gap-3 sm:gap-4">
-                    <div class="desktop-phrase-headings mt-1 w-full max-w-[1520px]">
-                        <div></div>
-                        @foreach(($content['phrases'] ?? []) as $phrase)
-                            <div class="table-head-chip px-4 py-2.5 text-center">
-                                <div class="font-black text-white text-sm lg:text-[15px] leading-tight tracking-[-0.02em]">
-                                    {{ $phrase['title'] }}
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
+        @if(!empty($playerAudio) && $audioBelowStats)
+            <div class="mx-auto mb-3 sm:mb-4 w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+                <div class="rounded-2xl border border-indigo-100 bg-indigo-50/90 px-3 py-2 shadow-sm dark:border-indigo-700/60 dark:bg-indigo-900/30 sm:px-4 sm:py-3">
+                    <div class="flex items-center gap-2.5 sm:gap-3">
+                        <button
+                                id="ddtPlayAudioBtn"
+                                type="button"
+                                class="play-hit audio-listen-btn inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 transition-all duration-150 active:scale-95 hover:scale-[1.06] focus-visible:ring-4 focus-visible:ring-indigo-300/40"
+                                aria-label="Play audio"
+                        >
+                            <svg class="static-icon h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M8 5v14l11-7-11-7z"/>
+                            </svg>
 
-                    <div class="w-full max-w-[1520px] grid gap-3 sm:gap-4" id="categoriesContainer">
-                        @foreach(($content['places'] ?? []) as $place)
-                            <div class="category-box group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/70 backdrop-blur-xl shadow-[0_18px_45px_rgba(2,6,23,0.08)] dark:border-slate-700/60 dark:bg-slate-950/35">
-                                <div class="pointer-events-none absolute inset-0 opacity-70 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(99,102,241,0.14)_0%,transparent_55%),radial-gradient(120%_120%_at_100%_0%,rgba(59,130,246,0.12)_0%,transparent_55%)]"></div>
+                            <span class="wave-bar" style="animation-delay:.1s"></span>
+                            <span class="wave-bar" style="animation-delay:.2s"></span>
+                            <span class="wave-bar" style="animation-delay:.3s"></span>
+                        </button>
 
-                                <div class="relative px-4 py-4 lg:px-5 lg:py-5">
-                                    <div class="grid md:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[250px_minmax(0,1fr)] gap-3 xl:gap-4 items-start">
-                                        <div class="table-place-panel p-3 sm:p-3.5 text-left">
-                                            <div class="flex items-center gap-2.5">
-                                                <div class="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-white/20 grid place-items-center text-base sm:text-lg shrink-0">
-                                                    {{ $place['emoji'] ?? '🧩' }}
-                                                </div>
-                                                <div class="font-black leading-tight text-sm lg:text-[15px] text-white tracking-[-0.01em]">
-                                                    {{ $place['title'] }}
-                                                </div>
-                                            </div>
-                                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 sm:gap-2.5">
+                                <div class="flex-1 min-w-0 flex flex-col gap-1 sm:gap-1.5">
+                                    <div class="ddt-audio-track cursor-pointer" id="ddtProgressTrack" aria-label="Audio progress">
+                                        <div class="ddt-audio-fill" id="ddtProgressFill"></div>
+                                        <div class="ddt-audio-knob" id="ddtProgressKnob"></div>
+                                    </div>
 
-                                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 lg:gap-3">
-                                            @foreach(($content['phrases'] ?? []) as $phrase)
-                                                @php
-                                                    $zoneKey = $place['key'] . '__' . $phrase['key'];
-                                                    $zoneItems = $placedByZone[$zoneKey] ?? [];
-                                                @endphp
-
-                                                <div class="table-cell-shell p-2.5 backdrop-blur">
-                                                    <div class="sm:hidden mb-1.5 text-center">
-                                                        <span class="table-mobile-chip inline-flex items-center justify-center px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.16em] text-slate-700 dark:text-slate-200">
-                                                            {{ $phrase['title'] }}
-                                                        </span>
-                                                    </div>
-
-                                                    <div
-                                                            class="dropzone table-dropzone rounded-[1rem] border border-dashed border-slate-200/80 bg-white/40 p-2 sm:p-2.5 flex flex-wrap content-start gap-1.5 dark:border-slate-700/60 dark:bg-slate-900/20"
-                                                            data-place="{{ $place['key'] }}"
-                                                            data-phrase="{{ $phrase['key'] }}"
-                                                    >
-                                                        @foreach($zoneItems as $it)
-                                                            <div class="word-tile placed-tile locked-pop inline-flex items-center justify-center text-center rounded-xl px-2.5 py-2 sm:px-3 sm:py-2 text-[10px] sm:text-xs font-black text-white shadow-md border border-white/20 bg-gradient-to-br from-indigo-500 to-violet-600">
-                                                                {{ $it['text'] }}
-                                                            </div>
-                                                        @endforeach
-
-                                                        <div class="empty-state {{ !empty($zoneItems) ? 'hidden' : '' }} w-full min-h-[34px] rounded-lg border border-dashed border-slate-200/80 bg-slate-50 text-slate-400 font-extrabold uppercase tracking-[0.18em] text-[9px] grid place-items-center text-center px-2 dark:border-slate-700/60 dark:bg-slate-900/25 dark:text-slate-500">
-                                                            Drop here
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
+                                    <div class="flex justify-between text-[10px] sm:text-[11px] font-extrabold text-indigo-700 dark:text-indigo-200">
+                                        <span id="ddtCurrentTime">0:00</span>
+                                        <span id="ddtTotalTime">0:00</span>
                                     </div>
                                 </div>
+
+                                @if($hasScript)
+                                    <button
+                                            id="ddtShowScriptBtn"
+                                            type="button"
+                                            class="ddt-btn-primary ddt-btn-script shrink-0 px-2.5 py-1.5 text-[11px] sm:px-3 sm:text-xs"
+                                    >
+                                        <span>Script</span>
+                                    </button>
+                                @endif
                             </div>
-                        @endforeach
+                        </div>
+                    </div>
+
+                    <audio id="ddtPromptAudio" class="ddt-native-audio" preload="metadata">
+                        <source src="{{ $playerAudio }}" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+        @endif
+
+        <div id="ddShell" class="mx-auto flex w-full flex-col px-4 {{ $audioBelowStats && !empty($playerAudio) ? 'pt-4 pb-[calc(min(35vh,310px)+12px)] sm:pt-5 sm:pb-[calc(min(35vh,310px)+16px)]' : 'py-5 pb-[calc(min(35vh,310px)+16px)] sm:py-6 sm:pb-[calc(min(35vh,310px)+20px)]' }} sm:px-6 xl:flex-row xl:items-start xl:justify-center xl:gap-5 lg:px-8 xl:pb-0">
+            <section id="ddGameColumn" class="w-full flex-1 flex flex-col">
+                <div class="grid place-items-center text-center gap-3 sm:gap-4">
+                    <div class="mobile-row-nav w-full max-w-[1520px]">
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+                                Pick a row
+                            </div>
+                            <div id="mobileRowStatus" class="mobile-row-status">
+                                {{ count($rows) }} rows
+                            </div>
+                        </div>
+
+                        <div class="mobile-row-tabs">
+                            @foreach($rows as $row)
+                                <button
+                                        type="button"
+                                        class="mobile-row-tab"
+                                        data-row-key="{{ $row['key'] }}"
+                                        data-row-label="{{ $row['label'] }}"
+                                >
+                                    <span>{{ $row['emoji'] ?? '[]' }}</span>
+                                    <span>{{ $row['short_label'] }}</span>
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="table-scroll-shell w-full max-w-[1520px]">
+                        <table class="dd-table" id="categoriesContainer">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="table-corner-head">
+                                        <div class="table-place-panel table-corner-panel p-3 sm:p-3.5 text-left">
+                                            <div class="font-black leading-tight text-sm lg:text-[15px] text-white tracking-[-0.01em]">
+                                                {{ $content['row_heading'] ?? $content['table_corner_title'] ?? 'Categories' }}
+                                            </div>
+                                        </div>
+                                    </th>
+                                    @foreach($columns as $column)
+                                        <th scope="col" class="table-column-title">
+                                            <div class="table-head-chip px-4 py-2.5 text-center">
+                                                <div class="font-black text-white text-sm lg:text-[15px] leading-tight tracking-[-0.02em]">
+                                                    {{ $column['label'] }}
+                                                </div>
+                                            </div>
+                                        </th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($rows as $row)
+                                    <tr class="table-row" data-row-key="{{ $row['key'] }}" data-row-label="{{ $row['label'] }}">
+                                        <th scope="row">
+                                            <div class="table-place-panel p-3 sm:p-3.5 text-left">
+                                                <div class="flex items-center gap-2.5">
+                                                    <div class="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-white/20 grid place-items-center text-base sm:text-lg shrink-0">
+                                                        {{ $row['emoji'] ?? '[]' }}
+                                                    </div>
+                                                    <div class="font-black leading-tight text-sm lg:text-[15px] text-white tracking-[-0.01em]">
+                                                        {{ $row['label'] }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        @foreach($columns as $column)
+                                            @php
+                                                $zoneKey = $row['key'] . '__' . $column['key'];
+                                                $zoneItems = $placedByZone[$zoneKey] ?? [];
+                                            @endphp
+
+                                            <td>
+                                                <div class="lg:hidden mb-1.5 text-center">
+                                                    <span class="table-mobile-chip inline-flex items-center justify-center px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.16em] text-slate-700 dark:text-slate-200">
+                                                        {{ $column['short_label'] }}
+                                                    </span>
+                                                </div>
+
+                                                <div
+                                                        class="dropzone table-dropzone rounded-[1rem] border border-dashed border-slate-200/80 bg-white/40 p-2 sm:p-2.5 flex flex-wrap content-start gap-1.5 dark:border-slate-700/60 dark:bg-slate-900/20"
+                                                        data-place="{{ $row['key'] }}"
+                                                        data-phrase="{{ $column['key'] }}"
+                                                >
+                                                    @foreach($zoneItems as $it)
+                                                        <div class="word-tile placed-tile locked-pop inline-flex items-center justify-center text-center rounded-xl px-2.5 py-2 sm:px-3 sm:py-2 text-[10px] sm:text-xs font-black text-white shadow-md border border-white/20 bg-gradient-to-br from-indigo-500 to-violet-600">
+                                                            {{ $it['text'] }}
+                                                        </div>
+                                                    @endforeach
+
+                                                    <div class="empty-state {{ !empty($zoneItems) ? 'hidden' : '' }} w-full min-h-[34px] rounded-lg border border-dashed border-slate-200/80 bg-slate-50 text-slate-400 font-extrabold uppercase tracking-[0.18em] text-[9px] grid place-items-center text-center px-2 dark:border-slate-700/60 dark:bg-slate-900/25 dark:text-slate-500">
+                                                        Drop here
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
 
                     <div id="winModal" class="fixed inset-0 z-[2000] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
@@ -407,22 +1022,69 @@
                         </div>
                     </div>
 
+                    @if($hasScript)
+                        <div id="ddtScriptModal" class="hidden fixed inset-0 z-[3000]">
+                            <div id="ddtScriptBackdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm dark:bg-black/60"></div>
+
+                            <div class="relative flex min-h-full w-full items-center justify-center p-4 sm:p-6">
+                                <div class="relative w-full max-w-3xl max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 bg-white/95 shadow-2xl dark:border-slate-700/70 dark:bg-slate-900/95 text-left">
+                                    <button
+                                            id="ddtCloseScriptBtn"
+                                            type="button"
+                                            class="ddt-modal-close absolute right-4 top-4 z-10"
+                                            aria-label="Close script"
+                                    >
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
+                                        </svg>
+                                    </button>
+
+                                    <div class="flex items-center justify-between border-b border-slate-200/70 px-4 py-3 pr-16 dark:border-slate-700/70 sm:px-5 sm:py-4 sm:pr-16">
+                                        <div class="font-black text-sm text-slate-900 dark:text-slate-50 sm:text-base">
+                                            Script
+                                        </div>
+                                    </div>
+
+                                    <div class="max-h-[70vh] overflow-auto p-3 sm:p-4">
+                                        <div class="space-y-2">
+                                            @foreach($scriptLines as $i => $line)
+                                                <div class="rounded-2xl border border-slate-200/60 bg-white/70 p-2.5 dark:border-slate-700/30 dark:bg-slate-900/20">
+                                                    <div class="flex items-start gap-2.5">
+                                                        <div class="flex h-7 w-7 items-center justify-center rounded-2xl border border-slate-200/70 bg-white/70 text-xs font-black text-slate-700 dark:border-slate-700/35 dark:bg-slate-900/20 dark:text-slate-200">
+                                                            {{ $i + 1 }}
+                                                        </div>
+
+                                                        <div class="min-w-0 flex-1">
+                                                            <div class="text-xs font-semibold text-slate-700 dark:text-slate-200 sm:text-sm">
+                                                                {{ $line }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <template id="tileTpl">
                         <div
-                                class="word-tile draggable-item select-none touch-none cursor-grab rounded-xl px-2 py-2 sm:px-2.5 sm:py-2.5 text-base inline-flex min-h-[42px] w-auto max-w-full shrink-0 items-center justify-center text-center leading-snug font-black text-white shadow-[0_10px_20px_rgba(2,6,23,0.16)] border border-white/20 transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0"
+                                class="word-tile draggable-item select-none touch-none cursor-grab rounded-xl px-2 py-2 sm:px-2.5 sm:py-2.5 text-base inline-flex min-h-[42px] w-auto max-w-full items-center justify-center text-center leading-snug font-black text-white shadow-[0_10px_20px_rgba(2,6,23,0.16)] border border-white/20 transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0"
                                 style="touch-action:none;"
                         ></div>
                     </template>
                 </div>
             </section>
 
-            <div id="poolBar" class="fixed inset-x-0 bottom-0 z-[1500] lg:order-first lg:sticky lg:inset-x-auto lg:top-4 lg:bottom-auto lg:self-start">
-                <div class="mx-auto w-full px-3 sm:px-6 lg:px-0 pb-0">
+            <div id="poolBar" class="fixed inset-x-0 bottom-0 z-[1500] xl:order-first xl:sticky xl:inset-x-auto xl:top-4 xl:bottom-auto xl:self-start">
+                <div class="mx-auto w-full px-3 sm:px-6 xl:px-0 pb-0">
                     <div id="ddbWordBankPanel"
-                         class="relative overflow-hidden rounded-t-3xl sm:rounded-3xl border border-slate-200/70 bg-white/90 backdrop-blur-xl shadow-[0_-18px_55px_rgba(2,6,23,0.16)] dark:border-slate-700/60 dark:bg-slate-950/75 lg:rounded-3xl lg:shadow-[0_18px_45px_rgba(2,6,23,0.10)]">
+                         class="relative overflow-hidden rounded-t-3xl sm:rounded-3xl border border-slate-200/70 bg-white/90 backdrop-blur-xl shadow-[0_-18px_55px_rgba(2,6,23,0.16)] dark:border-slate-700/60 dark:bg-slate-950/75 xl:rounded-3xl xl:shadow-[0_18px_45px_rgba(2,6,23,0.10)]">
                         <div class="pointer-events-none absolute inset-0 opacity-80 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(99,102,241,0.16)_0%,transparent_55%),radial-gradient(120%_120%_at_100%_0%,rgba(59,130,246,0.12)_0%,transparent_55%)]"></div>
 
-                        <div class="relative px-3 pt-3 pb-4 sm:px-4 sm:py-4 lg:px-6">
+                        <div class="relative px-3 pt-3 pb-4 sm:px-4 sm:py-4 xl:px-6">
                             <div class="flex items-center justify-center">
                                 <div class="h-1.5 w-14 rounded-full bg-slate-900/10 dark:bg-white/10"></div>
                             </div>
@@ -432,7 +1094,7 @@
                                     <button
                                             id="poolPrevBtn"
                                             type="button"
-                                            class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] lg:hidden"
+                                            class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] xl:hidden"
                                             aria-label="Previous words"
                                     >
                                         <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
@@ -447,7 +1109,7 @@
                                     <button
                                             id="poolNextBtn"
                                             type="button"
-                                            class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] lg:hidden"
+                                            class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] xl:hidden"
                                             aria-label="Next words"
                                     >
                                         <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
@@ -460,7 +1122,7 @@
                                     <button
                                             type="button"
                                             id="revealAnswersBtn"
-                                            class="ddt-btn-primary"
+                                            class="ddt-btn-primary ddt-btn-reveal"
                                     >
                                         Reveal answers
                                     </button>
@@ -478,7 +1140,7 @@
                             <div class="mt-3 h-px w-full bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent dark:via-indigo-400/15"></div>
 
                             <div class="relative mt-3">
-                                <div id="poolContent" class="mx-auto flex w-fit max-w-full flex-wrap items-start justify-start gap-2 sm:gap-2.5 lg:w-full"></div>
+                                <div id="poolContent" class="mx-auto flex w-fit max-w-full flex-wrap items-start justify-start gap-2 sm:gap-2.5 xl:w-full"></div>
                             </div>
                         </div>
                     </div>
@@ -491,6 +1153,13 @@
 @section('script')
     <script>
         const ITEMS = @json($itemsForJs);
+        const promptAudio = document.getElementById('ddtPromptAudio');
+        const playAudioBtn = document.getElementById('ddtPlayAudioBtn');
+        const progressTrack = document.getElementById('ddtProgressTrack');
+        const showScriptBtn = document.getElementById('ddtShowScriptBtn');
+        const scriptModal = document.getElementById('ddtScriptModal');
+        const scriptBackdrop = document.getElementById('ddtScriptBackdrop');
+        const closeScriptBtn = document.getElementById('ddtCloseScriptBtn');
 
         const audio = {
             correct: new Audio('/slider/sounds/correct.wav'),
@@ -506,6 +1175,32 @@
             }
         }
 
+        function formatPromptTime(seconds) {
+            if (!Number.isFinite(seconds) || seconds < 0) seconds = 0;
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function syncPromptPlayerUI() {
+            if (!promptAudio) return;
+
+            const duration = Number.isFinite(promptAudio.duration) ? promptAudio.duration : 0;
+            const current = Number.isFinite(promptAudio.currentTime) ? promptAudio.currentTime : 0;
+            const pct = duration > 0 ? (current / duration) * 100 : 0;
+
+            const currentTimeEl = document.getElementById('ddtCurrentTime');
+            const totalTimeEl = document.getElementById('ddtTotalTime');
+            const progressFill = document.getElementById('ddtProgressFill');
+            const progressKnob = document.getElementById('ddtProgressKnob');
+
+            if (currentTimeEl) currentTimeEl.textContent = formatPromptTime(current);
+            if (totalTimeEl) totalTimeEl.textContent = duration ? formatPromptTime(duration) : '0:00';
+            if (progressFill) progressFill.style.width = `${pct}%`;
+            if (progressKnob) progressKnob.style.left = `${pct}%`;
+            if (playAudioBtn) playAudioBtn.classList.toggle('playing', !promptAudio.paused);
+        }
+
         function isEmbedded() {
             try { return window.top !== window.self; } catch(e) { return true; }
         }
@@ -517,12 +1212,72 @@
             }
         }
 
+        window.stopSlideAudio = function () {
+            Object.values(audio).forEach((sound) => {
+                sound.pause();
+                sound.currentTime = 0;
+            });
+
+            if (promptAudio) {
+                promptAudio.pause();
+                promptAudio.currentTime = 0;
+                syncPromptPlayerUI();
+            }
+        };
+
+        if (playAudioBtn && promptAudio) {
+            playAudioBtn.addEventListener('click', () => {
+                if (promptAudio.paused) promptAudio.play().catch(() => {});
+                else promptAudio.pause();
+            });
+        }
+
+        if (progressTrack && promptAudio) {
+            progressTrack.addEventListener('click', (e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = Math.min(Math.max(0, e.clientX - rect.left), rect.width);
+                const ratio = rect.width > 0 ? x / rect.width : 0;
+
+                if (Number.isFinite(promptAudio.duration) && promptAudio.duration > 0) {
+                    promptAudio.currentTime = ratio * promptAudio.duration;
+                    syncPromptPlayerUI();
+                }
+            });
+        }
+
+        if (promptAudio) {
+            promptAudio.preload = 'metadata';
+            promptAudio.addEventListener('loadedmetadata', syncPromptPlayerUI);
+            promptAudio.addEventListener('timeupdate', syncPromptPlayerUI);
+            promptAudio.addEventListener('ended', syncPromptPlayerUI);
+            promptAudio.addEventListener('play', syncPromptPlayerUI);
+            promptAudio.addEventListener('pause', syncPromptPlayerUI);
+        }
+
+        if (showScriptBtn) {
+            showScriptBtn.addEventListener('click', () => {
+                if (scriptModal) scriptModal.classList.remove('hidden');
+            });
+        }
+
+        if (closeScriptBtn) {
+            closeScriptBtn.addEventListener('click', () => {
+                if (scriptModal) scriptModal.classList.add('hidden');
+            });
+        }
+
+        if (scriptBackdrop) {
+            scriptBackdrop.addEventListener('click', () => {
+                if (scriptModal) scriptModal.classList.add('hidden');
+            });
+        }
+
         function updatePoolSafeSpace() {
             const poolBar = document.getElementById('poolBar');
             const shell = document.getElementById('ddShell');
             if (!poolBar || !shell) return;
 
-            if ((window.innerWidth || 0) >= 1024) {
+            if ((window.innerWidth || 0) >= 1280) {
                 shell.style.paddingBottom = '';
                 return;
             }
@@ -540,6 +1295,7 @@
                 this.retakeTestBtn = document.getElementById('retakeTestBtn');
                 this.winModal = document.getElementById('winModal');
                 this.tileTpl = document.getElementById('tileTpl');
+                this.mobileRowStatus = document.getElementById('mobileRowStatus');
 
                 this.draggedItem = null;
                 this.placeholder = null;
@@ -559,6 +1315,7 @@
                 this.hasUsedReveal = false;
                 this.isRevealingAnswers = false;
                 this.poolStartIndex = 0;
+                this.playableTileTotal = ITEMS.filter(item => !item.placed).length;
 
                 this.tileSkins = [
                     'bg-gradient-to-br from-sky-500 to-blue-600',
@@ -571,6 +1328,9 @@
 
                 this.dropzones = Array.from(document.querySelectorAll('.dropzone'));
                 this.initialDropzonesHTML = this.dropzones.map(zone => zone.innerHTML);
+                this.tableRows = Array.from(document.querySelectorAll('.table-row'));
+                this.mobileRowButtons = Array.from(document.querySelectorAll('.mobile-row-tab'));
+                this.activeMobileRowKey = this.mobileRowButtons[0]?.dataset.rowKey || this.tableRows[0]?.dataset.rowKey || null;
 
                 this.handlePointerMove = this.handlePointerMove.bind(this);
                 this.handlePointerUp = this.handlePointerUp.bind(this);
@@ -579,11 +1339,13 @@
                 this.handleRetakeTest = this.handleRetakeTest.bind(this);
                 this.handlePoolPrev = this.handlePoolPrev.bind(this);
                 this.handlePoolNext = this.handlePoolNext.bind(this);
+                this.handleMobileRowSelect = this.handleMobileRowSelect.bind(this);
 
                 this.revealAnswersBtn?.addEventListener('click', this.handleRevealAnswers);
                 this.retakeTestBtn?.addEventListener('click', this.handleRetakeTest);
                 this.poolPrevBtn?.addEventListener('click', this.handlePoolPrev);
                 this.poolNextBtn?.addEventListener('click', this.handlePoolNext);
+                this.mobileRowButtons.forEach((button) => button.addEventListener('click', this.handleMobileRowSelect));
             }
 
             init() {
@@ -609,7 +1371,7 @@
                     this.poolContent.appendChild(node);
                 });
 
-                this.correctCount = document.querySelectorAll('.placed-tile').length;
+                this.correctCount = 0;
                 this.mistakeCount = 0;
                 this.gameCompleted = false;
                 this.hasUsedReveal = false;
@@ -619,6 +1381,7 @@
                 this.updateStats();
                 this.updatePoolCount();
                 this.updateActionButtons();
+                this.syncMobileRowView();
                 this.checkWin();
                 updatePoolSafeSpace();
             }
@@ -633,14 +1396,77 @@
             }
 
             getTotalTiles() {
-                return ITEMS.length;
+                return this.playableTileTotal;
             }
 
             getVisibleCap() {
                 const w = window.innerWidth || 1024;
-                if (w >= 1024) return Number.POSITIVE_INFINITY;
+                if (w >= 1280) return Number.POSITIVE_INFINITY;
                 if (w < 640) return 8;
                 return 9;
+            }
+
+            isMobileRowMode() {
+                return (window.innerWidth || 0) < 1024;
+            }
+
+            updateMobileRowStatus() {
+                if (!this.mobileRowStatus) return;
+
+                if (!this.isMobileRowMode()) {
+                    this.mobileRowStatus.textContent = `${this.tableRows.length} rows`;
+                    return;
+                }
+
+                const activeRow = this.tableRows.find((row) => row.dataset.rowKey === this.activeMobileRowKey) || this.tableRows[0] || null;
+                this.mobileRowStatus.textContent = activeRow?.dataset.rowLabel || `${this.tableRows.length} rows`;
+            }
+
+            syncMobileRowView() {
+                if (!this.tableRows.length) return;
+
+                if (!this.activeMobileRowKey || !this.tableRows.some((row) => row.dataset.rowKey === this.activeMobileRowKey)) {
+                    this.activeMobileRowKey = this.tableRows[0]?.dataset.rowKey || null;
+                }
+
+                const mobileMode = this.isMobileRowMode();
+
+                this.tableRows.forEach((row) => {
+                    const shouldHide = mobileMode && row.dataset.rowKey !== this.activeMobileRowKey;
+                    row.classList.toggle('mobile-row-hidden', shouldHide);
+                });
+
+                this.mobileRowButtons.forEach((button) => {
+                    const isActive = button.dataset.rowKey === this.activeMobileRowKey;
+                    button.classList.toggle('is-active', isActive);
+                    button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                });
+
+                this.updateMobileRowStatus();
+            }
+
+            handleMobileRowSelect(e) {
+                const rowKey = e.currentTarget?.dataset?.rowKey;
+                if (!rowKey) return;
+                this.activeMobileRowKey = rowKey;
+                this.syncMobileRowView();
+            }
+
+            isRowComplete(rowElement) {
+                if (!rowElement) return false;
+
+                const zones = Array.from(rowElement.querySelectorAll('.dropzone'));
+                return zones.length > 0 && zones.every((zone) => zone.querySelector('.empty-state')?.classList.contains('hidden'));
+            }
+
+            focusNextIncompleteMobileRow() {
+                if (!this.isMobileRowMode()) return;
+
+                const nextRow = this.tableRows.find((row) => !this.isRowComplete(row));
+                if (!nextRow) return;
+
+                this.activeMobileRowKey = nextRow.dataset.rowKey || this.activeMobileRowKey;
+                this.syncMobileRowView();
             }
 
             refreshPoolVisibility() {
@@ -904,6 +1730,7 @@
                 this.refreshPoolVisibility();
                 this.updatePoolCount();
                 this.updateActionButtons();
+                this.focusNextIncompleteMobileRow();
                 this.checkWin();
                 updatePoolSafeSpace();
             }
@@ -983,6 +1810,7 @@
                 this.updatePoolCount();
                 this.updateStats();
                 this.updateActionButtons();
+                this.focusNextIncompleteMobileRow();
                 this.checkWin({ showModal: false, delay: 0 });
                 updatePoolSafeSpace();
             }
@@ -993,11 +1821,11 @@
 
             checkWin(options = {}) {
                 const total = this.getTotalTiles();
-                const placed = document.querySelectorAll('.placed-tile').length;
+                const remaining = this.getRemainingTileCount();
                 const showModal = options.showModal ?? true;
                 const delay = options.delay ?? 420;
 
-                if (placed === total && !this.gameCompleted) {
+                if (total > 0 && remaining === 0 && !this.gameCompleted) {
                     this.gameCompleted = true;
                     clearInterval(this.timerInt);
 
@@ -1012,7 +1840,7 @@
                     setTimeout(() => {
                         if (showModal) {
                             play(audio.success);
-                            this.winModal.classList.remove('hidden');
+                            this.winModal.classList.remove('hidden');  
                             this.winModal.classList.add('flex');
                         }
                     }, delay);
@@ -1024,11 +1852,17 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             game.init();
+            syncPromptPlayerUI();
             updatePoolSafeSpace();
             window.addEventListener('resize', () => {
                 game.refreshPoolVisibility();
+                game.syncMobileRowView();
+                syncPromptPlayerUI();
                 updatePoolSafeSpace();
             }, { passive: true });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && scriptModal) scriptModal.classList.add('hidden');
+            });
             setTimeout(updatePoolSafeSpace, 200);
             setTimeout(updatePoolSafeSpace, 500);
         });

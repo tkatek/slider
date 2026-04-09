@@ -32,7 +32,9 @@ $content = [
 
                 ['start' => 51, 'end' => 54, 'text' => "Thank you. I'll enter the details into the system."],
                 ['start' => 54, 'end' => 56, 'text' => 'How long will it take to get my account active?'],
-                ['start' => 56, 'end' => 64, 'text' => "Just a moment. You'll also receive an ATM card soon."],
+                ['start' => 56, 'end' => 57.5, 'text' => "Just a moment. "],
+                ['start' => 61.5, 'end' => 64, 'text' => "You'll also receive an ATM card soon."],
+                ['start' => 61.5, 'end' => 64, 'text' => "You'll also receive an ATM card soon."],
                 ['start' => 64, 'end' => 67, 'text' => 'Great. Thank you for your help.'],
             ],
         ],

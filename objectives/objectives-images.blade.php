@@ -1,7 +1,6 @@
 @extends('slider.simple-layout')
 @php
     $content = is_array($content ?? null) ? $content : [];
-
     $pageTitle = trim((string)($content['page_title'] ?? 'Lesson Objectives'));
     $title = trim((string)($content['title'] ?? 'Lesson Objectives'));
     $subtitle = trim((string)($content['subtitle'] ?? ''));
@@ -100,6 +99,20 @@
             flex-shrink: 0;
         }
 
+        .objective-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .objective-heading .objective-chip {
+            flex-shrink: 0;
+        }
+
+        .objective-heading .objective-text {
+            min-width: 0;
+        }
+
         @media (max-width: 639px) {
             .objective-card.has-image .objective-row {
                 grid-template-columns: minmax(0, 1fr) 88px;
@@ -149,30 +162,33 @@
                                             : 'from-indigo-500 to-blue-500';
 
                                         $itemTitle = trim((string)($outcome['title'] ?? ''));
-                                        $description = trim((string)($outcome['description'] ?? ''));
                                         $image = trim((string)($outcome['image'] ?? ''));
                                         $hasImage = $image !== '';
                                     @endphp
 
-                                    <article class="objective-card {{ $style }} {{ $hasImage ? 'has-image' : '' }} rounded-[24px] border border-white/70 bg-white/70 p-4 shadow-[0_16px_34px_-24px_rgba(15,23,42,0.18)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:min-h-[148px] sm:p-5">
+                                    <article class="objective-card {{ $style }} {{ $hasImage ? 'has-image' : '' }} rounded-[24px] border border-white/70 bg-white/70 p-4 shadow-[0_16px_34px_-24px_rgba(15,23,42,0.18)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:min-h-[100px] sm:p-5">
                                         @if($hasImage)
                                             <div class="objective-row relative z-10 grid items-center gap-4 sm:gap-5 md:grid-cols-[1fr_132px] lg:grid-cols-[1fr_148px]">
                                                 <div class="min-w-0">
-                                                    <div class="objective-chip inline-flex w-fit items-center rounded-full bg-gradient-to-r {{ $badge }} px-3 py-1 shadow-sm">
-                                                        <span class="text-sm sm:text-base font-black leading-[1.45] text-white">
-                                                            {{ $number }}
-                                                        </span>
+                                                    <div class="objective-heading">
+                                                        <div class="objective-chip inline-flex w-fit items-center rounded-full bg-gradient-to-r {{ $badge }} px-3 py-1 shadow-sm">
+                                                            <span class="text-sm sm:text-base font-black leading-[1.45] text-white">
+                                                                {{ $number }}
+                                                            </span>
+                                                        </div>
+
+                                                        <div class="objective-text">
+                                                            <p class="objective-title text-base sm:text-lg font-black tracking-[-0.02em] leading-tight text-slate-800 dark:text-slate-50">
+                                                                {{ $itemTitle }}
+                                                            </p>
+
+                                                            @if($outcome['description'] !== '')
+                                                                <p class="mt-1 text-sm sm:text-base font-bold leading-[1.45] text-slate-600 dark:text-slate-200">
+                                                                    {!!   $outcome['description'] !!}
+                                                                </p>
+                                                            @endif
+                                                        </div>
                                                     </div>
-
-                                                    <p class="mt-3 text-base sm:text-lg font-black tracking-[-0.02em] leading-tight text-slate-800 dark:text-slate-50">
-                                                        {{ $itemTitle }}
-                                                    </p>
-
-                                                    @if($description !== '')
-                                                        <p class="mt-1 text-sm sm:text-base font-bold leading-[1.45] text-slate-600 dark:text-slate-200">
-                                                            {{ $description }}
-                                                        </p>
-                                                    @endif
                                                 </div>
 
                                                 <div class="objective-image-box w-full rounded-2xl border border-slate-200 bg-white/90 p-2 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">
@@ -187,21 +203,25 @@
                                             </div>
                                         @else
                                             <div class="relative z-10 flex h-full flex-col justify-center">
-                                                <div class="objective-chip inline-flex w-fit items-center rounded-full bg-gradient-to-r {{ $badge }} px-3 py-1 shadow-sm">
-                                                    <span class="text-sm sm:text-base font-black leading-[1.45] text-white">
-                                                        {{ $number }}
-                                                    </span>
+                                                <div class="objective-heading">
+                                                    <div class="objective-chip inline-flex w-fit items-center rounded-full bg-gradient-to-r {{ $badge }} px-3 py-1 shadow-sm">
+                                                        <span class="text-sm sm:text-base font-black leading-[1.45] text-white">
+                                                            {{ $number }}
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="objective-text">
+                                                        <p class="objective-title text-base sm:text-lg font-black tracking-[-0.02em] leading-tight text-slate-800 dark:text-slate-50">
+                                                            {{ $itemTitle }}
+                                                        </p>
+
+                                                        @if($outcome['description'] !== '')
+                                                            <p class="mt-1 text-sm sm:text-base font-bold leading-[1.45] text-slate-600 dark:text-slate-200">
+                                                                {!!   $outcome['description'] !!}
+                                                            </p>
+                                                        @endif
+                                                    </div>
                                                 </div>
-
-                                                <p class="mt-3 text-base sm:text-lg font-black tracking-[-0.02em] leading-tight text-slate-800 dark:text-slate-50">
-                                                    {{ $itemTitle }}
-                                                </p>
-
-                                                @if($description !== '')
-                                                    <p class="mt-1 text-sm sm:text-base font-bold leading-[1.45] text-slate-600 dark:text-slate-200">
-                                                        {{ $description }}
-                                                    </p>
-                                                @endif
                                             </div>
                                         @endif
                                     </article>

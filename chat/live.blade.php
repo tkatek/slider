@@ -23,7 +23,7 @@
     </div>
 
     <main class="max-w-[1600px] mx-auto px-4 md:px-8 py-12">
-        <div id="cardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start">
+        <div id="cardsContainer" class="flex flex-wrap justify-center gap-6 items-start">
         </div>
     </main>
 
@@ -69,7 +69,7 @@
         function createInputCard() {
             const container = document.getElementById('cardsContainer');
             const card = document.createElement('div');
-            card.className = 'bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-200 dark:border-slate-700 shadow-sm transition-all hover:shadow-md';
+            card.className = 'w-full max-w-[380px] bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-200 dark:border-slate-700 shadow-sm transition-all hover:shadow-md';
             card.innerHTML = `
                 <div class="flex items-center gap-4 mb-4">
                     <img src="${myAvatar}" class="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover">
@@ -106,7 +106,7 @@
         function createCard(data, isMe) {
             const container = document.getElementById('cardsContainer');
             const card = document.createElement('div');
-            card.className = 'bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-200 dark:border-slate-700 shadow-sm transition-all hover:shadow-xl';
+            card.className = 'w-full max-w-[380px] bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-200 dark:border-slate-700 shadow-sm transition-all hover:shadow-xl';
             card.setAttribute('data-card-id', data.cardId);
             const timeString = new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 

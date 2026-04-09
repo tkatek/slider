@@ -98,7 +98,7 @@ $content = [
         [
             'text'  => 'Over the counter',
             'emoji' => '🏷️',
-            'sound' => materialAsset('slider/A1/Intermediate/chapter-5/audios/slide6/Over-the-counter.mp3'),
+            'sound' => materialAsset('slider/A1/Intermediate/chapter-5/audios/slide6/over-the-counter.mp3'),
             'image' => materialAsset('slider/A1/Intermediate/chapter-5/slide6/over-the-counter.webp'),
             'group' => 'go',
             'group_label' => 'Medicine Types',
@@ -119,14 +119,7 @@ $content = [
             'group' => 'do',
             'group_label' => 'Instructions',
         ],
-        [
-            'text'  => 'Mild',
-            'emoji' => '🙂',
-            'sound' => materialAsset('slider/A1/Intermediate/chapter-5/audios/slide6/mild.mp3'),
-            'image' => materialAsset('slider/A1/Intermediate/chapter-5/slide6/mild.webp'),
-            'group' => 'do',
-            'group_label' => 'Instructions',
-        ],
+
         [
             'text'  => 'Drowsiness / Dizziness',
             'emoji' => '😴',

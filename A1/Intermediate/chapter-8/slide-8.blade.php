@@ -1,46 +1,98 @@
 <?php
 $content = [
-    'uid' => 'practice_' . substr(md5(uniqid('', true)), 0, 10),
-    'type' => 'emoji',
-    'title'    => 'Let’s do this quiz',
-    'subtitle' => 'Choose the correct answer between the options',
+    'page_title' => 'Speaking Time',
+    'title'      => 'Speaking Time',
+    'subtitle'   => '',
 
-    'questions'=> [
+    // --- Image Control ---
+    'show_footer_image' => 0,
+    'footer_image'      => "",
+
+    'people' => [
+        'left'  => [
+            'name'  => 'Adam',
+            'image' => materialAsset("slider/A1/Advanced/chapter-3/img/daniel.webp"),
+        ],
+        'right' => [
+            'name'  => 'Sofia',
+            'image' => materialAsset("slider/A1/Advanced/chapter-3/img/receptionist.webp"),
+        ],
+    ],
+
+    'dialogues' => [
         [
-            'emoji'   => '✈️',
-            'prompt'  => 'I’d like some information about holiday tours.',
-            'correct' => 'Sure',
-            'options' => ['Sure', 'Sorry', 'Welcome']
+            'text'   => "I'd like to book a holiday package.",
+            'side'   => 'left',
+            'gender' => 'female',
+            'sound'  => '',
         ],
         [
-            'emoji'   => '🌍',
-            'prompt'  => 'Where would you like to travel?',
-            'correct' => 'I’m thinking about London',
-            'options' => ['A city tour, please', 'I’m thinking about London', 'Certainly']
+            'text'   => "Great! Where are you thinking about?",
+            'side'   => 'right',
+            'gender' => 'male',
+            'sound'  => '',
         ],
         [
-            'emoji'   => '🏨',
-            'prompt'  => 'The package holiday includes hotels, transfers, and excursions.',
-            'correct' => 'Perfect',
-            'options' => ['By credit card', 'No problem', 'Perfect']
+            'text'   => "Italy.",
+            'side'   => 'left',
+            'gender' => 'female',
+            'sound'  => '',
         ],
         [
-            'emoji'   => '✈️️️',
-            'prompt'  => 'I’m thinking about Italy.',
-            'correct' => 'Great choice',
-            'options' => ['A city tour, please', 'Yes, breakfast is included', 'Great choice']
+            'text'   => "Nice choice. Do you prefer a city tour?",
+            'side'   => 'right',
+            'gender' => 'male',
+            'sound'  => '',
         ],
         [
-            'emoji'   => '📅',
-            'prompt'  => 'The next group leaves in June. What’s the question?',
-            'correct' => 'When is it available?',
-            'options' => [
-                'Where would you like to travel?',
-                'Do you prefer a city tour or a beach holiday?',
-                'When is it available?'
-            ]
+            'text'   => "Yes, a city tour sounds perfect. When is it available?",
+            'side'   => 'left',
+            'gender' => 'female',
+            'sound'  => '',
+        ],
+        [
+            'text'   => "It's available all month. How much does it cost?",
+            'side'   => 'right',
+            'gender' => 'male',
+            'sound'  => '',
+        ],
+        [
+            'text'   => "Does it include breakfast?",
+            'side'   => 'left',
+            'gender' => 'female',
+            'sound'  => '',
+        ],
+        [
+            'text'   => "Breakfast is included every day.",
+            'side'   => 'right',
+            'gender' => 'male',
+            'sound'  => '',
+        ],
+        [
+            'text'   => "Wonderful. I'd like to book one seat.",
+            'side'   => 'left',
+            'gender' => 'female',
+            'sound'  => '',
+        ],
+        [
+            'text'   => "Payment confirmed. Here are your travel documents.",
+            'side'   => 'right',
+            'gender' => 'male',
+            'sound'  => '',
+        ],
+        [
+            'text'   => "Thank you for your help.",
+            'side'   => 'left',
+            'gender' => 'female',
+            'sound'  => '',
+        ],
+        [
+            'text'   => "My pleasure. Have a great trip to Italy.",
+            'side'   => 'right',
+            'gender' => 'male',
+            'sound'  => '',
         ],
     ],
 ];
 ?>
-@include('slider.game.multi-choice-all-in-one', ['content' => $content])
+@include("slider.vocab.image-conversation", ['content' => $content])

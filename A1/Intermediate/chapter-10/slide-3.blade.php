@@ -3,7 +3,7 @@
 $content = array_replace_recursive([
     'page_title' => 'Warm-up',
     'title'      => 'Warm-up',
-    'subtitle'   => '',
+    'subtitle'   => 'What should you pack for your beach holiday?',
     'theme'      => '#6366f1',
 
     'grid' => [

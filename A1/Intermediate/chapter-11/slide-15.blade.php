@@ -2,11 +2,11 @@
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Writing";
 $customSubtitle = "Write 5–6 simple sentences about what you will take on the plane, Include:
-- How many bags you will take
-- What is inside your bag
-- The total weight
-- One liquid item
-- One electronic device
+1. How many bags you will take
+2. What is inside your bag
+3. The total weight
+4. One liquid item
+5. One electronic device
 ";
 
 

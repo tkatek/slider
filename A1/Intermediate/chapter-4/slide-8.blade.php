@@ -23,6 +23,7 @@ $content = [
     'prompt_alt'  => 'Health problem',
     'win_title'   => 'Great job!',
     'win_message' => 'You finished all questions.',
+    'question_prompt_label' => 'Choose the correct answer:',
  
     'sfx' => [
         'enabled' => true,
@@ -55,37 +56,44 @@ $content = [
     'questions' => [
         [
             'image'   => materialAsset('slider/A1/Intermediate/chapter-4/img/slide9/toothache.webp'),
-            'answer'  => 'toothache',
+            'prompt'  => 'Which health problem is this?',
+            'correct' => 'toothache',
             'options' => ['toothache', 'temperature', 'flu', 'broken_arm', 'headache', 'earache'],
         ],
         [
             'image'   => materialAsset('slider/A1/Intermediate/chapter-4/img/slide9/sore-throat.webp'),
-            'answer'  => 'sore_throat',
+            'prompt'  => 'Which health problem is this?',
+            'correct' => 'sore_throat',
             'options' => ['headache', 'sore_throat', 'stomach_ache', 'cough', 'flu', 'temperature'],
         ],
         [
             'image'   => materialAsset('slider/A1/Intermediate/chapter-4/img/slide9/cough.webp'),
-            'answer'  => 'cough',
+            'prompt'  => 'Which health problem is this?',
+            'correct' => 'cough',
             'options' => ['sore_throat', 'temperature', 'stomach_ache', 'flu', 'cut', 'cough'],
         ],
         [
             'image'   => materialAsset('slider/A1/Intermediate/chapter-4/img/slide9/broken-arm.webp'),
-            'answer'  => 'broken_arm',
+            'prompt'  => 'Which health problem is this?',
+            'correct' => 'broken_arm',
             'options' => ['cut', 'broken_arm', 'stomach_ache', 'cough', 'flu', 'temperature'],
         ],
         [
             'image'   => materialAsset('slider/A1/Intermediate/chapter-4/img/slide9/earache.webp'),
-            'answer'  => 'earache',
+            'prompt'  => 'Which health problem is this?',
+            'correct' => 'earache',
             'options' => ['earache', 'flu', 'broken_arm', 'temperature', 'toothache', 'stomach_ache'],
         ],
         [
             'image'   => materialAsset('slider/A1/Intermediate/chapter-4/img/slide9/cut.webp'),
-            'answer'  => 'cut',
+            'prompt'  => 'Which health problem is this?',
+            'correct' => 'cut',
             'options' => ['flu', 'sore_throat', 'cut', 'temperature', 'toothache', 'headache'],
         ],
         [
             'image'   => materialAsset('slider/A1/Intermediate/chapter-4/img/slide9/headache.webp'),
-            'answer'  => 'headache',
+            'prompt'  => 'Which health problem is this?',
+            'correct' => 'headache',
             'options' => ['flu', 'sore_throat', 'toothache', 'headache', 'broken_arm', 'temperature'],
         ],
     ],

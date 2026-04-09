@@ -187,6 +187,13 @@
             letter-spacing:-0.02em;
         }
 
+        .card-title .title-highlight{
+            background:linear-gradient(135deg, #f97316 0%, #fb923c 52%, #fdba74 100%);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+        }
+
         .dark .card-title{
             color:#f8fafc;
         }
@@ -337,7 +344,13 @@
                                 </div>
 
                                 <div class="card-copy">
-                                    <h2 class="card-title">{{ $item['text'] }}</h2>
+                                    <h2 class="card-title">
+                                        @if(!empty($item['text_html']))
+                                            {!! $item['text_html'] !!}
+                                        @else
+                                            {{ $item['text'] }}
+                                        @endif
+                                    </h2>
 
                                     @if(!empty($item['subtitle']))
                                         <p class="card-subtitle">{{ $item['subtitle'] }}</p>

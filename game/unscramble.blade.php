@@ -24,7 +24,7 @@
             font-size: 2.25rem;
             line-height: 1.02;
             font-weight: 900;
-            letter-spacing: -0.04em;
+            letter-spacing: -0.04em; 
         }
 
         #unscramble-words .page-title-text{
@@ -317,6 +317,7 @@
             border: 1px solid rgba(226,232,240,.7);
             background: rgba(255,255,255,.76);
             padding: .75rem;
+            text-align: left;
         }
 
         .dark #unscramble-words .transcript-line{
@@ -515,29 +516,29 @@
                         @endif
                     </div>
 
-                    <div class="w-full max-w-3xl rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-lg overflow-hidden">
+                    <div class="w-full max-w-[19.5rem] sm:max-w-3xl rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-lg overflow-hidden">
                         <div class="grid grid-cols-4">
-                            <div class="px-3 py-3 sm:px-4 sm:py-4 border-r border-slate-200/70 dark:border-slate-800">
+                            <div class="px-1.5 py-2 sm:px-4 sm:py-4 border-r border-slate-200/70 dark:border-slate-800">
                                 <div class="hidden sm:inline-block text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Question</div>
-                                <div class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
+                                <div class="text-xs sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
                                     <span id="unscramble-words_round"></span>
                                 </div>
                             </div>
-                            <div class="px-3 py-3 sm:px-4 sm:py-4 border-r border-slate-200/70 dark:border-slate-800">
+                            <div class="px-1.5 py-2 sm:px-4 sm:py-4 border-r border-slate-200/70 dark:border-slate-800">
                                 <div class="hidden sm:inline-block text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Correct</div>
-                                <div class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
+                                <div class="text-xs sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
                                     ✅ <span id="unscramble-words_correct_count">0</span>
                                 </div>
                             </div>
-                            <div class="px-3 py-3 sm:px-4 sm:py-4 border-r border-slate-200/70 dark:border-slate-800">
+                            <div class="px-1.5 py-2 sm:px-4 sm:py-4 border-r border-slate-200/70 dark:border-slate-800">
                                 <div class="hidden sm:inline-block text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Mistakes</div>
-                                <div class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
+                                <div class="text-xs sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
                                     ❌ <span id="unscramble-words_mistakes_count">0</span>
                                 </div>
                             </div>
-                            <div class="px-3 py-3 sm:px-4 sm:py-4">
+                            <div class="px-1.5 py-2 sm:px-4 sm:py-4">
                                 <div class="hidden sm:inline-block text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Time</div>
-                                <div class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
+                                <div class="text-xs sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
                                     ⏱️ <span id="unscramble-words_timer">00:00</span>
                                 </div>
                             </div>
@@ -568,15 +569,15 @@
                                             <div class="player-shell-title">Listen First</div>
                                         </div>
 
-                                        <div class="flex flex-col gap-2.5 sm:flex-row sm:items-start">
+                                        <div class="flex items-center gap-3 sm:gap-4">
                                             @if($lessonAudio)
                                                 <button
                                                     id="unscramble-words_play_audio"
                                                     type="button"
-                                                    class="play-hit audio-listen-btn inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 active:scale-95"
+                                                    class="play-hit audio-listen-btn inline-flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 active:scale-95"
                                                     aria-label="Play audio"
                                                 >
-                                                    <svg class="static-icon h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                    <svg class="static-icon h-3.5 w-3.5 sm:h-4 sm:w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                         <path d="M8 5v14l11-7-11-7z"/>
                                                     </svg>
                                                     <span class="wave-bar" style="animation-delay:.1s"></span>
@@ -585,26 +586,40 @@
                                                 </button>
 
                                                 <div class="min-w-0 flex-1">
-                                                    <div class="audio-track cursor-pointer" id="unscramble-words_audio_progress_track" aria-label="Audio progress">
-                                                        <div class="audio-fill" id="unscramble-words_audio_progress_fill"></div>
-                                                        <div class="audio-knob" id="unscramble-words_audio_progress_knob"></div>
-                                                    </div>
-                                                    <div class="mt-1 flex justify-between text-[11px] font-extrabold text-indigo-700 dark:text-indigo-200">
-                                                        <span id="unscramble-words_audio_current_time">0:00</span>
-                                                        <span id="unscramble-words_audio_total_time">0:00</span>
+                                                    <div class="flex items-center gap-2.5 sm:gap-3">
+                                                        <div class="min-w-0 flex-1 flex flex-col gap-1.5 sm:gap-2">
+                                                            <div class="audio-track cursor-pointer" id="unscramble-words_audio_progress_track" aria-label="Audio progress">
+                                                                <div class="audio-fill" id="unscramble-words_audio_progress_fill"></div>
+                                                                <div class="audio-knob" id="unscramble-words_audio_progress_knob"></div>
+                                                            </div>
+                                                            <div class="flex justify-between text-[10px] sm:text-[11px] font-extrabold text-indigo-700 dark:text-indigo-200">
+                                                                <span id="unscramble-words_audio_current_time">0:00</span>
+                                                                <span id="unscramble-words_audio_total_time">0:00</span>
+                                                            </div>
+                                                        </div>
+                                                        @if(!empty($transcriptLines))
+                                                            <button
+                                                                id="unscramble-words_show_transcript"
+                                                                type="button"
+                                                                class="uns-btn-primary shrink-0 px-2.5 py-1.5 text-[11px] sm:px-3 sm:text-xs"
+                                                            >
+                                                                <span>Show Transcript</span>
+                                                                <span>📄</span>
+                                                            </button>
+                                                        @endif
                                                     </div>
                                                 </div>
-                                            @endif
-
-                                            @if(!empty($transcriptLines))
-                                                <button
-                                                    id="unscramble-words_show_transcript"
-                                                    type="button"
-                                                    class="uns-btn-primary"
-                                                >
-                                                    <span>Show Transcript</span>
-                                                    <span>📄</span>
-                                                </button>
+                                            @elseif(!empty($transcriptLines))
+                                                <div class="ml-auto">
+                                                    <button
+                                                        id="unscramble-words_show_transcript"
+                                                        type="button"
+                                                        class="uns-btn-primary shrink-0 px-2.5 py-1.5 text-[11px] sm:px-3 sm:text-xs"
+                                                    >
+                                                        <span>Show Transcript</span>
+                                                        <span>📄</span>
+                                                    </button>
+                                                </div>
                                             @endif
                                         </div>
 
@@ -649,14 +664,14 @@
                                             </div>
                                         </div>
 
-                                        <div class="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm sm:text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                                            <span class="inline-flex items-center gap-1 rounded-full px-3 py-1 pill">
+                                        <div class="mt-3 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-sm font-semibold leading-[1.35] text-slate-900 dark:text-slate-100">
+                                            <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 sm:px-3 sm:py-1.5 pill">
                                                 👆 Tap
                                             </span>
-                                            <span class="inline-flex items-center gap-1 rounded-full px-3 py-1 pill">
+                                            <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 sm:px-3 sm:py-1.5 pill">
                                                 🤏 Drag
                                             </span>
-                                            <span class="inline-flex items-center gap-1 rounded-full px-3 py-1 pill">
+                                            <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 sm:px-3 sm:py-1.5 pill">
                                                 ✖ Tap box to remove
                                             </span>
                                         </div>
@@ -694,7 +709,7 @@
 
                         <div class="relative min-h-full w-full flex items-center justify-center p-4 sm:p-6">
                             <div class="w-full max-w-lg max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 dark:border-slate-700/70 bg-white/95 dark:bg-slate-900/95 shadow-2xl">
-                                <div class="p-6 sm:p-8 text-center">
+                                <div class="p-6 sm:p-8 text-left">
                                     <div class="text-6xl mb-3">🎉</div>
 
                                     <h2 class="tracking-tight text-3xl sm:text-4xl font-black dark:text-white">
@@ -755,8 +770,8 @@
                                         </button>
                                     </div>
 
-                                    <div class="max-h-[70vh] overflow-auto p-4 sm:p-5">
-                                        <div id="unscramble-transcript-list" class="space-y-2"></div>
+                                    <div class="max-h-[70vh] overflow-auto p-4 sm:p-5 text-left">
+                                        <div id="unscramble-transcript-list" class="space-y-2 text-left"></div>
                                     </div>
                                 </div>
                             </div>
@@ -937,17 +952,30 @@
             }
 
             function normalizeScrambleItem(item) {
+                if (Array.isArray(item)) {
+                    return item
+                        .map((value) => String(value ?? '').trim())
+                        .filter(Boolean);
+                }
+
                 if (typeof item === 'string' || typeof item === 'number') {
                     return String(item ?? '').trim();
                 }
 
-                return String(
+                const value =
                     item?.word
                     ?? item?.label
                     ?? item?.text
                     ?? item?.value
-                    ?? ''
-                ).trim();
+                    ?? '';
+
+                if (Array.isArray(value)) {
+                    return value
+                        .map((entry) => String(entry ?? '').trim())
+                        .filter(Boolean);
+                }
+
+                return String(value).trim();
             }
 
             function buildQuestions(rawQuestions, rawSentences, rawScramble) {
@@ -979,15 +1007,18 @@
                             .slice((lastMatch.index ?? 0) + lastMatch[0].length)
                             .replace(/^\s+/g, '');
 
-                        const answer = matches
+                        const answerItems = matches
                             .map((match) => {
                                 const answerIndex = Number(match[1]) - 1;
                                 return scramble[answerIndex] ?? '';
                             })
-                            .map((value) => String(value ?? '').trim())
-                            .filter(Boolean);
+                            .filter((value) => Array.isArray(value) ? value.length > 0 : String(value ?? '').trim() !== '');
 
-                        if (!answer.length) return null;
+                        if (!answerItems.length) return null;
+
+                        const answer = answerItems.length === 1
+                            ? answerItems[0]
+                            : answerItems.flatMap((value) => Array.isArray(value) ? value : [value]);
 
                         return {
                             before,

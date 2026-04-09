@@ -1,27 +1,14 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle    = "Record a (voice note ) using the prompt provided";
-$customSubtitle = "Make a 30-second emergency call";
-
-// ✅ Put the prompt + checklist in the INPUT placeholder
-$customPlaceholder =
+$customSubtitle = "Make a 30-second emergency call\n".
     "Checklist:\n" .
     "- Say problem\n" .
     "- Give address\n" .
     "- Ask for help\n";
 
-if (auth()->check()){
-    $user = auth()->user();
-} else {
-    $user = \App\Models\User::create([
-        "id" => Str::uuid()->toString(),
-        "name" => \Faker\Factory::create()->firstName(),
-        "last_name" => \Faker\Factory::create()->lastName(),
-        "email" => \Faker\Factory::create()->email(),
-        "role_id" => 4
-    ]);
-    auth()->login($user, true);
-}
+$user = auth()->user();
+
 
 $userAvatar = $user->getFirstMediaUrl('avatars', 'thumb');
 if (!$userAvatar) {
@@ -34,8 +21,8 @@ $pusher = [
     "channel" => "slide-$slide->id",
 ];
 
-$finalTitle    = $customTitle ?? $slideItems->where('title', 'title')->first()->content ?? 'Writing Time';
-$finalSubtitle = $customSubtitle ?? $slideItems->where('title', 'subtitle')->first()->content ?? 'Share your thoughts';
+$finalTitle    = $customTitle ??  'Writing Time';
+$finalSubtitle = $customSubtitle ??  'Share your thoughts';
 
 $content = [
     'pusher'      => $pusher,
@@ -44,7 +31,6 @@ $content = [
     'title'       => $finalTitle,
     'subtitle'    => $finalSubtitle,
     'page_title'  => $finalTitle,
-    'placeholder' => $customPlaceholder
 ];
 ?>
 

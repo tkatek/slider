@@ -3,6 +3,7 @@ $content = [
     'page_title'    => 'Practice 3',
     'title'         => 'Practice 3: Listening',
     'subtitle'      => 'Match each speaker (1-4) with two sports and hobbies',
+    'subtitle_bubble' => "What's your favourite sport?",
 
     'audio_src'     => materialAsset('slider/A1/Intermediate/chapter-1/audio/slide-8.mpeg'),
     'script'        => [

@@ -1,6 +1,6 @@
 <?php
 $content = [
-    'video'          => materialAsset(''), // add video path
+    'video'          => materialAsset('slider/A1/Intermediate/chapter-7/video/planning-a-trip-encrypted/planning-a-trip.m3u8'), // add video path
     'thumbnail'      => materialAsset(''), // add thumbnail path
     'isQuiz'         => 1,
     'showTranscript' => 0,
@@ -60,27 +60,27 @@ $content = [
     ],
 
     'subtitles' => [
-        ['start' => 0,  'end' => 3,  'text' => 'Rose: Making plans…'],
-        ['start' => 3,  'end' => 5,  'text' => 'Hi Sydney,'],
-        ['start' => 5,  'end' => 8,  'text' => 'Here is the schedule for our trip.'],
 
-        ['start' => 8,  'end' => 14, 'text' => 'On Monday we are going to arrive at the airport at 6:00 am.'],
-        ['start' => 14, 'end' => 18, 'text' => 'Our flight leaves at 9:00 am.'],
-        ['start' => 18, 'end' => 23, 'text' => 'On Monday evening we are going to have dinner with Cam and David.'],
+        ['start' => 0,  'end' => 1,  'text' => 'Hi Sydney,'],
+        ['start' => 1,  'end' => 3,  'text' => 'Here is the schedule for our trip.'],
 
-        ['start' => 23, 'end' => 29, 'text' => 'On Tuesday we are going to have a tour of the city.'],
-        ['start' => 29, 'end' => 34, 'text' => 'We are going to visit the museum and go sightseeing.'],
-        ['start' => 34, 'end' => 39, 'text' => 'For dinner we’re going to go to a great Italian restaurant.'],
+        ['start' => 4.5,  'end' => 8, 'text' => 'On Monday we are going to arrive at the airport at 6:00 am.'],
+        ['start' => 10.7, 'end' => 1.5, 'text' => 'Our flight leaves at 9:00 am.'],
+        ['start' => 14.5, 'end' => 19, 'text' => 'On Monday evening we are going to have dinner with Cam and David.'],
 
-        ['start' => 39, 'end' => 45, 'text' => 'On Wednesday we’re going to go fishing on Cam’s boat.'],
-        ['start' => 45, 'end' => 51, 'text' => 'We’re going to cook the fish on the beach in the evening.'],
+        ['start' => 19.5, 'end' => 23, 'text' => 'On Tuesday we are going to have a tour of the city.'],
+        ['start' => 23, 'end' => 26, 'text' => 'We are going to visit the museum and go sightseeing.'],
+        ['start' => 29, 'end' => 32.5, 'text' => 'For dinner we’re going to go to a great Italian restaurant.'],
 
-        ['start' => 51, 'end' => 57, 'text' => 'On Thursday we’re going to watch a basketball game at the stadium.'],
-        ['start' => 57, 'end' => 62, 'text' => 'David says we are going to have great seats.'],
+        ['start' => 33, 'end' => 37, 'text' => 'On Wednesday we’re going to go fishing on Cam’s boat.'],
+        ['start' => 37, 'end' => 40.5, 'text' => 'We’re going to cook the fish on the beach in the evening.'],
 
-        ['start' => 62, 'end' => 66, 'text' => 'On Friday we’re going to take a rest.'],
-        ['start' => 66, 'end' => 69, 'text' => 'See you soon!'],
-        ['start' => 69, 'end' => 71, 'text' => 'Rose'],
+        ['start' => 41, 'end' => 44, 'text' => 'On Thursday we’re going to watch a basketball game at the stadium.'],
+        ['start' => 46.7, 'end' => 50, 'text' => 'David says we are going to have great seats.'],
+
+        ['start' => 50, 'end' => 53, 'text' => 'On Friday we’re going to take a rest.'],
+        ['start' => 54, 'end' => 56, 'text' => 'See you soon!'],
+
     ],
 ];
 ?>

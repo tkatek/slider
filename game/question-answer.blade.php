@@ -152,10 +152,10 @@
                         </p>
                     </div>
 
-                    <div id="statusRow" class="w-full max-w-5xl rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-lg overflow-hidden">
+                    <div id="statusRow" class="w-full max-w-[19.5rem] sm:max-w-5xl rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-lg overflow-hidden">
                         <div class="grid grid-cols-4">
                             @foreach(['Done' => 'doneCount', 'Correct' => 'correctCount', 'Mistakes' => 'mistakesCount', 'Time' => 'timer'] as $label => $id)
-                                <div class="metric-tile px-2 py-2.5 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
+                                <div class="metric-tile px-1.5 py-2 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
                                     <div class="text-[9px] sm:text-xs font-black uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">
                                         {{ $label }}
                                     </div>

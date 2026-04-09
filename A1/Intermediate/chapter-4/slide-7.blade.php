@@ -2,21 +2,35 @@
 $content = [
     'page_title'    => 'New Vocabulary',
     'title'         => 'New Vocabulary',
-    'subtitle'      => '',
+    'subtitle'      => 'Common Symptoms',
     'default_tone'  => 'play',
     'default_group' => 'violet',
     'use_objectives_typography' => true,
     'show_sentence_pill' => false,
     'show_item_group_badge' => false,
-    'bubbles' => [
-        ['text' => "How are you\nfeeling", 'variant' => 'soft', 'hide_on_mobile' => true],
-        ['text' => "What’s the matter?", 'variant' => 'outline'],
-        ['text' => "What’s the\nproblem?", 'variant' => 'bold'],
+    'extra_css' => '
+        .tile-emoji {
+            display: none;
+        }
+    ',
+
+    'sentences' => [
+        [
+            'text'  => "How are you feeling",
+            'sound' => materialAsset('slider/A1/Intermediate/chapter-4/audios/symptoms/how-feeling.mp3'),
+        ],
+        [
+            'text'  => 'What’s the matter?',
+            'sound' => materialAsset('slider/A1/Intermediate/chapter-4/audios/symptoms/what-matter.mp3'),
+        ],
+        [
+            'text'  => 'What’s the problem?',
+            'sound' => materialAsset('slider/A1/Intermediate/chapter-4/audios/symptoms/what-problem.mp3'),
+        ],
+
     ],
 
-    'sentences' => [],
-
-    'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-6 xl:grid-cols-6',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6',
 
     'items' => [
         [

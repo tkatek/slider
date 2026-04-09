@@ -104,6 +104,9 @@
         $footerText = trim((string)($content['footer_text'] ?? ''));
         $footerItems = is_array($content['footer_items'] ?? null) ? $content['footer_items'] : [];
         $footerBelowImage = (bool)($content['footer_below_image'] ?? false);
+        $hideImage = (bool)($content['hide_image'] ?? false);
+        $contentGridClass = trim((string)($content['content_grid_class'] ?? 'grid lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_460px] gap-8 lg:gap-12 items-center'));
+        $itemsGridClass = trim((string)($content['items_grid_class'] ?? 'grid grid-cols-1 gap-4 text-left'));
     @endphp
 
     <body class="font-display bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 min-h-screen relative">
@@ -114,7 +117,7 @@
         <div class="mx-auto w-full max-w-7xl px-4 sm:px-8 py-7 sm:py-9 lg:min-h-[100dvh] lg:flex lg:items-center">
             <section class="w-full">
 
-                <div class="grid lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_460px] gap-8 lg:gap-12 items-center">
+                <div class="{{ $contentGridClass }}">
 
                     <div class="space-y-6">
 
@@ -143,7 +146,7 @@
                         </div>
 
                         <section id="cards" class="w-full">
-                            <div class="grid grid-cols-1 gap-4 text-left">
+                            <div class="{{ $itemsGridClass }}">
                                 @foreach($content['items'] as $item)
                                     <article
                                             class="sentence-card rounded-[26px] border border-slate-200/70 bg-white/65 backdrop-blur-xl
@@ -207,33 +210,35 @@
                         @endif
                     </div>
 
-                    <div class="relative mx-auto w-full max-w-[360px] sm:max-w-[400px] lg:max-w-none">
-                        <img
-                                src="{{ $content['image'] }}"
-                                alt="{{ $imageAlt }}"
-                                class="mt-[20px] block w-full h-auto rounded-[32px]"
-                                loading="lazy"
-                                draggable="false"
-                        />
+                    @unless($hideImage)
+                        <div class="relative mx-auto w-full max-w-[360px] sm:max-w-[400px] lg:max-w-none">
+                            <img
+                                    src="{{ $content['image'] }}"
+                                    alt="{{ $imageAlt }}"
+                                    class="mt-[20px] block w-full h-auto rounded-[32px]"
+                                    loading="lazy"
+                                    draggable="false"
+                            />
 
-                        @if(($footerText || count($footerItems)) && $footerBelowImage)
-                            <div class="mt-4 rounded-2xl border border-slate-200/70 bg-white/60 backdrop-blur-xl dark:border-slate-700/35 dark:bg-slate-950/30 p-4 sm:p-5">
-                                @if($footerText)
-                                    <p class="text-sm font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-base">
-                                        {!! $footerText !!}
-                                    </p>
-                                @endif
+                            @if(($footerText || count($footerItems)) && $footerBelowImage)
+                                <div class="mt-4 rounded-2xl border border-slate-200/70 bg-white/60 backdrop-blur-xl dark:border-slate-700/35 dark:bg-slate-950/30 p-4 sm:p-5">
+                                    @if($footerText)
+                                        <p class="text-sm font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-base">
+                                            {!! $footerText !!}
+                                        </p>
+                                    @endif
 
-                                @if(count($footerItems))
-                                    <ul class="mt-2 space-y-1 text-sm font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-base">
-                                        @foreach($footerItems as $footerItem)
-                                            <li>{!! $footerItem !!}</li>
-                                        @endforeach
-                                    </ul>
-                                @endif
-                            </div>
-                        @endif
-                    </div>
+                                    @if(count($footerItems))
+                                        <ul class="mt-2 space-y-1 text-sm font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-base">
+                                            @foreach($footerItems as $footerItem)
+                                                <li>{!! $footerItem !!}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                    @endunless
 
                 </div>
 

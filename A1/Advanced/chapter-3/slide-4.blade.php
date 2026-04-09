@@ -1,28 +1,32 @@
 <?php
 $content = [
     'page_title' => 'Discussion',
-
     'title'      => 'Discussion',
-    'subtitle'   => 'Let’s have a Discussion',
+    'subtitle'   => '',
+    'image'      => materialAsset('slider/A1/Advanced/chapter-1/img/cover.webp'),
+    'image_alt'  => 'Hotel stay discussion image',
 
-    'cards_grid' => 'grid-cols-1',
-
-    'outcomes' => [
+    'cards' => [
         [
-            'number' => '01',
-            'badge' => 'from-indigo-500 to-indigo-600',
-            'title' => 'Question 1',
-            'description' => 'Was your stay good or bad?',
-            'image' => materialAsset('slider/A1/Advanced/chapter-3/img/discussion.webp'),
+            'emoji' => '🏨',
+            'label' => 'Question 1',
+            'text'  => 'How was your stay at the hotel?',
+            'theme' => 'indigo',
         ],
         [
-            'number' => '02',
-            'badge' => 'from-blue-500 to-blue-600',
-            'title' => 'Question 2',
-            'description' => 'What makes a hotel stay perfect?',
-            'image' => materialAsset('slider/A1/Advanced/chapter-3/img/slide3/double-room.webp'),
+            'emoji' => '🙂',
+            'label' => 'Question 2',
+            'text'  => 'Was your stay good or bad?',
+            'theme' => 'blue',
+        ],
+        [
+            'emoji' => '✨',
+            'label' => 'Question 3',
+            'text'  => 'What makes a hotel stay perfect?',
+            'theme' => 'violet',
         ],
     ],
 ];
 ?>
-@include('slider.objectives.objectives-images', ['content' => $content])
+
+@include('slider.other.discussion', ['content' => $content])

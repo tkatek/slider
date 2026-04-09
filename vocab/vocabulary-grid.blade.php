@@ -8,13 +8,31 @@
     $sentences = $content['sentences'] ?? [];
     $items = $content['items'] ?? [];
     $gridClass = $content['grid_class'] ?? 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-6';
+    $sentenceGridClass = trim((string) ($content['sentence_grid_class'] ?? 'grid-cols-1 sm:grid-cols-3'));
     $defaultTone = $content['default_tone'] ?? '';
     $defaultGroup = $content['default_group'] ?? '';
     $showSentencePill = $content['show_sentence_pill'] ?? true;
     $showItemGroupBadge = $content['show_item_group_badge'] ?? true;
     $useObjectivesTypography = !empty($content['use_objectives_typography']);
-    $wordLabelStyle = trim((string) ($content['word_label_style'] ?? ''));
+    $wordLabelStyle = trim((string) ($content['word_label_style'] ?? 'font-size: 0.9rem; line-height: 1.05;'));
     $extraCss = trim((string) ($content['extra_css'] ?? ''));
+
+    $sentenceGridBreakpoints = [
+        'base' => null,
+        'sm' => '640px',
+        'md' => '768px',
+        'lg' => '1024px',
+        'xl' => '1280px',
+        '2xl' => '1536px',
+    ];
+
+    $sentenceGridColumns = [];
+    foreach (preg_split('/\s+/', $sentenceGridClass) as $token) {
+        if (preg_match('/^(?:(sm|md|lg|xl|2xl):)?grid-cols-(\d+)$/', $token, $matches)) {
+            $breakpoint = $matches[1] ?: 'base';
+            $sentenceGridColumns[$breakpoint] = (int) $matches[2];
+        }
+    }
 @endphp
 
 @extends('slider.simple-layout')
@@ -279,6 +297,22 @@
             margin: 0 auto 1.5rem;
         }
 
+        @if(isset($sentenceGridColumns['base']))
+        .sentence-grid {
+            grid-template-columns: repeat({{ $sentenceGridColumns['base'] }}, minmax(0, 1fr));
+        }
+        @endif
+
+        @foreach($sentenceGridBreakpoints as $breakpoint => $minWidth)
+            @if($breakpoint !== 'base' && isset($sentenceGridColumns[$breakpoint]))
+        @media (min-width: {{ $minWidth }}) {
+            .sentence-grid {
+                grid-template-columns: repeat({{ $sentenceGridColumns[$breakpoint] }}, minmax(0, 1fr));
+            }
+        }
+            @endif
+        @endforeach
+
         .sentence-card,
         .vocab-card {
             position: relative;
@@ -307,9 +341,24 @@
             padding: 1.1rem 1.15rem;
         }
 
-        .vocab-card {
+        .vocab-card { 
             border-radius: 1.5rem;
-            padding: 8px;
+            display: flex;
+            width: 100%;
+            max-width: 19rem;
+            justify-self: center;
+        }
+
+        .vocab-card--empty {
+            display: none;
+            pointer-events: none;
+        }
+
+        @media (min-width: 640px) {
+            .vocab-card--empty {
+                display: flex;
+                visibility: hidden;
+            }
         }
 
         .sentence-card::before,
@@ -395,7 +444,8 @@
             position: relative;
             z-index: 1;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
+            justify-content: flex-start;
             gap: 14px;
         }
 
@@ -425,14 +475,19 @@
         }
 
         .audio-main {
-            width: 46px;
-            height: 46px;
+            width: 38px;
+            height: 38px;
             color: #ffffff;
             border: 1px solid rgba(255,255,255,.68);
             background: rgba(255,255,255,.10);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 16px 30px -16px rgba(15,23,42,.45);
+            box-shadow: 0 12px 24px -16px rgba(15,23,42,.45);
+        }
+
+        .audio-main .static-icon {
+            width: 16px;
+            height: 16px;
         }
 
         .btn-play { background: linear-gradient(135deg, var(--play-a), var(--play-b)); }
@@ -445,45 +500,45 @@
             background: linear-gradient(135deg, rgba(99,102,241,.18), rgba(59,130,246,.14));
             border-color: rgba(191,219,254,.78);
             box-shadow:
-                0 16px 30px -16px rgba(15,23,42,.45),
-                inset 0 1px 0 rgba(255,255,255,.28),
-                0 0 0 1px rgba(99,102,241,.10);
+                    0 16px 30px -16px rgba(15,23,42,.45),
+                    inset 0 1px 0 rgba(255,255,255,.28),
+                    0 0 0 1px rgba(99,102,241,.10);
         }
 
         .audio-main.btn-violet {
             background: linear-gradient(135deg, rgba(139,92,246,.18), rgba(124,58,237,.14));
             border-color: rgba(221,214,254,.78);
             box-shadow:
-                0 16px 30px -16px rgba(15,23,42,.45),
-                inset 0 1px 0 rgba(255,255,255,.28),
-                0 0 0 1px rgba(139,92,246,.10);
+                    0 16px 30px -16px rgba(15,23,42,.45),
+                    inset 0 1px 0 rgba(255,255,255,.28),
+                    0 0 0 1px rgba(139,92,246,.10);
         }
 
         .audio-main.btn-go {
             background: linear-gradient(135deg, rgba(16,185,129,.18), rgba(20,184,166,.14));
             border-color: rgba(167,243,208,.78);
             box-shadow:
-                0 16px 30px -16px rgba(15,23,42,.45),
-                inset 0 1px 0 rgba(255,255,255,.28),
-                0 0 0 1px rgba(16,185,129,.10);
+                    0 16px 30px -16px rgba(15,23,42,.45),
+                    inset 0 1px 0 rgba(255,255,255,.28),
+                    0 0 0 1px rgba(16,185,129,.10);
         }
 
         .audio-main.btn-do {
             background: linear-gradient(135deg, rgba(245,158,11,.20), rgba(249,115,22,.16));
             border-color: rgba(253,230,138,.8);
             box-shadow:
-                0 16px 30px -16px rgba(15,23,42,.45),
-                inset 0 1px 0 rgba(255,255,255,.28),
-                0 0 0 1px rgba(245,158,11,.10);
+                    0 16px 30px -16px rgba(15,23,42,.45),
+                    inset 0 1px 0 rgba(255,255,255,.28),
+                    0 0 0 1px rgba(245,158,11,.10);
         }
 
         .audio-main.btn-neutral {
             background: linear-gradient(135deg, rgba(100,116,139,.18), rgba(71,85,105,.14));
             border-color: rgba(226,232,240,.78);
             box-shadow:
-                0 16px 30px -16px rgba(15,23,42,.45),
-                inset 0 1px 0 rgba(255,255,255,.28),
-                0 0 0 1px rgba(100,116,139,.10);
+                    0 16px 30px -16px rgba(15,23,42,.45),
+                    inset 0 1px 0 rgba(255,255,255,.28),
+                    0 0 0 1px rgba(100,116,139,.10);
         }
 
         .sentence-pill,
@@ -500,11 +555,50 @@
             color: #fff;
         }
 
+        .sentence-pill {
+            display: inline-block;
+            max-width: 100%;
+            white-space: normal;
+            line-height: 1.3;
+            text-transform: none;
+            letter-spacing: .02em;
+        }
+
         .pill-play { background: linear-gradient(to right, #6366f1, #3b82f6); }
         .pill-violet { background: linear-gradient(to right, #8b5cf6, #7c3aed); }
         .pill-go { background: linear-gradient(to right, #10b981, #14b8a6); }
         .pill-do { background: linear-gradient(to right, #f59e0b, #f97316); }
         .pill-neutral { background: linear-gradient(to right, #64748b, #475569); }
+
+        .tile-badge {
+            padding: .26rem .58rem;
+            font-size: .62rem;
+            letter-spacing: .06em;
+            border: 1px solid rgba(255,255,255,.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px -14px rgba(15,23,42,.45);
+        }
+
+        .tile-badge.pill-play {
+            background: linear-gradient(to right, rgba(99,102,241,.45), rgba(59,130,246,.38));
+        }
+
+        .tile-badge.pill-violet {
+            background: linear-gradient(to right, rgba(139,92,246,.45), rgba(124,58,237,.38));
+        }
+
+        .tile-badge.pill-go {
+            background: linear-gradient(to right, rgba(16,185,129,.45), rgba(20,184,166,.38));
+        }
+
+        .tile-badge.pill-do {
+            background: linear-gradient(to right, rgba(245,158,11,.45), rgba(249,115,22,.38));
+        }
+
+        .tile-badge.pill-neutral {
+            background: linear-gradient(to right, rgba(100,116,139,.45), rgba(71,85,105,.38));
+        }
 
         .sentence-title {
             margin-top: 8px;
@@ -513,29 +607,31 @@
             font-weight: 700;
             letter-spacing: 0;
             color: #0f172a;
+            text-align: left;
         }
 
         .sentence-copy {
             min-width: 0;
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .sentence-title-wrap {
-            overflow: hidden;
+            overflow: visible;
             min-width: 0;
             position: relative;
             padding-inline: 2px;
         }
 
         .sentence-title-text {
-            display: inline-block;
-            white-space: nowrap;
-            will-change: transform;
-            transform: translateX(0);
-        }
-
-        .sentence-title-wrap.is-pan .sentence-title-text {
-            animation: panTitle var(--dur, 12s) ease-in-out infinite;
+            display: block;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            will-change: auto;
+            transform: none;
         }
 
         .dark .sentence-title {
@@ -549,13 +645,17 @@
         .vocab-grid {
             display: grid;
             gap: 1rem;
+            justify-items: center;
         }
 
         .media-box {
             position: relative;
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 4 / 3;
             min-height: 150px;
             overflow: hidden;
-            border-radius: 18px;
+            border-radius: inherit;
             border: 1px solid rgba(226,232,240,.8);
             background: #f1f5f9;
         }
@@ -571,6 +671,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: center;
         }
 
         .card-overlay {
@@ -612,9 +713,16 @@
         .card-center-btn {
             position: absolute;
             inset: 0;
-            display: grid;
-            place-items: center;
             z-index: 2;
+            pointer-events: none;
+        }
+
+        .card-center-btn .audio-main {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: auto;
         }
 
         .card-bottom {
@@ -631,27 +739,19 @@
         }
 
         .title-wrap {
-            overflow: hidden;
+            overflow: visible;
             min-width: 0;
             position: relative;
             padding-inline: 2px;
         }
 
         .title-text {
-            display: inline-block;
-            white-space: nowrap;
-            will-change: transform;
-            transform: translateX(0);
-        }
-
-        .title-wrap.is-pan .title-text {
-            animation: panTitle var(--dur, 12s) ease-in-out infinite;
-        }
-
-        @keyframes panTitle {
-            0%, 22% { transform: translateX(0); }
-            58%, 82% { transform: translateX(calc(-1 * var(--pan, 0px))); }
-            100% { transform: translateX(0); }
+            display: block;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            will-change: auto;
+            transform: none;
         }
 
         .word-row {
@@ -675,8 +775,8 @@
             color: #fb923c;
             font-weight: 900;
             text-shadow:
-                0 0 18px rgba(251, 146, 60, .35),
-                0 2px 12px rgba(0, 0, 0, .35);
+                    0 0 18px rgba(251, 146, 60, .35),
+                    0 2px 12px rgba(0, 0, 0, .35);
         }
 
         .tile-emoji {
@@ -713,10 +813,6 @@
         }
 
         @media (min-width: 640px) {
-            .sentence-grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
-
             .vocab-inner {
                 padding: 2.5rem 2rem;
             }
@@ -791,7 +887,7 @@
         }
 
         @if($extraCss !== '')
-{!! $extraCss !!}
+            {!! $extraCss !!}
         @endif
     </style>
 @endsection
@@ -892,6 +988,11 @@
 
                 <section class="vocab-grid grid {{ $gridClass }}">
                     @foreach($items as $item)
+                        @if(!empty($item['placeholder']))
+                            <article class="vocab-card vocab-card--empty" aria-hidden="true"></article>
+                            @continue
+                        @endif
+
                         @php
                             $itemText = (string) ($item['text'] ?? '');
                             $itemTextHtml = strip_tags($itemText, '<span><strong><em><b><i><br>');
@@ -931,7 +1032,7 @@
                                 <img src="{{ $item['image'] ?? '' }}" alt="{{ $itemTextPlain }}" class="card-img" loading="lazy" draggable="false">
                                 <div class="card-overlay"></div>
 
-                                @if($showItemGroupBadge && $groupLabel !== '')  
+                                @if($showItemGroupBadge && $groupLabel !== '')
                                     <span class="tile-badge {{ $pillClass }}" style="position:absolute;left:10px;top:10px;z-index:2;">
                                         {{ $groupLabel }}
                                     </span>
@@ -979,29 +1080,6 @@
             let activeAudio = null;
             let activeButton = null;
 
-            function applyTitleMarquee() {
-                const wraps = Array.from(document.querySelectorAll('.title-wrap, .sentence-title-wrap'));
-                wraps.forEach((wrap) => {
-                    wrap.classList.remove('is-pan');
-                    wrap.style.removeProperty('--pan');
-                    wrap.style.removeProperty('--dur');
-
-                    const text = wrap.querySelector('.title-text, .sentence-title-text');
-                    if (!text) return;
-
-                    const pan = Math.max(0, text.scrollWidth - wrap.clientWidth);
-                    if (pan > 8) {
-                        wrap.classList.add('is-pan');
-                        wrap.style.setProperty('--pan', `${pan}px`);
-
-                        const travelSpeed = 18;
-                        const travelTime = pan / travelSpeed;
-                        const total = Math.min(28, Math.max(14, travelTime + 10));
-                        wrap.style.setProperty('--dur', `${total.toFixed(2)}s`);
-                    }
-                });
-            }
-
             const stopActive = () => {
                 if (activeAudio) {
                     activeAudio.pause();
@@ -1038,12 +1116,6 @@
                 });
             });
 
-            requestAnimationFrame(applyTitleMarquee);
-
-            window.addEventListener('resize', () => {
-                clearTimeout(window.__vocabTitleMarqueeTO);
-                window.__vocabTitleMarqueeTO = setTimeout(applyTitleMarquee, 140);
-            }, { passive: true });
         })();
     </script>
 @endsection

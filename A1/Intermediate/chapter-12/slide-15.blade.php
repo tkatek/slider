@@ -1,65 +1,52 @@
 <?php
 $content = [
-    'video'          => materialAsset(''),
-    'thumbnail'      => materialAsset(''),
-    'isQuiz'         => 1, // 1 show question / 0 don't
-    'showTranscript' => 1,
+    'type' => 'reading',
+    'page_title'      => 'Reading Comprehension',
+    'title'           => 'Reading Comprehension',
+    'subtitle'        => '',
+    'audio'           => materialAsset("slider/A1/Intermediate/chapter-12/audios/slide15.mp3"),
+    'reading_title'   => 'What annoys me about travelling!',
+    'reading_align'   => 'left',
+    'reading_plain'   => true,
+    'reading_compact' => true,
 
-    'questions'      => [
-        [
-            'time' => 17000,
-            'type' => 'multiple_choice',
-            'question' => 'He says ____ is a hassle.',
-            'options' => [
-                'getting to the airport',
-                'going through security',
-            ],
-            'correct_answer' => 1,
-            'points' => 10
-        ],
-
-        [
-            'time' => 29000,
-            'type' => 'multiple_choice',
-            'question' => 'He is not sure why some people ____ .',
-            'options' => [
-                'recline their seats',
-                'get on first',
-            ],
-            'correct_answer' => 1,
-            'points' => 10
-        ],
-
-        [
-            'time' => 39000,
-            'type' => 'multiple_choice',
-            'question' => 'He says the ____ is bad on the plane.',
-            'options' => [
-                'food',
-                'air',
-            ],
-            'correct_answer' => 0,
-            'points' => 10
-        ],
+    'passage' => [
+        "Hi, my name is Adam. I’m from the U.S.",
+        "The question is: What annoys you about flying?",
+        "For me, there are a few annoying things.",
+        "Security checks at the airport are difficult. The lines are very long. In some countries, you cannot bring small bottles of liquid. Sometimes you must take off your shoes. It is a hassle.",
+        "Waiting in line is very annoying. When you get on the plane, you must wait again.",
+        "There are different classes, and some people board first because they pay more. I don’t really understand that.",
+        "When you are on the plane, the food is not very good.",
+        "I think flying has many problems.",
     ],
 
-    'subtitles' => [
-        ['start' => 0,  'end' => 3,  'text' => "Hi, my name is Adam. I’m from the U.S."],
-        ['start' => 3,  'end' => 6,  'text' => "The question is: What annoys you about flying?"],
-        ['start' => 6,  'end' => 8,  'text' => "For me, there are a few annoying things."],
-
-        ['start' => 8,  'end' => 13, 'text' => "Security checks at the airport are difficult. The lines are very long."],
-        ['start' => 13, 'end' => 18, 'text' => "In some countries, you cannot bring small bottles of liquid."],
-        ['start' => 18, 'end' => 21, 'text' => "Sometimes you must take off your shoes. It is a hassle."],
-
-        ['start' => 21, 'end' => 26, 'text' => "Waiting in line is very annoying. When you get on the plane, you must wait again."],
-        ['start' => 26, 'end' => 32, 'text' => "There are different classes, and some people board first because they pay more."],
-        ['start' => 32, 'end' => 35, 'text' => "I don’t really understand that."],
-
-        ['start' => 35, 'end' => 39, 'text' => "When you are on the plane, the food is not very good."],
-        ['start' => 39, 'end' => 42, 'text' => "I think flying has many problems."],
+    'questions' => [
+        [
+            'prompt'  => 'He says ____ is a hassle.',
+            'correct' => 'Going through security',
+            'options' => [
+                'Getting to the airport',
+                'Going through security',
+            ],
+        ],
+        [
+            'prompt'  => 'He is not sure why some people ____.',
+            'correct' => 'Get on first',
+            'options' => [
+                'Recline their seats',
+                'Get on first',
+            ],
+        ],
+        [
+            'prompt'  => 'He says the ____ is bad on the plane.',
+            'correct' => 'Food',
+            'options' => [
+                'Food',
+                'Air',
+            ],
+        ],
     ],
 ];
 ?>
-
-@include("slider.video.interactive", ['content' => $content])
+@include('slider.game.multi-choice-all-in-one', ['content' => $content])

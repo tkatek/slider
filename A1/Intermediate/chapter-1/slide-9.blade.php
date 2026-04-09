@@ -9,7 +9,7 @@ $content = [
     'items' => [
         [
             'emoji' => '⚽',
-            'text'  => 'My <span class="sentence-accent">favourite sport is</span>...',
+            'text'  => 'My <span class="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">favourite sport is</span>...',
             'sound' => materialAsset('slider/A1/Intermediate/chapter-1/audio/slide9/1.mp3'),
         ],
         [
@@ -19,12 +19,12 @@ $content = [
         ],
         [
             'emoji' => '❤️',
-            'text'  => 'I <span class="sentence-accent">love</span> sport, but I\'m <span class="sentence-accent">not keen on</span> ball games.',
+            'text'  => 'I <span class="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">love</span> sport, but I\'m <span class="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">not keen on</span> ball games.',
             'sound' => materialAsset('slider/A1/Intermediate/chapter-1/audio/slide9/3.mp3'),
         ],
         [
             'emoji' => '🏆',
-            'text'  => 'I\'m <span class="sentence-accent">good at</span>...',
+            'text'  => 'I\'m <span class="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">good at</span>...',
             'sound' => materialAsset('slider/A1/Intermediate/chapter-1/audio/slide9/4.mp3'),
         ],
         [

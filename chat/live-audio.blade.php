@@ -27,12 +27,12 @@
             </span>
         </h1>
         <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100 lg:max-w-[80%] mx-auto">
-            {{$content['subtitle']}}
+            {!! nl2br($content['subtitle']) !!}
         </p>
     </div>
 
     <main class="max-w-[1600px] mx-auto px-4 md:px-8 pb-12">
-        <div id="cardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start"></div>
+        <div id="cardsContainer" class="flex flex-wrap justify-center gap-6 items-start"></div>
     </main>
 
     <div id="toastContainer" class="fixed bottom-8 right-8 flex flex-col gap-3 z-[2000]"></div>
@@ -50,8 +50,6 @@
         const myUserId   = @json($content['user']['id']);
         const myName     = @json($content['user']['name'] . ' ' . $content['user']['last_name']);
         const myAvatar   = @json($content['user_avatar']);
-        const customPlaceholder = @json($content['placeholder'] ?? 'Type here...');
-
         // ----------------------------
         // Browser storage for voice notes (IndexedDB) ✅ ADDED
         // ----------------------------
@@ -148,7 +146,7 @@
         function createInputCard() {
             const container = document.getElementById('cardsContainer');
             const card = document.createElement('div');
-            card.className = 'bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-200 dark:border-slate-700 shadow-sm transition-all hover:shadow-md';
+            card.className = 'w-full max-w-[380px] bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-200 dark:border-slate-700 shadow-sm transition-all hover:shadow-md';
 
             card.innerHTML = `
             <div class="flex items-center gap-4 mb-4">
@@ -160,11 +158,6 @@
             </div>
 
             <div class="space-y-4">
-                <textarea id="myAnswer"
-                    class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all resize-none min-h-[140px]"
-                    placeholder="${customPlaceholder}"
-                    oninput="updateBtnState('myAnswer', 'submit-btn-main')"></textarea>
-
                 <!-- Voice note box ✅ ADDED -->
                 <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-4">
                     <div class="flex items-center justify-between gap-3">
@@ -207,16 +200,12 @@
             container.prepend(card);
 
             hardResetVoiceNote();
-            updateBtnState('myAnswer', 'submit-btn-main');
+            updateBtnState('submit-btn-main');
         }
 
-        // ✅ UPDATED: submit enables if text OR voice note exists (keeps original behavior)
-        function updateBtnState(inputId, btnId) {
-            const val = document.getElementById(inputId).value.trim();
+        function updateBtnState(btnId) {
             const btn = document.getElementById(btnId);
-
-            const hasVoice = (btnId === 'submit-btn-main') && !!vnBlob;
-            const canSubmit = (val.length > 0) || hasVoice;
+            const canSubmit = btnId === 'submit-btn-main' && !!vnBlob;
 
             if (canSubmit) {
                 btn.classList.remove('bg-slate-300', 'cursor-not-allowed');
@@ -277,7 +266,7 @@
 
                     setVoiceUI(false, true);
                     cleanupVoiceStream();
-                    updateBtnState('myAnswer', 'submit-btn-main');
+                    updateBtnState('submit-btn-main');
                 };
 
                 vnRecorder.start();
@@ -364,7 +353,7 @@
             if (time) time.textContent = '00:00';
 
             setVoiceUI(false, false);
-            updateBtnState('myAnswer', 'submit-btn-main');
+            updateBtnState('submit-btn-main');
             if (!silent) showToast("Voice note removed.", "info");
         }
 
@@ -389,8 +378,20 @@
 
         function createCard(data, isMe) {
             const container = document.getElementById('cardsContainer');
+            const existingCard = container.querySelector(`[data-card-id="${data.cardId}"]`);
+
+            if (existingCard) {
+                const existingAudio = existingCard.querySelector('audio.card-audio');
+
+                if (existingAudio && data.audio_url && !existingAudio.getAttribute('src')) {
+                    existingAudio.src = data.audio_url;
+                }
+
+                return existingCard;
+            }
+
             const card = document.createElement('div');
-            card.className = 'bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-200 dark:border-slate-700 shadow-sm transition-all hover:shadow-xl';
+            card.className = 'w-full max-w-[380px] bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-200 dark:border-slate-700 shadow-sm transition-all hover:shadow-xl';
             card.setAttribute('data-card-id', data.cardId);
 
             const timeString = new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -468,14 +469,13 @@
 
         // ✅ async so we can store audio in IndexedDB before resetting state
         async function submitMyAnswer() {
-            const input = document.getElementById('myAnswer');
-            const text = input.value.trim();
+            const text = '';
             const hasAudio = !!vnBlob;
 
-            // voice note is considered an input too
-            if (!text && !hasAudio) return;
+            if (!hasAudio) return;
 
-            const cardId = myUserId + '-' + Date.now();
+            const timestamp = Date.now();
+            const cardId = `${myUserId}-${timestamp}`;
 
             // ✅ If NO audio: keep ORIGINAL JSON behavior (unchanged)
             if (!hasAudio) {
@@ -486,7 +486,7 @@
                     name: myName,
                     avatar: myAvatar,
                     text: text,
-                    timestamp: Date.now(),
+                    timestamp: timestamp,
                     channel: CHANNEL_NAME
                 };
 
@@ -496,8 +496,7 @@
                     body: JSON.stringify(payload)
                 }).then(() => {
                     createCard(payload, true);
-                    input.value = '';
-                    updateBtnState('myAnswer', 'submit-btn-main');
+                    updateBtnState('submit-btn-main');
                     showToast("Answer posted!", "success");
                 });
 
@@ -520,7 +519,7 @@
             fd.append('name', myName);
             fd.append('avatar', myAvatar);
             fd.append('text', text);
-            fd.append('timestamp', String(Date.now()));
+            fd.append('timestamp', String(timestamp));
             fd.append('channel', CHANNEL_NAME);
 
             const ext = (vnMime || '').includes('ogg') ? 'ogg' : 'webm';
@@ -548,7 +547,7 @@
                     name: myName,
                     avatar: myAvatar,
                     text: text,
-                    timestamp: Date.now(),
+                    timestamp: timestamp,
                     channel: CHANNEL_NAME,
                     audio_url: audioUrl,
                     audio_key: localKey
@@ -557,15 +556,14 @@
                 createCard(payload, true);
 
                 // ✅ allow sending another audio right away
-                input.value = '';
                 removeVoiceNote(true);
-                updateBtnState('myAnswer', 'submit-btn-main');
+                updateBtnState('submit-btn-main');
                 showToast("Answer posted!", "success");
             });
         }
 
         function handleIncomingSubmission(data) {
-            if (data.userId !== myUserId) createCard(data, false);
+            createCard(data, String(data.userId) === String(myUserId));
         }
 
         function handleReplyKey(event, cardId) {

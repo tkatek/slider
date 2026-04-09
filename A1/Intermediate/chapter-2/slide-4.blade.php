@@ -1,7 +1,8 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
-$customTitle = "When was the last time you celebrated something?";
-$customSubtitle = "What do people usually do at celebrations?";
+$customTitle = "Discussion";
+$customSubtitle = "What do people usually do at celebrations?
+When was the last time you celebrated something?";
 
 // Use \n for line breaks in the placeholder
 $customPlaceholder = "What comes to your mind when\nwe say “celebration”?";

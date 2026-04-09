@@ -6,7 +6,7 @@ $content = [
 
     'questions' => [
         [
-            'time' => 8000,
+            'time' => 5500,
             'type' => 'multiple_choice',
             'question' => '1. Why does the customer go to the bank?',
             'options' => ['To open a new account', 'To pay the electric bill', 'To buy a new card', 'To send a letter'],
@@ -22,7 +22,7 @@ $content = [
             'points' => 10
         ],
         [
-            'time' => 18000,
+            'time' => 19500,
             'type' => 'multiple_choice',
             'question' => '3. How much is the bill?',
             'options' => ['45.60 dollars', '15 dollars', '100 dollars', '5.60 dollars'],
@@ -30,7 +30,7 @@ $content = [
             'points' => 10
         ],
         [
-            'time' => 25000,
+            'time' => 23000,
             'type' => 'multiple_choice',
             'question' => '4. How does the customer pay?',
             'options' => ['By cash', 'By check', 'By card', 'Online'],
@@ -38,7 +38,7 @@ $content = [
             'points' => 10
         ],
         [
-            'time' => 36000,
+            'time' => 33000,
             'type' => 'multiple_choice',
             'question' => '5. What does the teller give at the end?',
             'options' => ['A new account', 'A receipt', 'A bill', 'A credit card'],
@@ -48,18 +48,18 @@ $content = [
     ],
 
     'subtitles' => [
-        ['start' => 0,  'end' => 3,  'text' => 'Bank Teller: Hello. How can I help you today?'],
-        ['start' => 3,  'end' => 6,  'text' => 'Customer: Hi. I need to pay my electric bill.'],
-        ['start' => 6,  'end' => 9,  'text' => 'Bank Teller: Sure. Do you have your bill with you?'],
-        ['start' => 9,  'end' => 11, 'text' => 'Customer: Yes. Here it is.'],
-        ['start' => 11, 'end' => 16, 'text' => 'Bank Teller: Thank you. Your total is $45.60.'],
-        ['start' => 16, 'end' => 20, 'text' => 'Bank Teller: Will you pay by cash or card?'],
-        ['start' => 20, 'end' => 23, 'text' => "Customer: I'll pay by card, please."],
-        ['start' => 23, 'end' => 28, 'text' => 'Bank Teller: OK. Please insert your card here.'],
-        ['start' => 28, 'end' => 30, 'text' => '...'],
-        ['start' => 30, 'end' => 35, 'text' => 'Bank Teller: All done! Here is your receipt.'],
-        ['start' => 35, 'end' => 37, 'text' => 'Customer: Great, thank you!'],
-        ['start' => 37, 'end' => 40, 'text' => 'Bank Teller: You’re welcome. Have a nice day!'],
+        ['start' => 0,  'end' => 2.5,  'text' => 'Hello. How can I help you today?'],
+        ['start' => 3,  'end' => 5.5,  'text' => 'Hi. I need to pay my electric bill.'],
+        ['start' => 5.5,  'end' => 10,  'text' => 'Sure. Do you have your bill with you?'],
+        ['start' => 11,  'end' => 12.5, 'text' => 'Yes. Here it is.'],
+        ['start' => 13.3, 'end' => 17, 'text' => 'Thank you. Your total is $45.60.'],
+        ['start' => 17, 'end' => 19.5, 'text' => 'Will you pay by cash or card?'],
+        ['start' => 20, 'end' => 22.5, 'text' => "I'll pay by card, please."],
+        ['start' => 23, 'end' => 26.5, 'text' => 'OK. Please insert your card here.'],
+
+        ['start' => 27.5, 'end' => 31, 'text' => 'All done! Here is your receipt.'],
+        ['start' => 31.8, 'end' => 33, 'text' => 'Great, thank you!'],
+        ['start' => 33.5, 'end' => 36, 'text' => 'You’re welcome. Have a nice day!'],
     ]
 ];
 

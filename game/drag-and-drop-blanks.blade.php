@@ -1,4 +1,4 @@
-@php
+﻿@php
     $content = is_array($content ?? null) ? $content : [];
 
     $escapeHtml = function ($value) {
@@ -12,11 +12,17 @@
         return mb_strtolower($value);
     };
 
+    $normalizeAnswerExact = function ($value) {
+        $value = (string) $value;
+        $value = preg_replace('/\s+/u', ' ', $value);
+        return trim($value);
+    };
+
     $sentences = array_values($content['sentences'] ?? []);
     $answers = array_values($content['answers'] ?? []);
     $lines = array_values($content['lines'] ?? []);
     $bank = array_values($content['bank'] ?? []);
-    $speakers = array_values($content['speakers'] ?? []);
+    $speakers = array_values($content['speakers'] ?? []); 
     $speakerAnswersMap = $content['speaker_answers'] ?? [];
 
     $sentenceItems = [];
@@ -74,7 +80,9 @@
     }
 
     if ($isDialogueBankMode || $isSpeakerMatchingMode) {
+        $answerIndexExactMap = [];
         $answerIndexMap = [];
+        $answerVariantCounts = [];
 
         foreach ($bank as $index => $bankItem) {
             $answerText = is_array($bankItem)
@@ -88,6 +96,13 @@
                 'text' => $answerText,
                 'answerIndex' => $answerIndex,
             ];
+
+            if (!isset($answerIndexExactMap[$normalizeAnswerExact($answerText)])) {
+                $answerIndexExactMap[$normalizeAnswerExact($answerText)] = $answerIndex;
+            }
+
+            $normalizedAnswer = $normalizeAnswer($answerText);
+            $answerVariantCounts[$normalizedAnswer] = ($answerVariantCounts[$normalizedAnswer] ?? 0) + 1;
 
             if (!isset($answerIndexMap[$normalizeAnswer($answerText)])) {
                 $answerIndexMap[$normalizeAnswer($answerText)] = $answerIndex;
@@ -129,7 +144,12 @@
                 }
 
                 $answerText = trim((string) $part);
-                $answerIndex = $answerIndexMap[$normalizeAnswer($answerText)] ?? 0;
+                $exactAnswerKey = $normalizeAnswerExact($answerText);
+                $normalizedAnswer = $normalizeAnswer($answerText);
+                $answerIndex = $answerIndexExactMap[$exactAnswerKey]
+                    ?? (($answerVariantCounts[$normalizedAnswer] ?? 0) === 1
+                        ? ($answerIndexMap[$normalizedAnswer] ?? 0)
+                        : 0);
 
                 $tokens[] = [
                     'type' => 'blank',
@@ -162,8 +182,14 @@
                 'hobby_id' => (string) ($speaker['hobby_id'] ?? ('speaker' . ($speakerIndex + 1) . 'Hobby')),
                 'sport_placeholder' => (string) ($speaker['sport_placeholder'] ?? $speakerSportPlaceholder),
                 'hobby_placeholder' => (string) ($speaker['hobby_placeholder'] ?? $speakerHobbyPlaceholder),
-                'sport_answer_index' => $answerIndexMap[$normalizeAnswer($sportAnswer)] ?? 0,
-                'hobby_answer_index' => $answerIndexMap[$normalizeAnswer($hobbyAnswer)] ?? 0,
+                'sport_answer_index' => $answerIndexExactMap[$normalizeAnswerExact($sportAnswer)]
+                    ?? ((($answerVariantCounts[$normalizeAnswer($sportAnswer)] ?? 0) === 1)
+                        ? ($answerIndexMap[$normalizeAnswer($sportAnswer)] ?? 0)
+                        : 0),
+                'hobby_answer_index' => $answerIndexExactMap[$normalizeAnswerExact($hobbyAnswer)]
+                    ?? ((($answerVariantCounts[$normalizeAnswer($hobbyAnswer)] ?? 0) === 1)
+                        ? ($answerIndexMap[$normalizeAnswer($hobbyAnswer)] ?? 0)
+                        : 0),
             ];
         }
     }
@@ -201,6 +227,11 @@
     $dialogueCardClass = trim((string) ($content['dialogue_card_class'] ?? 'w-full'));
     $sentenceContainerClass = trim((string) ($content['sentence_container_class'] ?? 'w-full max-w-full'));
     $sentenceLineClass = trim((string) ($content['sentence_line_class'] ?? ''));
+    $tileClass = trim((string) ($content['tile_class'] ?? ''));
+    $wordBankPanelClass = trim((string) ($content['word_bank_panel_class'] ?? ''));
+    $poolContentClass = trim((string) ($content['pool_content_class'] ?? ''));
+    $subtitleBubble = trim((string) ($content['subtitle_bubble'] ?? ''));
+    $desktopLayoutBreakpoint = max(0, (int) ($content['desktop_layout_breakpoint'] ?? 1280));
 @endphp
 
 @extends('slider.simple-layout')
@@ -330,6 +361,45 @@
             background: rgb(51 65 85);
         }
 
+        .ddb-modal-close {
+            display: inline-flex;
+            height: 2.9rem;
+            width: 2.9rem;
+            align-items: center;
+            justify-content: center;
+            border-radius: .9rem;
+            border: 1px solid rgba(251,146,60,.35);
+            background: rgba(255,237,213,.95);
+            color: #c2410c;
+            box-shadow: 0 8px 22px rgba(234,88,12,.10);
+            transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
+        }
+
+        .ddb-modal-close:hover {
+            background: rgb(254 215 170);
+            border-color: rgb(253 186 116);
+            color: #9a3412;
+            transform: scale(1.04);
+            box-shadow: 0 10px 24px rgba(234,88,12,.14);
+        }
+
+        .dark .ddb-modal-close {
+            border-color: rgba(194,65,12,.45);
+            background: rgba(154,52,18,.35);
+            color: rgb(254 215 170);
+            box-shadow: 0 8px 22px rgba(120,53,15,.16);
+        }
+
+        .dark .ddb-modal-close:hover {
+            background: rgba(154,52,18,.5);
+            color: rgb(254 237 213);
+        }
+
+        .ddb-modal-close-sm {
+            height: 2.35rem;
+            width: 2.35rem;
+        }
+
         .dark .ddb-btn-reveal {
             color: rgb(254 215 170);
             border-color: rgba(194, 65, 12, .45);
@@ -446,19 +516,21 @@
             align-content: start;
         }
 
-        @media (max-width: 1023.98px) {
+        @media (max-width: 1279.98px) {
             #ddbWordBankPanel {
                 max-height: min(35vh, 310px);
             }
 
             #ddbPoolContent {
-                max-height: calc(min(35vh, 310px) - 56px);
+                max-height: calc(min(35vh, 310px) - 108px);
                 overflow-y: auto;
                 overflow-x: hidden;
+                padding-bottom: .9rem;
+                padding-right: .2rem;
             }
         }
 
-        @media (min-width: 1024px) {
+        @media (min-width: 1280px) {
             #ddbPoolRail {
                 position: relative;
                 align-self: stretch;
@@ -486,6 +558,43 @@
             }
         }
 
+        @media (min-width: {{ $desktopLayoutBreakpoint }}px) {
+            #ddbLayoutShell {
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: center;
+                gap: 1.25rem;
+                padding-bottom: 0;
+            }
+
+            #ddbGameColumn {
+                width: 70%;
+                max-width: 70%;
+                flex: 0 0 70%;
+            }
+
+            #ddbPoolRail {
+                position: relative;
+                order: -1;
+                width: 30%;
+                max-width: 30%;
+                flex: 0 0 30%;
+                align-self: stretch;
+            }
+
+            #ddbPoolBar {
+                position: relative;
+                inset: auto;
+                bottom: auto;
+                top: auto;
+                left: auto;
+                right: auto;
+                padding: 0;
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .ddb-returning,
             .ddb-shake,
@@ -496,13 +605,47 @@
                 transition: none !important;
             }
         }
+
+        .ddb-subtitle-bubble {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            max-width: min(100%, 42rem);
+            margin: .15rem auto 0;
+            padding: .72rem 1rem;
+            border-radius: 1.25rem;
+            border: 1px solid rgba(99, 102, 241, .14);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,.96), rgba(239,246,255,.92));
+            box-shadow: 0 14px 34px -24px rgba(37,99,235,.4);
+            font-size: .95rem;
+            line-height: 1.4;
+            font-weight: 800;
+            color: #1e3a8a;
+            text-align: center;
+        }
+
+        .dark .ddb-subtitle-bubble {
+            border-color: rgba(129, 140, 248, .24);
+            background:
+                linear-gradient(180deg, rgba(30,41,59,.92), rgba(15,23,42,.94));
+            color: #dbeafe;
+            box-shadow: 0 18px 38px -26px rgba(59,130,246,.38);
+        }
+
+        @media (min-width: 640px) {
+            .ddb-subtitle-bubble {
+                padding: .82rem 1.25rem;
+                font-size: 1rem;
+            }
+        }
     </style>
 @endsection
 
 @section("content")
     <main class="flex min-h-[100dvh] w-full flex-col" id="dragDropBlanksGame">
-        <div id="ddbTitleBlock" class="header-spacing text-center space-y-6 my-8">
-            <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">
+        <div id="ddbTitleBlock" class="header-spacing text-center space-y-4 my-4 sm:my-5">
+            <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4">
                 <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
                     {{ $content['title'] ?? '' }}
                 </span>
@@ -513,24 +656,30 @@
                     {{ $content['subtitle'] }}
                 </p>
             @endif
+
+            @if($subtitleBubble !== '')
+                <div class="ddb-subtitle-bubble">
+                    {{ $subtitleBubble }}
+                </div>
+            @endif
         </div>
 
-        <div id="ddbStatusRow" class="mx-auto mb-5 w-full max-w-3xl overflow-hidden rounded-3xl border border-slate-200/70 bg-white/60 shadow-lg backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
+        <div id="ddbStatusRow" class="mx-auto mb-4 sm:mb-5 w-full max-w-[19.5rem] sm:max-w-3xl overflow-hidden rounded-3xl border border-slate-200/70 bg-white/60 shadow-lg backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
             <div class="grid grid-cols-4">
                 @foreach([$progressLabel => 'ddbProgressCount', 'Correct' => 'ddbCorrectCount', 'Mistakes' => 'ddbMistakesCount', 'Time' => 'ddbTimer'] as $label => $id)
-                    <div class="px-3 py-3 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
+                    <div class="px-1.5 py-2 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
                         <div class="hidden text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 sm:inline-block">
                             {{ $label }}
                         </div>
-                        <div class="text-base font-black sm:text-lg">
+                        <div class="text-xs font-black sm:text-lg">
                             @if($label === 'Blanks' || $label === 'Slots')
-                                🧩
+                                ðŸ§©
                             @elseif($label === 'Correct')
-                                ✅
+                                âœ…
                             @elseif($label === 'Mistakes')
-                                ❌
+                                âŒ
                             @else
-                                ⏱️
+                                â±ï¸
                             @endif
                             <span id="{{ $id }}">{{ $label === 'Time' ? '00:00' : (($label === 'Blanks' || $label === 'Slots') ? '0/0' : '0') }}</span>
                         </div>
@@ -539,24 +688,24 @@
             </div>
         </div>
 
-        <div id="ddbLayoutShell" class="mx-auto flex w-full flex-1 min-h-0 flex-col px-4 pt-4 pb-[calc(min(35vh,310px)+16px)] sm:px-6 sm:pt-5 sm:pb-[calc(min(35vh,310px)+20px)] lg:flex-row lg:items-start lg:justify-center lg:gap-5 lg:px-8 lg:pt-4 lg:pb-0">
-            <section id="ddbGameColumn" class="w-full flex flex-col lg:w-[70%] lg:flex-none">
+        <div id="ddbLayoutShell" class="mx-auto flex w-full flex-1 min-h-0 flex-col px-4 pt-2 pb-[calc(min(35vh,310px)+16px)] sm:px-6 sm:pt-3 sm:pb-[calc(min(35vh,310px)+20px)] xl:flex-row xl:items-start xl:justify-center xl:gap-5 lg:px-8 xl:pt-2 xl:pb-0">
+            <section id="ddbGameColumn" class="w-full flex flex-col xl:w-[70%] xl:flex-none">
                 <div class="grid place-items-center text-center gap-3 sm:gap-4 auto-rows-max">
                     <div class="w-full">
                         <div id="ddbDialogueCard"
                              class="relative isolate {{ $dialogueCardClass }} text-left overflow-hidden rounded-[1.6rem] border border-slate-200/70 bg-white/70 shadow-[0_18px_55px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60 lg:overflow-visible mb-4">
-                            <div id="ddbDialogueInner" class="relative z-[1] px-3 py-4 sm:px-4 sm:py-4 lg:overflow-visible">
-                                <div class="space-y-4 sm:space-y-5">
+                            <div id="ddbDialogueInner" class="relative z-[1] px-3 py-3 sm:px-4 sm:py-3.5 lg:overflow-visible">
+                                <div class="space-y-3 sm:space-y-4">
                                     @if(!empty($playerAudio))
-                                        <div class="rounded-2xl border border-indigo-100 bg-indigo-50/90 px-4 py-3 shadow-sm dark:border-indigo-700/60 dark:bg-indigo-900/30 sm:px-5 sm:py-3.5">
-                                            <div class="flex items-start gap-4">
+                                        <div class="rounded-2xl border border-indigo-100 bg-indigo-50/90 px-3 py-2 shadow-sm dark:border-indigo-700/60 dark:bg-indigo-900/30 sm:px-4 sm:py-3">
+                                            <div class="flex items-center gap-2.5 sm:gap-3">
                                                 <button
                                                         id="ddbPlayAudioBtn"
                                                         type="button"
-                                                        class="play-hit audio-listen-btn inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 transition-all duration-150 active:scale-95 hover:scale-[1.06] focus-visible:ring-4 focus-visible:ring-indigo-300/40"
+                                                        class="play-hit audio-listen-btn inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 transition-all duration-150 active:scale-95 hover:scale-[1.06] focus-visible:ring-4 focus-visible:ring-indigo-300/40"
                                                         aria-label="Play audio"
                                                 >
-                                                    <svg class="static-icon h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                    <svg class="static-icon h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                         <path d="M8 5v14l11-7-11-7z"/>
                                                     </svg>
 
@@ -566,14 +715,14 @@
                                                 </button>
 
                                                 <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center gap-3">
-                                                        <div class="flex-1 flex flex-col gap-2 min-w-0">
-                                                            <div class="ddb-audio-track mt-1 cursor-pointer" id="ddbProgressTrack" aria-label="Audio progress">
+                                                    <div class="flex items-center gap-2 sm:gap-2.5">
+                                                        <div class="flex-1 min-w-0 flex flex-col gap-1 sm:gap-1.5">
+                                                            <div class="ddb-audio-track cursor-pointer" id="ddbProgressTrack" aria-label="Audio progress">
                                                                 <div class="ddb-audio-fill" id="ddbProgressFill"></div>
                                                                 <div class="ddb-audio-knob" id="ddbProgressKnob"></div>
                                                             </div>
 
-                                                            <div class="flex justify-between text-[11px] font-extrabold text-indigo-700 dark:text-indigo-200">
+                                                            <div class="flex justify-between text-[10px] sm:text-[11px] font-extrabold text-indigo-700 dark:text-indigo-200">
                                                                 <span id="ddbCurrentTime">0:00</span>
                                                                 <span id="ddbTotalTime">0:00</span>
                                                             </div>
@@ -583,7 +732,7 @@
                                                             <button
                                                                     id="ddbShowScriptBtn"
                                                                     type="button"
-                                                                    class="ddb-btn-primary ddb-btn-script shrink-0"
+                                                                    class="ddb-btn-primary ddb-btn-script shrink-0 px-2.5 py-1.5 text-[11px] sm:px-3 sm:text-xs"
                                                             >
                                                                 <span>Script</span>
                                                             </button>
@@ -606,7 +755,7 @@
                                                         <div class="grid gap-3 lg:grid-cols-[170px_minmax(0,1fr)] lg:items-center">
                                                             <div class="flex items-center gap-2.5">
                                                                 <div class="grid h-9 w-9 place-items-center rounded-xl border border-slate-200/70 bg-white/80 text-sm shadow-sm dark:border-slate-700/60 dark:bg-slate-900/30 shrink-0">
-                                                                    🎙️
+                                                                    ðŸŽ™ï¸
                                                                 </div>
 
                                                                 <div class="text-base sm:text-lg font-black tracking-[-0.02em] text-slate-900 dark:text-slate-50">
@@ -624,6 +773,7 @@
                                                                         data-initial-min-width-lg="{{ $desktopBlankWidth }}px"
                                                                         data-blank="{{ $speaker['sport_id'] }}"
                                                                         data-answer-index="{{ $speaker['sport_answer_index'] }}"
+                                                                        data-accept="{{ $speaker['sport_answer'] }}"
                                                                         data-placeholder="{{ $speaker['sport_placeholder'] }}"
                                                                 ></span>
 
@@ -640,6 +790,7 @@
                                                                         data-initial-min-width-lg="{{ $desktopBlankWidth }}px"
                                                                         data-blank="{{ $speaker['hobby_id'] }}"
                                                                         data-answer-index="{{ $speaker['hobby_answer_index'] }}"
+                                                                        data-accept="{{ $speaker['hobby_answer'] }}"
                                                                         data-placeholder="{{ $speaker['hobby_placeholder'] }}"
                                                                 ></span>
                                                             </div>
@@ -648,10 +799,10 @@
                                                 @endforeach
                                             </div>
                                         @else
-                                            <div class="flex flex-col">
+                                            <div class="flex flex-col gap-0">
                                                 @foreach($sentenceItems as $item)
                                                     <div class="{{ $sentenceContainerClass }}">
-                                                        <div class="ddb-sentence-line w-fit max-w-full px-1.5 py-1 text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100 !leading-[2.4]">
+                                                        <div class="ddb-sentence-line {{ $sentenceLineClass }} w-fit max-w-full px-1.5 py-0.5 text-base sm:text-lg lg:text-[1.15rem] font-semibold leading-[1.45] text-slate-900 dark:text-slate-100 !leading-[2.25] sm:!leading-[2.35]">
                                                             @foreach($item['tokens'] as $token)
                                                                 @if($token['type'] === 'html')
                                                                     <span>{!! $token['value'] !!}</span>
@@ -683,13 +834,25 @@
                         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm dark:bg-black/60"></div>
 
                         <div class="relative flex min-h-full w-full items-center justify-center p-4 sm:p-6">
-                            <div class="w-full max-w-lg max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 bg-white/95 shadow-2xl dark:border-slate-700/70 dark:bg-slate-900/95">
+                            <div class="relative w-full max-w-lg max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 bg-white/95 shadow-2xl dark:border-slate-700/70 dark:bg-slate-900/95">
                                 <div class="p-6 text-center sm:p-8">
-                                    <div class="mb-3 text-6xl">🎉</div>
+                                    <div class="mb-3 flex items-center justify-between gap-3 text-left">
+                                        <h2 class="text-2xl font-black text-slate-900 dark:text-white sm:text-3xl">
+                                            Done!
+                                        </h2>
+                                        <button
+                                                id="ddbCloseWinBtn"
+                                                type="button"
+                                                class="ddb-modal-close ddb-modal-close-sm shrink-0"
+                                                aria-label="Close results"
+                                        >
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
+                                            </svg>
+                                        </button>
+                                    </div>
 
-                                    <h2 class="text-2xl font-black text-slate-900 dark:text-white sm:text-3xl">
-                                        Done!
-                                    </h2>
+                                    <div class="mb-3 text-6xl">ðŸŽ‰</div>
 
                                     <div class="mt-5 grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
                                         @foreach(['Correct' => 'ddbFinalCorrect', 'Time' => 'ddbFinalTime', 'Mistakes' => 'ddbFinalMistakes'] as $label => $id)
@@ -714,7 +877,7 @@
                                                 class="ddb-btn-primary w-full px-8 py-3 text-sm"
                                                 onclick="window.dragDropBlanksGoNext && window.dragDropBlanksGoNext()"
                                         >
-                                            Continue ⚡
+                                            Continue âš¡
                                         </button>
                                     </div>
                                 </div>
@@ -727,20 +890,22 @@
                             <div id="ddbScriptBackdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm dark:bg-black/60"></div>
 
                             <div class="relative flex min-h-full w-full items-center justify-center p-4 sm:p-6">
-                                <div class="w-full max-w-3xl max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 bg-white/95 shadow-2xl dark:border-slate-700/70 dark:bg-slate-900/95 text-left">
-                                    <div class="flex items-center justify-between border-b border-slate-200/70 px-4 py-3 dark:border-slate-700/70 sm:px-5 sm:py-4">
+                                <div class="relative w-full max-w-3xl max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 bg-white/95 shadow-2xl dark:border-slate-700/70 dark:bg-slate-900/95 text-left">
+                                    <button
+                                            id="ddbCloseScriptBtn"
+                                            type="button"
+                                            class="ddb-modal-close absolute right-4 top-4 z-10"
+                                            aria-label="Close script"
+                                    >
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
+                                        </svg>
+                                    </button>
+
+                                    <div class="flex items-center justify-between border-b border-slate-200/70 px-4 py-3 pr-16 dark:border-slate-700/70 sm:px-5 sm:py-4 sm:pr-16">
                                         <div class="font-black text-sm text-slate-900 dark:text-slate-50 sm:text-base">
                                             Script
                                         </div>
-
-                                        <button
-                                                id="ddbCloseScriptBtn"
-                                                type="button"
-                                                class="ddb-btn-secondary"
-                                                aria-label="Close script"
-                                        >
-                                            Close
-                                        </button>
                                     </div>
 
                                     <div class="max-h-[70vh] overflow-auto p-3 sm:p-4">
@@ -769,28 +934,28 @@
 
                     <template id="ddbTileTpl">
                         <div
-                                class="ddb-draggable-item select-none touch-none cursor-grab rounded-xl px-2 py-2 sm:px-2.5 sm:py-2.5 text-base inline-flex min-h-[42px] w-auto max-w-full shrink-0 items-center justify-center text-center leading-snug font-black text-white shadow-[0_10px_20px_rgba(2,6,23,0.16)] border border-white/20 transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0"
+                                class="ddb-draggable-item {{ $tileClass }} select-none touch-none cursor-grab rounded-xl px-2 py-2 sm:px-2.5 sm:py-2.5 text-base inline-flex min-h-[42px] w-auto max-w-full shrink-0 items-center justify-center text-center leading-snug font-black text-white shadow-[0_10px_20px_rgba(2,6,23,0.16)] border border-white/20 transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0"
                                 style="touch-action:none;"
                         ></div>
                     </template>
                 </div>
             </section>
 
-            <div id="ddbPoolRail" class="w-full lg:order-first lg:self-stretch">
-                <div id="ddbPoolBar" class="fixed inset-x-0 bottom-0 z-[1500] lg:relative lg:inset-auto lg:bottom-auto lg:top-auto lg:left-auto">
-                    <div class="mx-auto w-full px-3 sm:px-6 lg:px-0 pb-0">
+            <div id="ddbPoolRail" class="w-full xl:order-first xl:self-stretch">
+                <div id="ddbPoolBar" class="fixed inset-x-0 bottom-0 z-[1500] p-3 sm:p-4 xl:relative xl:inset-auto xl:bottom-auto xl:top-auto xl:left-auto xl:p-0">
+                    <div class="mx-auto w-full max-w-6xl px-0 pb-0">
                         <div id="ddbWordBankPanel"
-                             class="relative overflow-hidden rounded-t-3xl sm:rounded-3xl border border-slate-200/70 bg-white/90 backdrop-blur-xl shadow-[0_-18px_55px_rgba(2,6,23,0.16)] dark:border-slate-700/60 dark:bg-slate-950/75 lg:rounded-3xl lg:shadow-[0_18px_45px_rgba(2,6,23,0.10)]">
+                             class="relative overflow-hidden rounded-t-3xl border border-slate-200/70 bg-white/90 backdrop-blur-xl shadow-[0_-18px_55px_rgba(2,6,23,0.16)] dark:border-slate-700/60 dark:bg-slate-950/75 sm:rounded-3xl xl:rounded-3xl xl:shadow-[0_18px_45px_rgba(2,6,23,0.10)] {{ $wordBankPanelClass }}">
                             <div class="pointer-events-none absolute inset-0 opacity-80 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(99,102,241,0.16)_0%,transparent_55%),radial-gradient(120%_120%_at_100%_0%,rgba(59,130,246,0.12)_0%,transparent_55%)]"></div>
 
-                            <div class="relative px-3 pt-3 pb-4 sm:px-4 sm:py-4 lg:px-6">
+                            <div class="relative px-3 pt-3 pb-4 sm:px-4 sm:py-4 xl:px-6">
                                 <div class="flex items-center justify-center">
                                     <div class="h-1.5 w-14 rounded-full bg-slate-900/10 dark:bg-white/10"></div>
                                 </div>
 
                                 <div class="mt-3 flex items-center justify-between gap-2">
                                     <div class="flex items-center gap-2">
-                                        <button id="ddbPrevWordsBtn" type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] lg:hidden" aria-label="Previous words">
+                                        <button id="ddbPrevWordsBtn" type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] xl:hidden" aria-label="Previous words">
                                             <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
                                                 <path fill-rule="evenodd" d="M12.79 4.23a.75.75 0 0 1-.02 1.06L8.06 10l4.71 4.71a.75.75 0 1 1-1.06 1.06l-5.24-5.24a.75.75 0 0 1 0-1.06l5.24-5.24a.75.75 0 0 1 1.08-.02Z" clip-rule="evenodd"/>
                                             </svg>
@@ -800,7 +965,7 @@
                                             0/0
                                         </div>
 
-                                        <button id="ddbNextWordsBtn" type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] lg:hidden" aria-label="Next words">
+                                        <button id="ddbNextWordsBtn" type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] xl:hidden" aria-label="Next words">
                                             <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
                                                 <path fill-rule="evenodd" d="M7.21 15.77a.75.75 0 0 1 .02-1.06L11.94 10 7.23 5.29a.75.75 0 0 1 1.06-1.06l5.24 5.24c.3.3.3.77 0 1.06l-5.24 5.24a.75.75 0 0 1-1.08.02Z" clip-rule="evenodd"/>
                                             </svg>
@@ -829,7 +994,7 @@
                                 <div class="mt-3 h-px w-full bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent dark:via-indigo-400/15"></div>
 
                                 <div class="relative mt-3">
-                                    <div id="ddbPoolContent" class="mx-auto flex w-fit max-w-full flex-wrap items-start justify-start gap-2 sm:gap-2.5 lg:w-full"></div>
+                                    <div id="ddbPoolContent" class="mx-auto flex w-fit max-w-full flex-wrap items-start justify-start gap-2 sm:gap-2.5 xl:w-full {{ $poolContentClass }}"></div>
                                 </div>
                             </div>
                         </div>
@@ -847,6 +1012,7 @@
             var IS_SPEAKER_MATCHING_MODE = @json($isSpeakerMatchingMode);
             var DESKTOP_GAME_WIDTH = Number(@json($content['desktop_game_width'] ?? 70));
             var DESKTOP_POOL_WIDTH = Number(@json($content['desktop_pool_width'] ?? 30));
+            var DESKTOP_LAYOUT_BREAKPOINT = Number(@json($desktopLayoutBreakpoint));
             var MOBILE_BANK_GAP = Number(@json($content['mobile_bank_gap'] ?? 20));
             var DESKTOP_STICKY_TOP = Number(@json($content['desktop_sticky_top'] ?? 16));
             var playerAudio = document.getElementById('ddbPromptAudio');
@@ -856,6 +1022,7 @@
             var scriptModal = document.getElementById('ddbScriptModal');
             var scriptBackdrop = document.getElementById('ddbScriptBackdrop');
             var closeScriptBtn = document.getElementById('ddbCloseScriptBtn');
+            var closeWinBtn = document.getElementById('ddbCloseWinBtn');
 
             var SFX = {
                 enabled: true,
@@ -1006,11 +1173,23 @@
                 });
             }
 
+            if (closeWinBtn) {
+                closeWinBtn.addEventListener('click', function () {
+                    if (window.dragDropBlanksGame && window.dragDropBlanksGame.winModal) {
+                        window.dragDropBlanksGame.winModal.classList.add('hidden');
+                    }
+                });
+            }
+
             function getInitialBlankMinWidth(blank){
                 var w = window.innerWidth || document.documentElement.clientWidth || 0;
-                if (w >= 1024) return blank.dataset.initialMinWidthLg || blank.dataset.initialMinWidthSm || blank.dataset.initialMinWidthMobile || '';
+                if (w >= 1280) return blank.dataset.initialMinWidthLg || blank.dataset.initialMinWidthSm || blank.dataset.initialMinWidthMobile || '';
                 if (w >= 640) return blank.dataset.initialMinWidthSm || blank.dataset.initialMinWidthMobile || '';
                 return blank.dataset.initialMinWidthMobile || '';
+            }
+
+            function normalizeAnswerText(value){
+                return String(value || '').replace(/\s+/g, ' ').trim();
             }
 
             function DragDropBlanksGame(){
@@ -1068,7 +1247,7 @@
                     'bg-gradient-to-br from-cyan-500 to-sky-600'
                 ];
 
-                this.burstEmojis = ['✨', '🎉', '💫', '⭐', '👏'];
+                this.burstEmojis = ['âœ¨', 'ðŸŽ‰', 'ðŸ’«', 'â­', 'ðŸ‘'];
 
                 if (this.revealAnswersBtn) {
                     this.revealAnswersBtn.addEventListener('click', this.handleRevealAnswers);
@@ -1212,7 +1391,7 @@
 
                 if (!this.layoutShell || !this.poolBar) return;
 
-                if (viewportWidth >= 1024) {
+                if (viewportWidth >= DESKTOP_LAYOUT_BREAKPOINT) {
                     this.layoutShell.style.paddingBottom = '';
                     return;
                 }
@@ -1223,7 +1402,7 @@
 
             DragDropBlanksGame.prototype.getVisibleWordLimit = function(){
                 var w = window.innerWidth || document.documentElement.clientWidth || 0;
-                if (w >= 1024) return Number.MAX_SAFE_INTEGER;
+                if (w >= DESKTOP_LAYOUT_BREAKPOINT) return Number.MAX_SAFE_INTEGER;
                 if (w < 640) return 8;
                 return 9;
             };
@@ -1258,7 +1437,7 @@
 
                 if (!this.poolBar || !this.poolRail) return;
 
-                if (viewportWidth < 1024) {
+                if (viewportWidth < DESKTOP_LAYOUT_BREAKPOINT) {
                     this.resetDesktopStickyState();
                     return;
                 }
@@ -1307,7 +1486,7 @@
 
                 if (!this.gameColumn || !this.poolRail || !this.dialogueCard) return;
 
-                if (viewportWidth < 1024) {
+                if (viewportWidth < DESKTOP_LAYOUT_BREAKPOINT) {
                     this.gameColumn.style.width = '';
                     this.gameColumn.style.maxWidth = '';
                     this.gameColumn.style.flexBasis = '';
@@ -1344,6 +1523,7 @@
                 node.textContent = itemData.text;
                 node.dataset.id = itemData.id;
                 node.dataset.answerIndex = itemData.answerIndex;
+                node.dataset.accept = itemData.text;
                 node.addEventListener('pointerdown', function(e){
                     self.handlePointerDown(e, node);
                 });
@@ -1653,8 +1833,10 @@
                 if (blank && blank.classList.contains('ddb-blank-slot') && blank.children.length === 0) {
                     var expectedIndex = Number(blank.dataset.answerIndex || 0);
                     var gotIndex = Number(this.draggedItem.dataset.answerIndex || 0);
+                    var expectedText = normalizeAnswerText(blank.dataset.accept || '');
+                    var gotText = normalizeAnswerText(this.draggedItem.dataset.accept || this.draggedItem.textContent || '');
 
-                    if (expectedIndex && gotIndex === expectedIndex) {
+                    if ((expectedIndex && gotIndex === expectedIndex) || (expectedText !== '' && expectedText === gotText)) {
                         this.handleCorrectDrop(blank);
                     } else {
                         shouldCountMistake = true;
@@ -1694,7 +1876,7 @@
 
                 if (exactBlank) return exactBlank;
 
-                threshold = window.innerWidth >= 1024 ? 42 : (window.innerWidth >= 640 ? 34 : 28);
+                threshold = window.innerWidth >= 1280 ? 42 : (window.innerWidth >= 640 ? 34 : 28);
 
                 Array.prototype.slice.call(document.querySelectorAll('.ddb-blank-slot')).forEach(function(blank){
                     var rect;
@@ -2008,3 +2190,4 @@
         })();
     </script>
 @endsection
+
