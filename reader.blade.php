@@ -21,7 +21,7 @@
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
                     },
                     screens: {
-                        'xs': '480px', 
+                        'xs': '480px',
                     },
                 }
             }

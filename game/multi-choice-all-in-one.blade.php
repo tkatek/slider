@@ -18,7 +18,7 @@
         : false;
     $showReadingBadge = array_key_exists('show_reading_badge', $content)
         ? !empty($content['show_reading_badge'])
-        : true;
+        : true; 
     $rawReadingPassage = $content['passage'] ?? $content['reading'] ?? $content['reading_passage'] ?? [];
     $readingPassage = is_array($rawReadingPassage)
         ? array_values(array_filter(array_map(static fn ($paragraph) => trim((string) $paragraph), $rawReadingPassage), static fn ($paragraph) => $paragraph !== ''))
@@ -225,7 +225,6 @@
             font-weight:900;
             color:#fff;
             border:1px solid rgba(255,255,255,.2);
-            background:linear-gradient(135deg, #9333ea, #4f46e5, #2563eb);
             box-shadow:0 10px 24px rgba(79,70,229,.10);
             transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease, background-color .2s ease;
         }
@@ -253,7 +252,6 @@
         }
 
         .mca-btn-script{
-            background:linear-gradient(135deg, #4f46e5, #3b82f6);
             box-shadow:0 10px 24px rgba(59,130,246,.14);
         }
 
@@ -434,7 +432,7 @@
         }
 
         .game-modal-primary-btn{
-            background:linear-gradient(135deg, #9333ea, #4f46e5, #2563eb);
+            color:#fff;
         }
 
         .reading-pane{
@@ -771,7 +769,7 @@
             }
 
             .reading-pane.is-plain,
-            .reading-pane.is-compact{ 
+            .reading-pane.is-compact{
                 padding:1.05rem 1.15rem;
             }
 
@@ -954,7 +952,7 @@
                                                     @if($hasAnyScript)
                                                         <button id="btnReplayAudio"
                                                                 type="button"
-                                                                class="mca-btn-primary mca-btn-script mca-inline-script-btn">
+                                                                class="mca-btn-primary mca-btn-script mca-inline-script-btn {{ $theme['button_primary_color'] }}">
                                                             <span>Script</span>
                                                             <span>📄</span>
                                                         </button>
@@ -965,7 +963,7 @@
                                             <div class="mt-3 flex justify-end">
                                                 <button id="btnReplayAudio"
                                                         type="button"
-                                                        class="mca-btn-primary mca-btn-script">
+                                                        class="mca-btn-primary mca-btn-script {{ $theme['button_primary_color'] }}">
                                                     <span>Script</span>
                                                     <span>📄</span>
                                                 </button>
@@ -1012,7 +1010,7 @@
 
                                     <button
                                             id="btnNext"
-                                            class="w-full mca-btn-primary py-3"
+                                            class="w-full mca-btn-primary py-3 {{ $theme['button_primary_color'] }}"
                                     >
                                         Next
                                     </button>
