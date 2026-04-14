@@ -21,7 +21,7 @@
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
                     },
                     screens: {
-                        'xs': '480px',
+                        'xs': '480px', 
                     },
                 }
             }
@@ -58,6 +58,144 @@
             /* Glass Dark */
             --glass-bg: rgba(15, 23, 42, 0.85);
             --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body.editor-theme-orange {
+            --accent: #f97316;
+            --accent-soft: #fed7aa;
+            --accent-light: #fb923c;
+            --accent-dark: #ea580c;
+            --accent-deep: #c2410c;
+            --accent-gradient: linear-gradient(to top right, #f59e0b, #f97316, #ea580c);
+        }
+
+        body.editor-theme-orange .sidebar-thumb:hover {
+            border-color: var(--accent-light);
+            box-shadow: 0 12px 24px -18px rgba(249, 115, 22, 0.45);
+        }
+
+        body.editor-theme-orange .sidebar-thumb:hover .thumb-number {
+            border-color: var(--accent) !important;
+            color: var(--accent-deep);
+        }
+
+        body.editor-theme-orange .sidebar-thumb.active {
+            border-color: var(--accent);
+            box-shadow: 0 16px 32px -22px rgba(249, 115, 22, 0.55);
+        }
+
+        body.editor-theme-orange .thumb-number {
+            border-color: var(--border-ui);
+        }
+
+        body.editor-theme-orange .sidebar-thumb.active .thumb-number {
+            background: var(--accent-gradient);
+            border-color: transparent;
+            color: #ffffff;
+        }
+
+        body.editor-theme-orange .editor-brand-logo {
+            background: var(--accent-gradient) !important;
+        }
+
+        body.editor-theme-orange .editor-primary-btn {
+            background: var(--accent-gradient) !important;
+            box-shadow: 0 10px 20px -10px rgba(249, 115, 22, 0.55) !important;
+        }
+
+        body.editor-theme-orange .editor-primary-btn:hover {
+            background: linear-gradient(to top right, #fb923c, #f97316, #c2410c) !important;
+        }
+
+        body.editor-theme-orange .editor-secondary-btn:hover {
+            border-color: var(--accent-light) !important;
+            color: var(--accent-deep) !important;
+            box-shadow: 0 10px 20px -16px rgba(249, 115, 22, 0.45);
+        }
+
+        body.editor-theme-orange .text-brand,
+        body.editor-theme-orange .hover\:text-brand:hover,
+        body.editor-theme-orange .dark\:text-brand-glow {
+            color: var(--accent) !important;
+        }
+
+        body.editor-theme-orange .bg-brand,
+        body.editor-theme-orange .hover\:bg-brand-glow:hover,
+        body.editor-theme-orange .dark\:bg-brand,
+        body.editor-theme-orange .dark\:hover\:bg-brand-glow:hover {
+            background: var(--accent-gradient) !important;
+        }
+
+        body.editor-theme-orange .border-brand,
+        body.editor-theme-orange .hover\:border-brand:hover,
+        body.editor-theme-orange .group:hover .group-hover\:border-brand {
+            border-color: var(--accent) !important;
+        }
+
+        body.editor-theme-orange .focus\:ring-brand:focus {
+            --tw-ring-color: rgba(249, 115, 22, 0.45) !important;
+        }
+
+        body.editor-theme-orange .shadow-brand\/20,
+        body.editor-theme-orange .dark\:shadow-brand\/20 {
+            --tw-shadow-color: rgba(249, 115, 22, 0.2) !important;
+            --tw-shadow: var(--tw-shadow-colored) !important;
+        }
+
+        body.editor-theme-orange .cue-btn {
+            background: var(--accent-gradient);
+            box-shadow:
+                0 0 0 1px rgba(249, 115, 22, 0.4),
+                0 10px 20px -10px rgba(249, 115, 22, 0.5);
+        }
+
+        body.editor-theme-orange .cue-btn:hover {
+            background: linear-gradient(to top right, #fb923c, #f97316, #c2410c);
+            box-shadow:
+                0 0 0 2px rgba(249, 115, 22, 0.4),
+                0 8px 16px -4px rgba(249, 115, 22, 0.3);
+        }
+
+        body.editor-theme-orange .cue-tooltip {
+            border-color: rgba(249, 115, 22, 0.16);
+            box-shadow:
+                0 40px 80px -15px rgba(15, 23, 42, 0.15),
+                inset 0 0 0 1px rgba(249, 115, 22, 0.08);
+        }
+
+        body.editor-theme-orange .cue-header {
+            background: rgba(249, 115, 22, 0.08);
+            border-left-color: var(--accent);
+        }
+
+        body.editor-theme-orange .cue-header::before {
+            background: linear-gradient(to bottom, transparent, rgba(249, 115, 22, 0.12), transparent);
+        }
+
+        body.editor-theme-orange .cue-badge {
+            color: var(--accent) !important;
+            text-shadow: 0 0 10px rgba(249, 115, 22, 0.22);
+        }
+
+        body.editor-theme-orange .cue-header .cue-badge::after,
+        body.editor-theme-orange .cue-marker {
+            background: var(--accent);
+            box-shadow: 0 0 8px rgba(249, 115, 22, 0.4);
+        }
+
+        body.editor-theme-orange .teacher-cue div:hover .cue-marker {
+            background: var(--accent-light);
+            box-shadow: 0 0 12px rgba(251, 146, 60, 0.6);
+        }
+
+        #desktop-sidebar-toggle-btn:hover {
+            color: var(--accent) !important;
+            background: color-mix(in srgb, var(--accent) 10%, transparent) !important;
+        }
+
+        body.editor-theme-orange #desktop-sidebar-toggle-btn:hover {
+            color: var(--accent-deep) !important;
+            background: rgba(249, 115, 22, 0.12) !important;
         }
         body{
             overflow: hidden;
@@ -570,12 +708,12 @@
         }
     </style>
 </head>
-<body class="flex h-[100dvh] flex-col">
+<body class="flex h-[100dvh] flex-col editor-theme-{{ $theme['name'] ?? 'default' }}">
 <!-- Top Header -->
 <header class="px-3 py-2  md:px-8 md:py-2 glass-panel z-[85] shrink-0 relative">
     <div class="flex min-h-[2.75rem] items-center justify-between sm:min-h-[3rem]">
         <div class="flex-1 flex items-center gap-2 md:gap-3 min-w-0">
-            <div class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-tr from-brand to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shrink-0">
+            <div class="editor-brand-logo w-8 h-8 md:w-10 md:h-10 bg-gradient-to-tr from-brand to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 md:w-6 md:h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -625,7 +763,7 @@
         </div>
         <div class="flex-1 hidden lg:flex items-end justify-end gap-3">
             <button onclick="prevSlide()"
-                    class="btn-action min-w-[2.5rem] bg-[var(--bg-card)] border border-[var(--border-ui)] text-[var(--text-primary)] hover:border-brand hover:text-brand shadow-sm">
+                    class="editor-secondary-btn btn-action min-w-[2.5rem] bg-[var(--bg-card)] border border-[var(--border-ui)] text-[var(--text-primary)] hover:border-brand hover:text-brand shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
                 </svg>
@@ -635,7 +773,7 @@
                   class="w-[90px] text-[9px] md:text-[11px] font-black tracking-[0.1em] text-[var(--text-secondary)] bg-[var(--bg-body)] px-2.5 md:px-4 py-2 rounded-xl border border-[var(--border-ui)]">01
                 / {{count($slides)}}</span>
             <button onclick="nextSlide()"
-                    class="btn-action min-w-[2.5rem] bg-brand text-white shadow-lg shadow-brand/20 hover:bg-brand-glow">
+                    class="editor-primary-btn btn-action min-w-[2.5rem] bg-brand text-white shadow-lg shadow-brand/20 hover:bg-brand-glow">
                 <span class="text-[10px] md:text-[11px] uppercase tracking-[0.1em] hidden sm:inline">Next Slide</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
@@ -675,7 +813,7 @@
     <div class="flex items-center justify-center gap-2 pt-2 lg:hidden">
         <div class="flex flex-1 items-center justify-between gap-1.5 min-w-0">
             <button onclick="prevSlide()"
-                    class="btn-action min-w-[2.5rem] bg-[var(--bg-card)] border border-[var(--border-ui)] text-[var(--text-primary)] hover:border-brand hover:text-brand shadow-sm">
+                    class="editor-secondary-btn btn-action min-w-[2.5rem] bg-[var(--bg-card)] border border-[var(--border-ui)] text-[var(--text-primary)] hover:border-brand hover:text-brand shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
                 </svg>
@@ -687,7 +825,7 @@
             </div>
 
             <button onclick="nextSlide()"
-                    class="btn-action min-w-[2.5rem] bg-brand text-white shadow-lg shadow-brand/20 hover:bg-brand-glow">
+                    class="editor-primary-btn btn-action min-w-[2.5rem] bg-brand text-white shadow-lg shadow-brand/20 hover:bg-brand-glow">
                 <span class="text-[10px] md:text-[11px] uppercase tracking-[0.1em] inline">Next Slide</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
@@ -700,7 +838,7 @@
 <div id="fullscreen-nudge"
      class="hidden fixed top-20 left-1/2 -translate-x-1/2 z-[95] w-[calc(100%-2rem)] max-w-2xl rounded-xl border border-white/10 dark:border-[var(--border-ui)] bg-black/80 dark:bg-[var(--bg-card)]/95 px-3 py-2.5 text-white dark:text-[var(--text-primary)] shadow-2xl dark:backdrop-blur-xl lg:block">
     <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
-        <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/10 dark:bg-gradient-to-br dark:from-brand dark:to-indigo-600 text-white dark:shadow-lg dark:shadow-brand/20">
+        <div class="editor-brand-logo flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/10 dark:bg-gradient-to-br dark:from-brand dark:to-indigo-600 text-white dark:shadow-lg dark:shadow-brand/20">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
             </svg>
