@@ -6,17 +6,7 @@
                 <section class="w-full">
                     <div class="grid place-items-center text-center gap-5 sm:gap-6">
 
-                        <div class="header-spacing text-center space-y-4 my-4 sm:my-6">
-
-                            <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4">
-                            <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                                {{$content['title']}}
-                            </span>
-                            </h1>
-                            <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                                {{$content['subtitle']}}
-                            </p>
-                        </div>
+                        @include('slider.components.title-subtitle')
 
                         <section id="objectives" class="w-full max-w-3xl grid gap-3 sm:gap-4">
                             @foreach($content['objectives'] as $obj)

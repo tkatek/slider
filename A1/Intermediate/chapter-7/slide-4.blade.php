@@ -1,22 +1,13 @@
 <?php
 $content = [
-    'uid' => 'holiday_type_' . substr(md5(uniqid('', true)), 0, 10),
-    'type' => 'image',
-    'page_title' => 'Practice 2',
     'title' => 'Can you guess what type of holiday this is?',
     'subtitle' => 'Choose the correct holiday type.',
-    'question_prompt_label' => 'Pick the correct holiday type:',
+    'type' => 'image',
+
     'enable_image_zoom' => false,
-    'image_plain' => true,
-    'image_scale' => 0.56,
-    'image_extra_scale' => 1.18,
-    'image_radius' => 'rounded-[28px]',
     'image_panel_col_class' => 'sm:col-span-6',
     'answer_panel_col_class' => 'sm:col-span-6',
-    'image_panel_inner_class' => 'h-full p-5 sm:p-6',
-    'game_card_width' => 'max-w-5xl',
-    'options_grid_class' => 'mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2',
-    'image' => materialAsset('slider/A1/Intermediate/chapter-7/img/slide-3/cruise.webp'),
+    'image_scale' => 0.72,
 
     'questions' => [
         [

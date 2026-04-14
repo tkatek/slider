@@ -1,6 +1,5 @@
 <?php
 $content = [
-    'uid' => 'warmup_' . substr(md5(uniqid('', true)), 0, 10),
     'type'=>'emoji',
 
     'title'    => 'Warm-up',

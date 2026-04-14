@@ -6,6 +6,7 @@
     $pageTitle = $content['page_title'] ?? 'Slide';
     $title = $content['title'] ?? '';
     $subtitle = $content['subtitle'] ?? '';
+    $hasSubtitle = trim((string) $subtitle) !== '';
     $gridClass = (string) ($content['grid_class'] ?? 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-4');
     $items = is_array($content['items'] ?? null) ? $content['items'] : [];
     $allowHtmlSubtitles = (bool) ($content['allow_html_subtitles'] ?? false);
@@ -26,7 +27,7 @@
 
     $baseCols = $extractCols(null, $gridClass, 2);
     $smCols = $extractCols('sm', $gridClass, $baseCols);
-    $lgCols = $extractCols('lg', $gridClass, $smCols);
+    $lgCols = $extractCols('lg', $gridClass, $smCols); 
     $xlCols = $extractCols('xl', $gridClass, $lgCols);
 @endphp
 
@@ -39,18 +40,6 @@
             width:100%;
             overflow-x:hidden;
             font-family:"Plus Jakarta Sans", sans-serif;
-            background:
-                radial-gradient(980px 560px at 8% 10%, rgba(103,63,231,.14), transparent 55%),
-                radial-gradient(900px 560px at 92% 14%, rgba(59,130,246,.12), transparent 56%),
-                radial-gradient(880px 640px at 50% 100%, rgba(16,185,129,.08), transparent 60%);
-        }
-
-        .dark .image-card-shell{
-            background:
-                radial-gradient(980px 560px at 8% 10%, rgba(96,165,250,.18), transparent 55%),
-                radial-gradient(900px 560px at 92% 14%, rgba(192,132,252,.16), transparent 56%),
-                radial-gradient(880px 640px at 50% 100%, rgba(99,102,241,.12), transparent 60%),
-                linear-gradient(180deg, #020617 0%, #0f172a 100%);
         }
 
         .image-card-inner{
@@ -66,6 +55,21 @@
 
         .image-card-main{
             width:100%;
+        }
+
+        .image-card-main > #gameTitle{
+            margin-top:0 !important;
+            margin-bottom:22px !important;
+            padding-left:0 !important;
+            padding-right:0 !important;
+        }
+
+        .image-card-main[data-has-subtitle="0"] > #gameTitle{
+            margin-bottom:28px !important;
+        }
+
+        .image-card-main[data-has-subtitle="1"] > #gameTitle{
+            margin-bottom:22px !important;
         }
 
         .image-card-head{
@@ -139,13 +143,13 @@
 
         .image-vocab-card:hover{
             transform:translateY(-3px);
-            border-color:rgba(99,102,241,.32);
-            box-shadow:0 28px 60px -36px rgba(37,99,235,.28);
+            border-color:rgba(100,116,139,.32);
+            box-shadow:0 28px 60px -36px rgba(15,23,42,.24);
         }
 
         .image-vocab-card.ring-2{
-            border-color:rgba(99,102,241,.34);
-            box-shadow:0 0 0 1px rgba(99,102,241,.12), 0 24px 52px -34px rgba(79,70,229,.35);
+            border-color:rgba(100,116,139,.34);
+            box-shadow:0 0 0 1px rgba(100,116,139,.12), 0 24px 52px -34px rgba(15,23,42,.30);
         }
 
         .card-media-box{
@@ -307,6 +311,14 @@
                 gap:16px;
             }
 
+            .image-card-main[data-has-subtitle="0"] > #gameTitle{
+                margin-bottom:32px !important;
+            }
+
+            .image-card-main[data-has-subtitle="1"] > #gameTitle{
+                margin-bottom:26px !important;
+            }
+
             .image-card-grid[data-sm-cols="1"]{grid-template-columns:repeat(1, minmax(0, 1fr));}
             .image-card-grid[data-sm-cols="2"]{grid-template-columns:repeat(2, minmax(0, 1fr));}
             .image-card-grid[data-sm-cols="3"]{grid-template-columns:repeat(3, minmax(0, 1fr));}
@@ -326,6 +338,14 @@
 
             .image-card-grid{
                 gap:18px;
+            }
+
+            .image-card-main[data-has-subtitle="0"] > #gameTitle{
+                margin-bottom:36px !important;
+            }
+
+            .image-card-main[data-has-subtitle="1"] > #gameTitle{
+                margin-bottom:28px !important;
             }
 
             .image-card-grid[data-lg-cols="1"]{grid-template-columns:repeat(1, minmax(0, 1fr));}
@@ -350,8 +370,16 @@
                 font-size:1.95rem;
             }
 
-            .image-card-head{
-                margin-bottom:16px;
+            .image-card-main > #gameTitle{
+                margin-bottom:18px !important;
+            }
+
+            .image-card-main[data-has-subtitle="0"] > #gameTitle{
+                margin-bottom:24px !important;
+            }
+
+            .image-card-main[data-has-subtitle="1"] > #gameTitle{
+                margin-bottom:18px !important;
             }
 
             .card-body{
@@ -376,16 +404,8 @@
 @section('content')
     <div class="image-card-shell">
         <div class="image-card-inner">
-            <main class="image-card-main">
-                <header class="image-card-head">
-                    @if($title !== '')
-                        <h1 class="image-card-title">{{ $title }}</h1>
-                    @endif
-
-                    @if($subtitle !== '')
-                        <p class="image-card-subtitle">{{ $subtitle }}</p>
-                    @endif
-                </header>
+            <main class="image-card-main" data-has-subtitle="{{ $hasSubtitle ? '1' : '0' }}">
+                @include('slider.components.title-subtitle')
 
                 <section
                     class="image-card-grid"

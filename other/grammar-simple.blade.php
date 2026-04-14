@@ -234,19 +234,7 @@
 
     <main class="grammar-page {{ $themeClass }} w-full min-h-[100dvh] py-4 sm:py-6 {{ $centerShell ? 'flex items-center justify-center' : '' }}">
         <div class="mx-auto w-full max-w-6xl px-3 sm:px-5">
-            <header class="{{ $headerWrapClass }}">
-                <h1 class="{{ $titleClass }}">
-                    <span class="{{ $titleGradientClass }} bg-clip-text text-transparent">
-                        {{ $content['title'] }}
-                    </span>
-                </h1>
-
-                @if(!empty($content['subtitle']))
-                    <p class="{{ $subtitleClass }}">
-                        {{ $content['subtitle'] }}
-                    </p>
-                @endif
-            </header>
+            @include('slider.components.title-subtitle')
 
             <section class="glass-shell">
                 <div class="relative p-3 sm:p-4 lg:p-5">

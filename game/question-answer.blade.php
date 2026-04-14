@@ -2,6 +2,21 @@
 
 @php
     $content['theme'] = $content['theme'] ?? '#6366f1';
+    $content['grid'] = array_replace_recursive([
+        'cols' => [
+            'base' => 1,
+            'sm' => 1,
+            'md' => 2,
+            'lg' => 3,
+        ],
+        'gap' => 'gap-3 sm:gap-4 lg:gap-5',
+    ], $content['grid'] ?? []);
+    $content['sounds'] = array_replace([
+        'click' => materialAsset('slider/sounds/tap.wav'),
+        'done' => materialAsset('slider/sounds/correct.wav'),
+        'skip' => materialAsset('slider/sounds/click.wav'),
+    ], $content['sounds'] ?? []);
+
     $cols = $content['grid']['cols'];
     $gridCols = "grid-cols-{$cols['base']} sm:grid-cols-{$cols['sm']} md:grid-cols-{$cols['md']} lg:grid-cols-{$cols['lg']}";
 @endphp
@@ -131,48 +146,12 @@
 
 @section('content')
     <main data-qa-game class="font-sans relative isolate min-h-[100dvh] overflow-x-hidden overflow-y-auto dark:text-slate-100 transition-colors duration-300">
-        <div class="pointer-events-none absolute inset-x-0 top-0 h-[30rem] bg-[radial-gradient(90%_70%_at_50%_0%,rgba(99,102,241,0.12)_0%,transparent_70%)]"></div>
-        <div class="pointer-events-none absolute -left-24 top-24 h-56 w-56 rounded-full bg-indigo-400/10 blur-3xl"></div>
-        <div class="pointer-events-none absolute -right-24 top-32 h-64 w-64 rounded-full bg-blue-400/10 blur-3xl"></div>
-
         <div class="mx-auto flex w-full max-w-[96rem] min-h-[100dvh] items-center px-4 sm:px-8 lg:px-10 py-4 sm:py-6">
             <section class="w-full p-2 sm:p-4 lg:p-5 flex flex-col justify-center">
                 <div class="grid place-items-center text-center gap-3 sm:gap-4 auto-rows-max">
-                    <div class="header-spacing w-full text-center space-y-2 mt-1 mb-2 sm:mt-2 sm:mb-3">
-          
+                    @include('slider.components.title-subtitle')
 
-                        <h1 class="w-full whitespace-normal lg:whitespace-nowrap tracking-tight text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-2">
-                            <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                                {{ $content['title'] }} 
-                            </span>
-                        </h1>
-
-                        <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                            {{ $content['subtitle'] }}
-                        </p>
-                    </div>
-
-                    <div id="statusRow" class="w-full max-w-[19.5rem] sm:max-w-5xl rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-lg overflow-hidden">
-                        <div class="grid grid-cols-4">
-                            @foreach(['Done' => 'doneCount', 'Correct' => 'correctCount', 'Mistakes' => 'mistakesCount', 'Time' => 'timer'] as $label => $id)
-                                <div class="metric-tile px-1.5 py-2 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
-                                    <div class="text-[9px] sm:text-xs font-black uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">
-                                        {{ $label }}
-                                    </div>
-                                    <div class="mt-1 font-black text-xs sm:text-lg text-slate-900 dark:text-slate-100">
-                                        @if($label === 'Correct')
-                                            <span class="mr-1">✅</span>
-                                        @elseif($label === 'Mistakes')
-                                            <span class="mr-1">❌</span>
-                                        @elseif($label === 'Time')
-                                            <span class="mr-1">⏱️</span>
-                                        @endif
-                                        <span id="{{ $id }}">{{ $label === 'Done' ? '0/'.count($content['items']) : ($label === 'Time' ? '00:00' : '0') }}</span>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
+                        @include('slider.components.game-status')
 
                     <section class="relative w-full max-w-[92rem] p-1 sm:p-3 lg:p-4 flex-1">
                         <div class="board-shell w-full rounded-[2rem] p-4 sm:p-6">
@@ -341,10 +320,10 @@
                 mAnswerContainer: root.querySelector('#mAnswerContainer'),
                 mAnswerText: root.querySelector('#mAnswerText'),
                 checkBtn: root.querySelector('#checkBtn'),
-                doneCount: root.querySelector('#doneCount'),
+                doneCount: root.querySelector('#tilesCount'),
                 correctCount: root.querySelector('#correctCount'),
                 mistakesCount: root.querySelector('#mistakesCount'),
-                timer: root.querySelector('#timer'),
+                timer: root.querySelector('#gameTimer'),
                 resultsOverlay: root.querySelector('#resultsOverlay'),
                 finalScore: root.querySelector('#finalScore'),
                 finalTime: root.querySelector('#finalTime'),

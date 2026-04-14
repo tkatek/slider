@@ -18,7 +18,7 @@
 
         :root{
             --pool-safe-space: 300px;
-            --layout-bottom-safe-space: 0px; 
+            --layout-bottom-safe-space: 0px;
         }
 
         body > div.isolate.relative{   
@@ -47,6 +47,17 @@
             transition: none !important;
             will-change: left, top, transform;
         }
+        .game-btn{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:.5rem;
+            border-radius:.5rem;
+            padding:.375rem .75rem;
+            font-size:.75rem;
+            font-weight:900;
+            transition:transform .2s ease, box-shadow .2s ease, background .2s ease, opacity .2s ease;
+        }
         .dd-btn-primary{
             display:inline-flex;
             align-items:center;
@@ -62,11 +73,13 @@
             box-shadow:0 10px 24px rgba(79,70,229,.10);
             transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
         }
+        .game-btn:hover,
         .dd-btn-primary:hover{
             transform:scale(1.05);
         }
+        .game-btn:active,
         .dd-btn-primary:active{
-            transform:scale(.95);
+            transform:scale(.98);
         }
         .dd-btn-reveal{
             color:rgb(154 52 18);
@@ -122,6 +135,80 @@
         }
         .shake{ animation: shake .35s ease-in-out; }
         .locked{ animation: popIn .35s cubic-bezier(.175,.885,.32,1.275); pointer-events:none; }
+
+        .speak-btn{
+            -webkit-tap-highlight-color: transparent;
+            border: 0;
+            cursor: pointer;
+            background: transparent;
+            padding: 0;
+        }
+
+        .speak-btn:focus-visible{
+            outline: none;
+        }
+
+        .speak-btn-shell{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 999px;
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,.62);
+            background: rgba(15,23,42,.22);
+            box-shadow:
+                    0 14px 28px -18px rgba(15,23,42,.6),
+                    inset 0 1px 0 rgba(255,255,255,.18);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: transform .16s ease, background-color .16s ease;
+        }
+
+        .speak-btn:hover .speak-btn-shell{
+            transform: scale(1.04);
+            background: rgba(15,23,42,.3);
+        }
+
+        .speak-btn.speaking .speak-btn-shell{
+            background: rgba(79,70,229,.54);
+        }
+
+        .wave-bar{
+            display: none;
+            width: 3px;
+            height: 12px;
+            background: currentColor;
+            border-radius: 2px;
+            margin: 0 1px;
+        }
+
+        .speak-btn.speaking .wave-bar{
+            display: block;
+            animation: waveGrowth .6s infinite ease-in-out;
+        }
+
+        .speak-btn.speaking .static-icon{
+            display: none;
+        }
+
+        .category-audio{
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 5;
+        }
+
+        .category-box.audio-active{
+            border-color: rgba(99,102,241,.34);
+            box-shadow: 0 0 0 1px rgba(99,102,241,.12), 0 18px 40px -28px rgba(79,70,229,.35);
+        }
+
+        @keyframes waveGrowth{
+            0%,100%{ height: 6px; }
+            50%{ height: 16px; }
+        }
 
         .thin-scroll::-webkit-scrollbar{ height: 10px; width: 10px; }
         .thin-scroll::-webkit-scrollbar-thumb{
@@ -358,6 +445,7 @@
             if ($type === 'image') {
                 $normalizedCategories[$cat] = [
                     'image' => $categoryData['image'] ?? null,
+                    'sound' => $categoryData['sound'] ?? null,
                     'items' => is_array($categoryData['items'] ?? null) ? $categoryData['items'] : [],
                 ];
                 continue;
@@ -434,41 +522,9 @@
     @endphp
 
     @if($type === 'image')
-        <main class="w-full" style="--dd-game-width: {{ $desktopGameWidth }}%; --dd-pool-width: {{ $desktopPoolWidth }}%;">
-            <div class="header-spacing text-center space-y-4 my-4 sm:my-5">
-                <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4">
-                    <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                        {{ ($content['title'] ?? 'Practice') }}
-                    </span>
-                </h1>
-                <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                    {{ ($content['subtitle'] ?? 'Good luck!') }}
-                </p>
-            </div>
-
-            <div class="mx-auto mb-4 sm:mb-5 w-full max-w-[19.5rem] sm:max-w-3xl overflow-hidden rounded-3xl border border-slate-200/70 bg-white/60 shadow-lg backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
-                <div class="grid grid-cols-4">
-                    @foreach(['Tiles' => 'gameProgressCount', 'Correct' => 'correctCount', 'Mistakes' => 'mistakesCount', 'Time' => 'timer'] as $label => $id)
-                        <div class="px-1.5 py-2 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
-                            <div class="hidden sm:inline-block text-[11px] sm:text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                                {{ $label }}
-                            </div>
-                            <div class="font-black text-xs sm:text-lg">
-                                @if($label === 'Tiles')
-                                    🧩
-                                @elseif($label === 'Correct')
-                                    ✅
-                                @elseif($label === 'Mistakes')
-                                    ❌
-                                @else
-                                    ⏱️
-                                @endif
-                                <span id="{{ $id }}">{{ $label === 'Time' ? '00:00' : ($label === 'Tiles' ? '0/0' : '0') }}</span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
+        <main class="flex min-h-[100dvh] w-full flex-col justify-center" style="--dd-game-width: {{ $desktopGameWidth }}%; --dd-pool-width: {{ $desktopPoolWidth }}%;">
+            @include('slider.components.title-subtitle')
+            @include('slider.components.game-status')
 
             <div id="ddShell" class="game-shell mx-auto flex w-full flex-col px-3 py-5 sm:px-8 sm:py-9 {{ $stackDesktopLayout ? 'lg:items-center lg:gap-5 lg:pb-6' : 'lg:flex-row lg:items-start lg:justify-center lg:gap-5 lg:pb-6' }}">
                 <section id="ddGameColumn" class="w-full flex-1 flex flex-col lg:flex-none">
@@ -487,6 +543,26 @@
                                             <img src="{{ $config['image'] }}" class="absolute inset-0 w-full h-full object-cover pointer-events-none" alt="{{ $cat }}">
                                         @endif
 
+                                        @if(!empty($config['sound']))
+                                            <div class="category-audio">
+                                                <button
+                                                        type="button"
+                                                        class="speak-btn"
+                                                        aria-label="Play Audio"
+                                                        data-audio="{{ $config['sound'] }}"
+                                                >
+                                                    <span class="speak-btn-shell">
+                                                        <svg class="static-icon h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                            <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                                        </svg>
+                                                        <span class="wave-bar" style="animation-delay:.1s"></span>
+                                                        <span class="wave-bar" style="animation-delay:.2s"></span>
+                                                        <span class="wave-bar" style="animation-delay:.3s"></span>
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        @endif
+
                                         <div class="absolute inset-x-0 bottom-0 p-1.5 sm:p-2 category-content w-full" data-dropzone="1">
                                             @if(count($config['items']) > 0)
                                                 <div class="slot {{ $isImagePoolType ? 'mx-auto aspect-square w-[84px] sm:w-[92px] lg:w-[90px]' : 'w-full min-h-[38px] sm:min-h-[46px]' }} rounded-xl sm:rounded-2xl border-2 border-dashed border-white/45 bg-slate-950/15 backdrop-blur dark:border-slate-200/20 dark:bg-slate-900/18"
@@ -498,39 +574,7 @@
                             @endforeach
                         </div>
 
-                        <div id="winModal" class="hidden fixed inset-0 z-[3000]">
-                            <div class="absolute inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm"></div>
-                            <div class="relative min-h-full w-full flex items-center justify-center p-4 sm:p-6">
-                                <div class="w-full max-w-lg max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 dark:border-slate-700/70 bg-white/95 dark:bg-slate-900/95 shadow-2xl">
-                                    <div class="p-6 sm:p-8 text-center">
-                                        <div class="text-6xl mb-3">🎉</div>
-                                        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Done!</h2>
-                                        <div class="mt-5 w-full grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                            @foreach(['Correct' => 'finalCorrect', 'Time' => 'finalTime', 'Mistakes' => 'finalMistakes'] as $label => $id)
-                                                <div class="p-3 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
-                                                    <div class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ $label }}</div>
-                                                    <div id="{{ $id }}" class="text-xl font-black text-slate-900 dark:text-white">0</div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                            <button
-                                                    onclick="game.reviewCorrection()"
-                                                    class="dd-btn-secondary w-full px-8 py-3 text-sm"
-                                            >
-                                                Review correction
-                                            </button>
-                                            <button
-                                                    onclick="goNextSlide()"
-                                                    class="dd-btn-primary w-full px-8 py-3 text-sm"
-                                            >
-                                                Continue ⚡
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @include('slider.components.game-win-modal')
 
                         <div class="hidden">
                             <div class="ring-4 ring-indigo-500/30"></div>
@@ -617,41 +661,9 @@
             </div>
         </main>
     @else
-        <main class="w-full" style="--dd-game-width: {{ $desktopGameWidth }}%; --dd-pool-width: {{ $desktopPoolWidth }}%;">
-            <div class="header-spacing text-center space-y-4 my-4 sm:my-5">
-                <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4">
-                    <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                        {{ $content['title']  }}
-                    </span>
-                </h1>
-                <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                    {{ $content['subtitle']  }}
-                </p>
-            </div>
-
-            <div class="mx-auto mb-4 sm:mb-5 w-full max-w-[19.5rem] sm:max-w-3xl overflow-hidden rounded-3xl border border-slate-200/70 bg-white/60 shadow-lg backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
-                <div class="grid grid-cols-4">
-                    @foreach(['Tiles' => 'gameProgressCount', 'Correct' => 'correctCount', 'Mistakes' => 'mistakesCount', 'Time' => 'timer'] as $label => $id)
-                        <div class="px-1.5 py-2 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
-                            <div class="hidden sm:inline-block text-[11px] sm:text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                                {{ $label }}
-                            </div>
-                            <div class="font-black text-xs sm:text-lg">
-                                @if($label === 'Tiles')
-                                    🧩
-                                @elseif($label === 'Correct')
-                                    ✅
-                                @elseif($label === 'Mistakes')
-                                    ❌
-                                @else
-                                    ⏱️
-                                @endif
-                                <span id="{{ $id }}">{{ $label === 'Time' ? '00:00' : ($label === 'Tiles' ? '0/0' : '0') }}</span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
+        <main class="flex min-h-[100dvh] w-full flex-col justify-center" style="--dd-game-width: {{ $desktopGameWidth }}%; --dd-pool-width: {{ $desktopPoolWidth }}%;">
+            @include('slider.components.title-subtitle')
+            @include('slider.components.game-status')
 
             <div id="ddShell" class="mx-auto flex w-full flex-col px-4 py-5 pb-[170px] sm:px-6 sm:py-6 sm:pb-[190px] {{ $stackDesktopLayout ? 'lg:items-center lg:gap-5 lg:px-8 lg:pb-6' : 'lg:flex-row lg:items-start lg:justify-center lg:gap-5 lg:px-8 lg:pb-6' }}">
                 <section id="ddGameColumn" class="w-full flex-1 flex flex-col lg:flex-none">
@@ -699,41 +711,7 @@
                             @endforeach
                         </div>
 
-                        <div id="winModal" class="hidden fixed inset-0 z-[3000]">
-                            <div class="absolute inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm"></div>
-                            <div class="relative min-h-full w-full flex items-center justify-center p-4 sm:p-6">
-                                <div class="w-full max-w-lg max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 dark:border-slate-700/70 bg-white/95 dark:bg-slate-900/95 shadow-2xl">
-                                    <div class="p-6 sm:p-8 text-center">
-                                        <div class="text-6xl mb-3">🎉</div>
-                                        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Done!</h2>
-                                        <div class="mt-5 w-full grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                            @foreach(['Correct' => 'finalCorrect', 'Time' => 'finalTime', 'Mistakes' => 'finalMistakes'] as $label => $id)
-                                                <div class="p-3 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
-                                                    <div class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ $label }}</div>
-                                                    <div id="{{ $id }}" class="text-xl font-black text-slate-900 dark:text-white">0</div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                            <button
-                                                    type="button"
-                                                    class="dd-btn-secondary w-full px-8 py-3 text-sm"
-                                                    onclick="game.reviewCorrection()"
-                                            >
-                                                Review correction
-                                            </button>
-                                            <button
-                                                    type="button"
-                                                    class="dd-btn-primary w-full px-8 py-3 text-sm"
-                                                    onclick="goNextSlide()"
-                                            >
-                                                Continue ⚡
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @include('slider.components.game-win-modal')
 
                         <div class="hidden">
                             <div class="ring-4 ring-indigo-500/30"></div>
@@ -863,6 +841,12 @@
             wrong: new Audio(SFX.sources.wrong),
             success: new Audio(SFX.sources.success),
         };
+        const categoryAudio = new Audio();
+        categoryAudio.preload = "auto";
+        categoryAudio.crossOrigin = "anonymous";
+        let currentCategoryAudioBtn = null;
+        let currentCategoryAudioCard = null;
+        let currentCategoryAudioSrc = "";
 
         function clamp01(v){
             v = Number(v);
@@ -886,6 +870,58 @@
         function playCorrect(){ play(audio.correct); }
         function playWrong(){ play(audio.wrong); }
         function playWin(){ play(audio.success); }
+
+        function setCategoryAudioState(button, card, isPlaying){
+            if (button) button.classList.toggle("speaking", isPlaying);
+            if (card) card.classList.toggle("audio-active", isPlaying);
+        }
+
+        function resetCategoryAudioState(){
+            setCategoryAudioState(currentCategoryAudioBtn, currentCategoryAudioCard, false);
+            currentCategoryAudioBtn = null;
+            currentCategoryAudioCard = null;
+            currentCategoryAudioSrc = "";
+        }
+
+        function stopCategoryAudio(){
+            try {
+                categoryAudio.pause();
+                categoryAudio.currentTime = 0;
+                categoryAudio.removeAttribute("src");
+                categoryAudio.load();
+            } catch (e) {}
+
+            resetCategoryAudioState();
+        }
+
+        function playOrToggleCategoryAudio(button){
+            const src = button.getAttribute("data-audio") || "";
+            const card = button.closest(".category-box");
+            if (!src) return;
+
+            if (currentCategoryAudioSrc === src && !categoryAudio.paused) {
+                stopCategoryAudio();
+                return;
+            }
+
+            stopCategoryAudio();
+
+            currentCategoryAudioBtn = button;
+            currentCategoryAudioCard = card;
+            currentCategoryAudioSrc = src;
+            setCategoryAudioState(currentCategoryAudioBtn, currentCategoryAudioCard, true);
+
+            try {
+                categoryAudio.src = src;
+                categoryAudio.currentTime = 0;
+                const playPromise = categoryAudio.play();
+                if (playPromise && typeof playPromise.catch === "function") {
+                    playPromise.catch(() => stopCategoryAudio());
+                }
+            } catch (e) {
+                stopCategoryAudio();
+            }
+        }
 
         function isEmbedded(){ try { return window.top !== window.self; } catch(e){ return true; } }
         function goNextSlide(){
@@ -921,6 +957,8 @@
         }
 
         window.stopSlideAudio = function(){
+            stopCategoryAudio();
+
             Object.values(audio).forEach(a => {
                 if (a){
                     a.pause();
@@ -928,6 +966,25 @@
                 }
             });
         };
+
+        categoryAudio.addEventListener("ended", stopCategoryAudio);
+        categoryAudio.addEventListener("error", stopCategoryAudio);
+
+        document.addEventListener("click", (event) => {
+            const button = event.target.closest(".speak-btn");
+            if (!button) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+            playOrToggleCategoryAudio(button);
+        });
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) stopCategoryAudio();
+        });
+
+        window.addEventListener("beforeunload", stopCategoryAudio);
+        window.addEventListener("pagehide", stopCategoryAudio);
 
         class Game {
             constructor(){
@@ -938,6 +995,8 @@
                 this.revealAnswersBtn = document.getElementById('revealAnswersBtn');
                 this.retakeTestBtn = document.getElementById('retakeTestBtn');
                 this.winModal = document.getElementById('winModal');
+                this.restartBtnModal = document.getElementById('restartBtnModal');
+                this.continueBtnModal = document.getElementById('continueBtnModal');
                 this.tileTpl = document.getElementById('tileTpl');
                 this.isImageType = GAME_TYPE === 'image';
                 this.isImagePoolType = POOL_ITEM_TYPE === 'image';
@@ -954,8 +1013,6 @@
                 this.gameCompleted = false;
                 this.hasUsedReveal = false;
                 this.isRevealingAnswers = false;
-                this.isReviewingCorrection = false;
-
                 this._raf = null;
                 this._mx = 0;
                 this._my = 0;
@@ -987,6 +1044,8 @@
                 this.poolNextBtn?.addEventListener('click', this.handlePoolNext);
                 this.revealAnswersBtn?.addEventListener('click', this.handleRevealAnswers);
                 this.retakeTestBtn?.addEventListener('click', this.handleRetakeTest);
+                this.restartBtnModal?.addEventListener('click', () => this.init());
+                this.continueBtnModal?.addEventListener('click', goNextSlide);
             }
 
             clearDragInteractionState(){
@@ -1025,8 +1084,6 @@
                 this.gameCompleted = false;
                 this.hasUsedReveal = false;
                 this.isRevealingAnswers = false;
-                this.isReviewingCorrection = false;
-
                 clearInterval(this.timerInt);
                 this.startTimer();
                 this.updateStats();
@@ -1120,7 +1177,7 @@
             }
 
             updateTimer(){
-                const timerEl = document.getElementById('timer');
+                const timerEl = document.getElementById('gameTimer');
                 if (timerEl) timerEl.textContent = this.formatElapsedTime();
             }
 
@@ -1229,7 +1286,7 @@
             }
 
             updateStats(){
-                const progressEl = document.getElementById('gameProgressCount');
+                const progressEl = document.getElementById('tilesCount');
                 const correctEl = document.getElementById('correctCount');
                 const mistakesEl = document.getElementById('mistakesCount');
                 const total = this.getTotalTiles();
@@ -1279,13 +1336,13 @@
                 const remaining = this.getRemainingTileCount();
 
                 if (this.revealAnswersBtn) {
-                    const canReveal = remaining > 0 && !this.hasUsedReveal && !this.isRevealingAnswers && !this.gameCompleted && !this.isReviewingCorrection;
+                    const canReveal = remaining > 0 && !this.hasUsedReveal && !this.isRevealingAnswers && !this.gameCompleted;
                     this.revealAnswersBtn.classList.toggle('hidden', !canReveal);
                     this.revealAnswersBtn.disabled = !canReveal;
                 }
 
                 if (this.retakeTestBtn) {
-                    this.retakeTestBtn.classList.toggle('hidden', !(this.hasUsedReveal || this.isReviewingCorrection));
+                    this.retakeTestBtn.classList.toggle('hidden', !this.hasUsedReveal);
                 }
             }
 
@@ -1477,14 +1534,6 @@
 
             handleRetakeTest(){
                 this.init();
-            }
-
-            reviewCorrection(){
-                this.isReviewingCorrection = true;
-                if (this.winModal) {
-                    this.winModal.classList.add('hidden');
-                }
-                this.updateActionButtons();
             }
 
             handlePointerDown(e, item){
@@ -1783,7 +1832,9 @@
             }, { passive: true });
             setTimeout(updatePoolSafeSpace, 200);
             setTimeout(updatePoolSafeSpace, 500);
-            window.resetSlide = () => {};
+            window.resetSlide = () => {
+                stopCategoryAudio();
+            };
         });
 
         window.addEventListener('pointerup', () => game.clearDragInteractionState(), { passive: true });
@@ -1791,3 +1842,4 @@
         window.addEventListener('blur', () => game.clearDragInteractionState(), { passive: true });
     </script>
 @endsection
+

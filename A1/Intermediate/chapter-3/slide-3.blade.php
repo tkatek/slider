@@ -4,7 +4,6 @@ $content = [
     'title'      => 'Introduction to Parents Day',
     'subtitle'   => 'Why is it an important occasion?',
     'image'      => materialAsset('slider/A1/Intermediate/chapter-3/images/slide3.webp'),
-    'image_alt'  => '',
 
     'cards' => [
         [

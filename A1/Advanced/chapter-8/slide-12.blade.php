@@ -11,49 +11,49 @@
                 [
                     'emoji' => '1️⃣',
                     'text' => '<span class="text-violet-600 font-black">Positive Sentences:</span>',
-                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide9/1.mp3'),
+                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide12/1.mp3'),
                 ],
                 [
                     'emoji' => '•',
                     'text' => 'There <span class="text-red-500 font-black">are a lot of restaurants</span> in my neighbourhood.',
-                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide9/2.mp3'),
+                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide12/2.mp3'),
                 ],
                 [
                     'emoji' => '•',
                     'text' => 'There <span class="text-violet-600 font-black">is a lot of traffic</span> downtown.',
-                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide9/3.mp3'),
+                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide12/3.mp3'),
                 ],
                 [
                     'emoji' => '2️⃣',
                     'text' => '<span class="text-blue-500 font-black">Questions:</span>',
-                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide9/4.mp3'),
+                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide12/4.mp3'),
                 ],
                 [
                     'emoji' => '•',
                     'text' => '<span class="text-red-500 font-black">Are</span> there <span class="text-red-500 font-black">many restaurants</span> near your house?',
-                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide9/5.mp3'),
+                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide12/5.mp3'),
                 ],
                 [
                     'emoji' => '•',
                     'text' => '<span class="text-violet-600 font-black">Is</span> there <span class="text-violet-600 font-black">much traffic</span> in your city?',
-                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide9/6.mp3'),
+                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide12/6.mp3'),
                 ],
             ],
             [
                 [
                     'emoji' => '3️⃣',
                     'text' => '<span class="text-orange-400 font-black">Negative Sentences:</span>',
-                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide9/7.mp3'),
+                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide12/7.mp3'),
                 ],
                 [
                     'emoji' => '•',
                     'text' => 'There <span class="text-red-500 font-black">aren\'t many shops</span> here.',
-                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide9/8.mp3'),
+                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide12/8.mp3'),
                 ],
                 [
                     'emoji' => '•',
                     'text' => 'There <span class="text-violet-600 font-black">isn\'t much noise</span> in my area.',
-                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide9/9.mp3'),
+                    'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide12/9.mp3'),
                 ],
             ],
         ],

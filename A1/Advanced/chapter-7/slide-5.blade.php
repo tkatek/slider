@@ -4,7 +4,6 @@ $content = [
     'title'      => 'Discussion',
     'subtitle'   => '',
     'image'      => materialAsset('slider/A1/Advanced/chapter-7/img/slide5.webp'),
-    'image_alt'  => 'Public signs discussion image',
 
     'cards' => [
         [

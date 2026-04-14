@@ -14,17 +14,7 @@
             <div class="mx-auto w-full max-w-5xl px-4 sm:px-8 py-8 sm:py-10 lg:min-h-[100dvh] lg:flex lg:items-center">
                 <section class="w-full">
                     <div class="grid place-items-center text-center gap-6 sm:gap-8">
-                        <div class="header-spacing text-center space-y-6 my-8">
-
-                            <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">
-                            <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                                {{$content['title']}}
-                            </span>
-                            </h1>
-                            <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                                {{$content['subtitle']}}
-                            </p>
-                        </div>
+                        @include('slider.components.title-subtitle')
 
                         <div id="timeline" class="outcomes-timeline w-full max-w-3xl text-left flex flex-col gap-4 sm:gap-5">
                             @foreach($content['outcomes'] as $outcome)

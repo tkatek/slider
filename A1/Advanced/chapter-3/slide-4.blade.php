@@ -4,7 +4,6 @@ $content = [
     'title'      => 'Discussion',
     'subtitle'   => '',
     'image'      => materialAsset('slider/A1/Advanced/chapter-1/img/cover.webp'),
-    'image_alt'  => 'Hotel stay discussion image',
 
     'cards' => [
         [

@@ -165,17 +165,7 @@
 
         <div class="relative mx-auto w-full max-w-6xl px-4 sm:px-7 lg:px-10 py-8 sm:py-12 lg:py-14 min-h-[100dvh] flex items-center">
             <section class="w-full">
-                <div class="{{ $headerWrapClass }}">
-                    <h1 class="{{ $titleClass }} bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                        {{ $content['title'] ?? 'Discussion' }}
-                    </h1>
-
-                    @if(!empty($content['subtitle']))
-                        <p class="{{ $subtitleClass }}">
-                            {{ $content['subtitle'] }}
-                        </p>
-                    @endif
-                </div>
+                @include('slider.components.title-subtitle')
 
                 <div class="mt-8 sm:mt-11 lg:mt-12 grid {{ $gridClass }} gap-4 sm:gap-6">
                     @foreach($questions as $index => $question)

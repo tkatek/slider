@@ -1,7 +1,7 @@
 <?php
 $content = [
     'video'          => materialAsset('slider/A1/Intermediate/chapter-7/video/planning-a-trip-encrypted/planning-a-trip.m3u8'), // add video path
-    'thumbnail'      => materialAsset(''), // add thumbnail path
+    'thumbnail'      => materialAsset('slider/A1/Intermediate/chapter-7/img/slide14.webp'), // add thumbnail path
     'isQuiz'         => 1,
     'showTranscript' => 0,
 

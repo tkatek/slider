@@ -19,7 +19,7 @@
     };
 
     $sentences = array_values($content['sentences'] ?? []);
-    $answers = array_values($content['answers'] ?? []);
+    $answers = array_values($content['answers'] ?? []); 
     $lines = array_values($content['lines'] ?? []);
     $bank = array_values($content['bank'] ?? []);
     $speakers = array_values($content['speakers'] ?? []); 
@@ -182,6 +182,8 @@
                 'hobby_id' => (string) ($speaker['hobby_id'] ?? ('speaker' . ($speakerIndex + 1) . 'Hobby')),
                 'sport_placeholder' => (string) ($speaker['sport_placeholder'] ?? $speakerSportPlaceholder),
                 'hobby_placeholder' => (string) ($speaker['hobby_placeholder'] ?? $speakerHobbyPlaceholder),
+                'sport_answer' => $sportAnswer,
+                'hobby_answer' => $hobbyAnswer,
                 'sport_answer_index' => $answerIndexExactMap[$normalizeAnswerExact($sportAnswer)]
                     ?? ((($answerVariantCounts[$normalizeAnswer($sportAnswer)] ?? 0) === 1)
                         ? ($answerIndexMap[$normalizeAnswer($sportAnswer)] ?? 0)
@@ -223,7 +225,6 @@
             static fn ($line) => $line !== ''
         ));
     $hasScript = $scriptLines !== [];
-    $progressLabel = $isSpeakerMatchingMode ? 'Slots' : 'Blanks';
     $dialogueCardClass = trim((string) ($content['dialogue_card_class'] ?? 'w-full'));
     $sentenceContainerClass = trim((string) ($content['sentence_container_class'] ?? 'w-full max-w-full'));
     $sentenceLineClass = trim((string) ($content['sentence_line_class'] ?? ''));
@@ -281,6 +282,18 @@
             outline: none;
         }
 
+        .game-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+            border-radius: .5rem;
+            padding: .375rem .75rem;
+            font-size: .75rem;
+            font-weight: 900;
+            transition: transform .2s ease, box-shadow .2s ease, background .2s ease, opacity .2s ease;
+        }
+
         .ddb-btn-primary {
             display: inline-flex;
             align-items: center;
@@ -297,12 +310,14 @@
             transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
         }
 
+        .game-btn:hover,
         .ddb-btn-primary:hover {
             transform: scale(1.05);
         }
 
+        .game-btn:active,
         .ddb-btn-primary:active {
-            transform: scale(.95);
+            transform: scale(.98);
         }
 
         .ddb-btn-script {
@@ -616,7 +631,7 @@
             border-radius: 1.25rem;
             border: 1px solid rgba(99, 102, 241, .14);
             background:
-                linear-gradient(180deg, rgba(255,255,255,.96), rgba(239,246,255,.92));
+                    linear-gradient(180deg, rgba(255,255,255,.96), rgba(239,246,255,.92));
             box-shadow: 0 14px 34px -24px rgba(37,99,235,.4);
             font-size: .95rem;
             line-height: 1.4;
@@ -628,7 +643,7 @@
         .dark .ddb-subtitle-bubble {
             border-color: rgba(129, 140, 248, .24);
             background:
-                linear-gradient(180deg, rgba(30,41,59,.92), rgba(15,23,42,.94));
+                    linear-gradient(180deg, rgba(30,41,59,.92), rgba(15,23,42,.94));
             color: #dbeafe;
             box-shadow: 0 18px 38px -26px rgba(59,130,246,.38);
         }
@@ -643,52 +658,12 @@
 @endsection
 
 @section("content")
-    <main class="flex min-h-[100dvh] w-full flex-col" id="dragDropBlanksGame">
-        <div id="ddbTitleBlock" class="header-spacing text-center space-y-4 my-4 sm:my-5">
-            <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4">
-                <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                    {{ $content['title'] ?? '' }}
-                </span>
-            </h1>
+    <main class="flex min-h-[100dvh] w-full flex-col items-center justify-center" id="dragDropBlanksGame">
+        @include('slider.components.title-subtitle')
 
-            @if(!empty($content['subtitle']))
-                <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                    {{ $content['subtitle'] }}
-                </p>
-            @endif
+        @include('slider.components.game-status')
 
-            @if($subtitleBubble !== '')
-                <div class="ddb-subtitle-bubble">
-                    {{ $subtitleBubble }}
-                </div>
-            @endif
-        </div>
-
-        <div id="ddbStatusRow" class="mx-auto mb-4 sm:mb-5 w-full max-w-[19.5rem] sm:max-w-3xl overflow-hidden rounded-3xl border border-slate-200/70 bg-white/60 shadow-lg backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
-            <div class="grid grid-cols-4">
-                @foreach([$progressLabel => 'ddbProgressCount', 'Correct' => 'ddbCorrectCount', 'Mistakes' => 'ddbMistakesCount', 'Time' => 'ddbTimer'] as $label => $id)
-                    <div class="px-1.5 py-2 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
-                        <div class="hidden text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 sm:inline-block">
-                            {{ $label }}
-                        </div>
-                        <div class="text-xs font-black sm:text-lg">
-                            @if($label === 'Blanks' || $label === 'Slots')
-                                ðŸ§©
-                            @elseif($label === 'Correct')
-                                âœ…
-                            @elseif($label === 'Mistakes')
-                                âŒ
-                            @else
-                                â±ï¸
-                            @endif
-                            <span id="{{ $id }}">{{ $label === 'Time' ? '00:00' : (($label === 'Blanks' || $label === 'Slots') ? '0/0' : '0') }}</span>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-
-        <div id="ddbLayoutShell" class="mx-auto flex w-full flex-1 min-h-0 flex-col px-4 pt-2 pb-[calc(min(35vh,310px)+16px)] sm:px-6 sm:pt-3 sm:pb-[calc(min(35vh,310px)+20px)] xl:flex-row xl:items-start xl:justify-center xl:gap-5 lg:px-8 xl:pt-2 xl:pb-0">
+        <div id="ddbLayoutShell" class="mx-auto flex w-full flex-none min-h-0 flex-col px-4 pt-2 pb-[calc(min(35vh,310px)+16px)] sm:px-6 sm:pt-3 sm:pb-[calc(min(35vh,310px)+20px)] xl:flex-row xl:items-start xl:justify-center xl:gap-5 lg:px-8 xl:pt-2 xl:pb-0">
             <section id="ddbGameColumn" class="w-full flex flex-col xl:w-[70%] xl:flex-none">
                 <div class="grid place-items-center text-center gap-3 sm:gap-4 auto-rows-max">
                     <div class="w-full">
@@ -755,7 +730,7 @@
                                                         <div class="grid gap-3 lg:grid-cols-[170px_minmax(0,1fr)] lg:items-center">
                                                             <div class="flex items-center gap-2.5">
                                                                 <div class="grid h-9 w-9 place-items-center rounded-xl border border-slate-200/70 bg-white/80 text-sm shadow-sm dark:border-slate-700/60 dark:bg-slate-900/30 shrink-0">
-                                                                    ðŸŽ™ï¸
+                                                                    🎙️
                                                                 </div>
 
                                                                 <div class="text-base sm:text-lg font-black tracking-[-0.02em] text-slate-900 dark:text-slate-50">
@@ -830,60 +805,7 @@
                         </div>
                     </div>
 
-                    <div id="ddbWinModal" class="hidden fixed inset-0 z-[3000]">
-                        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm dark:bg-black/60"></div>
-
-                        <div class="relative flex min-h-full w-full items-center justify-center p-4 sm:p-6">
-                            <div class="relative w-full max-w-lg max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 bg-white/95 shadow-2xl dark:border-slate-700/70 dark:bg-slate-900/95">
-                                <div class="p-6 text-center sm:p-8">
-                                    <div class="mb-3 flex items-center justify-between gap-3 text-left">
-                                        <h2 class="text-2xl font-black text-slate-900 dark:text-white sm:text-3xl">
-                                            Done!
-                                        </h2>
-                                        <button
-                                                id="ddbCloseWinBtn"
-                                                type="button"
-                                                class="ddb-modal-close ddb-modal-close-sm shrink-0"
-                                                aria-label="Close results"
-                                        >
-                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
-                                                <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-
-                                    <div class="mb-3 text-6xl">ðŸŽ‰</div>
-
-                                    <div class="mt-5 grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
-                                        @foreach(['Correct' => 'ddbFinalCorrect', 'Time' => 'ddbFinalTime', 'Mistakes' => 'ddbFinalMistakes'] as $label => $id)
-                                            <div class="rounded-2xl border border-slate-200/70 bg-white/80 p-3 shadow dark:border-slate-700 dark:bg-slate-800/80">
-                                                <div class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ $label }}</div>
-                                                <div id="{{ $id }}" class="text-xl font-black text-slate-900 dark:text-white">0</div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-
-                                    <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                        <button
-                                                type="button"
-                                                class="ddb-btn-secondary w-full px-8 py-3 text-sm"
-                                                onclick="window.dragDropBlanksGame && window.dragDropBlanksGame.reviewCorrection()"
-                                        >
-                                            Review correction
-                                        </button>
-
-                                        <button
-                                                type="button"
-                                                class="ddb-btn-primary w-full px-8 py-3 text-sm"
-                                                onclick="window.dragDropBlanksGoNext && window.dragDropBlanksGoNext()"
-                                        >
-                                            Continue âš¡
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @include('slider.components.game-win-modal')
 
                     @if($hasScript)
                         <div id="ddbScriptModal" class="hidden fixed inset-0 z-[3000]">
@@ -1022,7 +944,6 @@
             var scriptModal = document.getElementById('ddbScriptModal');
             var scriptBackdrop = document.getElementById('ddbScriptBackdrop');
             var closeScriptBtn = document.getElementById('ddbCloseScriptBtn');
-            var closeWinBtn = document.getElementById('ddbCloseWinBtn');
 
             var SFX = {
                 enabled: true,
@@ -1173,14 +1094,6 @@
                 });
             }
 
-            if (closeWinBtn) {
-                closeWinBtn.addEventListener('click', function () {
-                    if (window.dragDropBlanksGame && window.dragDropBlanksGame.winModal) {
-                        window.dragDropBlanksGame.winModal.classList.add('hidden');
-                    }
-                });
-            }
-
             function getInitialBlankMinWidth(blank){
                 var w = window.innerWidth || document.documentElement.clientWidth || 0;
                 if (w >= 1280) return blank.dataset.initialMinWidthLg || blank.dataset.initialMinWidthSm || blank.dataset.initialMinWidthMobile || '';
@@ -1196,7 +1109,7 @@
                 this.layoutShell = document.getElementById('ddbLayoutShell');
                 this.poolContent = document.getElementById('ddbPoolContent');
                 this.poolCount = document.getElementById('ddbPoolCount');
-                this.winModal = document.getElementById('ddbWinModal');
+                this.winModal = document.getElementById('winModal');
                 this.tileTpl = document.getElementById('ddbTileTpl');
                 this.gameColumn = document.getElementById('ddbGameColumn');
                 this.poolRail = document.getElementById('ddbPoolRail');
@@ -1207,6 +1120,8 @@
                 this.nextWordsBtn = document.getElementById('ddbNextWordsBtn');
                 this.revealAnswersBtn = document.getElementById('ddbRevealAnswersBtn');
                 this.retakeTestBtn = document.getElementById('ddbRetakeTestBtn');
+                this.restartBtnModal = document.getElementById('restartBtnModal');
+                this.continueBtnModal = document.getElementById('continueBtnModal');
 
                 this.draggedItem = null;
                 this.placeholder = null;
@@ -1247,7 +1162,7 @@
                     'bg-gradient-to-br from-cyan-500 to-sky-600'
                 ];
 
-                this.burstEmojis = ['âœ¨', 'ðŸŽ‰', 'ðŸ’«', 'â­', 'ðŸ‘'];
+                this.burstEmojis = ['✨', '🎉', '💫', '⭐', '👏'];
 
                 if (this.revealAnswersBtn) {
                     this.revealAnswersBtn.addEventListener('click', this.handleRevealAnswers);
@@ -1255,6 +1170,14 @@
 
                 if (this.retakeTestBtn) {
                     this.retakeTestBtn.addEventListener('click', this.handleRetakeTest);
+                }
+
+                if (this.restartBtnModal) {
+                    this.restartBtnModal.addEventListener('click', this.init.bind(this));
+                }
+
+                if (this.continueBtnModal) {
+                    this.continueBtnModal.addEventListener('click', window.dragDropBlanksGoNext);
                 }
             }
 
@@ -1355,14 +1278,14 @@
             };
 
             DragDropBlanksGame.prototype.updateTimer = function(){
-                var timerEl = document.getElementById('ddbTimer');
+                var timerEl = document.getElementById('gameTimer');
                 if (timerEl) timerEl.textContent = this.formatElapsedTime();
             };
 
             DragDropBlanksGame.prototype.updateStats = function(){
-                var progressEl = document.getElementById('ddbProgressCount');
-                var correctEl = document.getElementById('ddbCorrectCount');
-                var mistakesEl = document.getElementById('ddbMistakesCount');
+                var progressEl = document.getElementById('tilesCount');
+                var correctEl = document.getElementById('correctCount');
+                var mistakesEl = document.getElementById('mistakesCount');
                 var total = ANSWERS.length;
 
                 if (progressEl) progressEl.textContent = this.correctCount + '/' + total;
@@ -2169,9 +2092,9 @@
 
                     if (!shouldShowModal) return;
 
-                    var finalCorrect = document.getElementById('ddbFinalCorrect');
-                    var finalTime = document.getElementById('ddbFinalTime');
-                    var finalMistakes = document.getElementById('ddbFinalMistakes');
+                    var finalCorrect = document.getElementById('finalCorrect');
+                    var finalTime = document.getElementById('finalTime');
+                    var finalMistakes = document.getElementById('finalMistakes');
 
                     if (finalCorrect) finalCorrect.textContent = self.correctCount + '/' + total;
                     if (finalTime) finalTime.textContent = self.formatElapsedTime();
@@ -2190,4 +2113,3 @@
         })();
     </script>
 @endsection
-

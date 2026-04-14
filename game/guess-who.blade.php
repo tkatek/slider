@@ -227,25 +227,7 @@
 
 @section("content")
     <div class="relative min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto">
-        @if(!empty($content['title']) || !empty($content['subtitle']))
-            <div class="mx-auto w-full max-w-5xl px-4 sm:px-8 pt-6 sm:pt-8 lg:pt-10">
-                <div class="header-spacing text-center space-y-4 sm:space-y-5 mb-4 sm:mb-5">
-                    @if(!empty($content['title']))
-                        <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">
-                            <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                                {{ $content['title'] }}
-                            </span>
-                        </h1>
-                    @endif
-
-                    @if(!empty($content['subtitle']))
-                        <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                            {{ $content['subtitle'] }}
-                        </p>
-                    @endif
-                </div>
-            </div>
-        @endif
+        @include('slider.components.title-subtitle')
 
         <section class="relative mx-auto w-full max-w-5xl px-4 sm:px-8">
             <div class="rounded-[2rem] border border-slate-200/80 bg-white/60 px-4 py-5 backdrop-blur dark:border-slate-700 dark:bg-slate-800/60 sm:px-6 sm:py-6 md:px-8">

@@ -1,66 +1,226 @@
-@extends("slider.simple-layout")
+@extends('slider.simple-layout')
+
+@php
+    $content = is_array($content ?? null) ? $content : [];
+    $title = trim((string)($content['title'] ?? 'Discussion'));
+    $subtitle = trim((string)($content['subtitle'] ?? ''));
+    $cards = is_array($content['cards'] ?? null) ? $content['cards'] : [];
+    $image = (string)($content['image'] ?? '');
+    $imageAlt = (string)($content['image_alt'] ?? '');
+@endphp
+
+@section('style')
+    @parent
+    <style>
+        .discussion-page {
+            font-family: "Plus Jakarta Sans", sans-serif;
+        }
+
+        .slide-viewport {
+            height: 100dvh;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .slide-shell {
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            transition: padding 0.2s ease, align-items 0.2s ease;
+        }
+
+        .slide-shell.is-scrollable {
+            align-items: flex-start;
+        }
+
+        .objective-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .objective-card::before,
+        .objective-card::after {
+            content: "";
+            position: absolute;
+            border-radius: 9999px;
+            pointer-events: none;
+            filter: blur(10px);
+            opacity: 0.9;
+        }
+
+        .objective-card::before {
+            width: 110px;
+            height: 110px;
+            top: -34px;
+            right: -22px;
+        }
+
+        .objective-card::after {
+            width: 84px;
+            height: 84px;
+            bottom: -34px;
+            left: -18px;
+            opacity: 0.55;
+        }
+
+        .objective-card.card-orange::before {
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.24) 0%, rgba(249, 115, 22, 0) 72%);
+        }
+
+        .objective-card.card-orange::after {
+            background: radial-gradient(circle, rgba(251, 146, 60, 0.18) 0%, rgba(251, 146, 60, 0) 72%);
+        }
+
+        .objective-card.card-amber::before {
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.24) 0%, rgba(245, 158, 11, 0) 72%);
+        }
+
+        .objective-card.card-amber::after {
+            background: radial-gradient(circle, rgba(252, 211, 77, 0.18) 0%, rgba(252, 211, 77, 0) 72%);
+        }
+
+        .objective-card.card-tangerine::before {
+            background: radial-gradient(circle, rgba(234, 88, 12, 0.22) 0%, rgba(234, 88, 12, 0) 72%);
+        }
+
+        .objective-card.card-tangerine::after {
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.16) 0%, rgba(249, 115, 22, 0) 72%);
+        }
+
+        .objective-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .objective-heading .objective-chip {
+            flex-shrink: 0;
+        }
+
+        .objective-heading .objective-text {
+            min-width: 0;
+        }
+
+    </style>
+@endsection
+
 @section("content")
-    <main class="w-full">
-        <div class="mx-auto w-full max-w-6xl px-4 sm:px-8 py-8 sm:py-10 lg:min-h-[100dvh] lg:flex lg:items-center">
-            <section class="w-full">
-                <div class="grid place-items-center text-center gap-6 sm:gap-8">
-                    <div id="titleBlock" class="space-y-2 sm:space-y-3">
-                        <h1 class="font-black leading-[1.02] tracking-[-0.05em] text-4xl sm:text-5xl lg:text-6xl">
-                        <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                            {{ $content['title'] }}
-                        </span>
-                        </h1>
+    <div class="discussion-page relative h-[100dvh] w-full overflow-hidden">
+        <div id="slideViewport" class="slide-viewport">
+            <div id="slideShell" class="slide-shell mx-auto w-full max-w-[1280px] px-4 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6">
+                <main class="w-full">
+                    <section class="discussion-layout grid grid-cols-1 gap-8 sm:grid-cols-[minmax(0,58%)_minmax(220px,42%)] lg:grid-cols-[minmax(0,58%)_minmax(320px,42%)] sm:gap-8 lg:gap-12 xl:gap-16 items-center">
+                        <div class="discussion-copy w-full text-center sm:text-left">
+                            @php
+                                $titleWrapClass = 'discussion-title-wrap header-spacing my-0 mb-6 space-y-3 px-0 text-center sm:text-left';
+                                $titleHeadingClass = 'mb-2 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl';
+                                $subtitleClass = 'discussion-subtitle mx-auto max-w-2xl text-base font-bold leading-[1.45] text-stone-800 dark:text-orange-100 sm:mx-0 sm:text-lg lg:text-xl';
+                            @endphp
+                            @include('slider.components.title-subtitle')
 
-                        <p class="mx-auto max-w-xl font-extrabold tracking-[-0.02em] text-base sm:text-lg text-slate-700 dark:text-slate-200">
-                            {{ $content['subtitle'] }}
-                        </p>
-                    </div>
+                            <div class="grid grid-cols-1 gap-3 sm:gap-4">
+                                @foreach($cards as $index => $card)
+                                    @php
+                                        $styles = ['card-orange', 'card-amber', 'card-tangerine'];
+                                        $style = $styles[$index % count($styles)];
+                                        $emoji = trim((string)($card['emoji'] ?? ''));
+                                        $label = trim((string)($card['label'] ?? ''));
+                                        $text = trim((string)($card['text'] ?? ''));
+                                    @endphp
 
-                    <div class="w-full grid grid-cols-1 lg:grid-cols-[1fr_0.95fr] gap-5 sm:gap-6 items-stretch">
-                        <div class="flex flex-col gap-4 sm:gap-5 text-left">
-                            @foreach($content['cards'] as $index => $card)
-                                @php
-                                    $themeClasses = match($card['theme'] ?? 'indigo') {
-                                        'blue' => [
-                                            'marker' => 'text-emerald-600 border-emerald-100 bg-emerald-50/80 dark:text-emerald-300 dark:border-white/10 dark:bg-white/5',
-                                        ],
-                                        default => [
-                                            'marker' => 'text-indigo-600 border-indigo-100 bg-indigo-50/80 dark:text-indigo-300 dark:border-white/10 dark:bg-white/5',
-                                        ],
-                                    };
-                                @endphp
+                                    <article class="objective-card {{ $style }} rounded-[24px] border border-white/70 bg-white/70 p-4 text-left shadow-[0_16px_34px_-24px_rgba(15,23,42,0.18)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:min-h-[100px] sm:p-5">
+                                        <div class="relative z-10 flex h-full flex-col justify-center">
+                                            <div class="objective-heading">
+                                                <div class="objective-chip inline-flex w-fit items-center">
+                                                    <span class="text-2xl sm:text-3xl leading-none">
+                                                        {{ $emoji }}
+                                                    </span>
+                                                </div>
 
-                                <div class="relative z-10 flex items-center gap-5 sm:gap-6 rounded-3xl border border-slate-200/80 bg-white/85 px-5 py-5 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.18)] backdrop-blur dark:border-slate-700/70 dark:bg-slate-900/55">
-                                    <div class="marker-circle flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl border-2 text-[1.2rem] font-extrabold shadow-[inset_0_2px_6px_rgba(0,0,0,0.06)] {{ $themeClasses['marker'] }}">
-                                        {{ $card['emoji'] }}
-                                    </div>
+                                                <div class="objective-text">
+                                                    @if($label !== '')
+                                                        <span class="mb-1 block text-[0.65rem] font-black uppercase tracking-[0.22em] text-orange-500 dark:text-orange-300">
+                                                            {{ $label }}
+                                                        </span>
+                                                    @endif
 
-                                    <div class="flex-1 min-w-0">
-                                    <span class="mb-1 block text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">
-                                        {{ $card['label'] }}
-                                    </span>
-
-                                        <p class="text-lg sm:text-xl font-extrabold leading-[1.2] text-slate-900 dark:text-slate-100">
-                                            {!! $card['text'] !!}
-                                        </p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div class="w-full">
-                            <div class="h-full overflow-hidden rounded-3xl border border-slate-200/80 bg-white/85 p-3 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.18)] backdrop-blur dark:border-slate-700/70 dark:bg-slate-900/55">
-                                <img
-                                        src="{{ $content['image'] }}"
-                                        alt="{{ $content['image_alt'] }}"
-                                        class="h-full w-full rounded-[1.35rem] object-cover"
-                                        loading="lazy"
-                                >
+                                                    @if($text !== '')
+                                                        <p class="text-base sm:text-lg font-black tracking-[-0.02em] leading-tight text-slate-800 dark:text-slate-50">
+                                                            {!! $text !!}
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
+                                @endforeach
                             </div>
                         </div>
-                    </div>
-                </div>
-            </section>
+
+                        <div class="discussion-image-wrap w-full mx-auto max-w-[300px] sm:max-w-[420px] lg:max-w-[460px]">
+                            <div class="relative p-4">
+                                <div class="absolute inset-0 -translate-x-3.5 translate-y-3.5 rounded-[26px] border-2 border-amber-300/60 pointer-events-none"></div>
+                                <div class="absolute inset-0 translate-x-3.5 -translate-y-3.5 rounded-[26px] border border-dashed border-orange-300/40 pointer-events-none"></div>
+
+                                <div class="relative aspect-square w-full overflow-hidden rounded-[22px] shadow-2xl shadow-orange-400/20 dark:shadow-orange-400/10">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-orange-100 via-amber-100 to-yellow-100 dark:from-slate-800 dark:via-orange-950/30 dark:to-slate-700"></div>
+                                    <div class="absolute -left-10 -top-10 h-36 w-36 rounded-full bg-amber-300/30 blur-2xl dark:bg-amber-300/20"></div>
+                                    <div class="absolute -right-10 -bottom-10 h-40 w-40 rounded-full bg-orange-400/20 blur-2xl dark:bg-orange-400/20"></div>
+
+                                    <img
+                                            src="{{ $image }}"
+                                            alt="{{ $imageAlt }}"
+                                            class="relative z-10 block h-full w-full object-cover select-none"
+                                            loading="lazy"
+                                            draggable="false"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
         </div>
-    </main>
+    </div>
+@endsection
+
+@section('script')
+    @parent
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const viewport = document.getElementById("slideViewport");
+            const shell = document.getElementById("slideShell");
+
+            function syncLayoutMode() {
+                if (!viewport || !shell) return;
+
+                shell.classList.remove("is-scrollable");
+
+                requestAnimationFrame(() => {
+                    const needsScroll = viewport.scrollHeight > viewport.clientHeight + 2;
+                    shell.classList.toggle("is-scrollable", needsScroll);
+                });
+            }
+
+            let resizeRaf = null;
+
+            function handleResize() {
+                if (resizeRaf) cancelAnimationFrame(resizeRaf);
+                resizeRaf = requestAnimationFrame(syncLayoutMode);
+            }
+
+            window.addEventListener("resize", handleResize);
+            window.addEventListener("load", syncLayoutMode);
+
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(syncLayoutMode);
+            }
+
+            window.resetSlide = () => {
+                syncLayoutMode();
+            };
+
+            syncLayoutMode();
+        });
+    </script>
 @endsection

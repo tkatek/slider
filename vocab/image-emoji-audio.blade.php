@@ -30,17 +30,7 @@
         <div class="mx-auto w-full max-w-6xl px-4 sm:px-8 py-6 sm:py-9 lg:min-h-[100dvh] lg:flex lg:items-center">
             <section class="w-full">
                 <div class="grid place-items-center text-center gap-5 sm:gap-6">
-                    <div class="header-spacing text-center space-y-6 my-8">
-
-                        <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">
-                            <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                                {{ $content['title']  }}
-                            </span>
-                        </h1>
-                        <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                            {{ $content['subtitle']  }}
-                        </p>
-                    </div>
+                    @include('slider.components.title-subtitle')
 
                     <section id="vocabGrid" class="w-full max-w-6xl">
                         <div class="grid {{ $content['grid_class'] ?? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' }} gap-3 sm:gap-4 auto-rows-fr items-stretch">

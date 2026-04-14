@@ -144,20 +144,7 @@
 @section("content")
     <main class="w-full">
         <div id="app" class="mx-auto w-full max-w-6xl px-4 sm:px-8 pt-6 sm:pt-8 pb-32 lg:pb-12">
-            <section class="grid place-items-center text-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                <div id="titleBlock" class="space-y-1 sm:space-y-2">
-                    <h1 class="font-black leading-[1.02] tracking-[-0.05em] text-4xl sm:text-5xl lg:text-6xl">
-                        <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                            {{ $content['title'] ?? 'Speaking Cards' }}
-                        </span>
-                    </h1>
-                    @if(!empty($content['subtitle']))
-                        <p class="font-medium tracking-[-0.02em] text-base sm:text-lg text-slate-700 dark:text-slate-200">
-                            {{ $content['subtitle'] }}
-                        </p>
-                    @endif
-                </div>
-            </section>
+            @include('slider.components.title-subtitle')
 
             <main class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-stretch">
                 <section id="deckPanel" class="lg:col-span-4 surface p-4 sm:p-5 hidden md:flex flex-col">

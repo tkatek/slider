@@ -70,12 +70,6 @@ $content = [
         <main class="relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-[1160px] items-center px-4 py-8 sm:px-8 sm:py-12 lg:px-10">
             <section class="w-full">
                 <div data-anim="head" class="grid place-items-center gap-4 text-center sm:gap-5">
-                    <div class="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 dark:border-indigo-400/20 dark:bg-indigo-400/10">
-                        <span class="text-xs sm:text-sm font-black text-indigo-700 dark:text-indigo-200">
-                            Interview Practice
-                        </span>
-                    </div>
-
                     <div class="header-spacing text-center space-y-6 my-8">
 
                         <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">

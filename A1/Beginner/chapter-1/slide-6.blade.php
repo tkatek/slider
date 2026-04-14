@@ -1,7 +1,7 @@
 <?php
     $content=[
-        'title'=>'FORMAL / INFORMAL GREETINGS:',
-        'subtitle'=>'Greeting forms',
+        'title'=>'Greeting forms',
+        'subtitle'=>'Formal / Informal Greetings',
         'card1Title'=>'Formal Greetings',
         'card2Title'=>'Informal Greetings',
         'card1'=>[

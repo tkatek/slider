@@ -50,12 +50,6 @@ $content = [
         <main class="relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-[1320px] items-center px-4 py-8 sm:px-8 sm:py-12 lg:px-12">
             <section class="w-full">
                 <header data-anim="head" class="text-center">
-                    <div class="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 dark:border-slate-700 dark:bg-slate-900/95">
-                    <span class="text-xs sm:text-sm font-black text-slate-800 dark:text-slate-50">
-                        Question Buckets
-                    </span>
-                    </div>
-
                     <div class="header-spacing text-center space-y-6 my-8">
 
                         <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">

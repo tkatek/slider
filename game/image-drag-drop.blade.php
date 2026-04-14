@@ -337,7 +337,7 @@
 @section('content')
     <main class="game-page flex min-h-[100dvh] w-full flex-col" id="gameRoot">
         {{-- 7. Header --}}
-        @include('slider.components.game-title')
+        @include('slider.components.title-subtitle')
  
         {{-- 8. Status --}}
         @include('slider.components.game-status')
@@ -347,8 +347,8 @@
             <section id="gameArea" class="flex w-full flex-col lg:w-[70%] lg:flex-none">
                 <div class="grid auto-rows-max place-items-center gap-3 text-center sm:gap-4">
                     <div class="w-full">
-                        <div id="imageCard" class="relative isolate mb-4 w-full overflow-hidden rounded-[1.6rem] border border-slate-200/70 bg-white/70 text-left shadow-[0_18px_55px_#02061714] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60 lg:overflow-visible">
-                            <div class="relative z-[1] aspect-[10/6.8] lg:overflow-visible">
+                        <div id="imageCard" class="relative isolate mb-4 w-full overflow-hidden rounded-[1.6rem] border border-slate-200/70 bg-white/70 text-left shadow-[0_18px_55px_#02061714] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60">
+                            <div class="relative z-[1] aspect-[10/6.8] overflow-hidden rounded-[1.6rem]">
                                 <img id="gameImage" class="absolute inset-0 h-full w-full object-contain" alt="Labeling game image">
 
                                 <div id="imageFallback" class="game-fallback absolute inset-0 grid place-items-center">

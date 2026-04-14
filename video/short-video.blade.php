@@ -159,26 +159,14 @@
 
 @section('content')
     <main class="w-full min-h-[100dvh]">
-        <div class="mx-auto w-full max-w-7xl px-4 sm:px-8 py-4 sm:py-6 min-h-[100dvh] flex items-center">
+        <div class="mx-auto w-full max-w-7xl px-4 sm:px-8 py-3 sm:py-4 min-h-[100dvh] flex items-center">
             <section class="w-full">
-                <div class="grid place-items-center text-center gap-3 sm:gap-4">
-                    <div class="header-spacing text-center space-y-4 my-5 sm:my-6">
-                        <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">
-                            <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                                {{ $content['title'] ?? '' }}
-                            </span>
-                        </h1>
-
-                        @if(!empty($content['subtitle']))
-                            <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                                {{ $content['subtitle'] }}
-                            </p>
-                        @endif
-                    </div>
+                <div class="grid place-items-center text-center gap-2 sm:gap-3">
+                    @include('slider.components.title-subtitle')
 
                     @php $videoCount = count($content['shorts'] ?? []); @endphp
 
-                    <div id="shortsGrid" class="w-full grid gap-4 sm:gap-5 justify-items-center items-center
+                    <div id="shortsGrid" class="w-full grid gap-3 sm:gap-4 justify-items-center items-center
                         {{
                             $videoCount === 1 ? 'grid-cols-1' :
                             ($videoCount === 2 ? 'grid-cols-1 md:grid-cols-2' :

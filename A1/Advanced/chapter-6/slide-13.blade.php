@@ -1,11 +1,10 @@
 <?php
 $content = [
-    'page_title' => 'Practice 5: Listening',
+
     'title'      => 'Practice 5: Listening',
     'subtitle'   => 'Listen to announcements (a-d )and complete the information',
     'row_heading' => 'Destinations',
     'audio'      => materialAsset('slider/A1/Advanced/chapter-6/audios/slide13.mp3'),
-    'audio_position' => 'below-stats',
     'audio_transcript' => [
         'a. The 7.45 train to Edinburgh will leave from Platform 1. Platform 1 for the 7.45 to Edinburgh.',
         'b. The 7.49 service to York will depart from Platform 3.',

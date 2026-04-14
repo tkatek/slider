@@ -302,19 +302,7 @@
 @section('content')
     <main class="polite-shell">
         <div class="content-wrap">
-            <section class="title-block">
-                <h1 class="title-glow mt-3 mx-auto max-w-4xl tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5 sm:mt-4 lg:mt-5">
-                    <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                        {{ $content['title'] }}
-                    </span>
-                </h1>
-
-                @if(!empty($content['subtitle']))
-                    <p class="mx-auto mt-3 max-w-2xl text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100 lg:mt-4 lg:max-w-[31rem]">
-                        {{ $content['subtitle'] }}
-                    </p>
-                @endif
-            </section>
+            @include('slider.components.title-subtitle')
 
             <section class="polite-grid-wrap">
                 <div class="polite-grid grid {{ $gridClass }}">

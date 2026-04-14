@@ -51,6 +51,150 @@
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
+        body.editor-theme-orange {
+            --accent: #f97316;
+            --accent-soft: #fed7aa;
+            --accent-light: #fb923c;
+            --accent-dark: #ea580c;
+            --accent-deep: #c2410c;
+            --accent-gradient: linear-gradient(to top right, #f59e0b, #f97316, #ea580c);
+        }
+
+        body.editor-theme-orange .sidebar-thumb:hover {
+            border-color: var(--accent-light);
+            box-shadow: 0 12px 24px -18px rgba(249, 115, 22, 0.45);
+        }
+
+        body.editor-theme-orange .sidebar-thumb:hover .thumb-number {
+            border-color: var(--accent) !important;
+            color: var(--accent-deep);
+        }
+
+        body.editor-theme-orange .sidebar-thumb.active {
+            border-color: var(--accent);
+            box-shadow: 0 16px 32px -22px rgba(249, 115, 22, 0.55);
+        }
+
+        body.editor-theme-orange .thumb-number {
+            border-color: var(--border-ui);
+        }
+
+        body.editor-theme-orange .sidebar-thumb.active .thumb-number {
+            background: var(--accent-gradient);
+            border-color: transparent;
+            color: #ffffff;
+        }
+
+        body.editor-theme-orange .editor-brand-logo {
+            background: var(--accent-gradient) !important;
+        }
+
+        body.editor-theme-orange .editor-primary-btn {
+            background: var(--accent-gradient) !important;
+            box-shadow: 0 10px 20px -10px rgba(249, 115, 22, 0.55) !important;
+        }
+
+        body.editor-theme-orange .editor-primary-btn:hover {
+            background: linear-gradient(to top right, #fb923c, #f97316, #c2410c) !important;
+        }
+
+        body.editor-theme-orange .editor-secondary-btn:hover {
+            border-color: var(--accent-light) !important;
+            color: var(--accent-deep) !important;
+            box-shadow: 0 10px 20px -16px rgba(249, 115, 22, 0.45);
+        }
+
+        body.editor-theme-orange .text-brand,
+        body.editor-theme-orange .hover\:text-brand:hover,
+        body.editor-theme-orange .dark\:text-brand-glow {
+            color: var(--accent) !important;
+        }
+
+        body.editor-theme-orange .bg-brand,
+        body.editor-theme-orange .hover\:bg-brand-glow:hover {
+            background: var(--accent-gradient) !important;
+        }
+
+        body.editor-theme-orange .border-brand,
+        body.editor-theme-orange .hover\:border-brand:hover,
+        body.editor-theme-orange .group:hover .group-hover\:border-brand {
+            border-color: var(--accent) !important;
+        }
+
+        body.editor-theme-orange .focus\:ring-brand:focus {
+            --tw-ring-color: rgba(249, 115, 22, 0.45) !important;
+        }
+
+        body.editor-theme-orange .shadow-brand\/20 {
+            --tw-shadow-color: rgba(249, 115, 22, 0.2) !important;
+            --tw-shadow: var(--tw-shadow-colored) !important;
+        }
+
+        body.editor-theme-orange .cue-btn {
+            background: var(--accent-gradient);
+            box-shadow:
+                    0 0 0 1px rgba(249, 115, 22, 0.4),
+                    0 10px 20px -10px rgba(249, 115, 22, 0.5);
+        }
+
+        body.editor-theme-orange .cue-btn:hover {
+            background: linear-gradient(to top right, #fb923c, #f97316, #c2410c);
+            box-shadow:
+                    0 0 0 2px rgba(249, 115, 22, 0.4),
+                    0 8px 16px -4px rgba(249, 115, 22, 0.3);
+        }
+
+        body.editor-theme-orange .cue-tooltip {
+            border-color: rgba(249, 115, 22, 0.16);
+            box-shadow:
+                    0 40px 80px -15px rgba(15, 23, 42, 0.15),
+                    inset 0 0 0 1px rgba(249, 115, 22, 0.08);
+        }
+
+        body.editor-theme-orange .cue-header {
+            background: rgba(249, 115, 22, 0.08);
+            border-left-color: var(--accent);
+        }
+
+        body.editor-theme-orange .cue-header::before {
+            background: linear-gradient(to bottom, transparent, rgba(249, 115, 22, 0.12), transparent);
+        }
+
+        body.editor-theme-orange .cue-badge,
+        body.editor-theme-orange .edit-slide-btn {
+            color: var(--accent) !important;
+        }
+
+        body.editor-theme-orange .cue-badge {
+            text-shadow: 0 0 10px rgba(249, 115, 22, 0.22);
+        }
+
+        body.editor-theme-orange .cue-header .cue-badge::after,
+        body.editor-theme-orange .cue-marker {
+            background: var(--accent);
+            box-shadow: 0 0 8px rgba(249, 115, 22, 0.4);
+        }
+
+        body.editor-theme-orange .teacher-cue div:hover .cue-marker {
+            background: var(--accent-light);
+            box-shadow: 0 0 12px rgba(251, 146, 60, 0.6);
+        }
+
+        body.editor-theme-orange .edit-slide-btn:hover {
+            color: var(--accent-deep) !important;
+            background: rgba(249, 115, 22, 0.1) !important;
+        }
+
+        #desktop-sidebar-toggle-btn:hover {
+            color: var(--accent) !important;
+            background: color-mix(in srgb, var(--accent) 10%, transparent) !important;
+        }
+
+        body.editor-theme-orange #desktop-sidebar-toggle-btn:hover {
+            color: var(--accent-deep) !important;
+            background: rgba(249, 115, 22, 0.12) !important;
+        }
+
         body {
             overflow: hidden;
         }
@@ -199,7 +343,7 @@
         }
 
         .sidebar-thumb.active .thumb-number {
-            background: var(--accent);
+            background: #4f46e5;
             color: white;
         }
 
@@ -238,8 +382,8 @@
             background: var(--bg-card);
             pointer-events: none;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             transform-origin: center center;
         }
 
@@ -304,7 +448,7 @@
             gap: 0.5rem;
             padding: 0.5rem 1.25rem;
             border-radius: 0.65rem;
-            background: #4f46e5;
+            background: var(--accent);
             color: white;
             font-weight: 800;
             font-size: 0.7rem;
@@ -534,11 +678,11 @@
 
         #sidebar-drawer {
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
         }
 
@@ -655,12 +799,12 @@
         }
     </style>
 </head>
-<body class="flex h-[100dvh] flex-col">
+<body class="flex h-[100dvh] flex-col editor-theme-{{ $theme["name"]}}">
 
 <header class="px-3 py-2 md:px-8 md:py-2 glass-panel z-[85] shrink-0 relative">
     <div class="flex min-h-[2.75rem] items-center justify-between sm:min-h-[3rem]">
         <div class="flex-1 flex items-center gap-2 md:gap-3 min-w-0">
-            <div class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-tr from-brand to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shrink-0">
+            <div class="editor-brand-logo w-8 h-8 md:w-10 md:h-10 bg-gradient-to-tr from-brand to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 md:w-6 md:h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -711,7 +855,7 @@
 
         <div class="flex-1 hidden lg:flex items-end justify-end gap-3">
             <button onclick="prevSlide()"
-                    class="btn-action min-w-[2.5rem] bg-[var(--bg-card)] border border-[var(--border-ui)] text-[var(--text-primary)] hover:border-brand hover:text-brand shadow-sm">
+                    class="editor-secondary-btn btn-action min-w-[2.5rem] bg-[var(--bg-card)] border border-[var(--border-ui)] text-[var(--text-primary)] hover:border-brand hover:text-brand shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
                 </svg>
@@ -721,7 +865,7 @@
                   class="w-[90px] text-[9px] md:text-[11px] font-black tracking-[0.1em] text-[var(--text-secondary)] bg-[var(--bg-body)] px-2.5 md:px-4 py-2 rounded-xl border border-[var(--border-ui)]">01
                 / {{count($slides)}}</span>
             <button onclick="nextSlide()"
-                    class="btn-action min-w-[2.5rem] bg-brand text-white shadow-lg shadow-brand/20 hover:bg-brand-glow">
+                    class="editor-primary-btn btn-action min-w-[2.5rem] bg-brand text-white shadow-lg shadow-brand/20 hover:bg-brand-glow">
                 <span class="text-[10px] md:text-[11px] uppercase tracking-[0.1em] hidden sm:inline">Next Slide</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
@@ -762,7 +906,7 @@
     <div class="flex items-center justify-center gap-2 pt-2 lg:hidden">
         <div class="flex flex-1 items-center justify-between gap-1.5 min-w-0">
             <button onclick="prevSlide()"
-                    class="btn-action min-w-[2.5rem] bg-[var(--bg-card)] border border-[var(--border-ui)] text-[var(--text-primary)] hover:border-brand hover:text-brand shadow-sm">
+                    class="editor-secondary-btn btn-action min-w-[2.5rem] bg-[var(--bg-card)] border border-[var(--border-ui)] text-[var(--text-primary)] hover:border-brand hover:text-brand shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
                 </svg>
@@ -774,7 +918,7 @@
             </div>
 
             <button onclick="nextSlide()"
-                    class="btn-action min-w-[2.5rem] bg-brand text-white shadow-lg shadow-brand/20 hover:bg-brand-glow">
+                    class="editor-primary-btn btn-action min-w-[2.5rem] bg-brand text-white shadow-lg shadow-brand/20 hover:bg-brand-glow">
                 <span class="text-[10px] md:text-[11px] uppercase tracking-[0.1em] inline">Next Slide</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
@@ -1075,7 +1219,7 @@
 
 
 <script>
-    const slideData = @json($slides);
+    let slideData = @json($slides);
     const PRELOAD_AHEAD_COUNT = 2;
     const state = {
         currentSlide: 0,
@@ -1230,14 +1374,30 @@
         });
     }
 
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     function createSlides() {
         const wrapper = document.getElementById('slides-wrapper');
         const template = document.getElementById('slide-template');
+        if (!wrapper || !template) return;
 
-        slideData.forEach((data, i) => {
+        wrapper.querySelectorAll('.slide').forEach((slide) => slide.remove());
+
+        const fragment = document.createDocumentFragment();
+
+        slideData.forEach((data) => {
             const clone = template.content.cloneNode(true);
             const slide = clone.querySelector('.slide');
             const iframe = slide.querySelector('iframe');
+
+            slide.dataset.slideId = String(data.id ?? '');
 
             iframe.onload = () => {
                 const isDark = document.documentElement.classList.contains('dark');
@@ -1246,10 +1406,11 @@
                 }
             };
 
-            wrapper.appendChild(clone);
+            fragment.appendChild(clone);
         });
 
-        state.slides = document.querySelectorAll('.slide');
+        wrapper.appendChild(fragment);
+        state.slides = Array.from(wrapper.querySelectorAll('.slide'));
     }
 
     function initializeAnnotationLayers() {
@@ -1307,7 +1468,7 @@
     }
 
     function getToolConfig() {
-        return TOOL_CONFIG[state.activeTool] || TOOL_CONFIG['select'];
+        return TOOL_CONFIG[state.activeTool] || TOOL_CONFIG.select;
     }
 
     function applyToolMode() {
@@ -1407,6 +1568,45 @@
         state.lastPoint = null;
     }
 
+    function getAnnotationSnapshots() {
+        const snapshots = new Map();
+
+        state.slides.forEach((slide, index) => {
+            const slideId = slideData[index]?.id;
+            const canvas = slide.querySelector('.annotation-layer');
+            if (!slideId || !canvas || canvas.width === 0 || canvas.height === 0) return;
+
+            try {
+                snapshots.set(String(slideId), canvas.toDataURL());
+            } catch (error) {
+                console.warn('Could not capture slide annotation snapshot:', error);
+            }
+        });
+
+        return snapshots;
+    }
+
+    function restoreAnnotationSnapshots(snapshots) {
+        state.slides.forEach((slide, index) => {
+            const slideId = slideData[index]?.id;
+            const canvas = slide.querySelector('.annotation-layer');
+            const snapshot = slideId ? snapshots.get(String(slideId)) : null;
+            if (!canvas || !snapshot) return;
+
+            const ctx = canvas.getContext('2d');
+            const width = parseFloat(canvas.style.width) || canvas.width;
+            const height = parseFloat(canvas.style.height) || canvas.height;
+            const image = new Image();
+
+            image.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(image, 0, 0, width, height);
+            };
+
+            image.src = snapshot;
+        });
+    }
+
     function loadSlideAtIndex(index) {
         if (index < 0 || index >= slideData.length || state.loadedSlides.has(index)) return;
 
@@ -1417,7 +1617,7 @@
         if (!iframe) return;
 
         const src = slideData[index]?.src;
-        if (!src || src.trim() === "") return;
+        if (!src || src.trim() === '') return;
 
         iframe.src = src;
         state.loadedSlides.add(index);
@@ -1431,51 +1631,57 @@
 
     function createSidebar() {
         const sidebarList = document.getElementById('sidebar-list');
+        if (!sidebarList) return;
+
+        sidebarList.innerHTML = '';
+
+        if (!slideData.length) {
+            sidebarList.innerHTML = `
+                <div class="rounded-2xl border border-dashed border-[var(--border-ui)] p-4 text-sm text-[var(--text-secondary)]">
+                    No slides yet. Use "Add New Slide" to create the first one.
+                </div>
+            `;
+            return;
+        }
 
         slideData.forEach((data, i) => {
             const item = document.createElement('div');
-            item.className = `sidebar-thumb flex items-center gap-4 p-3 rounded-2xl group border border-transparent active:scale-95`;
+            const cueText = Array.isArray(data.cue) ? data.cue.join('\n') : String(data.cue ?? '');
+
+            item.className = 'sidebar-thumb flex items-center gap-4 p-3 rounded-2xl group border border-transparent active:scale-95';
             item.onclick = () => goToSlide(i);
-
-            const showBtn = `
-                <button class="show-slide-btn p-1.5 rounded-lg text-sky-500 hover:text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-500/10 transition-colors" title="Show code" aria-label="Show slide code" data-slide-id="${data.id}" data-slide-title="${String(data.title ?? '').replace(/\"/g, '&quot;')}">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0a3 3 0 016 0Z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7S3.732 16.057 2.458 12Z" />
-                    </svg>
-                </button>
-            `;
-
-            const editBtn = `
-                <button class="edit-slide-btn p-1.5 rounded-lg text-indigo-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors" data-slide-id="${data.id}" data-slide-title="${String(data.title ?? '').replace(/\"/g, '&quot;')}" data-slide-path="${String(data.path ?? data.src ?? '').replace(/\"/g, '&quot;')}" data-slide-order="${String(data.order ?? data.position ?? '')}" data-slide-cue="${Array.isArray(data.cue) ? data.cue.join('\\n').replace(/\"/g, '&quot;') : String(data.cue ?? '').replace(/\"/g, '&quot;')}">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 3.487a2.25 2.25 0 013.182 3.182L7.5 19.213 3 20.25l1.037-4.5L16.862 3.487z" />
-                    </svg>
-                </button>
-            `;
-
             item.innerHTML = `
                 <div class="thumb-number w-8 h-8 min-w-8 rounded-lg bg-slate-50 border border-[var(--border-ui)] flex items-center justify-center text-[10px] font-black group-hover:border-brand text-[var(--text-primary)]">
                     ${String(i + 1).padStart(2, '0')}
                 </div>
                 <div class="sidebar-slide-copy overflow-hidden">
                     <p class="text-[10px] font-black uppercase tracking-wider text-[var(--text-secondary)]">Slide ${i + 1}</p>
-                    <p class="title text-sm md:text-md font-bold leading-tight text-[var(--text-primary)] truncate">${data.title}</p>
+                    <p class="title text-sm md:text-md font-bold leading-tight text-[var(--text-primary)] truncate">${escapeHtml(data.title)}</p>
                 </div>
                 <div class="sidebar-actions ml-auto flex items-center gap-1.5">
-                    ${showBtn}
-                    ${editBtn}
-                    <button class="delete-slide-btn p-1.5 rounded-lg text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors" data-slide-id="${data.id}" data-slide-title="${String(data.title ?? '').replace(/\"/g, '&quot;')}">
+                    <button class="show-slide-btn p-1.5 rounded-lg text-sky-500 hover:text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-500/10 transition-colors" title="Show code" aria-label="Show slide code" data-slide-id="${escapeHtml(data.id)}" data-slide-title="${escapeHtml(data.title)}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0a3 3 0 016 0Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7S3.732 16.057 2.458 12Z" />
+                        </svg>
+                    </button>
+                    <button class="edit-slide-btn p-1.5 rounded-lg text-indigo-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors" data-slide-id="${escapeHtml(data.id)}" data-slide-title="${escapeHtml(data.title)}" data-slide-path="${escapeHtml(data.path ?? data.src ?? '')}" data-slide-order="${escapeHtml(data.order ?? data.position ?? '')}" data-slide-cue="${escapeHtml(cueText)}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 3.487a2.25 2.25 0 013.182 3.182L7.5 19.213 3 20.25l1.037-4.5L16.862 3.487z" />
+                        </svg>
+                    </button>
+                    <button class="delete-slide-btn p-1.5 rounded-lg text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors" data-slide-id="${escapeHtml(data.id)}" data-slide-title="${escapeHtml(data.title)}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 7h12m-9 0V5a1 1 0 011-1h2a1 1 0 011 1v2m-6 0l1 12a1 1 0 001 1h6a1 1 0 001-1l1-12" />
                         </svg>
                     </button>
                 </div>
             `;
+
             sidebarList.appendChild(item);
         });
 
-        document.querySelectorAll('.show-slide-btn').forEach(btn => {
+        sidebarList.querySelectorAll('.show-slide-btn').forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const slideId = btn.getAttribute('data-slide-id');
@@ -1486,7 +1692,7 @@
             });
         });
 
-        document.querySelectorAll('.delete-slide-btn').forEach(btn => {
+        sidebarList.querySelectorAll('.delete-slide-btn').forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const slideId = btn.getAttribute('data-slide-id');
@@ -1497,7 +1703,7 @@
             });
         });
 
-        document.querySelectorAll('.edit-slide-btn').forEach(btn => {
+        sidebarList.querySelectorAll('.edit-slide-btn').forEach((btn) => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const slideId = btn.getAttribute('data-slide-id');
@@ -1518,24 +1724,47 @@
         const numEl = document.getElementById('header-slide-num');
         const titleEl = document.getElementById('header-slide-title');
 
-        if (numEl && titleEl && currentData) {
-            numEl.textContent = String(index + 1).padStart(2, '0');
-            titleEl.textContent = currentData.title;
+        if (numEl) {
+            numEl.textContent = currentData ? String(index + 1).padStart(2, '0') : '00';
+        }
+
+        if (titleEl) {
+            titleEl.textContent = currentData?.title ?? 'No slides';
         }
     }
 
     function updateSlides() {
-        state.slides.forEach((s, i) => {
-            s.classList.toggle('active', i === state.currentSlide);
-            s.classList.toggle('prev', i < state.currentSlide);
-            s.classList.toggle('next', i > state.currentSlide);
+        const totalSlides = state.slides.length;
+
+        if (!totalSlides) {
+            document.querySelectorAll('.teacher-cue').forEach((el) => {
+                el.innerHTML = '<div><span>No teacher cue available.</span></div>';
+            });
+
+            const emptyIndexText = '00 / 00';
+            const footerIndex = document.getElementById('slide-index-footer');
+            const mobileHeaderIndex = document.getElementById('slide-index-header-mobile');
+
+            if (footerIndex) footerIndex.textContent = emptyIndexText;
+            if (mobileHeaderIndex) mobileHeaderIndex.textContent = emptyIndexText;
+
+            updateHeaderInfo();
+            return;
+        }
+
+        state.currentSlide = Math.min(Math.max(state.currentSlide, 0), totalSlides - 1);
+
+        state.slides.forEach((slide, index) => {
+            slide.classList.toggle('active', index === state.currentSlide);
+            slide.classList.toggle('prev', index < state.currentSlide);
+            slide.classList.toggle('next', index > state.currentSlide);
         });
 
         loadSlideAtIndex(state.currentSlide);
         preloadUpcomingSlides(state.currentSlide);
 
         const thumbs = document.querySelectorAll('.sidebar-thumb');
-        thumbs.forEach((t, i) => t.classList.toggle('active', i === state.currentSlide));
+        thumbs.forEach((thumb, index) => thumb.classList.toggle('active', index === state.currentSlide));
 
         const activeThumb = thumbs[state.currentSlide];
         if (activeThumb) activeThumb.scrollIntoView({ behavior: 'auto', block: 'nearest' });
@@ -1547,29 +1776,31 @@
                 setTimeout(() => {
                     try {
                         iframe.contentWindow.resetSlide();
-                    } catch(e) { console.log("Reset slide not ready or failed"); }
+                    } catch (e) {
+                        console.log('Reset slide not ready or failed');
+                    }
                 }, 100);
             }
         }
 
-        const cues = slideData[state.currentSlide].cue || [];
-        const cueHtml = cues.map(c => `
+        const currentData = slideData[state.currentSlide] ?? {};
+        const cues = Array.isArray(currentData.cue) ? currentData.cue : [];
+        const cueHtml = cues.map((cue) => `
                 <div>
                     <span class="cue-marker"></span>
-                    <span>${c}</span>
+                    <span>${escapeHtml(cue)}</span>
                 </div>
             `).join('');
 
-        document.querySelectorAll('.teacher-cue').forEach(el => {
-            el.innerHTML = cueHtml;
+        document.querySelectorAll('.teacher-cue').forEach((el) => {
+            el.innerHTML = cueHtml || '<div><span>No teacher cue available.</span></div>';
         });
 
-        const slideIndexText = `${String(state.currentSlide + 1).padStart(2, '0')} / ${String(state.slides.length).padStart(2, '0')}`;
-
+        const slideIndexText = `${String(state.currentSlide + 1).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
         const footerIndex = document.getElementById('slide-index-footer');
-        if (footerIndex) footerIndex.textContent = slideIndexText;
-
         const mobileHeaderIndex = document.getElementById('slide-index-header-mobile');
+
+        if (footerIndex) footerIndex.textContent = slideIndexText;
         if (mobileHeaderIndex) mobileHeaderIndex.textContent = slideIndexText;
 
         updateHeaderInfo();
@@ -1577,16 +1808,129 @@
 
     function stopAllIframeAudio() {
         const activeSlide = state.slides[state.currentSlide];
-        if (activeSlide) {
-            const iframe = activeSlide.querySelector('iframe');
-            try {
-                if (iframe && iframe.contentWindow && typeof iframe.contentWindow.stopSlideAudio === 'function') {
-                    iframe.contentWindow.stopSlideAudio();
-                }
-            } catch (e) {
-                console.warn("Could not stop iframe audio:", e);
+        if (!activeSlide) return;
+
+        const iframe = activeSlide.querySelector('iframe');
+        try {
+            if (iframe && iframe.contentWindow && typeof iframe.contentWindow.stopSlideAudio === 'function') {
+                iframe.contentWindow.stopSlideAudio();
             }
+        } catch (e) {
+            console.warn('Could not stop iframe audio:', e);
         }
+    }
+
+    function renderEditor(nextSlides, options = {}) {
+        const annotationSnapshots = getAnnotationSnapshots();
+        const focusSlideId = options.focusSlideId ?? null;
+        const fallbackIndex = options.fallbackIndex ?? state.currentSlide;
+
+        stopAllIframeAudio();
+        slideData = Array.isArray(nextSlides) ? nextSlides : [];
+        state.loadedSlides = new Set();
+
+        createSlides();
+        initializeAnnotationLayers();
+        restoreAnnotationSnapshots(annotationSnapshots);
+        createSidebar();
+
+        if (!slideData.length) {
+            state.currentSlide = 0;
+            updateSlides();
+            applyToolMode();
+            return;
+        }
+
+        const preferredIndex = focusSlideId === null
+            ? -1
+            : slideData.findIndex((slide) => String(slide.id) === String(focusSlideId));
+        const clampedFallbackIndex = Math.min(Math.max(fallbackIndex, 0), slideData.length - 1);
+
+        state.currentSlide = preferredIndex >= 0 ? preferredIndex : clampedFallbackIndex;
+        updateSlides();
+        applyToolMode();
+    }
+
+    function parseCueLines(value) {
+        return String(value ?? '')
+            .split(/\r\n|\n|\r/)
+            .map((line) => line.trim())
+            .filter(Boolean);
+    }
+
+    function rebuildLoadedSlidesState() {
+        state.loadedSlides = new Set(
+            state.slides
+                .map((slide, index) => {
+                    const iframe = slide.querySelector('iframe');
+                    return iframe?.getAttribute('src') ? index : null;
+                })
+                .filter((index) => index !== null)
+        );
+    }
+
+    function updateSlideLocally(slideId, updates = {}) {
+        const index = slideData.findIndex((slide) => String(slide.id) === String(slideId));
+        if (index === -1) return;
+
+        slideData[index] = {
+            ...slideData[index],
+            ...updates,
+        };
+
+        createSidebar();
+        updateSlides();
+    }
+
+    function invalidateLoadedSlide(slideId) {
+        const index = slideData.findIndex((slide) => String(slide.id) === String(slideId));
+        if (index === -1 || !state.loadedSlides.has(index)) return;
+
+        const slideElement = state.slides[index];
+        const iframe = slideElement?.querySelector('iframe');
+
+        if (iframe) {
+            iframe.removeAttribute('src');
+        }
+
+        state.loadedSlides.delete(index);
+    }
+
+    function removeSlideLocally(slideId) {
+        const index = slideData.findIndex((slide) => String(slide.id) === String(slideId));
+        if (index === -1) return;
+
+        const slideElement = state.slides[index];
+        const deletingActiveSlide = state.currentSlide === index;
+
+        if (deletingActiveSlide) {
+            stopAllIframeAudio();
+        }
+
+        if (slideElement) {
+            slideElement.remove();
+        }
+
+        slideData.splice(index, 1);
+        state.slides = Array.from(document.querySelectorAll('#slides-wrapper .slide'));
+        rebuildLoadedSlidesState();
+        createSidebar();
+
+        if (!slideData.length) {
+            state.currentSlide = 0;
+            updateSlides();
+            applyToolMode();
+            return;
+        }
+
+        if (state.currentSlide > index) {
+            state.currentSlide -= 1;
+        } else if (deletingActiveSlide) {
+            state.currentSlide = Math.min(index, slideData.length - 1);
+        }
+
+        updateSlides();
+        applyToolMode();
     }
 
     function nextSlide() {
@@ -1606,6 +1950,7 @@
     }
 
     function goToSlide(index) {
+        if (index < 0 || index >= state.slides.length) return;
         stopAllIframeAudio();
         state.currentSlide = index;
         updateSlides();
@@ -1663,6 +2008,100 @@
     let currentShowCodePath = '';
     let copyPathBtnResetTimeout = null;
     let copyCodeBtnResetTimeout = null;
+    let toastResetTimeout = null;
+
+    function getOrCreateToast() {
+        let toast = document.getElementById('editor-toast');
+        if (toast) return toast;
+
+        toast = document.createElement('div');
+        toast.id = 'editor-toast';
+        toast.className = 'fixed bottom-5 left-1/2 z-[140] -translate-x-1/2 translate-y-2 rounded-2xl px-4 py-3 text-sm font-semibold shadow-2xl transition-all duration-200 opacity-0 pointer-events-none';
+        document.body.appendChild(toast);
+
+        return toast;
+    }
+
+    function showToast(message, type = 'success') {
+        if (!message) return;
+
+        const toast = getOrCreateToast();
+        toast.textContent = message;
+        toast.classList.remove('bg-emerald-600', 'text-white', 'bg-rose-600', 'opacity-0', 'translate-y-2');
+        toast.classList.add(type === 'error' ? 'bg-rose-600' : 'bg-emerald-600', 'text-white');
+
+        requestAnimationFrame(() => {
+            toast.classList.remove('opacity-0', 'translate-y-2');
+        });
+
+        clearTimeout(toastResetTimeout);
+        toastResetTimeout = setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y-2');
+        }, 2200);
+    }
+
+    function setFormSubmitting(form, submitting, label) {
+        const submitButton = form?.querySelector('button[type="submit"]');
+        if (!submitButton) return;
+
+        if (submitting) {
+            if (!submitButton.dataset.originalLabel) {
+                submitButton.dataset.originalLabel = submitButton.innerHTML;
+            }
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-70', 'cursor-not-allowed');
+            if (label) submitButton.textContent = label;
+            return;
+        }
+
+        submitButton.disabled = false;
+        submitButton.classList.remove('opacity-70', 'cursor-not-allowed');
+        if (submitButton.dataset.originalLabel) {
+            submitButton.innerHTML = submitButton.dataset.originalLabel;
+        }
+    }
+
+    function getMutationErrorMessage(response, payload) {
+        const validationErrors = Object.values(payload?.errors ?? {}).flat();
+        if (validationErrors.length) return validationErrors[0];
+        if (payload?.message) return payload.message;
+        return `Request failed with status ${response.status}.`;
+    }
+
+    async function submitSlideMutation(form, options = {}) {
+        if (!form) return null;
+
+        setFormSubmitting(form, true, options.loadingText);
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: new FormData(form),
+            });
+
+            const payload = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                throw new Error(getMutationErrorMessage(response, payload));
+            }
+
+            if (typeof options.onSuccess === 'function') {
+                options.onSuccess(payload);
+            }
+
+            showToast(payload?.message || 'Saved successfully');
+            return payload;
+        } catch (error) {
+            showToast(error instanceof Error ? error.message : 'Something went wrong.', 'error');
+            return null;
+        } finally {
+            setFormSubmitting(form, false);
+        }
+    }
 
     function openAddSlideModal() {
         if (!addSlideModal) return;
@@ -1733,6 +2172,7 @@
     window.openDeleteSlideModal = (slideId, title) => {
         if (!deleteSlideModal || !deleteSlideForm) return;
         deleteSlideForm.action = deleteRouteTemplate.replace('__ID__', slideId);
+        deleteSlideForm.dataset.slideId = slideId;
         if (deleteSlideTitle) deleteSlideTitle.textContent = title || 'this slide';
         deleteSlideModal.classList.remove('hidden');
         deleteSlideModal.classList.add('flex');
@@ -1750,9 +2190,27 @@
     if (deleteSlideClose) deleteSlideClose.addEventListener('click', closeDeleteSlideModal);
     if (deleteSlideCancel) deleteSlideCancel.addEventListener('click', closeDeleteSlideModal);
 
+    if (deleteSlideForm) {
+        deleteSlideForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const deletingSlideId = deleteSlideForm.dataset.slideId;
+            const payload = await submitSlideMutation(deleteSlideForm, {
+                loadingText: 'Deleting...',
+                onSuccess: () => {
+                    removeSlideLocally(deletingSlideId);
+                    closeDeleteSlideModal();
+                },
+            });
+
+            if (!payload) return;
+        });
+    }
+
     window.openEditSlideModal = (slideId, data) => {
         if (!editSlideModal || !editSlideForm) return;
         editSlideForm.action = editRouteTemplate.replace('__ID__', slideId);
+        editSlideForm.dataset.slideId = slideId;
         if (editSlideTitle) editSlideTitle.value = data?.title ?? '';
         if (editSlidePath) editSlidePath.value = data?.path ?? '';
         if (editSlideOrder) editSlideOrder.value = data?.order ?? '';
@@ -1777,6 +2235,36 @@
     if (editSlideBackdrop) editSlideBackdrop.addEventListener('click', closeEditSlideModal);
     if (editSlideClose) editSlideClose.addEventListener('click', closeEditSlideModal);
     if (editSlideCancel) editSlideCancel.addEventListener('click', closeEditSlideModal);
+
+    if (editSlideForm) {
+        editSlideForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const slideId = editSlideForm.dataset.slideId;
+            const currentSlide = slideData.find((slide) => String(slide.id) === String(slideId));
+            const nextTitle = editSlideTitle?.value ?? '';
+            const nextCue = parseCueLines(editTeacherCue?.value ?? '');
+            const nextPath = editSlidePath?.value ?? '';
+            const payload = await submitSlideMutation(editSlideForm, {
+                loadingText: 'Saving...',
+                onSuccess: () => {
+                    if ((currentSlide?.path ?? '') !== nextPath) {
+                        invalidateLoadedSlide(slideId);
+                    }
+
+                    updateSlideLocally(slideId, {
+                        title: nextTitle,
+                        cue: nextCue,
+                        path: nextPath,
+                    });
+
+                    closeEditSlideModal();
+                },
+            });
+
+            if (!payload) return;
+        });
+    }
 
     window.openShowCodeModal = async (slideId, title) => {
         if (!showCodeModal || !showSlideCode) return;

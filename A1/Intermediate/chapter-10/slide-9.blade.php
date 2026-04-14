@@ -4,7 +4,6 @@ $content = [
     'title'      => 'New Language',
     'subtitle'   => 'Polite Requests',
     'image'      => materialAsset('slider/A1/Intermediate/chapter-10/img/slide9.webp'),
-    'image_alt'  => 'Polite requests discussion image',
 
     'cards' => [
         [

@@ -19,15 +19,12 @@
     $showReadingBadge = array_key_exists('show_reading_badge', $content)
         ? !empty($content['show_reading_badge'])
         : true;
-    $headerWrapClass = trim((string) ($content['header_wrap_class'] ?? 'header-spacing w-full text-center space-y-2 mt-1 mb-2 sm:mt-2 sm:mb-3'));
-    $titleClass = trim((string) ($content['title_class'] ?? 'w-full whitespace-normal lg:whitespace-nowrap tracking-tight text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-2'));
-    $subtitleClass = trim((string) ($content['subtitle_class'] ?? 'text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100'));
     $rawReadingPassage = $content['passage'] ?? $content['reading'] ?? $content['reading_passage'] ?? [];
     $readingPassage = is_array($rawReadingPassage)
         ? array_values(array_filter(array_map(static fn ($paragraph) => trim((string) $paragraph), $rawReadingPassage), static fn ($paragraph) => $paragraph !== ''))
         : array_values(array_filter(
             array_map('trim', preg_split('/\R{2,}/', trim((string) $rawReadingPassage)) ?: []),
-            static fn ($paragraph) => $paragraph !== '' 
+            static fn ($paragraph) => $paragraph !== ''
         ));
     $enableImageZoom = true;
     if (array_key_exists('enable_image_zoom', $content)) {
@@ -49,7 +46,6 @@
     $questionPromptLabel = $content['question_prompt_label'] ?? 'Choose the correct answer:';
     $optionsBank = $content['optionsBank'] ?? [];
     $optionsGridClass = $content['options_grid_class'] ?? 'mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4';
-    $statusRowWidth = $content['status_row_width'] ?? 'max-w-5xl';
     $gameCardWidth = $content['game_card_width'] ?? ($gameType === 'emoji' ||  $gameType === 'audio'||  $gameType === 'questions_only'? 'max-w-5xl' : 'max-w-[92rem]');
     $imageOptionTileClass = trim((string) ($content['image_option_tile_class'] ?? ''));
     $showImageOptionLabel = array_key_exists('show_image_option_label', $content)
@@ -77,9 +73,47 @@
 
 @section("style")     
     <style>
-        .modal-scroll::-webkit-scrollbar{height:10px;width:10px}
-        .modal-scroll::-webkit-scrollbar-thumb{background:rgba(148,163,184,.55);border-radius:999px}
-        .dark .modal-scroll::-webkit-scrollbar-thumb{background:rgba(51,65,85,.7)}
+        .modal-scroll{
+            scrollbar-width:thin;
+            scrollbar-color:rgba(99,102,241,.72) rgba(226,232,240,.42);
+            scrollbar-gutter:stable;
+        }
+
+        .modal-scroll::-webkit-scrollbar{
+            height:12px;
+            width:12px;
+        }
+
+        .modal-scroll::-webkit-scrollbar-track{
+            margin-block:14px;
+            border-radius:999px;
+            background:rgba(226,232,240,.42);
+            border:4px solid transparent;
+            background-clip:content-box;
+        }
+
+        .modal-scroll::-webkit-scrollbar-thumb{
+            border-radius:999px;
+            border:3px solid transparent;
+            background:
+                linear-gradient(135deg, #38bdf8 0%, #6366f1 54%, #8b5cf6 100%)
+                content-box;
+            box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);
+        }
+
+        .modal-scroll::-webkit-scrollbar-thumb:hover{
+            background:
+                linear-gradient(135deg, #0ea5e9 0%, #4f46e5 54%, #7c3aed 100%)
+                content-box;
+        }
+
+        .dark .modal-scroll{
+            scrollbar-color:rgba(129,140,248,.82) rgba(30,41,59,.66);
+        }
+
+        .dark .modal-scroll::-webkit-scrollbar-track{
+            background:rgba(30,41,59,.66);
+        }
 
         .game-modal-shell{
             position:relative;
@@ -165,6 +199,18 @@
             height:2.25rem;
             width:2.25rem;
             border-radius:.75rem;
+        }
+
+        .game-btn{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:.5rem;
+            border-radius:.5rem;
+            padding:.375rem .75rem;
+            font-size:.75rem;
+            font-weight:900;
+            transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease, background-color .2s ease;
         }
 
         .mca-btn-primary,
@@ -742,45 +788,17 @@
 
 @section("content")
     <div class="font-sans relative isolate min-h-[100dvh] overflow-x-hidden overflow-y-auto dark:text-slate-100 transition-colors duration-300">
-        <main id="app" class="w-full max-w-[96rem] min-h-[100dvh] px-4 sm:px-8 lg:px-10 mx-auto pt-3 sm:pt-4 pb-16 sm:pb-20 flex flex-col">
-            <section class="p-2 sm:p-4 lg:p-5 flex-1 flex flex-col">
-                <div class="grid place-items-center text-center gap-3 sm:gap-4 flex-1 auto-rows-max">
+        <main id="app" class="w-full max-w-[96rem] min-h-[100dvh] px-4 sm:px-8 lg:px-10 mx-auto pt-3 sm:pt-4 pb-6 sm:pb-8 flex flex-col justify-center">
+            <section class="p-2 sm:p-3 lg:p-4 flex-none flex flex-col">
+                <div class="grid place-items-center text-center gap-2 sm:gap-3 auto-rows-max">
+                    @include('slider.components.title-subtitle', [
+                        'titleWrapClass' => 'header-spacing my-2 px-4 text-center sm:my-3 sm:px-6 lg:px-8',
+                        'titleSpacingClass' => 'space-y-2',
+                    ])
 
-                    <div class="{{ $headerWrapClass }}">
+                    @include('slider.components.game-status')
 
-                        <h1 class="{{ $titleClass }}">
-                            <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                                {{ $title ?? ($content['title'] ?? 'Practice') }}
-                            </span>
-                        </h1>
-                        <p class="{{ $subtitleClass }}">
-                            {{ $subtitle ?? ($content['subtitle'] ?? 'Good luck!') }}
-                        </p>
-                    </div>
-                    <div id="statusRow" class="w-full {{ $statusRowWidth }} rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-lg overflow-hidden">
-                        <div class="grid grid-cols-4">
-                            @foreach(['Question' => 'qCount', 'Correct' => 'correctCount', 'Mistakes' => 'mistakesCount', 'Time' => 'timer'] as $label => $id)
-                                <div class="px-2 py-2 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
-                                    <div class="hidden sm:inline-block text-[11px] sm:text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                                        {{ $label }}
-                                    </div>
-                                    <div class="font-black text-xs sm:text-lg">
-                                        @if($label == 'Correct')
-                                            ✅
-                                        @elseif($label == 'Mistakes')
-                                            ❌
-                                        @elseif($label == 'Time')
-                                            ⏱️
-                                        @endif
-                                        <span id="{{ $id }}">
-                                            {{ $label == 'Question' ? '1/'.count($content['questions']) : ($label == 'Time' ? '00:00' : '0') }}
-                                        </span>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    <section id="gameCard" class="relative w-full {{ $gameCardWidth }} p-1 sm:p-3 lg:p-4 flex-1 min-h-[460px] select-none">
+                    <section id="gameCard" class="relative w-full {{ $gameCardWidth }} p-1 sm:p-2.5 lg:p-3 flex-none min-h-[420px] select-none">
                         <div id="questionPanel" class="grid h-full grid-cols-1 {{ $gameType === 'emoji' ? 'sm:grid-cols-[minmax(0,30%)_minmax(0,70%)]' : 'sm:grid-cols-12' }} gap-0 items-stretch overflow-hidden rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl">
                             @if($gameType!="questions_only" && $gameType !== 'audio')
                                 <div class="{{ $imagePanelColClass }}">
@@ -892,7 +910,7 @@
                             <div class="{{ $answerPanelColClass }} {{ ($gameType !== 'questions_only' && $gameType !== 'audio') ? 'border-t border-slate-200/70 dark:border-slate-800 sm:border-t-0 sm:border-l' : '' }}">
                                 <div class="{{ $answerPanelInnerClass }}">
                                     <div class="flex items-center justify-between gap-2 sm:gap-3">
-                                        <div class="min-w-0 text-[11px] sm:text-base font-extrabold text-slate-500 dark:text-slate-400">
+                                        <div id="questionPromptLabel" class="min-w-0 text-[11px] sm:text-base font-extrabold text-slate-500 dark:text-slate-400">
                                             {{ $questionPromptLabel }}
                                         </div>
 
@@ -1001,65 +1019,7 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div id="resultsOverlay" class="hidden fixed inset-0 z-50">
-                            <div id="resultsBackdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm dark:bg-black/60"></div>
-
-                            <div class="relative z-10 flex min-h-full w-full items-center justify-center p-4 sm:p-6">
-                                <div class="pointer-events-auto relative w-full max-w-lg max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 bg-white/95 shadow-2xl dark:border-slate-700/70 dark:bg-slate-900/95">
-                                    <button
-                                            id="btnCloseResults"
-                                            type="button"
-                                            class="game-modal-close game-modal-close-sm absolute right-3 top-3 z-20"
-                                            aria-label="Close results"
-                                    >
-                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
-                                        </svg>
-                                    </button>
-
-                                    <div class="p-6 text-center sm:p-8">
-                                        <div class="mb-3 text-6xl">🎉</div>
-
-                                        <h2 class="text-2xl font-black text-slate-900 dark:text-white sm:text-3xl">
-                                            Done!
-                                        </h2>
-
-                                        <div class="mt-5 grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
-                                            @foreach(['Score' => 'finalScore', 'Time' => 'finalTime', 'Mistakes' => 'finalMistakes'] as $l => $id)
-                                                <div class="rounded-2xl border border-slate-200/70 bg-white/80 p-3 shadow dark:border-slate-700 dark:bg-slate-800/80">
-                                                    <div class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ $l }}</div>
-                                                    <div id="{{ $id }}" class="text-xl font-black text-slate-900 dark:text-white">0</div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-
-                                        <div id="resultsCorrectionCard" class="hidden mt-6 rounded-2xl border border-slate-200/70 bg-white/80 p-3 sm:p-4 text-left shadow dark:border-slate-700 dark:bg-slate-800/80">
-                                            <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                                                Corrections
-                                            </div>
-                                            <div id="finalCorrection" class="mt-3 text-[15px] sm:text-base font-bold leading-[1.75] sm:leading-[1.85] text-slate-900 dark:text-white"></div>
-                                        </div>
-
-                                        <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                            <button
-                                                    id="btnReviewPopup"
-                                                    class="game-modal-secondary-btn w-full px-8 py-3 text-sm"
-                                            >
-                                                Review correction
-                                            </button>
-
-                                            <button
-                                                    id="btnContinue"
-                                                    class="game-modal-primary-btn w-full px-8 py-3 text-sm"
-                                            >
-                                                Continue ⚡
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @include('slider.components.game-win-modal-correction')
 
                         @if($hasAnyScript)
                             <div id="scriptOverlay" class="hidden fixed inset-0 z-50">
@@ -1124,6 +1084,7 @@
             const IMAGE_OPTION_TILE_CLASS = @json($imageOptionTileClass);
             const SHOW_IMAGE_OPTION_LABEL = @json($showImageOptionLabel);
             const SHUFFLE_OPTIONS = @json($shuffleOptions);
+            const QUESTION_PROMPT_LABEL = @json($questionPromptLabel);
             const GLOBAL_SCRIPT_LINES = @json($scriptLines);
             const HAS_SCRIPT = @json($hasAnyScript);
 
@@ -1137,6 +1098,7 @@
             let completedQuestions = new Set();
             let revealedQuestions = new Set();
             let selectedCorrectValues = new Map();
+            const scoredQuestionCount = QUESTIONS.filter((question) => !isPersonalQuestion(question)).length;
 
             const optionLabelMap = (OPTIONS_BANK || []).reduce((acc, item) => {
                 const key = String(item?.key ?? item?.value ?? '');
@@ -1153,8 +1115,7 @@
             const questionAudio = document.getElementById('questionAudio');
             const btnPlayAudio = document.getElementById('btnPlayAudio');
             const btnReplayAudio = document.getElementById('btnReplayAudio');
-            const resultsOverlay = document.getElementById('resultsOverlay');
-            const resultsBackdrop = document.getElementById('resultsBackdrop');
+            const winModal = document.getElementById('winModal');
             const scriptOverlay = document.getElementById('scriptOverlay');
             const scriptBackdrop = document.getElementById('scriptBackdrop');
             const btnCloseScript = document.getElementById('btnCloseScript');
@@ -1162,11 +1123,11 @@
             const inlineAudioBox = document.getElementById('inlineAudioBox');
             const inlineQuestionAudio = document.getElementById('inlineQuestionAudio');
             const btnPlayInlineAudio = document.getElementById('btnPlayInlineAudio');
-            const finalCorrection = document.getElementById('finalCorrection');
-            const resultsCorrectionCard = document.getElementById('resultsCorrectionCard');
             const btnRevealCorrection = document.getElementById('btnRevealCorrection');
-            const btnReviewPopup = document.getElementById('btnReviewPopup');
-            const btnCloseResults = document.getElementById('btnCloseResults');
+            const resultsCorrectionCard = document.getElementById('resultsCorrectionCard');
+            const finalCorrection = document.getElementById('finalCorrection');
+            const restartBtnModal = document.getElementById('restartBtnModal');
+            const continueBtnModal = document.getElementById('continueBtnModal');
             const btnPrev = document.getElementById('btnPrev');
             const btnNext = document.getElementById('btnNext');
             const characterAudios = Array.from(document.querySelectorAll('.character-audio'));
@@ -1411,7 +1372,7 @@
                     const elapsed = Math.floor((Date.now() - startTime) / 1000);
                     const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
                     const secs = String(elapsed % 60).padStart(2, '0');
-                    document.getElementById('timer').textContent = `${mins}:${secs}`;
+                    document.getElementById('gameTimer').textContent = `${mins}:${secs}`;
                 }, 1000);
             }
 
@@ -1424,8 +1385,50 @@
                     .to("#toastOne", { opacity: 0, y: -10, duration: 0.3 }, "+=1");
             }
 
+            function escapeHtml(value) {
+                return String(value ?? '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+            }
+
+            function buildCorrectionHTML(question, isRevealed) {
+                if (!question) return '';
+
+                if (isPersonalQuestion(question)) {
+                    return `
+                        <span>${escapeHtml(getQuestionPrompt(question))}</span>
+                        <span class="inline-flex rounded-xl bg-indigo-100/80 px-3 py-1 text-indigo-900 ring-1 ring-indigo-300/70 dark:bg-indigo-400/10 dark:text-indigo-100 dark:ring-indigo-300/30">Personal answer</span>
+                    `;
+                }
+
+                const answers = getExpectedOptions(question);
+                const answerClass = isRevealed
+                    ? 'bg-rose-100/80 text-rose-900 ring-1 ring-rose-300/70 dark:bg-rose-400/10 dark:text-rose-100 dark:ring-rose-300/30'
+                    : 'bg-emerald-100/80 text-emerald-900 ring-1 ring-emerald-300/70 dark:bg-emerald-400/10 dark:text-emerald-100 dark:ring-emerald-300/30';
+
+                return `
+                    <span>${escapeHtml(getQuestionPrompt(question))}</span>
+                    ${answers.map((answer) => `
+                        <span class="inline-flex rounded-xl px-3 py-1 ${answerClass}">${escapeHtml(answer.label || answer.value || '')}</span>
+                    `).join('')}
+                `;
+            }
+
+            function buildAllCorrectionsHTML() {
+                return QUESTIONS.map((question, questionIndex) => `
+                    <div class="mb-2 flex items-baseline gap-2">
+                        <span class="pt-1 text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                            ${questionIndex + 1}.
+                        </span>
+                        <span class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-2">${buildCorrectionHTML(question, revealedQuestions.has(questionIndex))}</span>
+                    </div>
+                `).join('');
+            }
+
             function setResultsCorrectionVisible(visible) {
                 if (!resultsCorrectionCard) return;
+
                 resultsCorrectionCard.classList.toggle('hidden', !visible);
 
                 if (visible && finalCorrection) {
@@ -1434,15 +1437,15 @@
             }
 
             function openResultsOverlay(showCorrection = false) {
-                document.getElementById('finalScore').textContent = `${firstTryCorrect}/${QUESTIONS.length}`;
-                document.getElementById('finalTime').textContent = document.getElementById('timer').textContent;
+                document.getElementById('finalCorrect').textContent = `${firstTryCorrect}/${scoredQuestionCount}`;
+                document.getElementById('finalTime').textContent = document.getElementById('gameTimer').textContent;
                 document.getElementById('finalMistakes').textContent = wrongTries;
                 setResultsCorrectionVisible(showCorrection);
-                resultsOverlay?.classList.remove('hidden');
+                winModal?.classList.remove('hidden');
             }
 
             function closeResultsOverlay() {
-                resultsOverlay?.classList.add('hidden');
+                winModal?.classList.add('hidden');
             }
 
             function restartGame() {
@@ -1461,6 +1464,7 @@
                 revealedQuestions = new Set();
                 selectedCorrectValues = new Map();
                 startTime = Date.now();
+                document.getElementById('tilesCount').textContent = `1/${Math.max(QUESTIONS.length, 1)}`;
                 document.getElementById('correctCount').textContent = '0';
                 document.getElementById('mistakesCount').textContent = '0';
                 startTimer();
@@ -1506,14 +1510,14 @@
                 return String(question?.prompt ?? 'Choose the correct answer.');
             }
 
-            function escapeHtml(value) {
-                return String(value ?? '')
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;');
+            function isPersonalQuestion(question) {
+                return String(question?.type ?? '').toLowerCase() === 'personal'
+                    || question?.is_personal === true;
             }
 
             function getExpectedOptions(question) {
+                if (isPersonalQuestion(question)) return [];
+
                 const options = Array.isArray(question?.options) ? question.options.map(normalizeOption) : [];
                 const rawCorrectValues = Array.isArray(question?.correct)
                     ? question.correct
@@ -1544,33 +1548,6 @@
                 );
             }
 
-            function buildCorrectionHTML(question, isRevealed) {
-                if (!question) return '';
-
-                const answers = getExpectedOptions(question);
-                const answerClass = isRevealed
-                    ? 'bg-rose-100/80 text-rose-900 ring-1 ring-rose-300/70 dark:bg-rose-400/10 dark:text-rose-100 dark:ring-rose-300/30'
-                    : 'bg-emerald-100/80 text-emerald-900 ring-1 ring-emerald-300/70 dark:bg-emerald-400/10 dark:text-emerald-100 dark:ring-emerald-300/30';
-
-                return `
-                    <span>${escapeHtml(getQuestionPrompt(question))}</span>
-                    ${answers.map((answer) => `
-                        <span class="inline-flex rounded-xl px-3 py-1 ${answerClass}">${escapeHtml(answer.label || answer.value || '')}</span>
-                    `).join('')}
-                `;
-            }
-
-            function buildAllCorrectionsHTML() {
-                return QUESTIONS.map((question, questionIndex) => `
-                    <div class="mb-2 flex items-baseline">
-                        <span class="pt-1 text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                            ${questionIndex + 1}.
-                        </span>
-                        <span class="flex flex-wrap items-center gap-x-2 gap-y-2 min-w-0">${buildCorrectionHTML(question, revealedQuestions.has(questionIndex))}</span>
-                    </div>
-                `).join('');
-            }
-
             function setNavDisabledState(button, disabled) {
                 if (!button) return;
                 button.disabled = disabled;
@@ -1580,10 +1557,11 @@
             }
 
             function updateStatusUI() {
-                document.getElementById('qCount').textContent = `${Math.min(idx + 1, Math.max(QUESTIONS.length, 1))}/${Math.max(QUESTIONS.length, 1)}`;
+                document.getElementById('tilesCount').textContent = `${Math.min(idx + 1, Math.max(QUESTIONS.length, 1))}/${Math.max(QUESTIONS.length, 1)}`;
                 document.getElementById('correctCount').textContent = String(firstTryCorrect);
                 document.getElementById('mistakesCount').textContent = String(wrongTries);
                 document.getElementById('hintBadge').textContent = String(hintsLeft);
+                setNavDisabledState(document.getElementById('btnHint'), hintsLeft <= 0 || isPersonalQuestion(QUESTIONS[idx]));
                 setNavDisabledState(btnPrev, idx <= 0);
                 setNavDisabledState(btnNext, idx >= QUESTIONS.length - 1);
             }
@@ -1676,6 +1654,16 @@
                 button.classList.remove('dark:bg-slate-800', 'dark:text-white');
             }
 
+            function markSelected(button) {
+                if (OPTION_TYPE === 'image') {
+                    button.classList.add('ring-4', 'ring-indigo-400/70', 'border-indigo-400');
+                    return;
+                }
+
+                button.classList.add('bg-indigo-500', 'text-white', 'border-indigo-600');
+                button.classList.remove('dark:bg-slate-800', 'dark:text-white');
+            }
+
             function renderQuestion() {
                 const q = QUESTIONS[idx];
 
@@ -1712,8 +1700,10 @@
 
                 const qPromptNumber = document.getElementById('qPromptNumber');
                 const qPromptText = document.getElementById('qPromptText');
+                const promptLabel = document.getElementById('questionPromptLabel');
                 if (qPromptNumber) qPromptNumber.textContent = `${idx + 1}.`;
                 if (qPromptText) qPromptText.textContent = getQuestionPrompt(q);
+                if (promptLabel) promptLabel.textContent = isPersonalQuestion(q) ? 'Choose your answer:' : QUESTION_PROMPT_LABEL;
                 if (btnReplayAudio) {
                     btnReplayAudio.classList.toggle('hidden', getCurrentScriptLines().length === 0);
                 }
@@ -1736,7 +1726,10 @@
                         : renderTextOption(option);
 
                     const optionValue = String(option.value);
-                    if (selectedValues.has(optionValue) || (isCompletedQuestion && expectedValues.has(optionValue))) {
+                    if (isPersonalQuestion(q) && selectedValues.has(optionValue)) {
+                        markSelected(button);
+                        button.disabled = true;
+                    } else if (selectedValues.has(optionValue) || (isCompletedQuestion && expectedValues.has(optionValue))) {
                         markCorrect(button);
                         button.disabled = true;
                     } else if (isCompletedQuestion) {
@@ -1750,6 +1743,32 @@
             function answerChoice(selectedValue, button) {
                 const q = QUESTIONS[idx];
                 const actualValue = String(selectedValue);
+
+                if (isPersonalQuestion(q)) {
+                    if (completedQuestions.has(idx)) return;
+
+                    selectedCorrectValues.set(idx, new Set([actualValue]));
+                    completedQuestions.add(idx);
+                    markSelected(button);
+                    updateStatusUI();
+
+                    Array.from(document.getElementById('optionsGrid').children).forEach((optionButton) => {
+                        optionButton.disabled = true;
+                    });
+
+                    showToast("Answer saved", "OK");
+
+                    setTimeout(() => {
+                        if (idx < QUESTIONS.length - 1) {
+                            idx += 1;
+                            renderQuestion();
+                        } else {
+                            finishGame();
+                        }
+                    }, 600);
+                    return;
+                }
+
                 const expectedValues = getExpectedValues(q);
 
                 if (expectedValues.has(actualValue)) {
@@ -1801,6 +1820,7 @@
             }
 
             document.getElementById('btnHint').onclick = () => {
+                if (isPersonalQuestion(QUESTIONS[idx])) return;
                 if (hintsLeft <= 0) return;
 
                 const btns = Array.from(document.getElementById('optionsGrid').children);
@@ -1821,6 +1841,8 @@
 
                 let newlyRevealed = 0;
                 for (let i = 0; i < QUESTIONS.length; i++) {
+                    if (isPersonalQuestion(QUESTIONS[i])) continue;
+
                     if (!completedQuestions.has(i) && !revealedQuestions.has(i)) {
                         revealedQuestions.add(i);
                         newlyRevealed += 1;
@@ -1835,11 +1857,7 @@
             }
 
             document.getElementById('btnRestart').onclick = restartGame;
-            btnReviewPopup?.addEventListener('click', () => {
-                setResultsCorrectionVisible(true);
-            });
-            btnCloseResults?.addEventListener('click', closeResultsOverlay);
-            resultsBackdrop?.addEventListener('click', closeResultsOverlay);
+            restartBtnModal?.addEventListener('click', restartGame);
             btnRevealCorrection?.addEventListener('click', revealCorrection);
             btnPrev?.addEventListener('click', () => {
                 if (idx <= 0) return;
@@ -1888,13 +1906,14 @@
                 }
             });
 
-            document.getElementById('btnContinue').onclick = () => {
+            continueBtnModal?.addEventListener('click', () => {
                 stopQuestionAudio();
+                stopInlineQuestionAudio();
                 stopCharacterAudios();
                 if (window.parent?.nextSlide) {
                     window.parent.nextSlide();
                 }
-            };
+            });
 
             window.stopSlideAudio = () => {
                 stopQuestionAudio();

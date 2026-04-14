@@ -252,17 +252,7 @@
             <section class="w-full mobile-bank-space">
                 <div class="grid place-items-center text-center gap-4 sm:gap-6">
 
-                    <div class="header-spacing w-full max-w-3xl text-center flex flex-col items-center gap-[0.55rem] my-8">
-                        <h1 class="w-full font-black tracking-tight text-4xl md:text-5xl lg:text-6xl leading-[1.08]">
-                            <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent" style="padding-bottom:.08em;display:inline-block;">
-                                {{ $content['title'] }}
-                            </span>
-                        </h1>
-
-                        <p class="max-w-2xl mx-auto font-bold text-base sm:text-lg lg:text-[1.15rem] leading-[1.45] text-slate-900 dark:text-slate-100">
-                            {{ $content['subtitle'] }}
-                        </p>
-                    </div>
+                    @include('slider.components.title-subtitle')
 
                     <div class="w-full grid grid-cols-1 lg:grid-cols-[minmax(0,1.6fr)_220px] gap-4 lg:gap-5 items-start">
                         <section class="glass-panel rounded-[2rem] sm:rounded-[2.25rem] p-3 sm:p-4 lg:p-5">

@@ -130,21 +130,7 @@
                 <main class="w-full">
                     <section class="grid place-items-center text-center gap-6 sm:gap-8">
 
-                        <div id="heroBlock" class="flex flex-col justify-start text-center">
-                            <div class="mx-auto w-full max-w-[42rem]">
-                                <h1 class="mt-3 mx-auto max-w-4xl tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5 sm:mt-4 lg:mt-5">
-                                    <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                                        {{ $title }}
-                                    </span>
-                                </h1>
-
-                                @if($subtitle !== '')
-                                    <p class="mx-auto mt-3 max-w-2xl text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100 lg:mt-4 lg:max-w-[31rem]">
-                                        {{ $subtitle }}
-                                    </p>
-                                @endif
-                            </div>
-                        </div>
+                        @include('slider.components.title-subtitle')
 
                         <div id="cardsWrap" class="w-full max-w-5xl text-left">
                             <div class="grid {{ $cardGridClass }} gap-3 sm:gap-4 lg:gap-4">

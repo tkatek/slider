@@ -1,4 +1,7 @@
 @extends("slider.simple-layout")
+
+@section('title', $content['title'])
+
 @section("style")
     <style>
         /* Dynamic Wave effect */
@@ -20,6 +23,7 @@
         }
     </style>
 @endsection
+
 @section("content")
     @php
         $mobileTwoCols = (bool) ($content['mobile_two_cols'] ?? false);
@@ -39,7 +43,9 @@
         $mainClass = $mobileTwoCols
             ? 'mx-auto w-full max-w-[1000px] px-3 pt-6 pb-4 sm:px-8'
             : 'mx-auto w-full max-w-[1000px] px-4 pt-8 pb-4 sm:px-8';
-        $headerSpacingClass = $compactMobile ? 'text-center space-y-4 sm:space-y-6' : 'text-center space-y-6';
+
+        $headerSpacingClass = $compactMobile ? 'text-center space-y-4 sm:space-y-6 my-8' : 'text-center space-y-6 my-8';
+
         $titleClass = trim((string) ($content['title_class'] ?? ''));
         if ($titleClass === '') {
             $titleClass = !empty($content['title'])
@@ -50,25 +56,34 @@
         $tableShellClass = $compactMobile
             ? 'mt-8 overflow-hidden rounded-[1.6rem] border border-white/70 bg-white/75 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.05)] backdrop-blur-2xl dark:border-white/10 dark:bg-slate-900/75 sm:mt-10 sm:rounded-[2.4rem]'
             : 'mt-10 overflow-hidden rounded-[2.4rem] border border-white/70 bg-white/75 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.05)] backdrop-blur-2xl dark:border-white/10 dark:bg-slate-900/75';
+
         $tablePadClass = $compactMobile ? 'p-3 sm:p-5' : 'p-4 sm:p-6';
+
         $headerGridClass = $mobileTwoCols
             ? 'grid grid-cols-2 gap-2.5 sm:gap-4'
             : 'grid grid-cols-1 gap-2.5 md:grid-cols-2 md:gap-4';
+
         $rowGridClass = $headerGridClass;
         $rowListClass = $compactMobile ? 'mt-2.5 space-y-2 sm:mt-4 sm:space-y-3' : 'mt-3 space-y-3 sm:mt-5';
+
         $headerCellClass = $compactMobile
             ? 'rounded-xl bg-gradient-to-br from-indigo-600 to-blue-500 px-3 py-2 text-center text-sm font-extrabold text-white shadow-[0_10px_20px_-5px_rgba(79,70,229,0.3)] sm:rounded-2xl sm:px-5 sm:py-3 sm:text-xl'
             : 'rounded-2xl bg-gradient-to-br from-indigo-600 to-blue-500 px-6 py-3 text-center text-lg font-extrabold text-white shadow-[0_10px_20px_-5px_rgba(79,70,229,0.3)] sm:text-xl';
+
         $itemClass = $compactMobile
             ? 'greeting-item group relative overflow-hidden flex min-h-[4.2rem] items-stretch justify-between gap-2 rounded-xl border border-slate-200/80 bg-white/90 px-2.5 py-2 shadow-sm dark:border-slate-700 dark:bg-slate-800/90 sm:min-h-[5rem] sm:gap-3 sm:rounded-2xl sm:px-3.5'
             : 'greeting-item group relative overflow-hidden flex min-h-[5rem] items-stretch justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white/90 px-4 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-800/90';
+
         $labelClass = $compactMobile
             ? 'greeting-label flex min-h-full flex-1 items-center rounded-lg bg-slate-50 px-2.5 py-1.5 text-[0.72rem] font-bold leading-[1.2] text-slate-900 dark:bg-slate-700/70 dark:text-slate-100 sm:rounded-xl sm:px-4 sm:text-lg'
             : 'greeting-label flex min-h-full flex-1 items-center rounded-xl bg-slate-50 px-4 py-2 text-[0.9rem] font-bold leading-[1.25] text-slate-900 dark:bg-slate-700/70 dark:text-slate-100 sm:text-lg';
+
         $audioBtnClass = $compactMobile
             ? 'audio-btn flex h-7 w-7 shrink-0 self-center items-center justify-center rounded-lg border border-slate-100 bg-slate-50 text-slate-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 sm:h-9 sm:w-9'
             : 'audio-btn flex h-8 w-8 shrink-0 self-center items-center justify-center rounded-lg border border-slate-100 bg-slate-50 text-slate-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 sm:h-9 sm:w-9';
+
         $iconClass = $compactMobile ? 'static-icon h-4 w-4 sm:h-5 sm:w-5' : 'static-icon w-5 h-5';
+
         $emptyCellClass = $mobileTwoCols
             ? ($compactMobile
                 ? 'invisible pointer-events-none min-h-[4.2rem] rounded-xl sm:min-h-[5rem] sm:rounded-2xl'
@@ -82,15 +97,18 @@
         <main class="{{ $mainClass }}">
             <div class="{{ $headerSpacingClass }}">
                 @if(!empty($content['title']))
-                    <span class="rounded-full border border-indigo-100 bg-indigo-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-[0.3em] text-indigo-500 dark:border-indigo-800/50 dark:bg-indigo-900/30 dark:text-indigo-400">
-                        {{ $content['title'] }}
-                    </span>
+                    <h1 class="tracking-tight font-black mb-5 transition-colors {{ $titleClass }}">
+                        <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
+                            {{ $content['title'] }}
+                        </span>
+                    </h1>
                 @endif
-                <h1 class="w-full tracking-tight font-black transition-colors {{ $titleClass }}">
-                    <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
+
+                @if(!empty($content['subtitle']))
+                    <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
                         {{ $content['subtitle'] }}
-                    </span>
-                </h1>
+                    </p>
+                @endif
             </div>
 
             <div class="{{ $tableShellClass }}">
@@ -250,7 +268,7 @@
                 v.name.includes('Google US English')
             ) || voices[0];
 
-            if (preferredVoice) utterance.voice = preferredVoice; 
+            if (preferredVoice) utterance.voice = preferredVoice;
             utterance.rate = 0.95;
 
             if (currentSpeakingElement) {

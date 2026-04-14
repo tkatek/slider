@@ -1,5 +1,5 @@
 @php
-    $theme = $content['theme_color'] ?? '#673fe7';
+    $customTheme = $content['theme_color'] ?? '#673fe7';
     $lessonAudio = $content['audio'] ?? null;
     $rawTranscript = $content['script'] ?? $content['transcript'] ?? [];
     $transcriptLines = is_array($rawTranscript)
@@ -210,7 +210,7 @@
         #unscramble-words .progress-bar{
             height: 100%;
             border-radius: 999px;
-            background: linear-gradient(90deg, {{ $theme }}, #4f46e5, #3b82f6);
+            background: linear-gradient(90deg, {{ $customTheme }}, #4f46e5, #3b82f6);
             box-shadow: 0 10px 22px rgba(79,70,229,.18);
         }
 
@@ -295,7 +295,7 @@
             height:100%;
             width:0%;
             border-radius:999px;
-            background: linear-gradient(90deg, {{ $theme }} 0%, #8b5cf6 100%);
+            background: linear-gradient(90deg, {{ $customTheme }} 0%, #8b5cf6 100%);
         }
 
         #unscramble-words .audio-knob{
@@ -306,7 +306,7 @@
             height:12px;
             border-radius:9999px;
             background:white;
-            border:2px solid {{ $theme }};
+            border:2px solid {{ $customTheme }};
             box-shadow:0 6px 14px rgba(2,6,23,.18);
             transform:translate(-50%, -50%);
             pointer-events:none;
@@ -502,48 +502,9 @@
             <section class="px-2 pb-2 sm:px-5 sm:pb-5 flex-1 flex flex-col">
                 <div class="grid place-items-center text-center gap-5 sm:gap-6 flex-1 auto-rows-max">
 
-                    <div id="unscramble-words_title" class="header-spacing text-center space-y-4 my-5 sm:my-6">
-                        <h1 class="page-title">
-                            <span class="page-title-text">
-                                {{ ($content['title'] ?? 'Practice') }}
-                            </span>
-                        </h1>
+                    @include('slider.components.title-subtitle')
 
-                        @if(!empty($content['subtitle']))
-                            <p class="page-subtitle">
-                                {{ $content['subtitle'] }}
-                            </p>
-                        @endif
-                    </div>
-
-                    <div class="w-full max-w-[19.5rem] sm:max-w-3xl rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-lg overflow-hidden">
-                        <div class="grid grid-cols-4">
-                            <div class="px-1.5 py-2 sm:px-4 sm:py-4 border-r border-slate-200/70 dark:border-slate-800">
-                                <div class="hidden sm:inline-block text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Question</div>
-                                <div class="text-xs sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                                    <span id="unscramble-words_round"></span>
-                                </div>
-                            </div>
-                            <div class="px-1.5 py-2 sm:px-4 sm:py-4 border-r border-slate-200/70 dark:border-slate-800">
-                                <div class="hidden sm:inline-block text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Correct</div>
-                                <div class="text-xs sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                                    ✅ <span id="unscramble-words_correct_count">0</span>
-                                </div>
-                            </div>
-                            <div class="px-1.5 py-2 sm:px-4 sm:py-4 border-r border-slate-200/70 dark:border-slate-800">
-                                <div class="hidden sm:inline-block text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Mistakes</div>
-                                <div class="text-xs sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                                    ❌ <span id="unscramble-words_mistakes_count">0</span>
-                                </div>
-                            </div>
-                            <div class="px-1.5 py-2 sm:px-4 sm:py-4">
-                                <div class="hidden sm:inline-block text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Time</div>
-                                <div class="text-xs sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                                    ⏱️ <span id="unscramble-words_timer">00:00</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @include('slider.components.game-status')
 
                     <section class="w-full flex-1 min-h-[420px]">
                         <div class="w-full board h-full p-4 sm:p-5 relative overflow-hidden rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl">
@@ -797,7 +758,7 @@
             if (!root) return;
 
             const titleBlock = document.getElementById("unscramble-words_title");
-            const roundLabel = document.getElementById("unscramble-words_round");
+            const roundLabel = document.getElementById("tilesCount");
             const resetBtn = document.getElementById("unscramble-words_reset");
             const hintBtn = document.getElementById("unscramble-words_hint");
             if (hintBtn) hintBtn.innerHTML = 'Hint 💡 (<span id="unscramble-words_hint_count">2</span>)';
@@ -806,9 +767,9 @@
             const prevBtn = document.getElementById("unscramble-words_prev");
             const nextBtn = document.getElementById("unscramble-words_next");
 
-            const correctCount = document.getElementById("unscramble-words_correct_count");
-            const mistakesCount = document.getElementById("unscramble-words_mistakes_count");
-            const timerEl = document.getElementById("unscramble-words_timer");
+            const correctCount = document.getElementById("correctCount");
+            const mistakesCount = document.getElementById("mistakesCount");
+            const timerEl = document.getElementById("gameTimer");
             const confetti = document.getElementById("unscramble-words_confetti");
             const beforeEl = document.getElementById("unscramble-words_before");
             const afterEl = document.getElementById("unscramble-words_after");
@@ -1093,10 +1054,38 @@
                 let globalIndex = 0;
                 let letters = [];
 
+                if (q.useWordTiles) {
+                    letters = q.answerTokens.map((word) => ({
+                        id: makeId(),
+                        text: word,
+                        used: false,
+                        originalIndex: globalIndex++,
+                        groupIndex: 0,
+                        rot: (Math.random() * 10 - 5).toFixed(1)
+                    }));
+
+                    if (letters.length > 1) {
+                        let attempts = 0;
+                        while (attempts < 12 && letters.every((tile, i) => tile.text === q.answerTokens[i])) {
+                            shuffle(letters);
+                            attempts += 1;
+                        }
+
+                        if (letters.every((tile, i) => tile.text === q.answerTokens[i])) {
+                            letters.push(letters.shift());
+                        }
+                    }
+
+                    return {
+                        ...q,
+                        letters,
+                        slots: q.answerTokens.map(() => ({ tileId: null, text: "" })),
+                        solved: false,
+                    };
+                }
+
                 q.answerParts.forEach((part, groupIndex) => {
-                    const originalTokens = q.useWordTiles
-                        ? part.split(/\s+/).filter(Boolean)
-                        : part.split('');
+                    const originalTokens = part.split('');
                     const groupLetters = originalTokens.map((ch) => ({
                         id: makeId(),
                         text: ch,

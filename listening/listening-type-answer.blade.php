@@ -258,19 +258,7 @@
     <main class="w-full">
         <div class="page-shell mx-auto w-full max-w-5xl px-4 sm:px-8 py-6 sm:py-8 lg:min-h-[100dvh] lg:flex lg:flex-col lg:justify-center">
 
-            <header class="header-spacing text-center space-y-4 my-4 sm:my-6 anim-title">
-                <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4">
-                    <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                        {{ $content['title'] }}
-                    </span>
-                </h1>
-
-                @if(!empty($content['subtitle']))
-                    <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                        {{ $content['subtitle'] }}
-                    </p>
-                @endif
-            </header>
+            @include('slider.components.title-subtitle')
 
             {{-- Audio + Transcript --}}
             <section class="anim-panel lesson-card w-full p-4 sm:p-5 mb-4">

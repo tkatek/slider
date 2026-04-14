@@ -70,6 +70,18 @@
             outline: none;
         }
 
+        .game-btn{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:.5rem;
+            border-radius:.5rem;
+            padding:.375rem .75rem;
+            font-size:.75rem;
+            font-weight:900;
+            transition:transform .2s ease, box-shadow .2s ease, background .2s ease, opacity .2s ease;
+        }
+
         .ddt-btn-primary{
             display:inline-flex;
             align-items:center;
@@ -86,12 +98,14 @@
             transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
         }
 
+        .game-btn:hover,
         .ddt-btn-primary:hover{
             transform:scale(1.05);
         }
 
+        .game-btn:active,
         .ddt-btn-primary:active{
-            transform:scale(.95);
+            transform:scale(.98);
         }
 
         .ddt-btn-reveal{
@@ -556,15 +570,15 @@
 
             .dd-table tbody{
                 display: grid;
-                gap: .8rem;
+                gap: .65rem;
             }
 
             .dd-table .table-row{
-                border-radius: 1.4rem;
+                border-radius: 1.15rem;
                 border: 1px solid rgba(226,232,240,.85);
                 background: rgba(255,255,255,.72);
-                box-shadow: 0 16px 34px rgba(15,23,42,.08);
-                padding: .75rem;
+                box-shadow: 0 12px 26px rgba(15,23,42,.07);
+                padding: .6rem;
                 backdrop-filter: blur(14px);
             }
 
@@ -587,11 +601,11 @@
             }
 
             .dd-table tbody th{
-                margin-bottom: .65rem;
+                margin-bottom: .48rem;
             }
 
             .dd-table tbody td + td{
-                margin-top: .55rem;
+                margin-top: .42rem;
             }
 
             .table-place-panel{
@@ -640,12 +654,12 @@
             }
 
             .dd-table .table-row{
-                padding: .62rem;
-                border-radius: 1.1rem;
+                padding: .5rem;
+                border-radius: 1rem;
             }
 
             .table-place-panel{
-                padding: .7rem !important;
+                padding: .55rem !important;
             }
 
             .table-cell-shell{
@@ -673,7 +687,7 @@
         $itemsForJs = [];
         $desktopGameWidth = (float) ($content['desktop_game_width'] ?? 76);
         $desktopPoolWidth = (float) ($content['desktop_pool_width'] ?? 24);
-        $audioPosition = (string) ($content['audio_position'] ?? 'above-stats');
+        $audioPosition = (string) ($content['audio_position'] ?? 'below-stats');
         $audioBelowStats = $audioPosition === 'below-stats';
         $playerAudio = !empty($content['audio']) ? $content['audio'] : (!empty($content['audio_src']) ? $content['audio_src'] : null);
         $rawScript = $content['script'] ?? ($content['audio_transcript'] ?? []);
@@ -750,16 +764,7 @@
     @endphp
 
     <main class="w-full" style="--dd-game-width: {{ $desktopGameWidth }}%; --dd-pool-width: {{ $desktopPoolWidth }}%;">
-        <div class="header-spacing text-center space-y-3 {{ $audioBelowStats && !empty($playerAudio) ? 'my-3 sm:my-4' : 'my-4 sm:my-5' }}">
-            <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4">
-                <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                    {{ $content['title'] }}
-                </span>
-            </h1>
-            <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                {{ $content['subtitle'] }}
-            </p>
-        </div>
+        @include('slider.components.title-subtitle')
 
         @if(!empty($playerAudio) && !$audioBelowStats)
             <div class="mx-auto mb-4 w-full max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -813,30 +818,7 @@
                 </div>
             </div>
         @endif
-
-        <div class="mx-auto {{ $audioBelowStats && !empty($playerAudio) ? 'mb-2.5 sm:mb-3' : 'mb-4 sm:mb-5' }} w-full max-w-[19.5rem] sm:max-w-3xl overflow-hidden rounded-3xl border border-slate-200/70 bg-white/60 shadow-lg backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
-            <div class="grid grid-cols-4">
-                @foreach(['Tiles' => 'gameProgressCount', 'Correct' => 'correctCount', 'Mistakes' => 'mistakesCount', 'Time' => 'timer'] as $label => $id)
-                    <div class="px-1.5 py-2 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
-                        <div class="hidden sm:inline-block text-[11px] sm:text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                            {{ $label }}
-                        </div>
-                        <div class="font-black text-xs sm:text-lg">
-                            @if($label === 'Tiles')
-                                🧩
-                            @elseif($label === 'Correct')
-                                ✅
-                            @elseif($label === 'Mistakes')
-                                ❌
-                            @else
-                                ⏱️
-                            @endif
-                            <span id="{{ $id }}">{{ $label === 'Time' ? '00:00' : ($label === 'Tiles' ? '0/0' : '0') }}</span>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
+        @include('slider.components.game-status')
 
         @if(!empty($playerAudio) && $audioBelowStats)
             <div class="mx-auto mb-3 sm:mb-4 w-full max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -945,12 +927,12 @@
                                 @foreach($rows as $row)
                                     <tr class="table-row" data-row-key="{{ $row['key'] }}" data-row-label="{{ $row['label'] }}">
                                         <th scope="row">
-                                            <div class="table-place-panel p-3 sm:p-3.5 text-left">
-                                                <div class="flex items-center gap-2.5">
-                                                    <div class="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-white/20 grid place-items-center text-base sm:text-lg shrink-0">
+                                            <div class="table-place-panel p-2.5 sm:p-3 text-left">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-lg sm:text-xl leading-none shrink-0">
                                                         {{ $row['emoji'] ?? '[]' }}
-                                                    </div>
-                                                    <div class="font-black leading-tight text-sm lg:text-[15px] text-white tracking-[-0.01em]">
+                                                    </span>
+                                                    <div class="font-black leading-tight text-[13px] lg:text-sm text-white tracking-[-0.01em]">
                                                         {{ $row['label'] }}
                                                     </div>
                                                 </div>
@@ -991,36 +973,7 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <div id="winModal" class="fixed inset-0 z-[2000] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
-                        <div class="w-full max-w-lg rounded-3xl border border-slate-200/70 dark:border-slate-700/70 bg-white/95 dark:bg-slate-900/95 shadow-2xl">
-                            <div class="p-6 sm:p-8 text-center">
-                                <div class="text-6xl mb-3">🎉</div>
-                                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Done!</h2>
-                                <p class="mt-2 text-slate-500 dark:text-slate-300 font-semibold text-sm sm:text-base">You completed the table correctly.</p>
-
-                                <div class="mt-5 grid grid-cols-3 gap-2.5 text-left">
-                                    <div class="rounded-2xl border border-slate-200/70 dark:border-slate-700/70 bg-slate-50/90 dark:bg-slate-800/50 p-3">
-                                        <div class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">Correct</div>
-                                        <div id="finalCorrect" class="mt-1 text-lg font-black text-slate-900 dark:text-white">0/0</div>
-                                    </div>
-                                    <div class="rounded-2xl border border-slate-200/70 dark:border-slate-700/70 bg-slate-50/90 dark:bg-slate-800/50 p-3">
-                                        <div class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">Time</div>
-                                        <div id="finalTime" class="mt-1 text-lg font-black text-slate-900 dark:text-white">00:00</div>
-                                    </div>
-                                    <div class="rounded-2xl border border-slate-200/70 dark:border-slate-700/70 bg-slate-50/90 dark:bg-slate-800/50 p-3">
-                                        <div class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">Mistakes</div>
-                                        <div id="finalMistakes" class="mt-1 text-lg font-black text-slate-900 dark:text-white">0</div>
-                                    </div>
-                                </div>
-
-                                <div class="mt-5 flex flex-col sm:flex-row gap-2.5">
-                                    <button onclick="game.init()" class="ddt-btn-secondary w-full py-2.5 uppercase tracking-widest text-sm">Retry</button>
-                                    <button onclick="goNextSlide()" class="ddt-btn-primary w-full py-2.5 uppercase tracking-widest text-sm">Next</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @include('slider.components.game-win-modal')
 
                     @if($hasScript)
                         <div id="ddtScriptModal" class="hidden fixed inset-0 z-[3000]">
@@ -1294,6 +1247,8 @@
                 this.revealAnswersBtn = document.getElementById('revealAnswersBtn');
                 this.retakeTestBtn = document.getElementById('retakeTestBtn');
                 this.winModal = document.getElementById('winModal');
+                this.restartBtnModal = document.getElementById('restartBtnModal');
+                this.continueBtnModal = document.getElementById('continueBtnModal');
                 this.tileTpl = document.getElementById('tileTpl');
                 this.mobileRowStatus = document.getElementById('mobileRowStatus');
 
@@ -1345,12 +1300,13 @@
                 this.retakeTestBtn?.addEventListener('click', this.handleRetakeTest);
                 this.poolPrevBtn?.addEventListener('click', this.handlePoolPrev);
                 this.poolNextBtn?.addEventListener('click', this.handlePoolNext);
+                this.restartBtnModal?.addEventListener('click', () => this.init());
+                this.continueBtnModal?.addEventListener('click', goNextSlide);
                 this.mobileRowButtons.forEach((button) => button.addEventListener('click', this.handleMobileRowSelect));
             }
 
             init() {
                 this.winModal.classList.add('hidden');
-                this.winModal.classList.remove('flex');
 
                 this.dropzones.forEach((zone, index) => {
                     zone.innerHTML = this.initialDropzonesHTML[index];
@@ -1538,12 +1494,12 @@
             }
 
             updateTimer() {
-                const timerEl = document.getElementById('timer');
+                const timerEl = document.getElementById('gameTimer');
                 if (timerEl) timerEl.textContent = this.formatElapsedTime();
             }
 
             updateStats() {
-                const progressEl = document.getElementById('gameProgressCount');
+                const progressEl = document.getElementById('tilesCount');
                 const correctEl = document.getElementById('correctCount');
                 const mistakesEl = document.getElementById('mistakesCount');
                 const total = this.getTotalTiles();
@@ -1841,7 +1797,6 @@
                         if (showModal) {
                             play(audio.success);
                             this.winModal.classList.remove('hidden');  
-                            this.winModal.classList.add('flex');
                         }
                     }, delay);
                 }

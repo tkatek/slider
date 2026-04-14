@@ -3,21 +3,17 @@ $content = [
     'page_title' => 'Grammar',
     'title' => 'Grammar',
     'subtitle' => 'Present Simple with "Do" (Action Verbs)',
-    'theme_class' => 'grammar-theme-modern',
-    'header_wrap_class' => 'mb-5 text-center flex flex-col items-center gap-[0.55rem]',
-    'title_class' => 'font-black leading-[1.08] tracking-[-0.04em] text-4xl sm:text-5xl lg:text-6xl pb-[0.08em]',
-    'title_gradient_class' => 'bg-gradient-to-br from-indigo-600 to-blue-500',
-    'subtitle_class' => 'text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-600 dark:text-slate-200',
-    'center_shell' => true,
-    'cards_grid_class' => 'grid gap-2 md:grid-cols-2 lg:grid-cols-3 lg:gap-2',
+    'cards_grid_class' => 'mt-7 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3',
+
     'cards' => [
         [
             'type' => 'sections',
-            'title' => '',
+            'title' => 'Structure',
+            'tone' => 'from-sky-400 to-blue-500',
             'badge_class' => '',
             'sections' => [
                 [
-                    'heading' => 'Structure',
+                    'heading' => '',
                     'items' => [
                         '<span class="hl-gold">Subject + base verb</span>',
                         'I <span class="hl-gold">take</span> cards.',
@@ -26,17 +22,18 @@ $content = [
                         '<span class="hl-gold">For he / she / it &rarr; add -s</span>',
                         'He <span class="hl-gold">takes</span> cards.',
                         'The driver <span class="hl-gold">drives</span> fast.',
-                    ],
+                    ], 
                 ],
             ],
         ],
         [
             'type' => 'sections',
-            'title' => '',
+            'title' => 'Examples from the Dialogue1:',
+            'tone' => 'from-purple-400 to-violet-500',
             'badge_class' => '',
             'sections' => [
                 [
-                    'heading' => 'Examples from the Dialogue1:',
+                    'heading' => '',
                     'items' => [
                         'I <span class="hl-gold">take</span> both cards and cash.',
                         'He <span class="hl-gold">takes</span> both cards and cash.',
@@ -47,6 +44,7 @@ $content = [
         [
             'type' => 'table',
             'title' => '',
+            'tone' => 'from-blue-300 to-violet-500',
             'badge_class' => '',
             'intro' => '',
             'table_variant' => 'simple',
@@ -65,4 +63,4 @@ $content = [
 ];
 ?>
 
-@include("slider.other.grammar-cards", ['content' => $content])
+@include("slider.other.grammar-info-cards", ['content' => $content])

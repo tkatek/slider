@@ -4,24 +4,18 @@ $content = array_replace_recursive([
     'page_title' => 'Practice 1',
     'title'      => 'Practice 1',
     'subtitle'   => 'Safe or Unsafe?',
-    'theme'      => '#6366f1',
+
 
     'grid' => [
         'cols' => [
-            'base' => 1,
-            'sm'   => 1,
-            'md'   => 2,
-            'lg'   => 3,
+            'base' => 2,
+            'sm'   => 2,
+            'md'   => 4,
+            'lg'   => 4,
         ],
-        'gap' => 'gap-3 sm:gap-4 lg:gap-5',
-        'card_height' => 'h-24 sm:h-28 lg:h-32',
     ],
 
-    'sounds' => [
-        'click' => materialAsset('slider/sounds/tap.wav'),
-        'done'  => materialAsset('slider/sounds/correct.wav'),
-        'skip'  => materialAsset('slider/sounds/click.wav'),
-    ],
+
 
     'items' => [
         [

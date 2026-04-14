@@ -6,8 +6,6 @@
         "Do you like sports?",
         "What’s your favourite hobby?",
     ];
-
-    $content['badge'] = "Let‘s spin the wheel";
     $content['title'] = "Let's Get to Know You!";
 @endphp
 @include("slider.game.spin-wheel", ['content' => $content])

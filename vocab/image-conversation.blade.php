@@ -49,16 +49,7 @@
     <main class="w-full max-w-6xl min-h-[100dvh] px-4 sm:px-8 mx-auto py-4 sm:py-6 flex flex-col justify-center">
         <section class="w-full p-2 sm:p-4 lg:p-0">
 
-            <div class="header-spacing text-center space-y-6 my-8">
-                <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">
-                        <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                            {{$content['title']}}
-                        </span>
-                </h1>
-                <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                    {{$content['subtitle']}}
-                </p>
-            </div>
+            @include('slider.components.title-subtitle')
 
             {{-- Mobile: speaker cards side-by-side | Desktop: left | center | right --}}
             <div class="mt-4 grid grid-cols-2 items-start gap-3 lg:flex lg:flex-nowrap lg:items-center lg:justify-center lg:gap-8">

@@ -1,7 +1,5 @@
 @php
     $content = $content ?? [];
-
-    $badge = $content['badge'] ?? "Let‘s spin the wheel";
     $title = $content['title'] ?? "Let's Get to Know You!";
 
     $contentQuestions = $content['questions'] ?? [
@@ -103,17 +101,7 @@
     <div class="slide-container relative min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto">
         <div class="mx-auto grid w-full max-w-[1200px] grid-cols-1 gap-4 px-4 py-6 lg:min-h-[100dvh] lg:grid-cols-[1fr_1.2fr] lg:items-center lg:gap-8 lg:px-12 lg:py-12">
             <div class="side-panel z-10 flex flex-col justify-center text-center lg:text-left lg:items-start items-center w-full">
-                <div class="text-center space-y-6 mb-8">
-                    <span class="text-[11px] font-black uppercase tracking-[0.3em] text-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 dark:text-indigo-400 px-4 py-1.5 rounded-full border border-indigo-100 dark:border-indigo-800/50">
-                        {{ $badge }}
-                    </span>
-
-                    <h1 class="font-black text-slate-900 dark:text-slate-100 transition-colors tracking-tight text-4xl md:text-5xl lg:text-6xl">
-                        <span class='bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent'>
-                            {{$title}}
-                        </span>
-                    </h1>
-                </div>
+                @include('slider.components.title-subtitle')
 
                 <div id="turn-banner" class="turn-banner-container w-full max-w-sm">
                     <div class="bg-indigo-600 dark:bg-indigo-700 text-white rounded-3xl p-6 shadow-2xl flex items-center justify-between border-4 border-indigo-400 dark:border-indigo-500 ring-8 ring-indigo-500/10">

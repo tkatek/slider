@@ -209,43 +209,9 @@
             <section class="{{ $compactLayout ? 'p-1 sm:p-3' : 'p-2 sm:p-6' }} flex-1 flex flex-col">
                 <div class="grid place-items-center text-center {{ $compactLayout ? 'gap-4 sm:gap-6' : 'gap-5 sm:gap-8' }} flex-1 auto-rows-max">
 
-                    <div id="titleBlock" class="header-spacing text-center {{ $compactLayout ? 'space-y-3 my-3 sm:my-5' : 'space-y-4 my-4 sm:my-6' }}">
-                        <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black {{ $compactLayout ? 'mb-2.5 sm:mb-3' : 'mb-3 sm:mb-5' }}">
-                            <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                                {{ $content['title'] ?? 'Exercise' }}
-                            </span>
-                        </h1>
+                    @include('slider.components.title-subtitle')
 
-                        @if(!empty($content['subtitle']))
-                            <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                                {{ $content['subtitle'] }}
-                            </p>
-                        @endif
-                    </div>
-
-                    <div id="statusRow" class="w-full max-w-[19.5rem] sm:max-w-3xl rounded-3xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-lg overflow-hidden">
-                        <div class="grid grid-cols-4">
-                            @foreach(['Question' => 'qCount', 'Correct' => 'correctCount', 'Mistakes' => 'mistakesCount', 'Time' => 'timer'] as $label => $id)
-                                <div class="px-1.5 py-2 sm:px-4 sm:py-4 @if(!$loop->last) border-r border-slate-200/70 dark:border-slate-800 @endif">
-                                    <div class="hidden sm:inline-block text-[11px] sm:text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                                        {{ $label }}
-                                    </div>
-                                    <div class="font-black text-xs sm:text-lg">
-                                        @if($label == 'Correct')
-                                            ✅
-                                        @elseif($label == 'Mistakes')
-                                            ❌
-                                        @elseif($label == 'Time')
-                                            ⏱️
-                                        @endif
-                                        <span id="{{ $id }}">
-                                            {{ $label == 'Question' ? '1/'.count($content['questions'] ?? []) : ($label == 'Time' ? '00:00' : '0') }}
-                                        </span>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
+                    @include('slider.components.game-status')
 
                     <section id="gameCard" class="relative w-full max-w-5xl {{ $compactLayout ? 'p-2.5 sm:p-4 min-h-[360px]' : 'p-3 sm:p-6 min-h-[420px]' }} flex-1">
                         <div id="questionPanel" class="h-full overflow-hidden rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl">
@@ -382,10 +348,10 @@
             const COMPACT_TEXT = @json($compactText);
 
             const qPrompt = document.getElementById("qPrompt");
-            const qCount = document.getElementById("qCount");
+            const progressCount = document.getElementById("tilesCount");
             const correctCount = document.getElementById("correctCount");
             const mistakesCount = document.getElementById("mistakesCount");
-            const timer = document.getElementById("timer");
+            const timer = document.getElementById("gameTimer");
 
             const finalScore = document.getElementById("finalScore");
             const finalMistakes = document.getElementById("finalMistakes");
@@ -455,7 +421,7 @@
             }
 
             function updateUI() {
-                if (qCount) qCount.textContent = `${Math.min(idx + 1, Math.max(TOTAL, 1))}/${Math.max(TOTAL, 1)}`;
+                if (progressCount) progressCount.textContent = `${Math.min(idx + 1, Math.max(TOTAL, 1))}/${Math.max(TOTAL, 1)}`;
                 if (correctCount) correctCount.textContent = String(firstTryCorrect);
                 if (mistakesCount) mistakesCount.textContent = String(wrongTries);
                 if (autoCheckBadge) autoCheckBadge.textContent = String(autoChecksLeft);

@@ -13,19 +13,14 @@
 @endsection
 
 @section("content")
-    <div class="header-spacing text-center space-y-6 my-8">
-        <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black {{ $content['title_margin_class'] ?? 'mb-5' }}">
-            <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                {{$content['title']}}
-            </span>
-        </h1>
-        <p class="whitespace-pre-line text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100 lg:max-w-[80%] mx-auto">{{ trim((string) ($content['subtitle'] ?? '')) }}</p>
-    </div>
+    <div class="min-h-[100dvh] flex flex-col items-center justify-center">
+        @include('slider.components.title-subtitle')
 
-    <main class="max-w-[1600px] mx-auto px-4 md:px-8 py-12">
-        <div id="cardsContainer" class="flex flex-wrap justify-center gap-6 items-start">
-        </div>
-    </main>
+        <main class="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-12">
+            <div id="cardsContainer" class="flex flex-wrap justify-center gap-6 items-start">
+            </div>
+        </main>
+    </div>
 
     <div id="toastContainer" class="fixed bottom-8 right-8 flex flex-col gap-3 z-[2000]"></div>
 @endsection

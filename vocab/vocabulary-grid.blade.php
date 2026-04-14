@@ -896,14 +896,9 @@
     <div class="vocab-shell{{ $useObjectivesTypography ? ' vocab-objectives' : '' }}">
         <div class="vocab-inner">
             <main class="vocab-main">
-                <div class="vocab-head">
-                    <h1 class="vocab-title">{{ $title }}</h1>
-                    @if($subtitle !== '')
-                        <p class="vocab-subtitle">{{ $subtitle }}</p>
-                    @endif
-                </div>
+                @include('slider.components.title-subtitle')
 
-                @if(!empty($bubbles))
+            @if(!empty($bubbles))
                     <div class="bubble-row">
                         @foreach($bubbles as $bubble)
                             @php

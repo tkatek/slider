@@ -253,16 +253,7 @@
         <main class="relative z-10 mx-auto flex w-full max-w-[1320px] items-start box-border px-4 py-4 sm:px-8 sm:py-6">
             <section class="flex w-full flex-col rounded-[2rem] border border-slate-300/60 bg-white/85 p-4 shadow-xl shadow-slate-900/8 backdrop-blur-xl dark:border-slate-200/20 dark:bg-white/10 dark:shadow-none sm:p-6">
                 <div class="mb-4 grid gap-4 lg:gap-6 lg:grid-cols-[max-content_minmax(0,1fr)] lg:items-start">
-                    <div class="header-spacing space-y-4 my-4 sm:my-5">
-                        <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4">
-                            <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                                {{$content['title']}}
-                            </span>
-                        </h1>
-                        <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                            {{$content['subtitle']}}
-                        </p>
-                    </div>
+                    @include('slider.components.title-subtitle')
                     <div class="rounded-2xl border border-indigo-100 bg-indigo-50/90 px-3 py-2.5 shadow-sm dark:border-indigo-700/60 dark:bg-indigo-900/30 sm:px-5 sm:py-3.5">
                         <div class="flex items-center gap-3 sm:gap-4">
                             <button

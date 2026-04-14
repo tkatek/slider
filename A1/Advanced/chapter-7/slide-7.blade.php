@@ -4,7 +4,6 @@ $content = [
     'title'      => 'Types of Safety signs',
     'subtitle'   => 'Safety Colors',
     'image'      => materialAsset('slider/A1/Advanced/chapter-7/img/slide7.webp'),
-    'image_alt'  => 'Safety signs and colours discussion image',
 
     'cards' => [
         [

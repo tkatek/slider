@@ -27,8 +27,10 @@
             border-radius:1.65rem;
             border:1px solid rgba(226,232,240,.8);
             background:
-                radial-gradient(120% 120% at 0% 0%, rgba(59,130,246,.08) 0%, transparent 46%),
-                radial-gradient(120% 120% at 100% 0%, rgba(129,140,248,.08) 0%, transparent 44%),
+                radial-gradient(120% 120% at 0% 0%, rgba(59,130,246,.12) 0%, transparent 44%),
+                radial-gradient(120% 120% at 100% 0%, rgba(168,85,247,.11) 0%, transparent 42%),
+                radial-gradient(90% 90% at 0% 100%, rgba(34,197,94,.10) 0%, transparent 38%),
+                radial-gradient(90% 90% at 100% 100%, rgba(249,115,22,.12) 0%, transparent 40%),
                 rgba(255,255,255,.82);
             padding:1.3rem 1.35rem;
             box-shadow:0 24px 55px -42px rgba(15,23,42,.22);
@@ -38,8 +40,10 @@
         .dark .reading-card{
             border-color:rgba(71,85,105,.88);
             background:
-                radial-gradient(120% 120% at 0% 0%, rgba(59,130,246,.18) 0%, transparent 46%),
-                radial-gradient(120% 120% at 100% 0%, rgba(129,140,248,.14) 0%, transparent 44%),
+                radial-gradient(120% 120% at 0% 0%, rgba(59,130,246,.18) 0%, transparent 44%),
+                radial-gradient(120% 120% at 100% 0%, rgba(168,85,247,.16) 0%, transparent 42%),
+                radial-gradient(90% 90% at 0% 100%, rgba(34,197,94,.14) 0%, transparent 38%),
+                radial-gradient(90% 90% at 100% 100%, rgba(249,115,22,.16) 0%, transparent 40%),
                 rgba(15,23,42,.84);
         }
 
@@ -49,7 +53,7 @@
             inset:0 auto 0 0;
             width:6px;
             border-radius:inherit;
-            background:linear-gradient(180deg, #38bdf8 0%, #6366f1 55%, #8b5cf6 100%);
+            background:linear-gradient(180deg, #3b82f6 0%, #8b5cf6 25%, #22c55e 50%, #f97316 75%, #ef4444 100%);
             opacity:.9;
         }
 
@@ -93,7 +97,7 @@
             height:.5rem;
             width:.5rem;
             border-radius:999px;
-            background:linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
+            background:linear-gradient(135deg, #3b82f6 0%, #8b5cf6 28%, #22c55e 52%, #f97316 76%, #ef4444 100%);
         }
 
         .reading-title{
@@ -137,11 +141,26 @@
             font-size:2.35rem;
             line-height:.86;
             font-weight:900;
-            color:#4338ca;
+            color:#7c3aed;
         }
 
         .dark .reading-copy p:first-child::first-letter{
-            color:#93c5fd;
+            color:#c4b5fd;
+        }
+
+        .reading-question-card{
+            border:1px solid rgba(226,232,240,.82);
+            background:
+                radial-gradient(120% 120% at 0% 0%, rgba(251,146,60,.12) 0%, transparent 42%),
+                rgba(255,255,255,.82);
+            box-shadow:0 16px 38px -30px rgba(15,23,42,.26);
+        }
+
+        .dark .reading-question-card{
+            border-color:rgba(71,85,105,.78);
+            background:
+                radial-gradient(120% 120% at 0% 0%, rgba(251,146,60,.18) 0%, transparent 42%),
+                rgba(15,23,42,.78);
         }
 
         @media (min-width: 640px){
@@ -193,6 +212,8 @@
                 static fn ($paragraph) => $paragraph !== ''
             ));
         $usePassageCard = $passageParagraphs !== [];
+        $images = is_array($content['images'] ?? null) ? array_values($content['images']) : [];
+        $questions = is_array($content['questions'] ?? null) ? array_values($content['questions']) : [];
     @endphp
     <main class="w-full">
         <div class="mx-auto w-full max-w-6xl px-4 sm:px-8 py-8 sm:py-10 lg:min-h-[100dvh] lg:flex lg:items-center">
@@ -201,39 +222,38 @@
 
                     {{-- LEFT --}}
                     <div class="space-y-6 text-center lg:text-left">
-                        <div id="titleBlock" class="space-y-2">
+                        @include('slider.components.title-subtitle')
 
-                            @if($heading !== '')
-                                <div class="lg:mx-0">
-                                    <span class="inline-flex items-center justify-center rounded-full border border-indigo-200/80 bg-white px-4 py-2 text-sm sm:text-base font-semibold tracking-[-0.01em] text-indigo-700 shadow-sm ring-1 ring-indigo-100 dark:border-indigo-500/30 dark:bg-slate-800 dark:text-indigo-300 dark:ring-indigo-500/20">
-                                        {{ $heading }}
-                                    </span>
-                                </div>
-                            @endif
-                            <h1 class="font-black leading-[1.02] tracking-[-0.05em] text-4xl sm:text-5xl lg:text-6xl">
-                                <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                                    {{ $content['title'] }}
-                                </span>
-                            </h1>
-
-                            <p class="mx-auto max-w-xl font-extrabold tracking-[-0.02em] text-base sm:text-lg text-slate-700 dark:text-slate-200 lg:mx-0">
-                                {{ $content['subtitle'] }}
-                            </p>
-                        </div>
-
-                        <div class="flex flex-wrap justify-center gap-4 lg:justify-start">
-                            @foreach($content['images'] as $index => $img)
-                                <div class="aspect-square w-24 overflow-hidden sm:w-28 lg:w-32">
-                                    <div class="h-full w-full overflow-hidden {{ $index === 0 ? 'blob-shape-1' : ($index === 1 ? 'blob-shape-2' : 'blob-shape-3') }}">
-                                        <img
-                                                src="{{ $img['src'] }}"
-                                                alt="{{ $img['alt'] }}"
-                                                class="h-full w-full object-cover"
-                                        >
+                        @if(count($questions))
+                            <div class="grid gap-3 text-left">
+                                @foreach($questions as $index => $question)
+                                    <div class="reading-question-card rounded-2xl p-4 backdrop-blur-md sm:p-5">
+                                        <div class="flex items-start gap-3">
+                                            <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-400 to-amber-500 text-sm font-black text-white shadow-lg shadow-orange-500/20">
+                                                {{ $index + 1 }}
+                                            </span>
+                                            <p class="text-sm font-extrabold leading-[1.45] text-slate-800 dark:text-slate-100 sm:text-base">
+                                                {!! $question !!}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            @endforeach
-                        </div>
+                                @endforeach
+                            </div>
+                        @elseif(count($images))
+                            <div class="flex flex-wrap justify-center gap-4">
+                                @foreach($images as $index => $img)
+                                    <div class="aspect-square w-24 overflow-hidden sm:w-28 lg:w-32">
+                                        <div class="h-full w-full overflow-hidden {{ $index === 0 ? 'blob-shape-1' : ($index === 1 ? 'blob-shape-2' : 'blob-shape-3') }}">
+                                            <img
+                                                    src="{{ $img['src'] }}"
+                                                    alt="{{ $img['alt'] }}"
+                                                    class="h-full w-full object-cover"
+                                            >
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
 
                     {{-- RIGHT --}}
@@ -292,7 +312,7 @@
         onReady(() => {
             const titleBlock = document.getElementById("titleBlock");
             const contentCard = document.getElementById("contentCard");
-            const imageCards = Array.from(document.querySelectorAll(".blob-shape-1, .blob-shape-2, .blob-shape-3"));
+            const imageCards = Array.from(document.querySelectorAll(".blob-shape-1, .blob-shape-2, .blob-shape-3, .reading-question-card"));
 
             function playIn() {
                 if (!window.gsap) return;

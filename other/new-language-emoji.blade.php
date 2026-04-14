@@ -121,29 +121,7 @@
 
                     <div class="space-y-6">
 
-                        <div id="titleBlock" class="space-y-2 text-center lg:text-left">
-                            <div class="hidden inline-flex items-center gap-2 rounded-2xl px-3 py-1.5
-                                        border border-slate-200/70 bg-white/60 backdrop-blur
-                                        dark:border-slate-700/35 dark:bg-slate-950/35
-                                        shadow-[0_10px_30px_-24px_rgba(15,23,42,0.45)]">
-                                <span class="h-2 w-2 rounded-full bg-indigo-500"></span>
-                                <span class="text-[12px] sm:text-[13px] font-extrabold text-slate-700 dark:text-slate-200 tracking-[-0.01em]">
-                                    New vocabulary
-                                </span>
-                            </div>
-
-                            <h1 class="font-black leading-[1.02] tracking-[-0.05em] text-4xl sm:text-5xl lg:text-6xl">
-                                <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                                    {{ $content['title'] }}
-                                </span>
-                            </h1>
-
-                            @if(!empty($content['subtitle']))
-                                <p class="mx-auto lg:mx-0 max-w-2xl font-semibold tracking-[-0.01em] text-base sm:text-lg text-slate-700 dark:text-slate-200">
-                                    {{ $content['subtitle'] }}
-                                </p>
-                            @endif
-                        </div>
+                        @include('slider.components.title-subtitle')
 
                         <section id="cards" class="w-full">
                             <div class="{{ $itemsGridClass }}">

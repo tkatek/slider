@@ -1,29 +1,33 @@
 <?php
-    $content = [
-        'title' => "HELLO! CAN YOU INTRODUCE YOURSELF?",
-        'subtitle' => "Introducing yourself",
-        'images' => [
-            'female' => materialAsset('slider/A1/Beginner/chapter-1/img/female.webp'),
-            'male'   => materialAsset('slider/A1/Beginner/chapter-1/img/male.webp'),
-        ]
-    ];
+$content = [
+    'title' => "Introducing yourself",
+    'subtitle' => "Hello! Can you introduce yourself?",
+    'images' => [
+        'female' => materialAsset('slider/A1/Beginner/chapter-1/img/female.webp'),
+        'male'   => materialAsset('slider/A1/Beginner/chapter-1/img/male.webp'),
+    ]
+];
 ?>
 @extends("slider.simple-layout")
+
+@section('title', $content['title'])
+
 @section("style")
 @endsection
+
 @section("content")
     <div class="relative min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto">
         <div class="mx-auto flex min-h-[100dvh] w-full max-w-[1100px] flex-col items-center justify-center gap-6 px-6 py-8">
-            <div class="header-section text-center">
-                <span class="inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-[0.3em] text-indigo-500 dark:border-indigo-800/50 dark:bg-indigo-900/30 dark:text-indigo-400">
-                    {{ $content['title'] }}
-                </span>
-
-                <h1 class="mt-6 mb-8 font-black tracking-tight text-4xl md:text-5xl lg:text-6xl">
+            <div class="header-section text-center space-y-6 my-8">
+                <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">
                     <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                        {{ $content['subtitle'] }}
+                        {{ $content['title'] }}
                     </span>
                 </h1>
+
+                <p class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
+                    {{ $content['subtitle'] }}
+                </p>
             </div>
 
             <div class="video-grid grid w-full grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
@@ -48,5 +52,4 @@
             </div>
         </div>
     </div>
-
 @endsection
