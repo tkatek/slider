@@ -18,7 +18,7 @@
         : false;
     $showReadingBadge = array_key_exists('show_reading_badge', $content)
         ? !empty($content['show_reading_badge'])
-        : true; 
+        : true;
     $rawReadingPassage = $content['passage'] ?? $content['reading'] ?? $content['reading_passage'] ?? [];
     $readingPassage = is_array($rawReadingPassage)
         ? array_values(array_filter(array_map(static fn ($paragraph) => trim((string) $paragraph), $rawReadingPassage), static fn ($paragraph) => $paragraph !== ''))
@@ -54,24 +54,44 @@
     $shuffleOptions = array_key_exists('shuffle_options', $content)
         ? (bool) $content['shuffle_options']
         : true;
+    $normalizeScriptLines = static function ($rawScript) {
+        return is_array($rawScript)
+            ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $rawScript), static fn ($line) => $line !== ''))
+            : array_values(array_filter(
+                array_map('trim', preg_split('/(?<=[.!?])\s+/', trim((string) $rawScript)) ?: []),
+                static fn ($line) => $line !== ''
+            ));
+    };
+
     $rawScript = $content['script'] ?? [];
-    $scriptLines = is_array($rawScript)
-        ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $rawScript), static fn ($line) => $line !== ''))
-        : array_values(array_filter(
-            array_map('trim', preg_split('/(?<=[.!?])\s+/', trim((string) $rawScript)) ?: []),
-            static fn ($line) => $line !== ''
-        ));
+    $globalScriptLines = $normalizeScriptLines($rawScript);
+
+    $firstAvailableQuestionAudio = null;
+    $firstQuestionScriptLines = [];
     $hasQuestionScript = false;
-    foreach (($content['questions'] ?? []) as $question) {
-        if (!empty($question['script'])) {
+
+    foreach (($content['questions'] ?? []) as $questionIndex => $question) {
+        if ($firstAvailableQuestionAudio === null && !empty($question['audio'])) {
+            $firstAvailableQuestionAudio = $question['audio'];
+        }
+
+        $questionScriptLines = $normalizeScriptLines($question['script'] ?? []);
+        if ($questionScriptLines !== []) {
             $hasQuestionScript = true;
-            break;
+        }
+
+        if ($questionIndex === 0) {
+            $firstQuestionScriptLines = $questionScriptLines;
         }
     }
-    $hasAnyScript = $scriptLines !== [] || $hasQuestionScript;
+
+    $playerAudio = $initialAudio ?: $firstAvailableQuestionAudio;
+    $scriptLines = $firstQuestionScriptLines !== [] ? $firstQuestionScriptLines : $globalScriptLines;
+    $hasAnyScript = $globalScriptLines !== [] || $hasQuestionScript;
+    $hasScript = $hasAnyScript;
 @endphp
 
-@section("style")     
+@section("style")
     <style>
         .modal-scroll{
             scrollbar-width:thin;
@@ -96,15 +116,15 @@
             border-radius:999px;
             border:3px solid transparent;
             background:
-                linear-gradient(135deg, #38bdf8 0%, #6366f1 54%, #8b5cf6 100%)
-                content-box;
+                    linear-gradient(135deg, #38bdf8 0%, #6366f1 54%, #8b5cf6 100%)
+                    content-box;
             box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);
         }
 
         .modal-scroll::-webkit-scrollbar-thumb:hover{
             background:
-                linear-gradient(135deg, #0ea5e9 0%, #4f46e5 54%, #7c3aed 100%)
-                content-box;
+                    linear-gradient(135deg, #0ea5e9 0%, #4f46e5 54%, #7c3aed 100%)
+                    content-box;
         }
 
         .dark .modal-scroll{
@@ -459,9 +479,9 @@
             border-radius:1.65rem;
             border:1px solid rgba(226,232,240,.82);
             background:
-                radial-gradient(120% 120% at 0% 0%, rgba(191,219,254,.42) 0%, transparent 46%),
-                radial-gradient(120% 120% at 100% 0%, rgba(199,210,254,.34) 0%, transparent 44%),
-                linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(248,250,252,.92) 100%);
+                    radial-gradient(120% 120% at 0% 0%, rgba(191,219,254,.42) 0%, transparent 46%),
+                    radial-gradient(120% 120% at 100% 0%, rgba(199,210,254,.34) 0%, transparent 44%),
+                    linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(248,250,252,.92) 100%);
             padding:1.2rem;
             box-shadow:0 22px 60px -38px rgba(15,23,42,.28);
         }
@@ -469,9 +489,9 @@
         .dark .reading-card{
             border-color:rgba(71,85,105,.88);
             background:
-                radial-gradient(120% 120% at 0% 0%, rgba(59,130,246,.18) 0%, transparent 46%),
-                radial-gradient(120% 120% at 100% 0%, rgba(129,140,248,.14) 0%, transparent 44%),
-                linear-gradient(180deg, rgba(15,23,42,.96) 0%, rgba(2,6,23,.94) 100%);
+                    radial-gradient(120% 120% at 0% 0%, rgba(59,130,246,.18) 0%, transparent 46%),
+                    radial-gradient(120% 120% at 100% 0%, rgba(129,140,248,.14) 0%, transparent 44%),
+                    linear-gradient(180deg, rgba(15,23,42,.96) 0%, rgba(2,6,23,.94) 100%);
             box-shadow:0 24px 64px -38px rgba(0,0,0,.52);
         }
 
@@ -839,9 +859,9 @@
                                                         </div>
                                                     @endif
 
-                                                @if($readingTitle !== '')
-                                                    <h2 class="reading-title">{{ $readingTitle }}</h2>
-                                                @endif
+                                                    @if($readingTitle !== '')
+                                                        <h2 class="reading-title">{{ $readingTitle }}</h2>
+                                                    @endif
                                                 </div>
 
                                                 <div class="reading-copy">
@@ -916,60 +936,12 @@
                                                 id="btnRevealCorrection"
                                                 class="mca-btn-primary mca-btn-reveal shrink-0 whitespace-nowrap"
                                         >
-                                                Reveal correction
+                                            Reveal correction
                                         </button>
                                     </div>
 
-                                    <div id="inlineAudioBox" class="mca-inline-audio-box hidden mt-4 mb-4 rounded-2xl border border-indigo-100 bg-indigo-50/90 shadow-sm dark:border-indigo-700/60 dark:bg-indigo-900/30">
-                                        <div class="mca-inline-audio-row">
-                                            <button
-                                                    id="btnPlayInlineAudio"
-                                                    type="button"
-                                                    class="play-hit audio-listen-btn mca-inline-audio-btn inline-flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 transition-all duration-150 active:scale-95 hover:scale-[1.06] focus-visible:ring-4 focus-visible:ring-indigo-300/40"
-                                                    aria-label="Play audio"
-                                            >
-                                                <svg class="static-icon mca-inline-audio-icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                    <path d="M8 5v14l11-7-11-7z"/>
-                                                </svg>
-
-                                                <span class="wave-bar" style="animation-delay:.1s"></span>
-                                                <span class="wave-bar" style="animation-delay:.2s"></span>
-                                                <span class="wave-bar" style="animation-delay:.3s"></span>
-                                            </button>
-
-                                            <div class="mca-inline-audio-main">
-                                                    <div class="mca-inline-audio-progress">
-                                                        <div class="mca-audio-track mca-inline-audio-track cursor-pointer" id="inlineQuestionAudioProgressTrack" aria-label="Audio progress">
-                                                            <div class="mca-audio-fill" id="inlineQuestionAudioProgressFill"></div>
-                                                            <div class="mca-audio-knob" id="inlineQuestionAudioProgressKnob"></div>
-                                                        </div>
-
-                                                        <div class="mca-inline-audio-times flex justify-between font-extrabold text-indigo-700 dark:text-indigo-200">
-                                                            <span id="inlineQuestionAudioCurrentTime">0:00</span>
-                                                            <span id="inlineQuestionAudioTotalTime">0:00</span>
-                                                        </div>
-                                                    </div>
-                                                    @if($hasAnyScript)
-                                                        <button id="btnReplayAudio"
-                                                                type="button"
-                                                                class="mca-btn-primary mca-btn-script mca-inline-script-btn {{ $theme['button_primary_color'] }}">
-                                                            <span>Script</span>
-                                                            <span>📄</span>
-                                                        </button>
-                                                    @endif
-                                            </div>
-                                        </div>
-                                        @if(false && $hasAnyScript)
-                                            <div class="mt-3 flex justify-end">
-                                                <button id="btnReplayAudio"
-                                                        type="button"
-                                                        class="mca-btn-primary mca-btn-script {{ $theme['button_primary_color'] }}">
-                                                    <span>Script</span>
-                                                    <span>📄</span>
-                                                </button>
-                                            </div>
-                                        @endif
-                                        <audio id="inlineQuestionAudio" class="mca-native-audio" preload="auto"></audio>
+                                    <div id="sharedAudioPlayerWrap" class="mt-4 mb-4{{ empty($playerAudio) ? ' hidden' : '' }}">
+                                        @include('slider.components.audio-player')
                                     </div>
 
                                     <div id="qPrompt" class="my-4 flex items-start gap-3 text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
@@ -1019,39 +991,6 @@
                         </div>
                         @include('slider.components.game-win-modal-correction')
 
-                        @if($hasAnyScript)
-                            <div id="scriptOverlay" class="hidden fixed inset-0 z-50">
-                                <div id="scriptBackdrop" class="absolute inset-0 bg-slate-950/40 dark:bg-black/70 backdrop-blur-sm"></div>
-
-                                <div class="game-modal-shell">
-                                    <div class="game-modal-card relative max-w-3xl text-left">
-                                        <div class="flex items-center justify-between p-3 sm:p-4 border-b border-slate-200/60 dark:border-slate-700/40">
-                                            <div class="min-w-0">
-                                                <div class="font-black text-sm sm:text-base text-slate-900 dark:text-slate-50">
-                                                    Script
-                                                </div>
-                                            </div>
-
-                                            <button
-                                                    id="btnCloseScript"
-                                                    type="button"
-                                                    class="game-modal-close game-modal-close-sm ml-3 shrink-0"
-                                                    aria-label="Close script"
-                                            >
-                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
-                                                    <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-
-                                            <div class="modal-scroll max-h-[70vh] overflow-auto p-3 sm:p-4">
-                                                <div id="scriptList" class="space-y-2"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
                     </section>
                 </div>
             </section>
@@ -1083,8 +1022,7 @@
             const SHOW_IMAGE_OPTION_LABEL = @json($showImageOptionLabel);
             const SHUFFLE_OPTIONS = @json($shuffleOptions);
             const QUESTION_PROMPT_LABEL = @json($questionPromptLabel);
-            const GLOBAL_SCRIPT_LINES = @json($scriptLines);
-            const HAS_SCRIPT = @json($hasAnyScript);
+            const GLOBAL_SCRIPT_LINES = @json($globalScriptLines);
 
             let idx = 0;
             let firstTryCorrect = 0;
@@ -1110,17 +1048,7 @@
                 wrong: new Audio('/slider/sounds/wrong.wav'),
                 success: new Audio('/slider/sounds/success.wav')
             };
-            const questionAudio = document.getElementById('questionAudio');
-            const btnPlayAudio = document.getElementById('btnPlayAudio');
-            const btnReplayAudio = document.getElementById('btnReplayAudio');
             const winModal = document.getElementById('winModal');
-            const scriptOverlay = document.getElementById('scriptOverlay');
-            const scriptBackdrop = document.getElementById('scriptBackdrop');
-            const btnCloseScript = document.getElementById('btnCloseScript');
-            const scriptList = document.getElementById('scriptList');
-            const inlineAudioBox = document.getElementById('inlineAudioBox');
-            const inlineQuestionAudio = document.getElementById('inlineQuestionAudio');
-            const btnPlayInlineAudio = document.getElementById('btnPlayInlineAudio');
             const btnRevealCorrection = document.getElementById('btnRevealCorrection');
             const resultsCorrectionCard = document.getElementById('resultsCorrectionCard');
             const finalCorrection = document.getElementById('finalCorrection');
@@ -1132,6 +1060,14 @@
             const imageViewport = document.getElementById('imageViewport');
             const questionImage = document.getElementById('questionImage');
             const IMAGE_HOVER_ZOOM = 2.4;
+
+            const sharedAudioPlayerWrap = document.getElementById('sharedAudioPlayerWrap');
+            const sharedAudioPlayerRoot = document.querySelector('[data-audio-player]');
+            const sharedAudioPlayerMedia = sharedAudioPlayerRoot ? sharedAudioPlayerRoot.querySelector('[data-audio-player-media]') : null;
+            const sharedAudioPlayerSource = sharedAudioPlayerMedia ? sharedAudioPlayerMedia.querySelector('source') : null;
+            const sharedAudioPlayerScriptBtn = sharedAudioPlayerRoot ? sharedAudioPlayerRoot.querySelector('[data-audio-player-script-open]') : null;
+            const sharedAudioPlayerModal = document.querySelector('[data-audio-player-modal]');
+            const sharedAudioPlayerScriptList = sharedAudioPlayerModal ? sharedAudioPlayerModal.querySelector('.space-y-2') : null;
 
             characterAudios.forEach((currentAudio) => {
                 currentAudio.addEventListener('play', () => {
@@ -1150,86 +1086,49 @@
                 sound.play().catch(() => {});
             }
 
-            function formatTime(seconds) {
-                if (!isFinite(seconds) || seconds < 0) seconds = 0;
-                const mins = Math.floor(seconds / 60);
-                const secs = Math.floor(seconds % 60);
-                return `${mins}:${String(secs).padStart(2, '0')}`;
+            function syncSharedAudioPlayerUI() {
+                if (typeof window.syncAudioPlayerUI === 'function') {
+                    window.syncAudioPlayerUI();
+                }
             }
 
-            function syncCustomAudioUI(audioEl, refs) {
-                if (!audioEl) return;
-
-                const duration = isFinite(audioEl.duration) ? audioEl.duration : 0;
-                const current = isFinite(audioEl.currentTime) ? audioEl.currentTime : 0;
-                const pct = duration > 0 ? (current / duration) * 100 : 0;
-
-                if (refs.currentTimeEl) refs.currentTimeEl.textContent = formatTime(current);
-                if (refs.totalTimeEl) refs.totalTimeEl.textContent = duration ? formatTime(duration) : '0:00';
-                if (refs.progressFill) refs.progressFill.style.width = `${pct}%`;
-                if (refs.progressKnob) refs.progressKnob.style.left = `${pct}%`;
-                if (refs.playBtn) refs.playBtn.classList.toggle('playing', !audioEl.paused);
-            }
-
-            function bindCustomAudioUI(audioEl, refs) {
-                if (!audioEl) return;
-
-                if (refs.playBtn) {
-                    refs.playBtn.addEventListener('click', () => {
-                        if (audioEl.paused) audioEl.play().catch(() => {});
-                        else audioEl.pause();
-                    });
+            function stopSharedAudioPlayer() {
+                if (typeof window.stopAudioPlayer === 'function') {
+                    window.stopAudioPlayer();
+                    return;
                 }
 
-                if (refs.progressTrack) {
-                    refs.progressTrack.addEventListener('click', (event) => {
-                        const rect = event.currentTarget.getBoundingClientRect();
-                        const x = Math.min(Math.max(0, event.clientX - rect.left), rect.width);
-                        const ratio = rect.width > 0 ? x / rect.width : 0;
+                if (!sharedAudioPlayerMedia) return;
 
-                        if (isFinite(audioEl.duration) && audioEl.duration > 0) {
-                            audioEl.currentTime = ratio * audioEl.duration;
-                            syncCustomAudioUI(audioEl, refs);
-                        }
-                    });
+                sharedAudioPlayerMedia.pause();
+                sharedAudioPlayerMedia.currentTime = 0;
+                syncSharedAudioPlayerUI();
+            }
+
+            function setSharedAudioPlayerSource(src) {
+                if (!sharedAudioPlayerMedia) return;
+
+                const nextSrc = String(src || '');
+                const currentSrc = sharedAudioPlayerSource
+                    ? String(sharedAudioPlayerSource.getAttribute('src') || '')
+                    : String(sharedAudioPlayerMedia.getAttribute('src') || '');
+
+                if (currentSrc === nextSrc) {
+                    syncSharedAudioPlayerUI();
+                    return;
                 }
 
-                audioEl.preload = 'metadata';
-                ['loadedmetadata', 'timeupdate', 'ended', 'play', 'pause'].forEach((eventName) => {
-                    audioEl.addEventListener(eventName, () => syncCustomAudioUI(audioEl, refs));
-                });
-            }
+                stopSharedAudioPlayer();
 
-            const mainAudioRefs = {
-                playBtn: btnPlayAudio,
-                progressTrack: document.getElementById('questionAudioProgressTrack'),
-                progressFill: document.getElementById('questionAudioProgressFill'),
-                progressKnob: document.getElementById('questionAudioProgressKnob'),
-                currentTimeEl: document.getElementById('questionAudioCurrentTime'),
-                totalTimeEl: document.getElementById('questionAudioTotalTime')
-            };
+                if (sharedAudioPlayerSource) {
+                    sharedAudioPlayerSource.setAttribute('src', nextSrc);
+                    sharedAudioPlayerMedia.load();
+                } else {
+                    sharedAudioPlayerMedia.src = nextSrc;
+                    sharedAudioPlayerMedia.load();
+                }
 
-            const inlineAudioRefs = {
-                playBtn: btnPlayInlineAudio,
-                progressTrack: document.getElementById('inlineQuestionAudioProgressTrack'),
-                progressFill: document.getElementById('inlineQuestionAudioProgressFill'),
-                progressKnob: document.getElementById('inlineQuestionAudioProgressKnob'),
-                currentTimeEl: document.getElementById('inlineQuestionAudioCurrentTime'),
-                totalTimeEl: document.getElementById('inlineQuestionAudioTotalTime')
-            };
-
-            function stopQuestionAudio() {
-                if (!questionAudio) return;
-                questionAudio.pause();
-                questionAudio.currentTime = 0;
-                syncCustomAudioUI(questionAudio, mainAudioRefs);
-            }
-
-            function stopInlineQuestionAudio() {
-                if (!inlineQuestionAudio) return;
-                inlineQuestionAudio.pause();
-                inlineQuestionAudio.currentTime = 0;
-                syncCustomAudioUI(inlineQuestionAudio, inlineAudioRefs);
+                syncSharedAudioPlayerUI();
             }
 
             function stopCharacterAudios() {
@@ -1265,38 +1164,70 @@
                 return normalizeScriptLines(GLOBAL_SCRIPT_LINES);
             }
 
-            function renderScriptContent() {
-                if (!scriptList) return 0;
+            function renderAudioPlayerScriptContent(lines) {
+                if (!sharedAudioPlayerScriptList) return 0;
 
-                const lines = getCurrentScriptLines();
-                scriptList.innerHTML = '';
+                sharedAudioPlayerScriptList.innerHTML = '';
 
                 lines.forEach((line, lineIndex) => {
                     const item = document.createElement('div');
-                    item.className = 'rounded-2xl border border-slate-200/60 bg-white/70 dark:border-slate-700/30 dark:bg-slate-900/20 p-2.5';
+                    item.className = 'rounded-2xl border border-slate-200/60 bg-white/70 p-2.5 dark:border-slate-700/30 dark:bg-slate-900/20';
 
                     const row = document.createElement('div');
                     row.className = 'flex items-start gap-2.5';
 
                     const badge = document.createElement('div');
-                    badge.className = 'h-7 w-7 rounded-2xl flex items-center justify-center font-black text-xs border border-slate-200/70 bg-white/70 text-slate-700 dark:border-slate-700/35 dark:bg-slate-900/20 dark:text-slate-200';
+                    badge.className = 'flex h-7 w-7 items-center justify-center rounded-2xl border border-slate-200/70 bg-white/70 text-xs font-black text-slate-700 dark:border-slate-700/35 dark:bg-slate-900/20 dark:text-slate-200';
                     badge.textContent = String(lineIndex + 1);
 
                     const textWrap = document.createElement('div');
                     textWrap.className = 'min-w-0 flex-1';
 
                     const text = document.createElement('div');
-                    text.className = 'text-xs sm:text-sm font-semibold leading-relaxed whitespace-pre-line text-slate-700 dark:text-slate-200';
+                    text.className = 'text-xs font-semibold text-slate-700 dark:text-slate-200 sm:text-sm';
                     text.textContent = line;
 
                     textWrap.appendChild(text);
                     row.appendChild(badge);
                     row.appendChild(textWrap);
                     item.appendChild(row);
-                    scriptList.appendChild(item);
+                    sharedAudioPlayerScriptList.appendChild(item);
                 });
 
                 return lines.length;
+            }
+
+            function updateSharedAudioPlayer(question) {
+                const nextAudioSrc = question?.audio || DEFAULT_AUDIO || '';
+                const lines = getCurrentScriptLines();
+                const hasAudio = !!nextAudioSrc;
+                const scriptCount = renderAudioPlayerScriptContent(lines);
+
+                if (sharedAudioPlayerWrap) {
+                    sharedAudioPlayerWrap.classList.toggle('hidden', !hasAudio);
+                }
+
+                if (sharedAudioPlayerRoot) {
+                    sharedAudioPlayerRoot.classList.toggle('hidden', !hasAudio);
+                }
+
+                if (sharedAudioPlayerScriptBtn) {
+                    sharedAudioPlayerScriptBtn.classList.toggle('hidden', scriptCount === 0);
+                }
+
+                if (!hasAudio) {
+                    if (sharedAudioPlayerModal) {
+                        sharedAudioPlayerModal.classList.add('hidden');
+                    }
+                    stopSharedAudioPlayer();
+                    return;
+                }
+
+                setSharedAudioPlayerSource(nextAudioSrc);
+
+                if (scriptCount === 0 && sharedAudioPlayerModal) {
+                    sharedAudioPlayerModal.classList.add('hidden');
+                }
             }
 
             function setQuestionImage(src, alt = 'Question image') {
@@ -1447,10 +1378,9 @@
             }
 
             function restartGame() {
-                stopQuestionAudio();
-                stopInlineQuestionAudio();
+                stopSharedAudioPlayer();
                 stopCharacterAudios();
-                if (scriptOverlay) scriptOverlay.classList.add('hidden');
+                sharedAudioPlayerModal?.classList.add('hidden');
                 closeResultsOverlay();
                 setResultsCorrectionVisible(false);
                 idx = 0;
@@ -1670,24 +1600,7 @@
                     if (qEmoji) qEmoji.textContent = q.emoji || q.img || '👋';
                 }
 
-                if (inlineAudioBox && inlineQuestionAudio) {
-                    const nextAudioSrc = q.audio || DEFAULT_AUDIO || '';
-                    const shouldShowInlineAudio = !!nextAudioSrc;
-
-                    inlineAudioBox.classList.toggle('hidden', !shouldShowInlineAudio);
-
-                    if (shouldShowInlineAudio) {
-                        if (inlineQuestionAudio.getAttribute('src') !== nextAudioSrc) {
-                            inlineQuestionAudio.src = nextAudioSrc;
-                            inlineQuestionAudio.load();
-                        }
-                        syncCustomAudioUI(inlineQuestionAudio, inlineAudioRefs);
-                    } else if (inlineQuestionAudio.getAttribute('src')) {
-                        stopInlineQuestionAudio();
-                        inlineQuestionAudio.removeAttribute('src');
-                        inlineQuestionAudio.load();
-                    }
-                }
+                updateSharedAudioPlayer(q);
 
                 if (GAME_TYPE === 'image') {
                     setQuestionImage(
@@ -1702,9 +1615,6 @@
                 if (qPromptNumber) qPromptNumber.textContent = `${idx + 1}.`;
                 if (qPromptText) qPromptText.textContent = getQuestionPrompt(q);
                 if (promptLabel) promptLabel.textContent = isPersonalQuestion(q) ? 'Choose your answer:' : QUESTION_PROMPT_LABEL;
-                if (btnReplayAudio) {
-                    btnReplayAudio.classList.toggle('hidden', getCurrentScriptLines().length === 0);
-                }
                 updateStatusUI();
 
                 const grid = document.getElementById('optionsGrid');
@@ -1868,45 +1778,15 @@
                 renderQuestion();
             });
 
-            bindCustomAudioUI(questionAudio, mainAudioRefs);
-            bindCustomAudioUI(inlineQuestionAudio, inlineAudioRefs);
-
-            if (btnReplayAudio) {
-                btnReplayAudio.onclick = () => {
-                    if (HAS_SCRIPT && renderScriptContent() > 0) {
-                        scriptOverlay?.classList.remove('hidden');
-                        return;
-                    }
-
-                    const activeAudio = inlineQuestionAudio || questionAudio;
-                    if (!activeAudio) return;
-                    activeAudio.currentTime = 0;
-                    activeAudio.play().catch(() => {});
-                };
-            }
-
-            if (btnCloseScript) {
-                btnCloseScript.onclick = () => {
-                    scriptOverlay?.classList.add('hidden');
-                };
-            }
-
-            if (scriptBackdrop) {
-                scriptBackdrop.onclick = () => {
-                    scriptOverlay?.classList.add('hidden');
-                };
-            }
-
             document.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') {
                     closeResultsOverlay();
-                    scriptOverlay?.classList.add('hidden');
+                    sharedAudioPlayerModal?.classList.add('hidden');
                 }
             });
 
             continueBtnModal?.addEventListener('click', () => {
-                stopQuestionAudio();
-                stopInlineQuestionAudio();
+                stopSharedAudioPlayer();
                 stopCharacterAudios();
                 if (window.parent?.nextSlide) {
                     window.parent.nextSlide();
@@ -1914,8 +1794,7 @@
             });
 
             window.stopSlideAudio = () => {
-                stopQuestionAudio();
-                stopInlineQuestionAudio();
+                stopSharedAudioPlayer();
                 stopCharacterAudios();
             };
 
@@ -1927,7 +1806,7 @@
                     syncImageViewportAspectRatio();
                     resetImageZoom();
                 });
-            }  
+            }
 
             if (imageViewport && questionImage) {
                 window.addEventListener('resize', () => {

@@ -6,6 +6,7 @@ $content = [
     'page_title' => 'Listen again and answer these questions',
     'title'      => 'Listen again and answer these questions',
     'subtitle'   => '',
+    'title_class' => 'text-3xl md:text-4xl lg:text-5xl',
 
     'audio'      => materialAsset('slider/A1/Intermediate/chapter-10/audios/slide10.mp3'),
 

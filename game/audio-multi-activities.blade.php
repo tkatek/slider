@@ -1,75 +1,33 @@
 @extends("slider.simple-layout")
+
+@php
+    $playerAudio = $content['audio'] ?? null;
+    $scriptLines = [];
+
+    foreach (($content['script'] ?? []) as $conversation) {
+        foreach (($conversation['dialogue'] ?? []) as $line) {
+            $speaker = trim((string) ($line['speaker'] ?? ''));
+            $text = trim((string) ($line['text'] ?? ''));
+
+            if ($text === '') {
+                continue;
+            }
+
+            $scriptLines[] = $speaker !== '' ? ($speaker . ': ' . $text) : $text;
+        }
+    }
+
+    $hasScript = $scriptLines !== [];
+@endphp
+
 @section("style")
     <style>
         .slide-font { font-family: 'Manrope', 'Plus Jakarta Sans', sans-serif; }
         .display-font { font-family: 'Sora', 'Manrope', sans-serif; }
+
         #slide10-root {
             min-height: 100dvh;
             overflow-x: hidden;
-        }
-
-        .play-hit {
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .play-hit:focus-visible {
-            outline: none;
-        }
-
-        .wave-bar {
-            display: none;
-            width: 3px;
-            height: 10px;
-            background: currentColor;
-            border-radius: 999px;
-            margin: 0 1px;
-        }
-
-        .audio-listen-btn.playing .wave-bar {
-            display: block;
-            animation: waveGrowth .6s infinite ease-in-out;
-        }
-
-        .audio-listen-btn.playing .static-icon {
-            display: none;
-        }
-
-        .ama-native-audio {
-            display: none;
-        }
-
-        .ama-audio-track {
-            position: relative;
-            height: 10px;
-            width: 100%;
-            border-radius: 999px;
-            overflow: hidden;
-            background: rgba(199,210,254,0.55);
-        }
-
-        .dark .ama-audio-track {
-            background: rgba(99,102,241,0.25);
-        }
-
-        .ama-audio-fill {
-            height: 100%;
-            width: 0%;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #4f46e5 0%, #8b5cf6 100%);
-        }
-
-        .ama-audio-knob {
-            position: absolute;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 14px;
-            height: 14px;
-            border-radius: 9999px;
-            background: white;
-            border: 2px solid #4f46e5;
-            box-shadow: 0 6px 14px rgba(2,6,23,0.18);
-            left: 0%;
-            pointer-events: none;
         }
 
         .activity-panel { display: none; }
@@ -115,28 +73,34 @@
         .quiz-feedback[data-state="correct"] {
             color: rgb(21 128 61);
         }
+
         .dark .quiz-feedback[data-state="correct"] {
             color: rgb(74 222 128);
         }
+
         .quiz-feedback[data-state="wrong"] {
             color: rgb(220 38 38);
         }
+
         .dark .quiz-feedback[data-state="wrong"] {
             color: rgb(252 165 165);
         }
 
         .drag-token { cursor: grab; user-select: none; }
         .drag-token:active { cursor: grabbing; }
+
         .drag-token.is-selected {
             border-color: rgba(99, 102, 241, 0.55);
             background: rgba(99, 102, 241, 0.12);
             color: rgb(67 56 202);
         }
+
         .dark .drag-token.is-selected {
             border-color: rgba(129, 140, 248, 0.5);
             background: rgba(99, 102, 241, 0.2);
             color: rgb(199 210 254);
         }
+
         .drag-token.is-hidden { display: none; }
 
         .blank-drop {
@@ -153,35 +117,43 @@
             padding: 0.3rem;
             transition: all 0.2s ease;
         }
+
         .dark .blank-drop {
             border-color: rgba(148, 163, 184, 0.5);
             background: rgba(15, 23, 42, 0.5);
         }
+
         .blank-drop[data-over="true"] {
             border-color: rgba(99, 102, 241, 0.75);
             background: rgba(99, 102, 241, 0.12);
             color: rgb(67 56 202);
         }
+
         .dark .blank-drop[data-over="true"] {
             color: rgb(199 210 254);
         }
+
         .blank-drop[data-filled="true"] {
             border-style: solid;
             border-color: rgba(99, 102, 241, 0.6);
             color: rgb(67 56 202);
         }
+
         .dark .blank-drop[data-filled="true"] {
             color: rgb(199 210 254);
         }
+
         .blank-drop[data-state="correct"] {
             border-style: solid;
             border-color: rgba(34, 197, 94, 0.8);
             background: rgba(34, 197, 94, 0.12);
             color: rgb(21 128 61);
         }
+
         .dark .blank-drop[data-state="correct"] {
             color: rgb(74 222 128);
         }
+
         .blank-drop[data-state="wrong"] {
             border-style: solid;
             border-color: rgba(239, 68, 68, 0.8);
@@ -192,6 +164,7 @@
             text-decoration-color: rgba(239, 68, 68, 0.9);
             text-underline-offset: 0.22em;
         }
+
         .dark .blank-drop[data-state="wrong"] {
             color: rgb(252 165 165);
         }
@@ -213,16 +186,20 @@
             text-align: inherit;
             vertical-align: baseline;
         }
+
         .puzzle-card[data-checked="true"] .blank-drop[data-state="correct"] {
             color: rgb(21 128 61);
         }
+
         .dark .puzzle-card[data-checked="true"] .blank-drop[data-state="correct"] {
             color: rgb(74 222 128);
         }
+
         .puzzle-card[data-checked="true"] .blank-drop[data-state="wrong"] {
             background: transparent;
             color: rgb(220 38 38);
         }
+
         .dark .puzzle-card[data-checked="true"] .blank-drop[data-state="wrong"] {
             color: rgb(252 165 165);
         }
@@ -238,13 +215,14 @@
             white-space: nowrap;
             line-height: 1.1;
         }
+
         .blank-correct-answer[data-visible="true"] {
             display: block;
         }
+
         .dark .blank-correct-answer {
             color: rgb(74 222 128);
         }
-
     </style>
 @endsection
 
@@ -253,42 +231,13 @@
         <main class="relative z-10 mx-auto flex w-full max-w-[1320px] items-start box-border px-4 py-4 sm:px-8 sm:py-6">
             <section class="flex w-full flex-col rounded-[2rem] border border-slate-300/60 bg-white/85 p-4 shadow-xl shadow-slate-900/8 backdrop-blur-xl dark:border-slate-200/20 dark:bg-white/10 dark:shadow-none sm:p-6">
                 <div class="mb-4 grid gap-4 lg:gap-6 lg:grid-cols-[max-content_minmax(0,1fr)] lg:items-start">
-                    @include('slider.components.title-subtitle')
-                    <div class="rounded-2xl border border-indigo-100 bg-indigo-50/90 px-3 py-2.5 shadow-sm dark:border-indigo-700/60 dark:bg-indigo-900/30 sm:px-5 sm:py-3.5">
-                        <div class="flex items-center gap-3 sm:gap-4">
-                            <button
-                                    id="slide10PlayAudioBtn"
-                                    type="button"
-                                    class="play-hit audio-listen-btn inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 transition-all duration-150 active:scale-95 hover:scale-[1.06] focus-visible:ring-4 focus-visible:ring-indigo-300/40"
-                                    aria-label="Play audio"
-                            >
-                                <svg class="static-icon h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M8 5v14l11-7-11-7z"/>
-                                </svg>
-
-                                <span class="wave-bar" style="animation-delay:.1s"></span>
-                                <span class="wave-bar" style="animation-delay:.2s"></span>
-                                <span class="wave-bar" style="animation-delay:.3s"></span>
-                            </button>
-
-                            <div class="flex-1 flex flex-col gap-1.5 sm:gap-2 min-w-0">
-                                <div class="ama-audio-track cursor-pointer" id="slide10ProgressTrack" aria-label="Audio progress">
-                                    <div class="ama-audio-fill" id="slide10ProgressFill"></div>
-                                    <div class="ama-audio-knob" id="slide10ProgressKnob"></div>
-                                </div>
-
-                                <div class="flex justify-between text-[10px] sm:text-[11px] font-extrabold text-indigo-700 dark:text-indigo-200">
-                                    <span id="slide10CurrentTime">0:00</span>
-                                    <span id="slide10TotalTime">0:00</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <audio id="slide10-audio" class="ama-native-audio" preload="metadata">
-                            <source src="{{ $content['audio'] }}" type="audio/mpeg">
-                        </audio>
+                    <div data-anim="header">
+                        @include('slider.components.title-subtitle')
                     </div>
 
+                    <div data-anim="audio">
+                        @include('slider.components.audio-player')
+                    </div>
                 </div>
 
                 <div data-anim="tabs" class="mt-4">
@@ -442,8 +391,8 @@
                                                                 data-state="idle"
                                                                 data-placeholder="___"
                                                         >
-                                                        ___
-                                                    </span>
+                                                            ___
+                                                        </span>
                                                         <span class="blank-correct-answer" data-visible="false"></span>
                                                     </span>
                                                     {{ $parts[1] ?? '' }}
@@ -473,35 +422,6 @@
         document.addEventListener("DOMContentLoaded", () => {
             const tabButtons = Array.from(document.querySelectorAll(".tab-btn"));
             const panels = Array.from(document.querySelectorAll(".activity-panel"));
-            const audio = document.getElementById("slide10-audio");
-            const playAudioBtn = document.getElementById("slide10PlayAudioBtn");
-            const progressTrack = document.getElementById("slide10ProgressTrack");
-
-            function formatTime(seconds) {
-                if (!isFinite(seconds) || seconds < 0) seconds = 0;
-                const m = Math.floor(seconds / 60);
-                const s = Math.floor(seconds % 60);
-                return m + ':' + String(s).padStart(2, '0');
-            }
-
-            function syncPlayerUI() {
-                if (!audio) return;
-
-                const duration = isFinite(audio.duration) ? audio.duration : 0;
-                const current = isFinite(audio.currentTime) ? audio.currentTime : 0;
-                const pct = duration > 0 ? (current / duration) * 100 : 0;
-
-                const currentTimeEl = document.getElementById("slide10CurrentTime");
-                const totalTimeEl = document.getElementById("slide10TotalTime");
-                const progressFill = document.getElementById("slide10ProgressFill");
-                const progressKnob = document.getElementById("slide10ProgressKnob");
-
-                if (currentTimeEl) currentTimeEl.textContent = formatTime(current);
-                if (totalTimeEl) totalTimeEl.textContent = duration ? formatTime(duration) : "0:00";
-                if (progressFill) progressFill.style.width = pct + "%";
-                if (progressKnob) progressKnob.style.left = pct + "%";
-                if (playAudioBtn) playAudioBtn.classList.toggle("playing", !audio.paused);
-            }
 
             function setActiveTab(targetId) {
                 tabButtons.forEach((btn) => {
@@ -520,35 +440,6 @@
                     setActiveTab(btn.dataset.tabTarget);
                 });
             });
-
-            if (playAudioBtn && audio) {
-                playAudioBtn.addEventListener("click", () => {
-                    if (audio.paused) audio.play().catch(() => {});
-                    else audio.pause();
-                });
-            }
-
-            if (progressTrack && audio) {
-                progressTrack.addEventListener("click", (e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    const x = Math.min(Math.max(0, e.clientX - rect.left), rect.width);
-                    const ratio = rect.width > 0 ? x / rect.width : 0;
-
-                    if (isFinite(audio.duration) && audio.duration > 0) {
-                        audio.currentTime = ratio * audio.duration;
-                        syncPlayerUI();
-                    }
-                });
-            }
-
-            if (audio) {
-                audio.preload = "metadata";
-                audio.addEventListener("loadedmetadata", syncPlayerUI);
-                audio.addEventListener("timeupdate", syncPlayerUI);
-                audio.addEventListener("ended", syncPlayerUI);
-                audio.addEventListener("play", syncPlayerUI);
-                audio.addEventListener("pause", syncPlayerUI);
-            }
 
             const quizCards = Array.from(document.querySelectorAll(".quiz-card"));
             const quizCheckBtn = document.getElementById("quiz-check-btn");
@@ -931,9 +822,9 @@
             };
 
             window.stopSlideAudio = () => {
-                if (!audio) return;
-                audio.pause();
-                audio.currentTime = 0;
+                if (typeof window.stopAudioPlayer === "function") {
+                    window.stopAudioPlayer();
+                }
             };
 
             setActiveTab("empty");

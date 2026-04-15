@@ -1,8 +1,8 @@
 <?php
 
 $content = array_replace_recursive([
-    'page_title' => 'Practice 1',
-    'title'      => 'Practice 1',
+    'page_title' => 'Warm-up: Practice 1',
+    'title'      => 'Warm-up: Practice 1',
     'subtitle'   => 'Safe or Unsafe?',
 
 

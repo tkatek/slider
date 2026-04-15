@@ -12,7 +12,7 @@ $content = [
             'image'       => materialAsset('slider/A1/Advanced/chapter-7/img/slide9/bus-stop.webp'),
             'prefix'      => 'B',
             'suffix'      => ' STOP',
-            'answer'      => 'U',
+            'answer'      => 'US',
             'placeholder' => '',
         ],
         [

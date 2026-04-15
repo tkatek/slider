@@ -10,19 +10,7 @@ $content = [
     'reading_plain'   => true,
     'reading_compact' => true,
 
-    'passage' => [
-        "Tom is in the city for one day.",
-        "He needs to go to the main station to catch a train.",
-        "He takes a taxi from his hotel.",
-        "He asks the driver, “Can you take me to the main station?”",
-        "The driver says yes.",
-        "Traffic is not bad, so they arrive quickly.",
-        "Tom asks, “How much is the ride?”",
-        "The driver says, “It is about \$12.”",
-        "Tom pays in cash.",
-        "The driver is friendly and helpful.",
-        "Tom is happy because he arrives at the station on time.",
-    ],
+    'passage' => "Tom is in the city for one day. He needs to go to the main station to catch a train. He takes a taxi from his hotel. He asks the driver, “Can you take me to the main station?” The driver says yes. Traffic is not bad, so they arrive quickly. Tom asks, “How much is the ride?” The driver says, “It is about \$12.” Tom pays in cash. The driver is friendly and helpful. Tom is happy because he arrives at the station on time.",
 
     'questions' => [
         [

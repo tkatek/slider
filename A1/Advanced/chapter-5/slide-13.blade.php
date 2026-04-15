@@ -2,7 +2,7 @@
     $content = [
         'page_title' => 'Practice 6',
         'title' => 'Practice 6',
-        'subtitle' => 'Drag and drop the items into their correct order',
+        'subtitle' => 'Drag and drop the sentences into their correct order',
         'desktop_layout_breakpoint' => 1024,
 
         'desktop_game_width' => 55,

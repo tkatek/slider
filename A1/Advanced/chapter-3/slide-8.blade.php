@@ -1,7 +1,7 @@
 @php
     $content = [
-        'page_title' => 'New Vocabulary',
-        'title'      => 'New Vocabulary',
+        'page_title' => 'New Language',
+        'title'      => 'New Language',
         'subtitle'   => '3️⃣ Polite Expressions',
         'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4',
 

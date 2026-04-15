@@ -2,15 +2,15 @@
 $content = [
     'type' => 'reading',
     'page_title' => 'Practice 5',
-    'title' => 'Practice 5',
-    'subtitle' => 'Reading comprehension',
+    'title' => 'Practice 5: Reading comprehension',
+    'subtitle' => 'Look at the bus schedule and choose the correct answer',
     'audio' => null,
     'reading_title' => 'Bus Schedule',
-    'reading_align' => 'left',
     'reading_plain' => true,
     'reading_compact' => true,
     'reading_allow_html' => true,
     'show_reading_badge' => false,
+    'title_class' => 'text-3xl md:text-4xl lg:text-5xl',
 
     'passage' => [
         '<table><thead><tr><th>Bus</th><th>Destination</th><th>Time</th></tr></thead><tbody><tr><td>12</td><td>Airport</td><td>4:30</td></tr><tr><td>18</td><td>City Center</td><td>5:00</td></tr><tr><td>21</td><td>Train Station</td><td>5:20</td></tr></tbody></table>',

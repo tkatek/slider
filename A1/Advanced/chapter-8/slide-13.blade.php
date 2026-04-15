@@ -60,7 +60,7 @@ $content = [
             ],
         ],
         [
-            'image'   => materialAsset('slider/A1/Advanced/chapter-8/img/slide13/5.webp'),
+            'image'   => materialAsset('slider/A1/Advanced/chapter-8/img/slide13/3.webp'),
 
             'prompt'  => 'There is .................... traffic in my area.',
             'correct' => 'a little',

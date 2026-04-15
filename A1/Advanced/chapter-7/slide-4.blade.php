@@ -1,114 +1,342 @@
 <?php
-$content['page_title'] = 'Practice 2';
-$content['title'] = 'Practice 2';
-$content['subtitle'] = 'Let’s check your information!';
-$content['professions'] = [
-    [
-        'id' => 'no-entry',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-entry.webp'),
-        'color' => 'bg-card-pink',
-        'desc' => 'you cannot go in.',
-    ],
-    [
-        'id' => 'warning-electricity',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/warning-electricity.webp'),
-        'color' => 'bg-card-blue',
-        'desc' => 'be careful, there is electricity.',
-    ],
-    [
-        'id' => 'wear-safety-boots',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-safety-boots.webp'),
-        'color' => 'bg-card-orange',
-        'desc' => 'you must wear safety boots.',
-    ],
-    [
-        'id' => 'go-straight',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/go-straight.webp'),
-        'color' => 'bg-card-indigo',
-        'desc' => 'you must go straight ahead.',
-    ],
-    [
-        'id' => 'cattle-crossing',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/cattle-crossing.webp'),
-        'color' => 'bg-card-green',
-        'desc' => 'watch out, cows may cross the road.',
-    ],
-    [
-        'id' => 'emergency-exit',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/emergency-exit.webp'),
-        'color' => 'bg-card-teal',
-        'desc' => 'this is the way out in an emergency.',
-    ],
-    [
-        'id' => 'wear-gloves',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-gloves.webp'),
-        'color' => 'bg-card-orange',
-        'desc' => 'you must wear gloves.',
-    ],
-    [
-        'id' => 'no-left-turn',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-left-turn.webp'),
-        'color' => 'bg-card-indigo',
-        'desc' => 'you cannot turn left.',
-    ],
-    [
-        'id' => 'no-bicycles',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-bicycles.webp'),
-        'color' => 'bg-card-purple',
-        'desc' => 'bicycles are not allowed here.',
-    ],
-    [
-        'id' => 'recycle',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/recycle.webp'),
-        'color' => 'bg-card-green',
-        'desc' => 'put used things in the recycling bin.',
-    ],
-    [
-        'id' => 'children-crossing',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/children-crossing.webp'),
-        'color' => 'bg-card-pink',
-        'desc' => 'watch out, children may cross here.',
-    ],
-    [
-        'id' => 'pedestrian-crossing',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/pedestrian-crossing.webp'),
-        'color' => 'bg-card-blue',
-        'desc' => 'people can cross the road here.',
-    ],
-    [
-        'id' => 'no-parking',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-parking.webp'),
-        'color' => 'bg-card-orange',
-        'desc' => 'you cannot park here.',
-    ],
-    [
-        'id' => 'no-smoking',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-smoking.webp'),
-        'color' => 'bg-card-red',
-        'desc' => 'smoking is not allowed here.',
-    ],
-    [
-        'id' => 'wear-a-seat-belt',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-a-seat-belt.webp'),
-        'color' => 'bg-card-teal',
-        'desc' => 'you must wear a seat belt.',
+$content = [
+    'page_title' => 'Practice 2',
+    'title' => 'Practice 2',
+    'subtitle' => 'Choose the correct sign.',
+    'type' => 'image',
+    'questions' => [
+        [
+            'prompt' => 'No entry',
+            'correct' => 'No entry',
+            'options' => [
+                [
+                    'text' => 'No entry',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-entry.webp'),
+                ],
+                [
+                    'text' => 'Warning! Electricity',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/warning-electricity.webp'),
+                ],
+                [
+                    'text' => 'Wear safety boots',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-safety-boots.webp'),
+                ],
+                [
+                    'text' => 'Go straight',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/go-straight.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'Warning! Electricity',
+            'correct' => 'Warning! Electricity',
+            'options' => [
+                [
+                    'text' => 'Warning! Electricity',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/warning-electricity.webp'),
+                ],
+                [
+                    'text' => 'Cattle crossing',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/cattle-crossing.webp'),
+                ],
+                [
+                    'text' => 'Emergency exit',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/emergency-exit.webp'),
+                ],
+                [
+                    'text' => 'Wear gloves',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-gloves.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'Wear safety boots',
+            'correct' => 'Wear safety boots',
+            'options' => [
+                [
+                    'text' => 'Wear safety boots',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-safety-boots.webp'),
+                ],
+                [
+                    'text' => 'No left turn',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-left-turn.webp'),
+                ],
+                [
+                    'text' => 'No bicycles',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-bicycles.webp'),
+                ],
+                [
+                    'text' => 'Recycle',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/recycle.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'Go straight',
+            'correct' => 'Go straight',
+            'options' => [
+                [
+                    'text' => 'Go straight',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/go-straight.webp'),
+                ],
+                [
+                    'text' => 'Children crossing',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/children-crossing.webp'),
+                ],
+                [
+                    'text' => 'Pedestrian crossing',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/pedestrian-crossing.webp'),
+                ],
+                [
+                    'text' => 'No parking',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-parking.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'Cattle crossing',
+            'correct' => 'Cattle crossing',
+            'options' => [
+                [
+                    'text' => 'Cattle crossing',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/cattle-crossing.webp'),
+                ],
+                [
+                    'text' => 'No smoking',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-smoking.webp'),
+                ],
+                [
+                    'text' => 'Wear a seat belt',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-a-seat-belt.webp'),
+                ],
+                [
+                    'text' => 'No entry',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-entry.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'Emergency exit',
+            'correct' => 'Emergency exit',
+            'options' => [
+                [
+                    'text' => 'Emergency exit',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/emergency-exit.webp'),
+                ],
+                [
+                    'text' => 'Warning! Electricity',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/warning-electricity.webp'),
+                ],
+                [
+                    'text' => 'Wear gloves',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-gloves.webp'),
+                ],
+                [
+                    'text' => 'No left turn',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-left-turn.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'Wear gloves',
+            'correct' => 'Wear gloves',
+            'options' => [
+                [
+                    'text' => 'Wear gloves',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-gloves.webp'),
+                ],
+                [
+                    'text' => 'No bicycles',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-bicycles.webp'),
+                ],
+                [
+                    'text' => 'Recycle',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/recycle.webp'),
+                ],
+                [
+                    'text' => 'Children crossing',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/children-crossing.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'No left turn',
+            'correct' => 'No left turn',
+            'options' => [
+                [
+                    'text' => 'No left turn',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-left-turn.webp'),
+                ],
+                [
+                    'text' => 'Pedestrian crossing',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/pedestrian-crossing.webp'),
+                ],
+                [
+                    'text' => 'No parking',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-parking.webp'),
+                ],
+                [
+                    'text' => 'No smoking',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-smoking.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'No bicycles',
+            'correct' => 'No bicycles',
+            'options' => [
+                [
+                    'text' => 'No bicycles',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-bicycles.webp'),
+                ],
+                [
+                    'text' => 'Wear a seat belt',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-a-seat-belt.webp'),
+                ],
+                [
+                    'text' => 'No entry',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-entry.webp'),
+                ],
+                [
+                    'text' => 'Go straight',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/go-straight.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'Recycle',
+            'correct' => 'Recycle',
+            'options' => [
+                [
+                    'text' => 'Recycle',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/recycle.webp'),
+                ],
+                [
+                    'text' => 'Cattle crossing',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/cattle-crossing.webp'),
+                ],
+                [
+                    'text' => 'Emergency exit',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/emergency-exit.webp'),
+                ],
+                [
+                    'text' => 'Wear gloves',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-gloves.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'Children crossing',
+            'correct' => 'Children crossing',
+            'options' => [
+                [
+                    'text' => 'Children crossing',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/children-crossing.webp'),
+                ],
+                [
+                    'text' => 'No left turn',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-left-turn.webp'),
+                ],
+                [
+                    'text' => 'No bicycles',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-bicycles.webp'),
+                ],
+                [
+                    'text' => 'Recycle',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/recycle.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'Pedestrian crossing',
+            'correct' => 'Pedestrian crossing',
+            'options' => [
+                [
+                    'text' => 'Pedestrian crossing',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/pedestrian-crossing.webp'),
+                ],
+                [
+                    'text' => 'No parking',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-parking.webp'),
+                ],
+                [
+                    'text' => 'No smoking',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-smoking.webp'),
+                ],
+                [
+                    'text' => 'Wear a seat belt',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-a-seat-belt.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'No parking',
+            'correct' => 'No parking',
+            'options' => [
+                [
+                    'text' => 'No parking',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-parking.webp'),
+                ],
+                [
+                    'text' => 'No entry',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-entry.webp'),
+                ],
+                [
+                    'text' => 'Warning! Electricity',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/warning-electricity.webp'),
+                ],
+                [
+                    'text' => 'Wear safety boots',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-safety-boots.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'No smoking',
+            'correct' => 'No smoking',
+            'options' => [
+                [
+                    'text' => 'No smoking',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-smoking.webp'),
+                ],
+                [
+                    'text' => 'Go straight',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/go-straight.webp'),
+                ],
+                [
+                    'text' => 'Cattle crossing',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/cattle-crossing.webp'),
+                ],
+                [
+                    'text' => 'Emergency exit',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/emergency-exit.webp'),
+                ],
+            ],
+        ],
+        [
+            'prompt' => 'Wear a seat belt',
+            'correct' => 'Wear a seat belt',
+            'options' => [
+                [
+                    'text' => 'Wear a seat belt',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-a-seat-belt.webp'),
+                ],
+                [
+                    'text' => 'Wear gloves',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/wear-gloves.webp'),
+                ],
+                [
+                    'text' => 'No left turn',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-left-turn.webp'),
+                ],
+                [
+                    'text' => 'No bicycles',
+                    'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide4/no-bicycles.webp'),
+                ],
+            ],
+        ],
     ],
 ];
 ?>
 
-@include("slider.game.guess-who", ['content' => $content])
+@include('slider.game.guess-who', ['content' => $content])

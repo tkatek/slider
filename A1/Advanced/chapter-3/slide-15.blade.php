@@ -1,13 +1,13 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Writing";
-$customSubtitle = "You stayed at a hotel for three nights. Now you are writing a short review online. Write 6–8 sentences. Include:
-1. Where the hotel is located
-2. Description of the room
-3. Staff service
-4. One positive point
-5. One small problem
-6. Your final opinion (recommend or not).";
+$customSubtitle = "You stayed at a hotel for three nights. Now you are writing a short review online.<br> Write 6–8 sentences. Include:<br>
+1. Where the hotel is located<br>
+2. Description of the room<br>
+3. Staff service<br>
+4. One positive point<br>
+5. One small problem<br>
+6. Your final opinion (recommend or not)";
 
 
 $customPlaceholder =

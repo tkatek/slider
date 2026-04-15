@@ -1,66 +1,60 @@
 <?php
 $content['page_title'] = 'Practice 9';
 $content['title'] = 'Practice 9';
-$content['subtitle'] = '';
+$content['subtitle'] = 'Find the match';
+$content['type'] = 'grid';
 $content['grid_class'] = 'grid-cols-2 md:grid-cols-4';
-$content['professions'] = [
+
+$content['items'] = [
     [
-        'id' => 'swimming-area',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/swimming-area.webp'),
-        'color' => 'bg-card-orange',
-        'desc' => 'you can swim here.',
+        'key' => 'swimming-area',
+        'text' => 'you can swim here.',
+        'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/swimming-area.webp'),
+        'caption' => '',
     ],
     [
-        'id' => 'no-parking',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/no-parking.webp'),
-        'color' => 'bg-card-green',
-        'desc' => 'you mustn’t park here.',
+        'key' => 'no-parking',
+        'text' => 'you mustn’t park here.',
+        'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/no-parking.webp'),
+        'caption' => '',
     ],
     [
-        'id' => 'wear-a-helmet',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/wear-helmet.webp'),
-        'color' => 'bg-card-red',
-        'desc' => 'you must wear a helmet.',
+        'key' => 'wear-a-helmet',
+        'text' => 'you must wear a helmet.',
+        'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/wear-helmet.webp'),
+        'caption' => '',
     ],
     [
-        'id' => 'no-smoking',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/no-smoking.webp'),
-        'color' => 'bg-card-purple',
-        'desc' => 'you mustn’t smoke here.',
+        'key' => 'no-smoking',
+        'text' => 'you mustn’t smoke here.',
+        'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/no-smoking.webp'),
+        'caption' => '',
     ],
     [
-        'id' => 'pedestrian-crossing',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/crossing.webp'),
-        'color' => 'bg-card-blue',
-        'desc' => 'you can cross the road here.',
+        'key' => 'pedestrian-crossing',
+        'text' => 'you can cross the road here.',
+        'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/crossing.webp'),
+        'caption' => '',
     ],
     [
-        'id' => 'smoking-area',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/smoking-area.webp'),
-        'color' => 'bg-card-green',
-        'desc' => 'you can smoke here.',
+        'key' => 'smoking-area',
+        'text' => 'you can smoke here.',
+        'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/smoking-area.webp'),
+        'caption' => '',
     ],
     [
-        'id' => 'no-swimming',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/no-swim.webp'),
-        'color' => 'bg-card-blue',
-        'desc' => 'you mustn’t swim here.',
+        'key' => 'no-swimming',
+        'text' => 'you mustn’t swim here.',
+        'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/no-swim.webp'),
+        'caption' => '',
     ],
     [
-        'id' => 'parking',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/parking.webp'),
-        'color' => 'bg-card-orange',
-        'desc' => 'you can park your car here.',
+        'key' => 'parking',
+        'text' => 'you can park your car here.',
+        'image' => materialAsset('slider/A1/Advanced/chapter-7/img/slide18/parking.webp'),
+        'caption' => '',
     ],
 ];
 ?>
 
-@include("slider.game.guess-who", ['content' => $content])
+@include('slider.game.guess-who', ['content' => $content])

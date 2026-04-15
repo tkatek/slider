@@ -23,7 +23,7 @@ $content = array_replace_recursive([
         [
             'question' => "It's got lots of books. It's a .......",
             'answer'   => 'A library.',
-            'image'    => '',
+            'image'    => materialAsset('slider/A1/Advanced/chapter-9/img/slide7/library.webp'),
         ],
         [
             'question' => 'You buy medicines here. It’s a ........',
@@ -33,12 +33,12 @@ $content = array_replace_recursive([
         [
             'question' => 'You buy food here. It’s a ........',
             'answer'   => 'A supermarket.',
-            'image'    => '',
+            'image'    => materialAsset('slider/A1/Advanced/chapter-9/img/slide7/supermarket.webp'),
         ],
         [
             'question' => 'You can send letters here. It’s a ........',
             'answer'   => 'A post office.',
-            'image'    => '',
+            'image'    => materialAsset('slider/A1/Advanced/chapter-9/img/slide7/post-office.webp'),
         ],
         [
             'question' => 'The restaurant is .................... to the school.',

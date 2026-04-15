@@ -1,1117 +1,468 @@
 @php
-    $customTheme = $content['theme_color'] ?? '#673fe7';
-    $lessonAudio = $content['audio'] ?? null;
-    $rawTranscript = $content['script'] ?? $content['transcript'] ?? [];
-    $transcriptLines = is_array($rawTranscript)
-        ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $rawTranscript), static fn ($line) => $line !== ''))
+    $allowedTypes = ['letters', 'words', 'sentence'];
+    $gameType = in_array(($content['type'] ?? 'letters'), $allowedTypes, true)
+        ? (string) ($content['type'] ?? 'letters')
+        : 'letters';
+
+    $playerAudio = !empty($content['audio']) ? $content['audio'] : (!empty($content['audio_src']) ? $content['audio_src'] : null);
+    $rawScript = $content['script'] ?? $content['transcript'] ?? [];
+    $scriptLines = is_array($rawScript)
+        ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $rawScript), static fn ($line) => $line !== ''))
         : array_values(array_filter(
-            array_map('trim', preg_split('/\R+/', trim((string) $rawTranscript)) ?: []),
+            array_map('trim', preg_split('/\R+/', trim((string) $rawScript)) ?: []),
             static fn ($line) => $line !== ''
         ));
+    $hasScript = $scriptLines !== [];
+
+    $defaultInstructions = [
+        'letters' => 'Drag the letters to make the correct word.',
+        'words' => 'Drag the words to make the correct answer.',
+        'sentence' => 'Drag the words to make the correct sentence.',
+    ];
+
+    $instructionText = trim((string) ($content['instruction'] ?? $defaultInstructions[$gameType] ?? 'Drag the tiles to make the correct answer.'));
+    $pageTitle = trim((string) ($content['page_title'] ?? $content['title'] ?? 'Unscramble'));
+
+    $normalizeChunkWords = static function ($value): array {
+        if (is_array($value)) {
+            $words = [];
+            foreach ($value as $entry) {
+                $entryText = trim((string) $entry);
+                if ($entryText === '') {
+                    continue;
+                }
+                $parts = preg_split('/\s+/u', $entryText) ?: [];
+                foreach ($parts as $part) {
+                    $part = trim((string) $part);
+                    if ($part !== '') {
+                        $words[] = $part;
+                    }
+                }
+            }
+            return $words;
+        }
+
+        $text = trim((string) $value);
+        if ($text === '') {
+            return [];
+        }
+
+        return array_values(array_filter(preg_split('/\s+/u', $text) ?: [], static fn ($part) => trim((string) $part) !== ''));
+    };
+
+    $normalizeScrambleItem = static function ($value) use ($normalizeChunkWords) {
+        if (is_array($value)) {
+            return $normalizeChunkWords($value);
+        }
+
+        if (is_string($value) || is_numeric($value)) {
+            return trim((string) $value);
+        }
+
+        $candidate = $value['word'] ?? $value['label'] ?? $value['text'] ?? $value['value'] ?? '';
+        return is_array($candidate) ? $normalizeChunkWords($candidate) : trim((string) $candidate);
+    };
+
+    $baseQuestions = [];
+    $rawQuestions = is_array($content['questions'] ?? null) ? array_values($content['questions']) : [];
+
+    foreach ($rawQuestions as $questionIndex => $question) {
+        if (!is_array($question)) {
+            continue;
+        }
+
+        $prompt = trim((string) ($question['prompt'] ?? ''));
+        $before = trim((string) ($question['before'] ?? ''));
+        $after = trim((string) ($question['after'] ?? ''));
+        $image = trim((string) ($question['image'] ?? ''));
+        $rawAnswer = $question['answer'] ?? null;
+        $chunks = [];
+
+        if (is_array($rawAnswer)) {
+            foreach ($rawAnswer as $chunk) {
+                $chunkWords = $normalizeChunkWords($chunk);
+                if ($chunkWords !== []) {
+                    $chunks[] = $chunkWords;
+                }
+            }
+        } elseif ($rawAnswer !== null) {
+            $answerText = trim((string) $rawAnswer);
+            if ($answerText !== '') {
+                $chunks[] = $normalizeChunkWords($answerText);
+            }
+        }
+
+        if ($chunks === []) {
+            continue;
+        }
+
+        $baseQuestions[] = [
+            'prompt' => $prompt,
+            'before' => $before,
+            'after' => $after,
+            'image' => $image,
+            'chunks' => $chunks,
+        ];
+    }
+
+    if ($baseQuestions === []) {
+        $rawSentences = is_array($content['sentences'] ?? null) ? array_values($content['sentences']) : [];
+        $rawScramble = is_array($content['scramble'] ?? null) ? array_values($content['scramble']) : [];
+        $scrambleItems = array_map($normalizeScrambleItem, $rawScramble);
+        $placeholderPattern = '/\{\{\s*(\d+)\s*\}\}/';
+
+        foreach ($rawSentences as $sentence) {
+            $sentenceText = (string) $sentence;
+            preg_match_all($placeholderPattern, $sentenceText, $matches, PREG_OFFSET_CAPTURE);
+            if (empty($matches[1])) {
+                continue;
+            }
+
+            $allMatches = $matches[0];
+            $numberMatches = $matches[1];
+            $firstMatch = $allMatches[0][0] ?? '';
+            $firstOffset = $allMatches[0][1] ?? 0;
+            $lastIndex = count($allMatches) - 1;
+            $lastMatchText = $allMatches[$lastIndex][0] ?? '';
+            $lastMatchOffset = $allMatches[$lastIndex][1] ?? 0;
+
+            $before = trim(preg_replace('/\s+/u', ' ', substr($sentenceText, 0, $firstOffset)) ?? '');
+            $after = trim(preg_replace('/\s+/u', ' ', substr($sentenceText, $lastMatchOffset + strlen($lastMatchText))) ?? '');
+
+            $chunks = [];
+            foreach ($numberMatches as $numberMatch) {
+                $scrambleIndex = (int) ($numberMatch[0] ?? 0) - 1;
+                $scrambleValue = $scrambleItems[$scrambleIndex] ?? '';
+
+                if (is_array($scrambleValue)) {
+                    if ($scrambleValue !== []) {
+                        $chunks[] = $scrambleValue;
+                    }
+                    continue;
+                }
+
+                $chunkWords = $normalizeChunkWords($scrambleValue);
+                if ($chunkWords !== []) {
+                    $chunks[] = $chunkWords;
+                }
+            }
+
+            if ($chunks === []) {
+                continue;
+            }
+
+            $baseQuestions[] = [
+                'prompt' => '',
+                'before' => $before,
+                'after' => $after,
+                'image' => '',
+                'chunks' => $chunks,
+            ];
+        }
+    }
+
+    $roundsData = [];
+
+    foreach ($baseQuestions as $question) {
+        $flatWords = [];
+        foreach ($question['chunks'] as $chunkWords) {
+            foreach ($chunkWords as $word) {
+                $word = trim((string) $word);
+                if ($word !== '') {
+                    $flatWords[] = $word;
+                }
+            }
+        }
+
+        if ($flatWords === []) {
+            continue;
+        }
+
+        $tokens = [];
+        $groupSizes = [];
+
+        if ($gameType === 'sentence') {
+            $tokens = $flatWords;
+        } elseif ($gameType === 'words') {
+            foreach ($flatWords as $word) {
+                $tokens[] = $word;
+                $groupSizes[] = 1;
+            }
+        } else {
+            foreach ($flatWords as $word) {
+                $chars = preg_split('//u', $word, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+                if ($chars === []) {
+                    continue;
+                }
+                $groupSizes[] = count($chars);
+                foreach ($chars as $char) {
+                    $tokens[] = $char;
+                }
+            }
+        }
+
+        if ($tokens === []) {
+            continue;
+        }
+
+        $roundsData[] = [
+            'prompt' => $question['prompt'],
+            'before' => $question['before'],
+            'after' => $question['after'],
+            'image' => $question['image'],
+            'tokens' => $tokens,
+            'groups' => $groupSizes,
+            'answer_normalized' => $gameType === 'letters'
+                ? mb_strtolower(implode('', $flatWords))
+                : mb_strtolower(implode(' ', $tokens)),
+        ];
+    }
 @endphp
 @extends('slider.simple-layout')
 
-@section('title', $content['page_title'])
-
-@section('style')
-    <style>
-        #unscramble-words{
-            font-family: "Plus Jakarta Sans", sans-serif;
-        }
-
-        #unscramble-words .page-title{
-            margin: 0 0 1.25rem;
-            font-size: 2.25rem;
-            line-height: 1.02;
-            font-weight: 900;
-            letter-spacing: -0.04em; 
-        }
-
-        #unscramble-words .page-title-text{
-            background: linear-gradient(135deg, #4f46e5, #3b82f6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        #unscramble-words .page-subtitle{
-            font-size: 1rem;
-            line-height: 1.45;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .dark #unscramble-words .page-subtitle{
-            color: #f8fafc;
-        }
-
-        @media (min-width: 768px){
-            #unscramble-words .page-title{
-                font-size: 3rem;
-            }
-        }
-
-        @media (min-width: 1024px){
-            #unscramble-words .page-title{
-                font-size: 3.75rem;
-            }
-
-            #unscramble-words .page-subtitle{
-                font-size: 1.15rem;
-            }
-        }
-
-        #unscramble-words .board{
-            border-radius: 28px;
-        }
-
-        #unscramble-words .pill{
-            border-radius: 999px;
-            border: 1px solid rgba(226,232,240,.75);
-            background: rgba(255,255,255,.70);
-            box-shadow: 0 10px 26px rgba(2,6,23,.06);
-        }
-
-        .dark #unscramble-words .pill{
-            background: rgba(2,6,23,.42);
-        }
-
-        #unscramble-words .uns-btn-primary{
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .5rem;
-            border-radius: .5rem;
-            padding: .375rem .75rem;
-            font-size: .75rem;
-            font-weight: 900;
-            color: #fff;
-            border: 1px solid rgba(255,255,255,.2);
-            background: linear-gradient(135deg, #9333ea, #4f46e5, #2563eb);
-            box-shadow: 0 10px 24px rgba(79,70,229,.10);
-            transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
-        }
-
-        #unscramble-words .uns-btn-primary:hover{
-            transform: scale(1.05);
-        }
-
-        #unscramble-words .uns-btn-primary:active{
-            transform: scale(.95);
-        }
-
-        #unscramble-words .uns-btn-reveal{
-            color: rgb(154 52 18);
-            border-color: rgb(253 186 116);
-            background: rgb(255 237 213);
-            box-shadow: 0 8px 22px rgba(234,88,12,.10);
-        }
-
-        #unscramble-words .uns-btn-reveal:hover{
-            background: rgb(254 215 170);
-            box-shadow: 0 10px 24px rgba(234,88,12,.14);
-        }
-
-        .dark #unscramble-words .uns-btn-reveal{
-            color: rgb(254 215 170);
-            border-color: rgba(194, 65, 12, .45);
-            background: rgba(154, 52, 18, .35);
-        }
-
-        .dark #unscramble-words .uns-btn-reveal:hover{
-            background: rgba(154, 52, 18, .5);
-        }
-
-        #unscramble-words .uns-btn-secondary{
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .5rem;
-            border-radius: .5rem;
-            padding: .375rem .75rem;
-            font-size: .75rem;
-            font-weight: 900;
-            color: rgb(15 23 42);
-            border: 1px solid rgb(226 232 240);
-            background: #fff;
-            box-shadow: 0 8px 22px rgba(2,6,23,.05);
-            transition: transform .2s ease, background .2s ease, box-shadow .2s ease, opacity .2s ease;
-        }
-
-        #unscramble-words .uns-btn-secondary:hover{
-            transform: scale(1.05);
-            background: rgb(248 250 252);
-        }
-
-        #unscramble-words .uns-btn-secondary:active{
-            transform: scale(.98);
-        }
-
-        .dark #unscramble-words .uns-btn-secondary{
-            color: #fff;
-            border-color: rgb(51 65 85);
-            background: rgb(30 41 59);
-        }
-
-        .dark #unscramble-words .uns-btn-secondary:hover{
-            background: rgb(51 65 85);
-        }
-
-        #unscramble-words .uns-btn-warning{
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .5rem;
-            border-radius: .5rem;
-            padding: .375rem .75rem;
-            font-size: .75rem;
-            font-weight: 900;
-            color: rgb(120 53 15);
-            border: 1px solid rgb(253 186 116);
-            background: rgb(254 243 199);
-            box-shadow: 0 8px 22px rgba(120,53,15,.10);
-            transition: transform .2s ease, background .2s ease, box-shadow .2s ease, opacity .2s ease, color .2s ease, border-color .2s ease;
-        }
-
-        #unscramble-words .uns-btn-warning:hover{
-            transform: scale(1.05);
-            background: rgb(253 230 138);
-        }
-
-        #unscramble-words .uns-btn-warning:active{
-            transform: scale(.98);
-        }
-
-        .dark #unscramble-words .uns-btn-warning{
-            color: rgb(254 243 199);
-            border-color: rgba(180, 83, 9, .45);
-            background: rgba(120, 53, 15, .35);
-        }
-
-        .dark #unscramble-words .uns-btn-warning:hover{
-            background: rgba(120, 53, 15, .5);
-        }
-
-        #unscramble-words .uns-btn-block{
-            width: 100%;
-            padding-top: .75rem;
-            padding-bottom: .75rem;
-        }
-
-        #unscramble-words .progress-track{
-            height: 10px;
-            border-radius: 999px;
-            background: rgba(15,23,42,.08);
-            overflow: hidden;
-        }
-
-        .dark #unscramble-words .progress-track{ background: rgba(255,255,255,.10); }
-
-        #unscramble-words .progress-bar{
-            height: 100%;
-            border-radius: 999px;
-            background: linear-gradient(90deg, {{ $customTheme }}, #4f46e5, #3b82f6);
-            box-shadow: 0 10px 22px rgba(79,70,229,.18);
-        }
-
-        #unscramble-words .player-shell{
-            position: relative;
-            overflow: hidden;
-            border-radius: 20px;
-            border: 1px solid rgba(99,102,241,.18);
-            background:
-                linear-gradient(135deg, rgba(99,102,241,.14), rgba(59,130,246,.08)),
-                rgba(248,250,255,.94);
-            box-shadow: 0 18px 36px -24px rgba(79,70,229,.22);
-        }
-
-        .dark #unscramble-words .player-shell{
-            border-color: rgba(129,140,248,.28);
-            background:
-                linear-gradient(135deg, rgba(99,102,241,.20), rgba(59,130,246,.10)),
-                rgba(15,23,42,.92);
-        }
-
-        #unscramble-words .player-shell-title{
-            font-size: .7rem;
-            font-weight: 900;
-            letter-spacing: .18em;
-            text-transform: uppercase;
-            color: #4f46e5;
-        }
-
-        .dark #unscramble-words .player-shell-title{
-            color: #c7d2fe;
-        }
-
-        #unscramble-words .play-hit{
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        #unscramble-words .play-hit:focus-visible{
-            outline: none;
-        }
-
-        #unscramble-words .audio-listen-btn{
-            transition: transform .16s ease;
-        }
-
-        #unscramble-words .audio-listen-btn:hover{
-            transform: scale(1.04);
-        }
-
-        #unscramble-words .wave-bar{
-            display:none;
-            width:3px;
-            height:10px;
-            background:currentColor;
-            border-radius:999px;
-            margin:0 1px;
-        }
-
-        #unscramble-words .audio-listen-btn.playing .wave-bar{
-            display:block;
-            animation: waveGrowth .6s infinite ease-in-out;
-        }
-
-        #unscramble-words .audio-listen-btn.playing .static-icon{
-            display:none;
-        }
-
-        #unscramble-words .audio-track{
-            position:relative;
-            height:8px;
-            width:100%;
-            border-radius:999px;
-            overflow:hidden;
-            background: rgba(165,180,252,.42);
-        }
-
-        .dark #unscramble-words .audio-track{
-            background: rgba(99,102,241,.24);
-        }
-
-        #unscramble-words .audio-fill{
-            height:100%;
-            width:0%;
-            border-radius:999px;
-            background: linear-gradient(90deg, {{ $customTheme }} 0%, #8b5cf6 100%);
-        }
-
-        #unscramble-words .audio-knob{
-            position:absolute;
-            top:50%;
-            left:0%;
-            width:12px;
-            height:12px;
-            border-radius:9999px;
-            background:white;
-            border:2px solid {{ $customTheme }};
-            box-shadow:0 6px 14px rgba(2,6,23,.18);
-            transform:translate(-50%, -50%);
-            pointer-events:none;
-        }
-
-        #unscramble-words .transcript-line{
-            border-radius: 18px;
-            border: 1px solid rgba(226,232,240,.7);
-            background: rgba(255,255,255,.76);
-            padding: .75rem;
-            text-align: left;
-        }
-
-        .dark #unscramble-words .transcript-line{
-            border-color: rgba(51,65,85,.7);
-            background: rgba(15,23,42,.72);
-        }
-
-        @keyframes waveGrowth {
-            0%,100% { height:6px; }
-            50% { height:14px; }
-        }
-
-        #unscramble-words .tile{
-            touch-action:none;
-            user-select:none;
-            -webkit-user-select:none;
-            cursor: grab;
-            transform: translateZ(0);
-            border-radius: 18px;
-            background: rgba(255,255,255,.82);
-            border: 1px solid rgba(226,232,240,.75);
-            box-shadow: 0 14px 30px rgba(2,6,23,.10);
-            transition: transform .16s ease, filter .16s ease, opacity .16s ease;
-        }
-
-        .dark #unscramble-words .tile{
-            background: rgba(2,6,23,.34);
-            border-color: rgba(51,65,85,.55);
-        }
-
-        #unscramble-words .tile:active{ cursor: grabbing; transform: translateZ(0) scale(.98); }
-        #unscramble-words .tile-used{ opacity:.26; transform: scale(.96); pointer-events:none; filter: grayscale(.15); }
-
-        #unscramble-words .slot{
-            position: relative;
-            border-radius: 18px;
-            border: 1.5px dashed rgba(100,116,139,.35);
-            background: rgba(255,255,255,.52);
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,.35);
-            transition: box-shadow .16s ease, border-color .16s ease, transform .16s ease;
-        }
-
-        .dark #unscramble-words .slot{
-            border-color: rgba(148,163,184,.22);
-            background: rgba(2,6,23,.30);
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
-        }
-
-        #unscramble-words .slot-hot{
-            border-color: rgba(103,63,231,.85) !important;
-            box-shadow: 0 0 0 6px rgba(103,63,231,.14);
-            transform: translateY(-1px);
-        }
-
-        #unscramble-words .shake { animation: shake .28s ease-in-out 0s 2; }
-
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            50% { transform: translateX(6px); }
-            75% { transform: translateX(-4px); }
-            100% { transform: translateX(0); }
-        }
-
-        #unscramble-words .pop { animation: pop .22s ease-out; }
-
-        @keyframes pop {
-            from { transform: scale(.96); }
-            to { transform: scale(1); }
-        }
-
-        #unscramble-words .confetti{
-            position: absolute;
-            inset: 0;
-            pointer-events:none;
-            overflow:hidden;
-            border-radius: var(--radius);
-        }
-
-        #unscramble-words .confetti i{
-            position:absolute;
-            top:-12px;
-            width:10px;
-            height:14px;
-            border-radius:3px;
-            opacity:.95;
-            animation: fall 900ms linear forwards;
-        }
-
-        @keyframes fall{
-            to{ transform: translateY(520px) rotate(540deg); opacity: 0; }
-        }
-
-        #unscramble-words .sentence-shell{
-            width: 100%;
-        }
-
-        #unscramble-words .sentence-flow{
-            display:flex;
-            flex-wrap:wrap;
-            align-items:center;
-            justify-content:center;
-            gap:.5rem .65rem;
-            text-align:center;
-            line-height:1.65;
-        }
-
-        #unscramble-words .sentence-text{
-            font-size: 1rem;
-            font-weight: 700;
-            line-height: 1.45;
-            letter-spacing: -0.01em;
-            color: #0f172a;
-        }
-
-        .dark #unscramble-words .sentence-text{
-            color:#f8fafc;
-        }
-
-        @media (min-width: 640px){
-            #unscramble-words .sentence-text{
-                font-size: 1.125rem;
-            }
-        }
-
-        @media (min-width: 1024px){
-            #unscramble-words .sentence-text{
-                font-size: 1.15rem;
-            }
-        }
-
-        #unscramble-words .answer-inline{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            flex-wrap:wrap;
-            gap:.5rem;
-        }
-
-        #unscramble-words .tile-groups{
-            display:flex;
-            flex-wrap:wrap;
-            align-items:center;
-            justify-content:center;
-            gap:1rem 1.5rem;
-        }
-
-        #unscramble-words .tile-word-group{
-            display:inline-flex;
-            flex-wrap:wrap;
-            align-items:center;
-            justify-content:center;
-            gap:.5rem;
-            padding:.45rem .7rem;
-            border-radius:1.25rem;
-            border:1px dashed rgba(99,102,241,.28);
-            background:rgba(99,102,241,.06);
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,.24);
-        }
-
-        .dark #unscramble-words .tile-word-group{
-            border-color: rgba(129,140,248,.24);
-            background: rgba(99,102,241,.12);
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
-        }
-
-        #unscramble-words .slot-break{
-            margin-right: .75rem;
-        }
-
-        @media (max-width: 640px){
-            #unscramble-words .slot-break{
-                margin-right: .45rem;
-            }
-        }
-    </style>
-@endsection
-
-@section("content")
-    <main id="unscramble-words" class="font-sans relative isolate min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto dark:text-slate-100 transition-colors duration-300">
-        <div class="w-full max-w-7xl min-h-[100dvh] px-4 sm:px-8 mx-auto pb-16 sm:pb-20 flex flex-col">
-            <section class="px-2 pb-2 sm:px-5 sm:pb-5 flex-1 flex flex-col">
-                <div class="grid place-items-center text-center gap-5 sm:gap-6 flex-1 auto-rows-max">
-
-                    @include('slider.components.title-subtitle')
-
-                    @include('slider.components.game-status')
-
-                    <section class="w-full flex-1 min-h-[420px]">
-                        <div class="w-full board h-full p-4 sm:p-5 relative overflow-hidden rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl">
-                            <div id="unscramble-words_confetti" class="confetti"></div>
-
-                            <div class="mb-4 flex flex-wrap items-center justify-between gap-3 text-left">
-                                <div class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                                    Put the letters in order:
-                                </div>
-
-                                <button
-                                        id="unscramble-words_reveal"
-                                        class="uns-btn-primary uns-btn-reveal"
-                                >
-                                    Reveal answer
-                                </button>
-                            </div>
-
-                            @if($lessonAudio || !empty($transcriptLines))
-                                <div id="unscramble-words_media_row" class="mb-3">
-                                    <div class="player-shell px-3 py-2.5 sm:px-4 sm:py-3">
-                                        <div class="mb-2 flex items-center justify-between gap-3">
-                                            <div class="player-shell-title">Listen First</div>
-                                        </div>
-
-                                        <div class="flex items-center gap-3 sm:gap-4">
-                                            @if($lessonAudio)
-                                                <button
-                                                    id="unscramble-words_play_audio"
-                                                    type="button"
-                                                    class="play-hit audio-listen-btn inline-flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 active:scale-95"
-                                                    aria-label="Play audio"
-                                                >
-                                                    <svg class="static-icon h-3.5 w-3.5 sm:h-4 sm:w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                        <path d="M8 5v14l11-7-11-7z"/>
-                                                    </svg>
-                                                    <span class="wave-bar" style="animation-delay:.1s"></span>
-                                                    <span class="wave-bar" style="animation-delay:.2s"></span>
-                                                    <span class="wave-bar" style="animation-delay:.3s"></span>
-                                                </button>
-
-                                                <div class="min-w-0 flex-1">
-                                                    <div class="flex items-center gap-2.5 sm:gap-3">
-                                                        <div class="min-w-0 flex-1 flex flex-col gap-1.5 sm:gap-2">
-                                                            <div class="audio-track cursor-pointer" id="unscramble-words_audio_progress_track" aria-label="Audio progress">
-                                                                <div class="audio-fill" id="unscramble-words_audio_progress_fill"></div>
-                                                                <div class="audio-knob" id="unscramble-words_audio_progress_knob"></div>
-                                                            </div>
-                                                            <div class="flex justify-between text-[10px] sm:text-[11px] font-extrabold text-indigo-700 dark:text-indigo-200">
-                                                                <span id="unscramble-words_audio_current_time">0:00</span>
-                                                                <span id="unscramble-words_audio_total_time">0:00</span>
-                                                            </div>
-                                                        </div>
-                                                        @if(!empty($transcriptLines))
-                                                            <button
-                                                                id="unscramble-words_show_transcript"
-                                                                type="button"
-                                                                class="uns-btn-primary shrink-0 px-2.5 py-1.5 text-[11px] sm:px-3 sm:text-xs"
-                                                            >
-                                                                <span>Show Transcript</span>
-                                                                <span>📄</span>
-                                                            </button>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            @elseif(!empty($transcriptLines))
-                                                <div class="ml-auto">
-                                                    <button
-                                                        id="unscramble-words_show_transcript"
-                                                        type="button"
-                                                        class="uns-btn-primary shrink-0 px-2.5 py-1.5 text-[11px] sm:px-3 sm:text-xs"
-                                                    >
-                                                        <span>Show Transcript</span>
-                                                        <span>📄</span>
-                                                    </button>
-                                                </div>
-                                            @endif
-                                        </div>
-
-                                        @if($lessonAudio)
-                                            <audio id="unscramble-words_audio" preload="auto" class="hidden" src="{{ $lessonAudio }}"></audio>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endif
-
-                            <div id="unscramble-words_game" class="grid gap-4 sm:gap-5 overflow-x-hidden">
-                                <div class="grid grid-cols-1 sm:grid-cols-12 gap-0 items-stretch overflow-hidden rounded-2xl">
-
-                                    <div id="unscramble-words_articleCol" class="hidden sm:col-span-3 border-b sm:border-b-0 sm:border-r border-slate-200/70 dark:border-slate-800 p-4 sm:p-5 flex flex-col items-center justify-center gap-3">
-                                        <div id="unscramble-words_tilesA" class="flex items-center justify-center gap-2 flex-wrap min-h-[3rem]"></div>
-
-                                        <div id="unscramble-words_boxA"
-                                             class="mx-auto w-[90px] h-[90px] sm:w-[112px] sm:h-[112px] rounded-[22px]
-                                                    bg-white/70 dark:bg-slate-950/30
-                                                    ring-1 ring-slate-200/60 dark:ring-slate-700/40
-                                                    shadow-xl shadow-slate-900/10 dark:shadow-black/40
-                                                    flex items-center justify-center hidden">
-                                            <div id="unscramble-words_slotsA" class="flex items-center justify-center"></div>
-                                        </div>
-                                    </div>
-
-                                    <div id="unscramble-words_mainCol" class="sm:col-span-12 min-w-0 w-full p-5 sm:p-6 text-left">
-                                        <div id="unscramble-words_tilesM" class="w-full flex items-center justify-center gap-2 sm:gap-3 flex-wrap min-h-[4rem]"></div>
-
-                                        <div id="unscramble-words_boxM"
-                                             class="mt-3 sm:mt-4 w-full rounded-[26px]
-                                                    bg-white/70 dark:bg-slate-950/30
-                                                    ring-1 ring-slate-200/60 dark:ring-slate-700/40
-                                                    shadow-xl shadow-slate-900/10 dark:shadow-black/40
-                                                    px-3 py-4 sm:px-6 sm:py-6">
-                                            <div class="sentence-shell">
-                                                <div class="sentence-flow">
-                                                    <span id="unscramble-words_before" class="sentence-text"></span>
-                                                    <span id="unscramble-words_slotsM" class="answer-inline"></span>
-                                                    <span id="unscramble-words_after" class="sentence-text"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="mt-3 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-sm font-semibold leading-[1.35] text-slate-900 dark:text-slate-100">
-                                            <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 sm:px-3 sm:py-1.5 pill">
-                                                👆 Tap
-                                            </span>
-                                            <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 sm:px-3 sm:py-1.5 pill">
-                                                🤏 Drag
-                                            </span>
-                                            <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 sm:px-3 sm:py-1.5 pill">
-                                                ✖ Tap box to remove
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="mt-4 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                                <button id="unscramble-words_reset"
-                                        class="uns-btn-secondary uns-btn-block">
-                                    Reset 🔁
-                                </button>
-
-                                <button id="unscramble-words_hint"
-                                        class="uns-btn-warning uns-btn-block">
-                                    Shuffle ✨
-                                </button>
-
-                                <button id="unscramble-words_prev"
-                                        class="uns-btn-secondary uns-btn-block">
-                                    Previous
-                                </button>
-
-                                <button id="unscramble-words_next"
-                                        class="uns-btn-primary uns-btn-block">
-                                    Next
-                                </button>
+@section('title', $pageTitle)
+
+@section('content')
+    <main id="unscramble-game" class="min-h-[100dvh] w-full overflow-x-hidden bg-transparent text-slate-900 transition-colors dark:text-slate-100">
+        <div class="mx-auto flex min-h-[100dvh] w-full max-w-6xl flex-col px-4 py-6 sm:px-8 sm:py-8 lg:justify-center">
+            <div class="grid place-items-center gap-5 text-center sm:gap-6">
+                @include('slider.components.title-subtitle')
+                @include('slider.components.game-status')
+
+                @if($playerAudio || $hasScript)
+                    <section class="w-full max-w-4xl rounded-3xl border border-slate-200/70 bg-white/70 p-4 shadow-xl backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
+                        @include('slider.components.audio-player')
+                    </section>
+                @endif
+                <section class="w-full max-w-5xl rounded-3xl border border-slate-200/70 bg-white/70 p-4 shadow-xl backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60 sm:p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-3 text-left">
+                        <div class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]">
+                            {{ $instructionText }}
+                        </div>
+
+                        <button
+                                id="uns-reveal"
+                                type="button"
+                                class="inline-flex items-center justify-center gap-2 rounded-lg border border-amber-300 bg-amber-100 px-3 py-2 text-xs font-black text-amber-900 shadow-sm transition hover:scale-105 active:scale-95 dark:border-amber-700/50 dark:bg-amber-900/30 dark:text-amber-200"
+                        >
+                            Reveal answer
+                        </button>
+                    </div>
+
+                    <div class="mt-4 grid gap-4">
+                        <div id="uns-image-wrap" class="hidden justify-center">
+                            <img id="uns-image" src="" alt="" class="h-40 w-full max-w-md rounded-2xl object-cover shadow-lg sm:h-52">
+                        </div>
+
+                        <div class="rounded-3xl border border-slate-200/70 bg-white/80 p-4 shadow-sm dark:border-slate-700 dark:bg-slate-950/30 sm:p-6">
+                            <div id="uns-prompt" class="hidden mb-3 text-center text-sm font-black uppercase tracking-[0.14em] text-indigo-600 dark:text-indigo-300"></div>
+
+                            <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 text-center">
+                                <span id="uns-before" class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]"></span>
+                                <div id="uns-slots" class="flex flex-wrap items-center justify-center gap-2 sm:gap-3"></div>
+                                <span id="uns-after" class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]"></span>
                             </div>
                         </div>
-                    </section>
 
-                    <div id="unscramble-results-overlay" class="hidden fixed inset-0 z-50">
-                        <div class="absolute inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm"></div>
+                        <div class="rounded-3xl border border-slate-200/70 bg-slate-50/80 p-4 dark:border-slate-700 dark:bg-slate-950/30 sm:p-5">
+                            <div id="uns-bank" class="flex flex-wrap items-center justify-center gap-2 sm:gap-3"></div>
+                        </div>
 
-                        <div class="relative min-h-full w-full flex items-center justify-center p-4 sm:p-6">
-                            <div class="w-full max-w-lg max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 dark:border-slate-700/70 bg-white/95 dark:bg-slate-900/95 shadow-2xl">
-                                <div class="p-6 sm:p-8 text-left">
-                                    <div class="text-6xl mb-3">🎉</div>
-
-                                    <h2 class="tracking-tight text-3xl sm:text-4xl font-black dark:text-white">
-                                        Done!
-                                    </h2>
-
-                                    <div class="mt-5 w-full grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                        <div class="p-3 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
-                                            <div class="text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Score</div>
-                                            <div id="unscramble-final-score" class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">0</div>
-                                        </div>
-                                        <div class="p-3 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
-                                            <div class="text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Time</div>
-                                            <div id="unscramble-final-time" class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">00:00</div>
-                                        </div>
-                                        <div class="p-3 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
-                                            <div class="text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Mistakes</div>
-                                            <div id="unscramble-final-mistakes" class="text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">0</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        <button
-                                                id="unscramble-restart-popup"
-                                                class="uns-btn-secondary uns-btn-block">
-                                            Restart 🔁
-                                        </button>
-
-                                        <button
-                                                id="unscramble-continue-popup"
-                                                class="uns-btn-primary uns-btn-block">
-                                            Continue ⚡
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="flex flex-wrap items-center justify-center gap-2 text-[11px] font-semibold text-slate-700 dark:text-slate-200 sm:text-sm">
+                            <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/80 px-3 py-1.5 shadow-sm dark:border-slate-700 dark:bg-slate-900/60">👆 Tap</span>
+                            <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/80 px-3 py-1.5 shadow-sm dark:border-slate-700 dark:bg-slate-900/60">🤏 Drag</span>
+                            <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/80 px-3 py-1.5 shadow-sm dark:border-slate-700 dark:bg-slate-900/60">✖ Tap slot to remove</span>
                         </div>
                     </div>
 
-                    @if(!empty($transcriptLines))
-                        <div id="unscramble-transcript-overlay" class="hidden fixed inset-0 z-50">
-                            <div id="unscramble-transcript-backdrop" class="absolute inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm"></div>
+                    <div class="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+                        <button id="uns-reset" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm font-black text-slate-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+                            Reset 🔁
+                        </button>
 
-                            <div class="relative min-h-full w-full flex items-center justify-center p-4 sm:p-6">
-                                <div class="w-full max-w-3xl max-h-[85dvh] overflow-hidden rounded-3xl border border-slate-200/70 dark:border-slate-700/70 bg-white/95 dark:bg-slate-900/95 shadow-2xl">
-                                    <div class="flex items-center justify-between gap-3 border-b border-slate-200/60 dark:border-slate-700/40 p-4 sm:p-5">
-                                        <div class="min-w-0">
-                                            <div class="text-sm sm:text-base font-black text-slate-900 dark:text-slate-50">Transcript</div>
-                                        </div>
+                        <button id="uns-hint" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-amber-300 bg-amber-100 px-3 py-3 text-sm font-black text-amber-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-amber-700/50 dark:bg-amber-900/30 dark:text-amber-200">
+                            Hint 💡 (<span id="uns-hint-count">2</span>)
+                        </button>
 
-                                        <button
-                                            id="unscramble-close-transcript"
-                                            type="button"
-                                            class="uns-btn-secondary"
-                                            aria-label="Close transcript"
-                                        >
-                                            Close
-                                        </button>
-                                    </div>
+                        <button id="uns-prev" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm font-black text-slate-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+                            Previous
+                        </button>
 
-                                    <div class="max-h-[70vh] overflow-auto p-4 sm:p-5 text-left">
-                                        <div id="unscramble-transcript-list" class="space-y-2 text-left"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
+                        <button id="uns-next" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-indigo-500 bg-indigo-600 px-3 py-3 text-sm font-black text-white shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-indigo-400 dark:bg-indigo-500">
+                            Next
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </div>
 
+        <div id="uns-results" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/45 p-4 backdrop-blur-sm">
+            <div class="w-full max-w-lg rounded-3xl border border-slate-200/70 bg-white/95 p-6 shadow-2xl dark:border-slate-700 dark:bg-slate-900/95 sm:p-8">
+                <div class="mb-3 text-6xl">🎉</div>
+                <h2 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white sm:text-4xl">Done!</h2>
+
+                <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div class="rounded-2xl border border-slate-200/70 bg-white/80 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-800/80">
+                        <div class="text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Score</div>
+                        <div id="uns-final-score" class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]">0</div>
+                    </div>
+                    <div class="rounded-2xl border border-slate-200/70 bg-white/80 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-800/80">
+                        <div class="text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Time</div>
+                        <div id="uns-final-time" class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]">00:00</div>
+                    </div>
+                    <div class="rounded-2xl border border-slate-200/70 bg-white/80 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-800/80">
+                        <div class="text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Mistakes</div>
+                        <div id="uns-final-mistakes" class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]">0</div>
+                    </div>
                 </div>
-            </section>
+
+                <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <button id="uns-restart-popup" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm font-black text-slate-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+                        Restart 🔁
+                    </button>
+                    <button id="uns-continue-popup" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-indigo-500 bg-indigo-600 px-3 py-3 text-sm font-black text-white shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-indigo-400 dark:bg-indigo-500">
+                        Continue ⚡
+                    </button>
+                </div>
+            </div>
         </div>
     </main>
 @endsection
 
-@section("script")
+@section('script')
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const RAW_QUESTIONS = @json($content['questions'] ?? []);
-            const RAW_SENTENCES = @json($content['sentences'] ?? []);
-            const RAW_SCRAMBLE = @json($content['scramble'] ?? []);
-            const LESSON_AUDIO_SRC = @json($lessonAudio);
-            const TRANSCRIPT_LINES = @json($transcriptLines);
+        document.addEventListener('DOMContentLoaded', function () {
+            const GAME_TYPE = @json($gameType);
+            const QUESTION_SOURCE = @json($roundsData);
 
-            const root = document.getElementById("unscramble-words");
+            const root = document.getElementById('unscramble-game');
             if (!root) return;
 
-            const titleBlock = document.getElementById("unscramble-words_title");
-            const roundLabel = document.getElementById("tilesCount");
-            const resetBtn = document.getElementById("unscramble-words_reset");
-            const hintBtn = document.getElementById("unscramble-words_hint");
-            if (hintBtn) hintBtn.innerHTML = 'Hint 💡 (<span id="unscramble-words_hint_count">2</span>)';
-            const hintCount = document.getElementById("unscramble-words_hint_count");
-            const revealBtn = document.getElementById("unscramble-words_reveal");
-            const prevBtn = document.getElementById("unscramble-words_prev");
-            const nextBtn = document.getElementById("unscramble-words_next");
+            const roundLabel = document.getElementById('tilesCount');
+            const correctCount = document.getElementById('correctCount');
+            const mistakesCount = document.getElementById('mistakesCount');
+            const timerEl = document.getElementById('gameTimer');
+            const hintCount = document.getElementById('uns-hint-count');
 
-            const correctCount = document.getElementById("correctCount");
-            const mistakesCount = document.getElementById("mistakesCount");
-            const timerEl = document.getElementById("gameTimer");
-            const confetti = document.getElementById("unscramble-words_confetti");
-            const beforeEl = document.getElementById("unscramble-words_before");
-            const afterEl = document.getElementById("unscramble-words_after");
-            const tilesMEl = document.getElementById("unscramble-words_tilesM");
-            const slotsMEl = document.getElementById("unscramble-words_slotsM");
-            const boxM = document.getElementById("unscramble-words_boxM");
-            const lessonAudioEl = document.getElementById("unscramble-words_audio");
-            const playLessonAudioBtn = document.getElementById("unscramble-words_play_audio");
-            const lessonAudioTrack = document.getElementById("unscramble-words_audio_progress_track");
-            const lessonAudioFill = document.getElementById("unscramble-words_audio_progress_fill");
-            const lessonAudioKnob = document.getElementById("unscramble-words_audio_progress_knob");
-            const lessonAudioCurrentTimeEl = document.getElementById("unscramble-words_audio_current_time");
-            const lessonAudioTotalTimeEl = document.getElementById("unscramble-words_audio_total_time");
-            const showTranscriptBtn = document.getElementById("unscramble-words_show_transcript");
-            const transcriptOverlay = document.getElementById("unscramble-transcript-overlay");
-            const transcriptBackdrop = document.getElementById("unscramble-transcript-backdrop");
-            const closeTranscriptBtn = document.getElementById("unscramble-close-transcript");
-            const transcriptList = document.getElementById("unscramble-transcript-list");
+            const promptEl = document.getElementById('uns-prompt');
+            const beforeEl = document.getElementById('uns-before');
+            const afterEl = document.getElementById('uns-after');
+            const imageWrap = document.getElementById('uns-image-wrap');
+            const imageEl = document.getElementById('uns-image');
+            const bankEl = document.getElementById('uns-bank');
+            const slotsEl = document.getElementById('uns-slots');
 
-            const resultsOverlay = document.getElementById("unscramble-results-overlay");
-            const finalScoreEl = document.getElementById("unscramble-final-score");
-            const finalTimeEl = document.getElementById("unscramble-final-time");
-            const finalMistakesEl = document.getElementById("unscramble-final-mistakes");
-            const restartPopupBtn = document.getElementById("unscramble-restart-popup");
-            const continuePopupBtn = document.getElementById("unscramble-continue-popup");
+            const resetBtn = document.getElementById('uns-reset');
+            const hintBtn = document.getElementById('uns-hint');
+            const revealBtn = document.getElementById('uns-reveal');
+            const prevBtn = document.getElementById('uns-prev');
+            const nextBtn = document.getElementById('uns-next');
 
-            const audio = {
+            const resultsOverlay = document.getElementById('uns-results');
+            const finalScoreEl = document.getElementById('uns-final-score');
+            const finalTimeEl = document.getElementById('uns-final-time');
+            const finalMistakesEl = document.getElementById('uns-final-mistakes');
+            const restartPopupBtn = document.getElementById('uns-restart-popup');
+            const continuePopupBtn = document.getElementById('uns-continue-popup');
+
+            const sfx = {
                 correct: new Audio('/slider/sounds/correct.wav'),
                 wrong: new Audio('/slider/sounds/wrong.wav'),
                 success: new Audio('/slider/sounds/success.wav'),
                 tap: new Audio('/slider/sounds/click.wav')
             };
 
-            audio.correct.volume = 0.55;
-            audio.wrong.volume = 0.55;
-            audio.success.volume = 0.65;
-            audio.tap.volume = 0.25;
+            sfx.correct.volume = 0.55;
+            sfx.wrong.volume = 0.55;
+            sfx.success.volume = 0.65;
+            sfx.tap.volume = 0.25;
 
-            function play(sound){
+            function play(sound) {
                 if (!sound) return;
                 sound.pause();
                 sound.currentTime = 0;
-                sound.play().catch(()=>{});
+                sound.play().catch(function () {});
+            }
+
+            function stopAllSfx() {
+                Object.values(sfx).forEach(function (audio) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                });
             }
 
             function formatTime(seconds) {
                 if (!isFinite(seconds) || seconds < 0) seconds = 0;
                 const mins = Math.floor(seconds / 60);
                 const secs = Math.floor(seconds % 60);
-                return `${mins}:${String(secs).padStart(2, '0')}`;
+                return mins + ':' + String(secs).padStart(2, '0');
             }
 
-            function syncLessonAudioUI() {
-                if (!lessonAudioEl) return;
-
-                const duration = isFinite(lessonAudioEl.duration) ? lessonAudioEl.duration : 0;
-                const current = isFinite(lessonAudioEl.currentTime) ? lessonAudioEl.currentTime : 0;
-                const pct = duration > 0 ? (current / duration) * 100 : 0;
-
-                if (lessonAudioCurrentTimeEl) lessonAudioCurrentTimeEl.textContent = formatTime(current);
-                if (lessonAudioTotalTimeEl) lessonAudioTotalTimeEl.textContent = duration ? formatTime(duration) : '0:00';
-                if (lessonAudioFill) lessonAudioFill.style.width = `${pct}%`;
-                if (lessonAudioKnob) lessonAudioKnob.style.left = `${pct}%`;
-                if (playLessonAudioBtn) playLessonAudioBtn.classList.toggle('playing', !lessonAudioEl.paused);
-            }
-
-            function stopLessonAudio() {
-                if (!lessonAudioEl) return;
-                lessonAudioEl.pause();
-                lessonAudioEl.currentTime = 0;
-                syncLessonAudioUI();
-            }
-
-            function bindLessonAudioUI() {
-                if (!lessonAudioEl) return;
-
-                if (LESSON_AUDIO_SRC && lessonAudioEl.getAttribute('src') !== LESSON_AUDIO_SRC) {
-                    lessonAudioEl.src = LESSON_AUDIO_SRC;
-                }
-
-                lessonAudioEl.preload = 'metadata';
-
-                if (playLessonAudioBtn) {
-                    playLessonAudioBtn.addEventListener('click', () => {
-                        if (lessonAudioEl.paused) lessonAudioEl.play().catch(() => {});
-                        else lessonAudioEl.pause();
-                    });
-                }
-
-                if (lessonAudioTrack) {
-                    lessonAudioTrack.addEventListener('click', (event) => {
-                        const rect = event.currentTarget.getBoundingClientRect();
-                        const x = Math.min(Math.max(0, event.clientX - rect.left), rect.width);
-                        const ratio = rect.width > 0 ? x / rect.width : 0;
-
-                        if (isFinite(lessonAudioEl.duration) && lessonAudioEl.duration > 0) {
-                            lessonAudioEl.currentTime = ratio * lessonAudioEl.duration;
-                            syncLessonAudioUI();
-                        }
-                    });
-                }
-
-                ['loadedmetadata', 'timeupdate', 'ended', 'play', 'pause'].forEach((eventName) => {
-                    lessonAudioEl.addEventListener(eventName, syncLessonAudioUI);
-                });
-            }
-
-            function renderTranscript() {
-                if (!transcriptList) return 0;
-                transcriptList.innerHTML = '';
-
-                TRANSCRIPT_LINES.forEach((line, index) => {
-                    const item = document.createElement('div');
-                    item.className = 'transcript-line';
-
-                    const row = document.createElement('div');
-                    row.className = 'flex items-start gap-3';
-
-                    const badge = document.createElement('div');
-                    badge.className = 'h-7 w-7 rounded-2xl flex items-center justify-center font-black text-xs border border-slate-200/70 bg-white/70 text-slate-700 dark:border-slate-700/35 dark:bg-slate-900/20 dark:text-slate-200';
-                    badge.textContent = String(index + 1);
-
-                    const text = document.createElement('div');
-                    text.className = 'min-w-0 flex-1 text-sm font-semibold text-slate-700 dark:text-slate-200';
-                    text.textContent = line;
-
-                    row.appendChild(badge);
-                    row.appendChild(text);
-                    item.appendChild(row);
-                    transcriptList.appendChild(item);
-                });
-
-                return TRANSCRIPT_LINES.length;
-            }
-
-            function sfx(type){
-                if (type === "ok") play(audio.correct);
-                if (type === "no") play(audio.wrong);
-                if (type === "done") play(audio.success);
-                if (type === "tap") play(audio.tap);
-            }
-
-            function normalizeScrambleItem(item) {
-                if (Array.isArray(item)) {
-                    return item
-                        .map((value) => String(value ?? '').trim())
-                        .filter(Boolean);
-                }
-
-                if (typeof item === 'string' || typeof item === 'number') {
-                    return String(item ?? '').trim();
-                }
-
-                const value =
-                    item?.word
-                    ?? item?.label
-                    ?? item?.text
-                    ?? item?.value
-                    ?? '';
-
-                if (Array.isArray(value)) {
-                    return value
-                        .map((entry) => String(entry ?? '').trim())
-                        .filter(Boolean);
-                }
-
-                return String(value).trim();
-            }
-
-            function buildQuestions(rawQuestions, rawSentences, rawScramble) {
-                if (Array.isArray(rawQuestions) && rawQuestions.length) {
-                    return rawQuestions;
-                }
-
-                const sentences = Array.isArray(rawSentences) ? rawSentences : [];
-                const scramble = Array.isArray(rawScramble)
-                    ? rawScramble.map(normalizeScrambleItem)
-                    : [];
-                return sentences
-                    .map((sentence) => {
-                        const text = String(sentence ?? '');
-                        const placeholderRegex = new RegExp('\\{\\{\\s*(\\d+)\\s*\\}\\}', 'g');
-                        const matches = [];
-                        let match;
-
-                        while ((match = placeholderRegex.exec(text)) !== null) {
-                            matches.push(match);
-                        }
-
-                        if (!matches.length) return null;
-
-                        const firstMatch = matches[0];
-                        const lastMatch = matches[matches.length - 1];
-                        const before = text.slice(0, firstMatch.index).replace(/\s+$/g, '');
-                        const after = text
-                            .slice((lastMatch.index ?? 0) + lastMatch[0].length)
-                            .replace(/^\s+/g, '');
-
-                        const answerItems = matches
-                            .map((match) => {
-                                const answerIndex = Number(match[1]) - 1;
-                                return scramble[answerIndex] ?? '';
-                            })
-                            .filter((value) => Array.isArray(value) ? value.length > 0 : String(value ?? '').trim() !== '');
-
-                        if (!answerItems.length) return null;
-
-                        const answer = answerItems.length === 1
-                            ? answerItems[0]
-                            : answerItems.flatMap((value) => Array.isArray(value) ? value : [value]);
-
-                        return {
-                            before,
-                            after,
-                            answer,
-                        };
-                    })
-                    .filter(Boolean);
-            }
-
-            const QUESTION_SOURCE = Array.isArray(buildQuestions(RAW_QUESTIONS, RAW_SENTENCES, RAW_SCRAMBLE))
-                ? buildQuestions(RAW_QUESTIONS, RAW_SENTENCES, RAW_SCRAMBLE)
-                : [];
-
-            function normalizeQuestion(item) {
-                const rawAnswer = item?.answer ?? '';
-                let answerParts = [];
-
-                if (Array.isArray(rawAnswer)) {
-                    answerParts = rawAnswer
-                        .map(part => String(part ?? '').trim())
-                        .filter(Boolean);
-                } else {
-                    const answer = String(rawAnswer ?? '').trim();
-                    answerParts = answer ? answer.split(/\s+/).filter(Boolean) : [];
-                }
-
-                const useWordTiles = Array.isArray(rawAnswer)
-                    ? rawAnswer.some(part => /\s/.test(String(part ?? '').trim()))
-                    : /\s/.test(String(rawAnswer ?? '').trim());
-                const answerTokens = useWordTiles
-                    ? answerParts.join(' ').split(/\s+/).filter(Boolean)
-                    : answerParts.join('').split('');
-                const wordBreaks = [];
-                let letterCount = 0;
-
-                answerParts.forEach((part, index) => {
-                    letterCount += part.length;
-                    if (index < answerParts.length - 1) {
-                        wordBreaks.push(letterCount - 1);
-                    }
-                });
-
-                return {
-                    before: String(item?.before ?? '').trim(),
-                    after: String(item?.after ?? '').trim(),
-                    answerParts,
-                    answer: answerParts.join(' '),
-                    answerTokens,
-                    answerNormalized: useWordTiles
-                        ? answerTokens.join(' ').toLowerCase()
-                        : answerTokens.join('').toLowerCase(),
-                    useWordTiles,
-                    wordBreaks,
-                };
-            }
-
-            function shuffle(arr){
-                for (let i = arr.length - 1; i > 0; i--){
+            function shuffle(items) {
+                const copy = items.slice();
+                for (let i = copy.length - 1; i > 0; i -= 1) {
                     const j = Math.floor(Math.random() * (i + 1));
-                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                    const temp = copy[i];
+                    copy[i] = copy[j];
+                    copy[j] = temp;
                 }
-                return arr;
+                return copy;
             }
 
-            function makeId(){
+            function makeId() {
                 return Math.random().toString(16).slice(2) + Date.now().toString(16);
             }
 
-            function buildRound(item){
-                const q = normalizeQuestion(item);
-                let globalIndex = 0;
-                let letters = [];
-
-                if (q.useWordTiles) {
-                    letters = q.answerTokens.map((word) => ({
-                        id: makeId(),
-                        text: word,
-                        used: false,
-                        originalIndex: globalIndex++,
-                        groupIndex: 0,
-                        rot: (Math.random() * 10 - 5).toFixed(1)
-                    }));
-
-                    if (letters.length > 1) {
-                        let attempts = 0;
-                        while (attempts < 12 && letters.every((tile, i) => tile.text === q.answerTokens[i])) {
-                            shuffle(letters);
-                            attempts += 1;
-                        }
-
-                        if (letters.every((tile, i) => tile.text === q.answerTokens[i])) {
-                            letters.push(letters.shift());
-                        }
-                    }
-
+            function buildShuffledTiles(tokens) {
+                const source = tokens.map(function (token, index) {
                     return {
-                        ...q,
-                        letters,
-                        slots: q.answerTokens.map(() => ({ tileId: null, text: "" })),
-                        solved: false,
-                    };
-                }
-
-                q.answerParts.forEach((part, groupIndex) => {
-                    const originalTokens = part.split('');
-                    const groupLetters = originalTokens.map((ch) => ({
                         id: makeId(),
-                        text: ch,
+                        text: token,
                         used: false,
-                        originalIndex: globalIndex++,
-                        groupIndex,
-                        rot: (Math.random() * 10 - 5).toFixed(1)
-                    }));
-
-                    if (groupLetters.length > 1) {
-                        let attempts = 0;
-                        while (attempts < 12 && groupLetters.every((tile, i) => tile.text === originalTokens[i])) {
-                            shuffle(groupLetters);
-                            attempts += 1;
-                        }
-                    }
-
-                    letters = letters.concat(groupLetters);
+                        originalIndex: index
+                    };
                 });
 
+                if (source.length <= 1) {
+                    return source;
+                }
+
+                let shuffled = shuffle(source);
+                let attempts = 0;
+                while (attempts < 10 && shuffled.every(function (tile, index) {
+                    return tile.text === source[index].text;
+                })) {
+                    shuffled = shuffle(source);
+                    attempts += 1;
+                }
+
+                return shuffled;
+            }
+
+            function buildRound(round) {
                 return {
-                    ...q,
-                    letters,
-                    slots: q.answerTokens.map(() => ({ tileId: null, text: "" })),
+                    prompt: String(round.prompt || '').trim(),
+                    before: String(round.before || '').trim(),
+                    after: String(round.after || '').trim(),
+                    image: String(round.image || '').trim(),
+                    tokens: Array.isArray(round.tokens) ? round.tokens.map(function (token) { return String(token || '').trim(); }).filter(Boolean) : [],
+                    groups: Array.isArray(round.groups) ? round.groups.map(function (size) { return Number(size) || 0; }).filter(function (size) { return size > 0; }) : [],
+                    answerNormalized: String(round.answer_normalized || '').trim().toLowerCase(),
+                    tiles: [],
+                    slots: [],
                     solved: false,
+                    revealed: false
                 };
+            }
+
+            function prepareRound(round) {
+                round.tiles = buildShuffledTiles(round.tokens);
+                round.slots = round.tokens.map(function () {
+                    return { tileId: null, text: '' };
+                });
+                round.solved = false;
+                round.revealed = false;
+                return round;
             }
 
             const state = {
@@ -1120,53 +471,226 @@
                 correct: 0,
                 mistakes: 0,
                 hintsLeft: 2,
-                rounds: QUESTION_SOURCE.map(buildRound),
+                rounds: QUESTION_SOURCE.map(buildRound).map(prepareRound)
             };
 
             let timerInt = null;
             let startTime = Date.now();
-
+            let suppressClickUntil = 0;
             let drag = {
-                active: false,
                 pointerId: null,
                 tileId: null,
-                ghost: null,
-                over: null,
                 startX: 0,
                 startY: 0,
                 moved: false,
+                active: false,
+                ghost: null,
+                over: null
             };
-            let suppressClickUntil = 0;
 
-            function currentRound(){
+            function currentRound() {
                 return state.rounds[state.idx] || null;
             }
 
-            function clearHot(){
-                root.querySelectorAll(".slot-hot").forEach(el => el.classList.remove("slot-hot"));
+            function currentAnswerString() {
+                const round = currentRound();
+                if (!round) return '';
+                if (GAME_TYPE === 'letters') {
+                    return round.slots.map(function (slot) { return slot.text; }).join('').toLowerCase();
+                }
+                return round.slots.map(function (slot) { return slot.text; }).join(' ').toLowerCase();
             }
 
-            function ghostMove(x, y){
+            function allFilled() {
+                const round = currentRound();
+                return !!round && round.slots.every(function (slot) { return !!slot.tileId; });
+            }
+
+            function findTile(id) {
+                const round = currentRound();
+                return round ? round.tiles.find(function (tile) { return tile.id === id; }) || null : null;
+            }
+
+            function nextEmptySlot() {
+                const round = currentRound();
+                return round ? round.slots.findIndex(function (slot) { return !slot.tileId; }) : -1;
+            }
+
+            function setQuestionImage(src, alt) {
+                if (!imageWrap || !imageEl) return;
+                if (src) {
+                    imageEl.src = src;
+                    imageEl.alt = alt || 'Question image';
+                    imageWrap.classList.remove('hidden');
+                    imageWrap.classList.add('flex');
+                } else {
+                    imageEl.removeAttribute('src');
+                    imageEl.alt = '';
+                    imageWrap.classList.add('hidden');
+                    imageWrap.classList.remove('flex');
+                }
+            }
+
+            function setDisabled(button, disabled) {
+                if (!button) return;
+                button.disabled = disabled;
+                button.classList.toggle('opacity-60', disabled);
+                button.classList.toggle('pointer-events-none', disabled);
+                button.classList.toggle('cursor-not-allowed', disabled);
+            }
+
+            function updateTopUI() {
+                const total = state.rounds.length;
+                const round = currentRound();
+
+                if (roundLabel) roundLabel.textContent = total ? (state.idx + 1) + '/' + total : '0/0';
+                if (correctCount) correctCount.textContent = String(state.correct);
+                if (mistakesCount) mistakesCount.textContent = String(state.mistakes);
+                if (hintCount) hintCount.textContent = String(state.hintsLeft);
+
+                setDisabled(prevBtn, state.idx <= 0 || state.locked);
+                setDisabled(nextBtn, state.idx >= total - 1 || state.locked);
+                setDisabled(hintBtn, !round || round.solved || state.hintsLeft <= 0 || state.locked);
+                setDisabled(revealBtn, !round || round.solved || state.locked);
+            }
+
+            function renderPrompt() {
+                const round = currentRound();
+                if (!round) {
+                    promptEl.classList.add('hidden');
+                    beforeEl.textContent = '';
+                    afterEl.textContent = '';
+                    setQuestionImage('', '');
+                    return;
+                }
+
+                if (round.prompt) {
+                    promptEl.textContent = round.prompt;
+                    promptEl.classList.remove('hidden');
+                } else {
+                    promptEl.textContent = '';
+                    promptEl.classList.add('hidden');
+                }
+
+                beforeEl.textContent = round.before || '';
+                afterEl.textContent = round.after || '';
+                setQuestionImage(round.image || '', round.prompt || 'Question image');
+            }
+
+            function slotSizeClasses() {
+                if (GAME_TYPE === 'letters') {
+                    return 'min-h-[44px] min-w-[44px] px-3 py-2 text-base sm:min-h-[56px] sm:min-w-[56px] sm:px-4 sm:text-xl';
+                }
+                return 'min-h-[48px] min-w-[72px] px-3 py-2.5 text-sm sm:min-h-[58px] sm:min-w-[92px] sm:px-4 sm:text-base';
+            }
+
+            function tileSizeClasses() {
+                if (GAME_TYPE === 'letters') {
+                    return 'min-h-[44px] min-w-[56px] px-3 py-2 text-base sm:min-h-[56px] sm:min-w-[72px] sm:px-4 sm:text-xl';
+                }
+                if (GAME_TYPE === 'sentence') {
+                    return 'min-h-[46px] px-3 py-2.5 text-sm sm:min-h-[56px] sm:px-4 sm:text-base';
+                }
+                return 'min-h-[46px] min-w-[72px] px-3 py-2.5 text-sm sm:min-h-[56px] sm:min-w-[92px] sm:px-4 sm:text-base';
+            }
+
+            function buildGroupedIndexes(groups, total) {
+                if (GAME_TYPE === 'sentence' || !groups.length) {
+                    return [Array.from({ length: total }, function (_, index) { return index; })];
+                }
+
+                const output = [];
+                let cursor = 0;
+                groups.forEach(function (size) {
+                    output.push(Array.from({ length: size }, function (_, index) { return cursor + index; }));
+                    cursor += size;
+                });
+                return output;
+            }
+
+            function createSlotButton(slot, slotIndex) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.dataset.slotIndex = String(slotIndex);
+                if (slot.text) button.dataset.filled = '1';
+                button.className = [
+                    'slot',
+                    'inline-flex',
+                    'items-center',
+                    'justify-center',
+                    'rounded-2xl',
+                    'border',
+                    'border-dashed',
+                    'border-slate-300',
+                    'bg-white/80',
+                    'font-black',
+                    'text-slate-900',
+                    'shadow-sm',
+                    'transition',
+                    'active:scale-95',
+                    'dark:border-slate-600',
+                    'dark:bg-slate-950/40',
+                    'dark:text-slate-50',
+                    slotSizeClasses()
+                ].join(' ');
+
+                button.textContent = slot.text || '';
+                button.addEventListener('click', function () {
+                    if (state.locked) return;
+                    const round = currentRound();
+                    if (!round || round.solved) return;
+                    clearSlot(slotIndex);
+                });
+                return button;
+            }
+
+            function renderSlots() {
+                const round = currentRound();
+                slotsEl.innerHTML = '';
+                if (!round) return;
+
+                const groupedIndexes = buildGroupedIndexes(round.groups || [], round.slots.length);
+                const wrapperClasses = GAME_TYPE === 'sentence'
+                    ? 'flex flex-wrap items-center justify-center gap-2 sm:gap-3'
+                    : 'inline-flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-dashed border-indigo-200 bg-indigo-50/60 px-2.5 py-2 dark:border-indigo-500/30 dark:bg-indigo-500/10';
+
+                groupedIndexes.forEach(function (indexes) {
+                    const group = document.createElement('div');
+                    group.className = wrapperClasses;
+                    indexes.forEach(function (slotIndex) {
+                        group.appendChild(createSlotButton(round.slots[slotIndex], slotIndex));
+                    });
+                    slotsEl.appendChild(group);
+                });
+            }
+
+            function startGhost(button, x, y) {
+                const ghost = button.cloneNode(true);
+                ghost.style.position = 'fixed';
+                ghost.style.zIndex = '9999';
+                ghost.style.pointerEvents = 'none';
+                ghost.style.opacity = '0.92';
+                ghost.style.transform = 'translate(-50%, -50%) scale(1.05)';
+                ghost.classList.add('shadow-2xl');
+                document.body.appendChild(ghost);
+                drag.ghost = ghost;
+                moveGhost(x, y);
+            }
+
+            function moveGhost(x, y) {
                 if (!drag.ghost) return;
-                drag.ghost.style.left = x + "px";
-                drag.ghost.style.top  = y + "px";
+                drag.ghost.style.left = x + 'px';
+                drag.ghost.style.top = y + 'px';
             }
 
-            function startGhost(btn, x, y){
-                const g = btn.cloneNode(true);
-                g.style.position = "fixed";
-                g.style.zIndex = "9999";
-                g.style.pointerEvents = "none";
-                g.style.transform = "translate(-50%,-50%) scale(1.05)";
-                g.style.opacity = "0.92";
-                g.classList.add("shadow-2xl");
-                document.body.appendChild(g);
-                drag.ghost = g;
-                ghostMove(x, y);
+            function clearHot() {
+                root.querySelectorAll('.slot-hot').forEach(function (element) {
+                    element.classList.remove('slot-hot', 'ring-4', 'ring-indigo-300/50', 'border-indigo-500');
+                });
             }
 
-            function stopGhost(){
-                if (drag.ghost){
+            function stopGhost() {
+                if (drag.ghost) {
                     drag.ghost.remove();
                     drag.ghost = null;
                 }
@@ -1174,9 +698,9 @@
                 drag.over = null;
             }
 
-            function slotUnderPointer(x, y){
-                const el = document.elementFromPoint(x, y);
-                return el?.closest?.(".slot") || null;
+            function slotUnderPointer(x, y) {
+                const element = document.elementFromPoint(x, y);
+                return element && element.closest ? element.closest('.slot') : null;
             }
 
             function stopDragging() {
@@ -1185,18 +709,16 @@
                 drag.tileId = null;
                 drag.moved = false;
                 stopGhost();
-                document.removeEventListener("pointermove", handleGlobalPointerMove);
-                document.removeEventListener("pointerup", handleGlobalPointerUp);
-                document.removeEventListener("pointercancel", handleGlobalPointerUp);
+                document.removeEventListener('pointermove', handleGlobalPointerMove);
+                document.removeEventListener('pointerup', handleGlobalPointerUp);
+                document.removeEventListener('pointercancel', handleGlobalPointerUp);
             }
 
             function maybeStartDragging(clientX, clientY, tileId, button) {
                 if (drag.active) return;
                 const dx = clientX - drag.startX;
                 const dy = clientY - drag.startY;
-
                 if (Math.hypot(dx, dy) < 8) return;
-
                 drag.active = true;
                 drag.moved = true;
                 drag.tileId = tileId;
@@ -1205,21 +727,19 @@
 
             function handleGlobalPointerMove(event) {
                 if (drag.pointerId !== event.pointerId) return;
-
-                const button = root.querySelector(`[data-tile-id="${drag.tileId}"]`);
+                const button = root.querySelector('[data-tile-id="' + drag.tileId + '"]');
                 if (!button) return;
 
                 maybeStartDragging(event.clientX, event.clientY, drag.tileId, button);
                 if (!drag.active) return;
 
                 event.preventDefault();
-                ghostMove(event.clientX, event.clientY);
-
+                moveGhost(event.clientX, event.clientY);
                 const slot = slotUnderPointer(event.clientX, event.clientY);
                 clearHot();
 
                 if (slot && !slot.dataset.filled) {
-                    slot.classList.add("slot-hot");
+                    slot.classList.add('slot-hot', 'ring-4', 'ring-indigo-300/50', 'border-indigo-500');
                     drag.over = slot;
                 } else {
                     drag.over = null;
@@ -1232,130 +752,112 @@
                 const tileId = drag.tileId;
                 const slot = drag.over;
                 const wasDragging = drag.active;
-
                 stopDragging();
                 if (wasDragging) suppressClickUntil = Date.now() + 120;
-
                 if (!wasDragging || !slot || !tileId) return;
 
-                const idx = Number(slot.dataset.slotIndex);
-                placeTile(tileId, { preferredSlot: idx });
+                const slotIndex = Number(slot.dataset.slotIndex);
+                placeTile(tileId, { preferredSlot: slotIndex });
             }
 
-            function renderTiles(el, tiles){
-                el.innerHTML = "";
-                el.classList.add("tile-groups");
+            function createTileButton(tile) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.dataset.tileId = tile.id;
+                button.className = [
+                    'tile',
+                    'inline-flex',
+                    'items-center',
+                    'justify-center',
+                    'rounded-2xl',
+                    'border',
+                    'border-slate-200',
+                    'bg-white/85',
+                    'font-black',
+                    'text-slate-900',
+                    'shadow-sm',
+                    'transition',
+                    'hover:-translate-y-0.5',
+                    'active:scale-95',
+                    'dark:border-slate-700',
+                    'dark:bg-slate-900/70',
+                    'dark:text-slate-50',
+                    tileSizeClasses()
+                ].join(' ');
+                button.textContent = tile.text;
+
+                if (tile.used) {
+                    button.classList.add('opacity-25', 'pointer-events-none', 'scale-95');
+                }
+
+                button.addEventListener('click', function () {
+                    if (state.locked || tile.used) return;
+                    if (Date.now() < suppressClickUntil) return;
+                    play(sfx.tap);
+                    placeTile(tile.id);
+                });
+
+                button.addEventListener('pointerdown', function (event) {
+                    if (state.locked || tile.used) return;
+                    drag.pointerId = event.pointerId;
+                    drag.tileId = tile.id;
+                    drag.startX = event.clientX;
+                    drag.startY = event.clientY;
+                    drag.moved = false;
+                    drag.over = null;
+                    document.addEventListener('pointermove', handleGlobalPointerMove, { passive: false });
+                    document.addEventListener('pointerup', handleGlobalPointerUp);
+                    document.addEventListener('pointercancel', handleGlobalPointerUp);
+                    button.setPointerCapture && button.setPointerCapture(event.pointerId);
+                });
+
+                return button;
+            }
+
+            function renderBank() {
+                const round = currentRound();
+                bankEl.innerHTML = '';
+                if (!round) return;
+
+                const wrapperClass = GAME_TYPE === 'sentence'
+                    ? 'contents'
+                    : 'inline-flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-dashed border-indigo-200 bg-indigo-50/60 px-2.5 py-2 dark:border-indigo-500/30 dark:bg-indigo-500/10';
 
                 let currentGroup = null;
-                let currentGroupEl = null;
+                const groups = buildGroupedIndexes(round.groups || [], round.tiles.length);
 
-                tiles.forEach(t => {
-                    if (currentGroup !== t.groupIndex) {
-                        currentGroup = t.groupIndex;
-                        currentGroupEl = document.createElement("div");
-                        currentGroupEl.className = "tile-word-group";
-                        el.appendChild(currentGroupEl);
-                    }
-
-                    const btn = document.createElement("button");
-                    btn.type = "button";
-                    btn.className =
-                        "tile inline-flex items-center justify-center " +
-                        "min-h-[44px] min-w-[56px] px-3 py-2 sm:min-h-[56px] sm:min-w-[76px] sm:px-4 " +
-                        "active:scale-95 text-sm sm:text-xl font-black text-slate-900 dark:text-slate-50";
-
-                    btn.textContent = t.text;
-                    btn.dataset.tileId = t.id;
-                    btn.style.transform = `rotate(${t.rot}deg)`;
-
-                    if (t.used) btn.classList.add("tile-used");
-
-                    btn.addEventListener("click", () => {
-                        if (state.locked || t.used) return;
-                        if (Date.now() < suppressClickUntil) return;
-                        sfx("tap");
-                        placeTile(t.id);
+                groups.forEach(function (indexes) {
+                    currentGroup = document.createElement('div');
+                    currentGroup.className = wrapperClass;
+                    indexes.forEach(function (tileIndex) {
+                        const tile = round.tiles[tileIndex];
+                        if (!tile) return;
+                        currentGroup.appendChild(createTileButton(tile));
                     });
-
-                    btn.addEventListener("pointerdown", (e) => {
-                        if (state.locked || t.used) return;
-                        drag.pointerId = e.pointerId;
-                        drag.tileId = t.id;
-                        drag.startX = e.clientX;
-                        drag.startY = e.clientY;
-                        drag.moved = false;
-                        drag.over = null;
-                        document.addEventListener("pointermove", handleGlobalPointerMove, { passive: false });
-                        document.addEventListener("pointerup", handleGlobalPointerUp);
-                        document.addEventListener("pointercancel", handleGlobalPointerUp);
-                        btn.setPointerCapture?.(e.pointerId);
-                    });
-
-                    currentGroupEl?.appendChild(btn);
+                    bankEl.appendChild(currentGroup);
                 });
             }
 
-            function renderSlots(el, round){
-                el.innerHTML = "";
-
-                let currentGroupEl = null;
-
-                round.slots.forEach((s, idx) => {
-                    if (idx === 0 || round.wordBreaks.includes(idx - 1)) {
-                        currentGroupEl = document.createElement("div");
-                        currentGroupEl.className = "tile-word-group";
-                        el.appendChild(currentGroupEl);
-                    }
-
-                    const b = document.createElement("button");
-                    b.type = "button";
-                    b.className =
-                        "slot inline-flex items-center justify-center " +
-                        "min-h-[44px] min-w-[44px] px-3 py-2 sm:min-h-[56px] sm:min-w-[56px] sm:px-4 " +
-                        "shadow-sm active:scale-95 transition-transform relative";
-
-                    b.dataset.slotIndex = String(idx);
-                    if (s.text) b.dataset.filled = "1";
-                    if (round.wordBreaks.includes(idx)) b.classList.add("slot-break");
-
-                    const txt = document.createElement("span");
-                    txt.className = "text-sm sm:text-xl font-black text-slate-900 dark:text-slate-50";
-                    txt.textContent = s.text || "";
-                    b.appendChild(txt);
-
-                    b.addEventListener("click", () => {
-                        if (state.locked || round.solved) return;
-                        clearSlot(idx);
-                    });
-
-                    currentGroupEl?.appendChild(b);
-                });
-            }
-
-            function findTile(id){
+            function syncUI() {
                 const round = currentRound();
-                return round ? round.letters.find(t => t.id === id) || null : null;
+                renderPrompt();
+                renderSlots();
+                renderBank();
+                updateTopUI();
+
+                if (!round) {
+                    slotsEl.innerHTML = '';
+                    bankEl.innerHTML = '';
+                }
             }
 
-            function nextEmptySlot(){
-                const round = currentRound();
-                return round ? round.slots.findIndex(s => !s.tileId) : -1;
-            }
-
-            function bounceBox(){
-                if (!boxM) return;
-                boxM.classList.remove("pop");
-                void boxM.offsetWidth;
-                boxM.classList.add("pop");
-            }
-
-            function placeTile(tileId, opts = {}){
+            function placeTile(tileId, options) {
                 const round = currentRound();
                 const tile = findTile(tileId);
-                if (!round || !tile || tile.used || round.solved) return;
+                if (!round || !tile || tile.used || round.solved || state.locked) return;
 
-                let slotIndex = typeof opts.preferredSlot === "number" ? opts.preferredSlot : -1;
-                if (!(slotIndex >= 0 && round.slots[slotIndex] && !round.slots[slotIndex].tileId)){
+                let slotIndex = typeof options?.preferredSlot === 'number' ? options.preferredSlot : -1;
+                if (!(slotIndex >= 0 && round.slots[slotIndex] && !round.slots[slotIndex].tileId)) {
                     slotIndex = nextEmptySlot();
                 }
                 if (slotIndex < 0) return;
@@ -1363,170 +865,68 @@
                 round.slots[slotIndex].tileId = tile.id;
                 round.slots[slotIndex].text = tile.text;
                 tile.used = true;
-
                 syncUI();
-                bounceBox();
 
                 if (allFilled()) {
-                    setTimeout(() => {
-                        checkCurrent();
-                    }, 120);
+                    setTimeout(checkCurrent, 120);
                 }
             }
 
-            function clearSlot(idx){
+            function clearSlot(slotIndex) {
                 const round = currentRound();
-                if (!round) return;
-
-                const s = round.slots[idx];
-                if (!s || !s.tileId) return;
-
-                const tile = findTile(s.tileId);
+                if (!round || state.locked) return;
+                const slot = round.slots[slotIndex];
+                if (!slot || !slot.tileId) return;
+                const tile = findTile(slot.tileId);
                 if (tile) tile.used = false;
-
-                s.tileId = null;
-                s.text = "";
+                slot.tileId = null;
+                slot.text = '';
                 syncUI();
             }
 
-            function resetRound(){
+            function resetRound() {
                 const round = currentRound();
-                if (!round) return;
-
-                round.letters.forEach(t => t.used = false);
-                round.slots.forEach(s => {
-                    s.tileId = null;
-                    s.text = "";
+                if (!round || state.locked) return;
+                round.tiles.forEach(function (tile) { tile.used = false; });
+                round.tiles = buildShuffledTiles(round.tokens);
+                round.slots = round.tokens.map(function () {
+                    return { tileId: null, text: '' };
                 });
+                round.solved = false;
+                round.revealed = false;
                 syncUI();
             }
 
-            function allFilled(){
+            function useHint() {
                 const round = currentRound();
-                return round ? round.slots.every(s => !!s.tileId) : false;
-            }
-
-            function currentAnswerString(){
-                const round = currentRound();
-                if (!round) return '';
-                return round.useWordTiles
-                    ? round.slots.map(s => s.text).join(' ')
-                    : round.slots.map(s => s.text).join('');
-            }
-
-            function flashShake(){
-                boxM.classList.remove("shake");
-                void boxM.offsetWidth;
-                boxM.classList.add("shake");
-            }
-
-            function doConfetti(){
-                if (!confetti) return;
-                confetti.innerHTML = "";
-                const colors = ["#673fe7","#4f46e5","#3b82f6","#a78bfa","#22c55e","#f59e0b"];
-
-                for (let i = 0; i < 28; i++){
-                    const p = document.createElement("i");
-                    p.style.left = (Math.random() * 100) + "%";
-                    p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    p.style.animationDelay = (Math.random() * 120) + "ms";
-                    confetti.appendChild(p);
-                }
-
-                setTimeout(() => { confetti.innerHTML = ""; }, 1200);
-            }
-
-            function setButtonDisabledState(button, disabled) {
-                if (!button) return;
-                button.disabled = disabled;
-                button.classList.toggle("opacity-60", disabled);
-                button.classList.toggle("pointer-events-none", disabled);
-                button.classList.toggle("cursor-not-allowed", disabled);
-            }
-
-            function updateTopUI(){
-                const total = state.rounds.length;
-                const round = currentRound();
-
-                if (roundLabel) roundLabel.textContent = total ? `${state.idx + 1}/${total}` : "0/0";
-                if (correctCount) correctCount.textContent = String(state.correct);
-                if (mistakesCount) mistakesCount.textContent = String(state.mistakes);
-                if (hintCount) hintCount.textContent = String(state.hintsLeft);
-
-                setButtonDisabledState(prevBtn, state.idx <= 0);
-                setButtonDisabledState(nextBtn, state.idx >= total - 1);
-                setButtonDisabledState(hintBtn, !round || round.solved || state.hintsLeft <= 0);
-                setButtonDisabledState(revealBtn, !round || round.solved);
-            }
-
-            function syncUI(){
-                const round = currentRound();
-                if (!round) {
-                    beforeEl.textContent = "";
-                    afterEl.textContent = "";
-                    tilesMEl.innerHTML = "";
-                    slotsMEl.innerHTML = "";
-                    updateTopUI();
-                    return;
-                }
-
-                beforeEl.textContent = round.before;
-                afterEl.textContent = round.after;
-                renderTiles(tilesMEl, round.letters);
-                renderSlots(slotsMEl, round);
-                updateTopUI();
-            }
-
-            function shuffleCurrent(){
-                const round = currentRound();
-                if (!round || round.solved) return;
-
-                const unused = round.letters.filter(t => !t.used);
-                shuffle(unused);
-
-                let ptr = 0;
-                round.letters = round.letters.map(tile => {
-                    if (tile.used) return tile;
-                    const next = unused[ptr];
-                    ptr += 1;
-                    return next;
-                });
-
-                syncUI();
-            }
-
-            function useHint(){
-                const round = currentRound();
-                if (!round || round.solved || state.hintsLeft <= 0) return;
-
-                const firstMissing = round.slots.findIndex(slot => !slot.tileId);
+                if (!round || round.solved || state.hintsLeft <= 0 || state.locked) return;
+                const firstMissing = round.slots.findIndex(function (slot) { return !slot.tileId; });
                 if (firstMissing < 0) return;
-
-                const needed = round.answerTokens[firstMissing];
-                const tile = round.letters.find(item => !item.used && item.text === needed);
+                const needed = round.tokens[firstMissing];
+                const tile = round.tiles.find(function (entry) {
+                    return !entry.used && entry.text === needed;
+                });
                 if (!tile) return;
-
                 state.hintsLeft -= 1;
                 placeTile(tile.id, { preferredSlot: firstMissing });
                 updateTopUI();
             }
 
-            function revealCurrent(){
+            function revealCurrent() {
                 const round = currentRound();
-                if (!round || round.solved) return;
+                if (!round || round.solved || state.locked) return;
 
-                round.letters.forEach(tile => {
-                    tile.used = false;
-                });
-                round.slots.forEach(slot => {
+                round.tiles.forEach(function (tile) { tile.used = false; });
+                round.slots.forEach(function (slot) {
                     slot.tileId = null;
-                    slot.text = "";
+                    slot.text = '';
                 });
 
-                round.answerTokens.forEach((token, index) => {
-                    const tile = round.letters.find(item => !item.used && item.text === token);
+                round.tokens.forEach(function (token, index) {
+                    const tile = round.tiles.find(function (entry) {
+                        return !entry.used && entry.text === token;
+                    });
                     if (!tile) return;
-
                     tile.used = true;
                     round.slots[index].tileId = tile.id;
                     round.slots[index].text = tile.text;
@@ -1535,95 +935,84 @@
                 round.solved = true;
                 round.revealed = true;
                 state.mistakes += 1;
-                if (mistakesCount) mistakesCount.textContent = String(state.mistakes);
+                play(sfx.wrong);
                 syncUI();
 
-                if (state.rounds.every(item => item.solved)) {
-                    setTimeout(() => {
-                        finishGame();
-                    }, 650);
+                if (state.rounds.every(function (entry) { return entry.solved; })) {
+                    setTimeout(finishGame, 500);
                 }
             }
 
-            function checkCurrent(){
+            function checkCurrent() {
                 const round = currentRound();
-                if (!round || round.solved) return;
+                if (!round || round.solved || state.locked) return;
 
                 if (!allFilled()) {
-                    sfx("no");
-                    flashShake();
+                    play(sfx.wrong);
                     return;
                 }
 
-                if (currentAnswerString().toLowerCase() === round.answerNormalized) {
+                if (currentAnswerString() === round.answerNormalized) {
                     round.solved = true;
                     state.correct += 1;
-                    sfx("ok");
-                    doConfetti();
+                    play(sfx.correct);
                     syncUI();
 
-                    setTimeout(() => {
-                        if (state.rounds.every(item => item.solved)) {
+                    setTimeout(function () {
+                        if (state.rounds.every(function (entry) { return entry.solved; })) {
                             finishGame();
                             return;
                         }
 
-                        const nextUnsolved = state.rounds.findIndex((item, index) => index > state.idx && !item.solved);
+                        const nextUnsolved = state.rounds.findIndex(function (entry, index) {
+                            return index > state.idx && !entry.solved;
+                        });
+
                         if (nextUnsolved >= 0) {
-                            state.idx = nextUnsolved;
-                            loadRound(state.idx);
+                            loadRound(nextUnsolved);
                             return;
                         }
 
-                        const fallbackUnsolved = state.rounds.findIndex(item => !item.solved);
-                        if (fallbackUnsolved >= 0) {
-                            state.idx = fallbackUnsolved;
-                            loadRound(state.idx);
+                        const fallback = state.rounds.findIndex(function (entry) { return !entry.solved; });
+                        if (fallback >= 0) {
+                            loadRound(fallback);
                         }
-                    }, 650);
+                    }, 500);
                 } else {
                     state.mistakes += 1;
-                    if (mistakesCount) mistakesCount.textContent = String(state.mistakes);
-                    sfx("no");
-                    flashShake();
+                    play(sfx.wrong);
+                    updateTopUI();
                 }
             }
 
             function startTimer() {
                 if (timerInt) clearInterval(timerInt);
                 startTime = Date.now();
-                timerInt = setInterval(() => {
+                timerInt = setInterval(function () {
                     const elapsed = Math.floor((Date.now() - startTime) / 1000);
-                    const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
-                    const secs = String(elapsed % 60).padStart(2, '0');
-                    if (timerEl) timerEl.textContent = `${mins}:${secs}`;
+                    if (timerEl) timerEl.textContent = formatTime(elapsed);
                 }, 1000);
             }
 
-            function loadRound(i){
-                resultsOverlay?.classList.add("hidden");
-                state.idx = i;
+            function loadRound(index) {
+                resultsOverlay.classList.add('hidden');
+                resultsOverlay.classList.remove('flex');
+                state.idx = index;
                 syncUI();
-
-                if (window.gsap && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
-                    const items = [tilesMEl, boxM].filter(Boolean);
-                    gsap.killTweensOf(items);
-                    gsap.set(items, { clearProps: "all" });
-                    gsap.from(items, { opacity: 0, y: 10, duration: 0.5, stagger: 0.06, ease: "power3.out" });
-                }
             }
 
-            function finishGame(){
+            function finishGame() {
                 state.locked = true;
                 if (timerInt) clearInterval(timerInt);
-                sfx("done");
-                resultsOverlay?.classList.remove("hidden");
+                play(sfx.success);
 
-                if (roundLabel) roundLabel.textContent = `Done • ${state.rounds.length}/${state.rounds.length}`;
-                if (finalScoreEl) finalScoreEl.textContent = `${state.correct}/${state.rounds.length}`;
-                if (finalTimeEl) finalTimeEl.textContent = timerEl?.textContent || "00:00";
+                if (roundLabel) roundLabel.textContent = 'Done • ' + state.rounds.length + '/' + state.rounds.length;
+                if (finalScoreEl) finalScoreEl.textContent = state.correct + '/' + state.rounds.length;
+                if (finalTimeEl) finalTimeEl.textContent = timerEl ? timerEl.textContent : '00:00';
                 if (finalMistakesEl) finalMistakesEl.textContent = String(state.mistakes);
-                doConfetti();
+
+                resultsOverlay.classList.remove('hidden');
+                resultsOverlay.classList.add('flex');
             }
 
             function isEmbedded() {
@@ -1634,82 +1023,27 @@
             function goNextSlide() {
                 if (isEmbedded()) {
                     try {
-                        if (window.parent && typeof window.parent.nextSlide === "function") {
+                        if (window.parent && typeof window.parent.nextSlide === 'function') {
                             window.parent.nextSlide();
                             return;
                         }
                     } catch (e) {}
 
                     try {
-                        window.parent.postMessage({ type: "BEC_NAV", action: "next" }, "*");
+                        window.parent.postMessage({ type: 'BEC_NAV', action: 'next' }, '*');
                         return;
                     } catch (e) {}
                 }
-
             }
 
-            resetBtn?.addEventListener("click", () => {
-                if (state.locked) return;
-                resetRound();
-            });
-
-            hintBtn?.addEventListener("click", () => {
-                if (state.locked) return;
-                useHint();
-            });
-
-            revealBtn?.addEventListener("click", () => {
-                if (state.locked) return;
-                revealCurrent();
-            });
-
-            prevBtn?.addEventListener("click", (e) => {
-                e.preventDefault();
-                if (state.locked || state.idx <= 0) return;
-                loadRound(state.idx - 1);
-            });
-
-            nextBtn?.addEventListener("click", (e) => {  
-                e.preventDefault();
-                if (state.locked || state.idx >= state.rounds.length - 1) return;
-                loadRound(state.idx + 1);
-            });
-
-            continuePopupBtn?.addEventListener("click", (e) => {
-                e.preventDefault();
-                goNextSlide();
-            });
-
-            restartPopupBtn?.addEventListener("click", (e) => {
-                e.preventDefault();
-                window.resetSlide();
-            });
-
-            showTranscriptBtn?.addEventListener("click", () => {
-                if (renderTranscript() > 0) {
-                    transcriptOverlay?.classList.remove("hidden");
+            function stopSharedAudioModal() {
+                const modal = document.querySelector('[data-audio-player-modal]');
+                if (modal) {
+                    modal.classList.add('hidden');
                 }
-            });
-
-            closeTranscriptBtn?.addEventListener("click", () => {
-                transcriptOverlay?.classList.add("hidden");
-            });
-
-            transcriptBackdrop?.addEventListener("click", () => {
-                transcriptOverlay?.classList.add("hidden");
-            });
-
-            bindLessonAudioUI();
-
-            function playIn(){
-                if (!window.gsap || !titleBlock) return;
-                if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-                gsap.killTweensOf(titleBlock);
-                gsap.set(titleBlock, { clearProps: "all" });
-                gsap.from(titleBlock, { opacity: 0, y: 16, duration: 0.85, ease: "power3.out" });
             }
 
-            window.resetSlide = () => {
+            function resetSlide() {
                 if (timerInt) clearInterval(timerInt);
                 stopDragging();
                 state.idx = 0;
@@ -1717,48 +1051,68 @@
                 state.correct = 0;
                 state.mistakes = 0;
                 state.hintsLeft = 2;
-                state.rounds = QUESTION_SOURCE.map(buildRound);
-
-                if (correctCount) correctCount.textContent = "0";
-                if (mistakesCount) mistakesCount.textContent = "0";
-                if (timerEl) timerEl.textContent = "00:00";
-
-                transcriptOverlay?.classList.add("hidden");
-                stopLessonAudio();
+                state.rounds = QUESTION_SOURCE.map(buildRound).map(prepareRound);
+                if (correctCount) correctCount.textContent = '0';
+                if (mistakesCount) mistakesCount.textContent = '0';
+                if (timerEl) timerEl.textContent = '00:00';
+                stopSharedAudioModal();
+                if (typeof window.stopAudioPlayer === 'function') {
+                    window.stopAudioPlayer();
+                }
+                resultsOverlay.classList.add('hidden');
+                resultsOverlay.classList.remove('flex');
                 startTimer();
                 loadRound(0);
-            };
+            }
 
-            window.stopSlideAudio = function(){
+            resetBtn && resetBtn.addEventListener('click', resetRound);
+            hintBtn && hintBtn.addEventListener('click', useHint);
+            revealBtn && revealBtn.addEventListener('click', revealCurrent);
+            prevBtn && prevBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                if (state.locked || state.idx <= 0) return;
+                loadRound(state.idx - 1);
+            });
+            nextBtn && nextBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                if (state.locked || state.idx >= state.rounds.length - 1) return;
+                loadRound(state.idx + 1);
+            });
+            continuePopupBtn && continuePopupBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                goNextSlide();
+            });
+            restartPopupBtn && restartPopupBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                resetSlide();
+            });
+
+            window.resetSlide = resetSlide;
+            window.stopSlideAudio = function () {
                 stopDragging();
-                stopLessonAudio();
-                Object.values(audio).forEach(a => {
-                    if (a){
-                        a.pause();
-                        a.currentTime = 0;
-                    }
-                });
+                if (typeof window.stopAudioPlayer === 'function') {
+                    window.stopAudioPlayer();
+                }
+                stopSharedAudioModal();
+                stopAllSfx();
             };
 
-            document.addEventListener("visibilitychange", () => {
+            document.addEventListener('visibilitychange', function () {
                 if (document.hidden) {
-                    stopLessonAudio();
-                    Object.values(audio).forEach(a => {
-                        if (a) {
-                            a.pause();
-                            a.currentTime = 0;
-                        }
-                    });
+                    window.stopSlideAudio();
                 }
             });
 
             if (!state.rounds.length) {
                 syncUI();
-            } else {
-                playIn();
-                startTimer();
-                loadRound(0);
+                setQuestionImage('', '');
+                promptEl.textContent = 'No questions available.';
+                promptEl.classList.remove('hidden');
+                return;
             }
+
+            startTimer();
+            loadRound(0);
         });
     </script>
 @endsection

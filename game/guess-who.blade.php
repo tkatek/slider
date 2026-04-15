@@ -1,11 +1,107 @@
-@extends("slider.simple-layout")
-@section("title", $content['page_title'] ?? $content['title'] ?? 'Guess Who')
+@extends('slider.simple-layout')
+@section('title', $content['page_title'] ?? $content['title'] ?? 'Guess Game')
 
 @php
-    $gridClass = trim((string)($content['grid_class'] ?? 'grid-cols-2 md:grid-cols-5'));
+    $type = trim((string) ($content['type'] ?? 'grid'));
+
+    $rawItems = is_array($content['items'] ?? null) ? $content['items'] : [];
+    $items = [];
+
+    foreach (array_values($rawItems) as $index => $item) {
+        if (!is_array($item)) {
+            continue;
+        }
+
+        $text = trim((string) ($item['text'] ?? $item['prompt'] ?? $item['value'] ?? $item['label'] ?? ''));
+        $image = trim((string) ($item['image'] ?? ''));
+        $caption = trim((string) ($item['caption'] ?? $item['label'] ?? ''));
+        $key = trim((string) ($item['key'] ?? ('item-' . $index)));
+
+        if ($text === '' || $image === '') {
+            continue;
+        }
+
+        $items[] = [
+            'key' => $key !== '' ? $key : ('item-' . $index),
+            'text' => $text,
+            'image' => $image,
+            'caption' => $caption,
+        ];
+    }
+
+    $rawQuestions = is_array($content['questions'] ?? null) ? $content['questions'] : [];
+    $questions = [];
+
+    foreach (array_values($rawQuestions) as $questionIndex => $question) {
+        if (!is_array($question)) {
+            continue;
+        }
+
+        $prompt = trim((string) ($question['prompt'] ?? ''));
+        $questionImage = trim((string) ($question['image'] ?? ''));
+        $correctRaw = trim((string) ($question['correct'] ?? ''));
+        $rawOptions = is_array($question['options'] ?? null) ? $question['options'] : [];
+        $options = [];
+
+        foreach (array_values($rawOptions) as $optionIndex => $option) {
+            if (!is_array($option)) {
+                continue;
+            }
+
+            $text = trim((string) ($option['text'] ?? $option['label'] ?? $option['value'] ?? ''));
+            $image = trim((string) ($option['image'] ?? ''));
+            $caption = trim((string) ($option['caption'] ?? $option['label'] ?? ''));
+            $key = trim((string) ($option['key'] ?? ('option-' . $questionIndex . '-' . $optionIndex)));
+
+            if ($text === '' || $image === '') {
+                continue;
+            }
+
+            $options[] = [
+                'key' => $key !== '' ? $key : ('option-' . $questionIndex . '-' . $optionIndex),
+                'text' => $text,
+                'image' => $image,
+                'caption' => $caption,
+            ];
+        }
+
+        if ($prompt === '' || $correctRaw === '' || count($options) < 1) {
+            continue;
+        }
+
+        $resolvedCorrectKey = '';
+        $resolvedCorrectText = '';
+        foreach ($options as $option) {
+            if ($correctRaw === $option['key'] || mb_strtolower($correctRaw) === mb_strtolower($option['text'])) {
+                $resolvedCorrectKey = $option['key'];
+                $resolvedCorrectText = $option['text'];
+                break;
+            }
+        }
+
+        if ($resolvedCorrectKey === '') {
+            continue;
+        }
+
+        $questions[] = [
+            'prompt' => $prompt,
+            'image' => $questionImage,
+            'correct_key' => $resolvedCorrectKey,
+            'correct_text' => $resolvedCorrectText,
+            'options' => $options,
+        ];
+    }
+
+    $resolvedType = in_array($type, ['grid', 'image'], true)
+        ? $type
+        : ($questions !== [] ? 'image' : 'grid');
+
+    $gridClass = trim((string) ($content['grid_class'] ?? ($resolvedType === 'image' ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-2 md:grid-cols-5')));
+    $successTitle = trim((string) ($content['success_title'] ?? 'Excellent!'));
+    $successMessage = trim((string) ($content['success_message'] ?? ($resolvedType === 'image' ? 'You completed all questions.' : 'You completed the game.')));
 @endphp
 
-@section("style")
+@section('style')
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         .question-mask {
@@ -39,6 +135,7 @@
             pointer-events: none;
             z-index: 10;
         }
+
         .show-x { opacity: 1; }
 
         .correct-check {
@@ -55,197 +152,397 @@
             pointer-events: none;
             z-index: 10;
         }
+
         .show-check { opacity: 1; }
-
-        .bg-card-blue { background-color: #e3f2fd; }
-        .bg-card-green { background-color: #e8f5e9; }
-        .bg-card-pink { background-color: #fce4ec; }
-        .bg-card-orange { background-color: #fff3e0; }
-        .bg-card-purple { background-color: #f3e5f5; }
-        .bg-card-teal { background-color: #e0f2f1; }
-        .bg-card-indigo { background-color: #e8eaf6; }
-
-        .dark .bg-card-blue { background-color: rgba(227, 242, 253, 0.1); border-color: rgba(33, 150, 243, 0.2); }
-        .dark .bg-card-green { background-color: rgba(232, 245, 233, 0.1); border-color: rgba(76, 175, 80, 0.2); }
-        .dark .bg-card-pink { background-color: rgba(252, 228, 236, 0.1); border-color: rgba(233, 30, 99, 0.2); }
-        .dark .bg-card-orange { background-color: rgba(255, 243, 224, 0.1); border-color: rgba(255, 152, 0, 0.2); }
-        .dark .bg-card-purple { background-color: rgba(243, 229, 245, 0.1); border-color: rgba(156, 39, 176, 0.2); }
-        .dark .bg-card-teal { background-color: rgba(224, 242, 241, 0.1); border-color: rgba(0, 150, 136, 0.2); }
-        .dark .bg-card-indigo { background-color: rgba(232, 234, 246, 0.1); border-color: rgba(63, 81, 181, 0.2); }
     </style>
 @endsection
 
-@section("script")
+@section('script')
     <script>
-        const professions = @json($content['professions']);
+        (function () {
+            const GAME_TYPE = @json($resolvedType);
+            const ITEMS = @json($items);
+            const QUESTIONS = @json($questions);
+            const SUCCESS_TITLE = @json($successTitle);
+            const SUCCESS_MESSAGE = @json($successMessage);
 
-        const SFX = {
-            src: {
-                correct: "/slider/sounds/correct.wav",
-                wrong: "/slider/sounds/wrong.wav",
-                success: "/slider/sounds/success.wav",
-            },
-            volume: {
-                correct: 1,
-                wrong: 1,
-                success: 1,
-            }
-        };
+            const SFX = {
+                src: {
+                    correct: '/slider/sounds/correct.wav',
+                    wrong: '/slider/sounds/wrong.wav',
+                    success: '/slider/sounds/success.wav',
+                },
+                volume: {
+                    correct: 1,
+                    wrong: 1,
+                    success: 1,
+                }
+            };
 
-        const audio = {
-            correct: new Audio(SFX.src.correct),
-            wrong: new Audio(SFX.src.wrong),
-            success: new Audio(SFX.src.success),
-        };
+            const audio = {
+                correct: new Audio(SFX.src.correct),
+                wrong: new Audio(SFX.src.wrong),
+                success: new Audio(SFX.src.success),
+            };
 
-        Object.entries(audio).forEach(([k, a]) => {
-            a.preload = "auto";
-            a.volume = SFX.volume[k] ?? 1;
-        });
-
-        function playSfx(name){
-            const a = audio[name];
-            if (!a) return;
-            try{
-                a.pause();
-                a.currentTime = 0;
-                a.volume = SFX.volume[name] ?? 1;
-                a.play().catch(() => {});
-            }catch(e){}
-        }
-
-        window.stopSlideAudio = function(){
-            Object.values(audio).forEach(a => {
-                try{ a.pause(); a.currentTime = 0; }catch(e){}
+            Object.entries(audio).forEach(([key, instance]) => {
+                instance.preload = 'auto';
+                instance.volume = SFX.volume[key] ?? 1;
             });
-        };
 
-        let state = {
-            shuffled: [],
-            curIndex: 0,
-            busy: false
-        };
-
-        function startGame() {
-            const overlay = document.getElementById("victoryOverlay");
-            if (overlay) {
-                overlay.style.opacity = "0";
-                overlay.style.pointerEvents = "none";
+            function playSfx(name) {
+                const instance = audio[name];
+                if (!instance) return;
+                try {
+                    instance.pause();
+                    instance.currentTime = 0;
+                    instance.volume = SFX.volume[name] ?? 1;
+                    instance.play().catch(() => {});
+                } catch (e) {}
             }
-            state.curIndex = 0;
-            state.shuffled = [...professions].sort(() => Math.random() - 0.5);
-            renderCards();
-            showNext();
-        }
 
-        function renderCards() {
-            const grid = document.getElementById('cardGrid');
-            grid.innerHTML = '';
-            professions.forEach((p, idx) => {
+            window.stopSlideAudio = function () {
+                Object.values(audio).forEach((instance) => {
+                    try {
+                        instance.pause();
+                        instance.currentTime = 0;
+                    } catch (e) {}
+                });
+            };
+
+            const state = {
+                busy: false,
+                currentIndex: 0,
+                deck: [],
+                questions: [],
+            };
+
+            function onReady(fn) {
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', fn, { once: true });
+                } else {
+                    fn();
+                }
+            }
+
+            function normalizeText(value) {
+                return String(value || '').trim();
+            }
+
+            function shuffle(items) {
+                const copy = items.slice();
+                for (let i = copy.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    const temp = copy[i];
+                    copy[i] = copy[j];
+                    copy[j] = temp;
+                }
+                return copy;
+            }
+
+            function getCardPrompt(item) {
+                return normalizeText(item?.text);
+            }
+
+            function getCardCaption(item) {
+                return normalizeText(item?.caption);
+            }
+
+            function setQuestionText(text) {
+                const element = document.getElementById('questionText');
+                if (!element) return;
+                element.textContent = normalizeText(text);
+                element.style.opacity = '1';
+                element.style.transform = 'none';
+            }
+
+            function setQuestionImage(src, alt) {
+                const wrap = document.getElementById('questionImageWrap');
+                const img = document.getElementById('questionImage');
+                if (!wrap || !img) return;
+
+                if (src) {
+                    img.src = src;
+                    img.alt = alt || 'Question image';
+                    wrap.classList.remove('hidden');
+                } else {
+                    img.removeAttribute('src');
+                    img.alt = '';
+                    wrap.classList.add('hidden');
+                }
+            }
+
+            function createCard(item, onClick) {
                 const card = document.createElement('div');
-                card.id = `card-${p.id}`;
-                card.className = `prof-card ${p.color} group relative flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-transparent bg-white p-3 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] dark:bg-slate-800`;
-                card.style.opacity = '1';
-                card.style.transform = 'none';
-                card.onclick = () => handleChoice(p.id, card);
+                card.className = [
+                    'prof-card',
+                    'group',
+                    'relative',
+                    'aspect-square',
+                    'cursor-pointer',
+                    'overflow-hidden',
+                    'rounded-2xl',
+                    'border-2',
+                    'border-slate-200',
+                    'bg-white',
+                    'shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)]',
+                    'transition-all',
+                    'dark:border-slate-700',
+                    'dark:bg-slate-800'
+                ].join(' ');
+
+                const caption = getCardCaption(item);
+                const captionHtml = caption !== ''
+                    ? `<div class="pointer-events-none absolute inset-x-2 bottom-2 z-[5] rounded-xl bg-white/90 px-3 py-2 text-center text-sm font-black text-slate-900 shadow-md dark:bg-slate-900/85 dark:text-slate-50">${caption}</div>`
+                    : '';
+
                 card.innerHTML = `
-                    <img class="h-[140px] w-full rounded-lg object-contain dark:brightness-90 dark:contrast-110" src="${p.img}" alt="${p.label}">
-                    <span class="text-base font-bold text-slate-500 dark:text-slate-100">${p.label}</span>
+                    <img class="absolute inset-0 h-full w-full object-cover dark:brightness-90 dark:contrast-110" src="${item.image}" alt="${getCardPrompt(item)}">
+                    ${captionHtml}
                     <div class="correct-check">✅</div>
                     <div class="wrong-x">❌</div>
                 `;
-                grid.appendChild(card);
-            });
-        }
 
-        function showNext() {
-            if (state.curIndex >= professions.length) { endGame(); return; }
-            const q = state.shuffled[state.curIndex];
-            animateQuestionSlide(q.desc);
-        }
+                card.addEventListener('click', function () {
+                    onClick(card, item);
+                });
 
-        function animateQuestionSlide(newText) {
-            const el = document.getElementById('questionText');
-            el.textContent = newText;
-            el.style.opacity = '1';
-            el.style.transform = 'none';
-        }
+                return card;
+            }
 
-        function handleChoice(id, el) {
-            if (state.busy) return;
-            const correctObj = state.shuffled[state.curIndex];
+            function renderGridCards() {
+                const grid = document.getElementById('cardGrid');
+                if (!grid) return;
 
-            if (id === correctObj.id) {
-                state.busy = true;
-                playSfx("correct");
-                el.classList.add('correct-glow');
-                el.querySelector('.correct-check').classList.add('show-check');
-                setTimeout(() => {
-                    el.remove();
-                    state.curIndex++;
-                    state.busy = false;
-                    showNext();
-                }, 800);
-            } else {
-                state.busy = true;
-                playSfx("wrong");
-                el.classList.add('card-shake');
-                el.querySelector('.wrong-x').classList.add('show-x');
+                grid.innerHTML = '';
+                ITEMS.forEach((item) => {
+                    const card = createCard(item, function (element, selectedItem) {
+                        handleGridChoice(selectedItem, element);
+                    });
+                    card.dataset.key = item.key || '';
+                    grid.appendChild(card);
+                });
+            }
 
-                if (state.curIndex < state.shuffled.length - 1) {
-                    const nextRand = Math.floor(Math.random() * (state.shuffled.length - 1 - state.curIndex)) + state.curIndex + 1;
-                    const temp = state.shuffled[state.curIndex];
-                    state.shuffled[state.curIndex] = state.shuffled[nextRand];
-                    state.shuffled[nextRand] = temp;
+            function showNextGridPrompt() {
+                if (state.currentIndex >= state.deck.length) {
+                    endGame();
+                    return;
                 }
 
-                setTimeout(() => {
-                    const newQ = state.shuffled[state.curIndex];
-                    animateQuestionSlide(newQ.desc);
-                    setTimeout(() => {
-                        el.classList.remove('card-shake');
-                        el.querySelector('.wrong-x').classList.remove('show-x');
+                const currentItem = state.deck[state.currentIndex];
+                setQuestionImage('', '');
+                setQuestionText(getCardPrompt(currentItem));
+            }
+
+            function handleGridChoice(selectedItem, element) {
+                if (state.busy) return;
+                const currentItem = state.deck[state.currentIndex];
+                const selectedKey = selectedItem.key || '';
+                const expectedKey = currentItem.key || '';
+
+                if (selectedKey === expectedKey) {
+                    state.busy = true;
+                    playSfx('correct');
+                    element.classList.add('correct-glow');
+                    const check = element.querySelector('.correct-check');
+                    if (check) check.classList.add('show-check');
+
+                    setTimeout(function () {
+                        element.remove();
+                        state.currentIndex += 1;
+                        state.busy = false;
+                        showNextGridPrompt();
+                    }, 800);
+                    return;
+                }
+
+                state.busy = true;
+                playSfx('wrong');
+                element.classList.add('card-shake');
+                const wrong = element.querySelector('.wrong-x');
+                if (wrong) wrong.classList.add('show-x');
+
+                if (state.currentIndex < state.deck.length - 1) {
+                    const nextRandomIndex = Math.floor(Math.random() * (state.deck.length - 1 - state.currentIndex)) + state.currentIndex + 1;
+                    const temp = state.deck[state.currentIndex];
+                    state.deck[state.currentIndex] = state.deck[nextRandomIndex];
+                    state.deck[nextRandomIndex] = temp;
+                }
+
+                setTimeout(function () {
+                    showNextGridPrompt();
+                    setTimeout(function () {
+                        element.classList.remove('card-shake');
+                        if (wrong) wrong.classList.remove('show-x');
                         state.busy = false;
                     }, 400);
                 }, 100);
             }
-        }
 
-        function endGame() {
-            playSfx("success");
-            const overlay = document.getElementById("victoryOverlay");
-            if (overlay) {
-                overlay.style.opacity = "1";
-                overlay.style.pointerEvents = "auto";
+            function renderImageQuestion() {
+                const grid = document.getElementById('cardGrid');
+                if (!grid) return;
+
+                if (state.currentIndex >= state.questions.length) {
+                    endGame();
+                    return;
+                }
+
+                const question = state.questions[state.currentIndex];
+                setQuestionText(question.prompt || '');
+                setQuestionImage(question.image || '', question.prompt || 'Question image');
+                grid.innerHTML = '';
+
+                question.options.forEach((option) => {
+                    const card = createCard(option, function (element, selectedOption) {
+                        handleImageChoice(question, selectedOption, element);
+                    });
+                    card.dataset.key = option.key || '';
+                    grid.appendChild(card);
+                });
             }
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-        }
 
-        document.addEventListener('DOMContentLoaded', startGame);
+            function handleImageChoice(question, selectedOption, element) {
+                if (state.busy) return;
+
+                const selectedKey = selectedOption.key || '';
+                const expectedKey = question.correct_key || '';
+
+                if (selectedKey === expectedKey) {
+                    state.busy = true;
+                    playSfx('correct');
+                    element.classList.add('correct-glow');
+                    const check = element.querySelector('.correct-check');
+                    if (check) check.classList.add('show-check');
+
+                    setTimeout(function () {
+                        state.currentIndex += 1;
+                        state.busy = false;
+                        renderImageQuestion();
+                    }, 800);
+                    return;
+                }
+
+                state.busy = true;
+                playSfx('wrong');
+                element.classList.add('card-shake');
+                const wrong = element.querySelector('.wrong-x');
+                if (wrong) wrong.classList.add('show-x');
+
+                setTimeout(function () {
+                    element.classList.remove('card-shake');
+                    if (wrong) wrong.classList.remove('show-x');
+                    state.busy = false;
+                }, 500);
+            }
+
+            function endGame() {
+                playSfx('success');
+                const overlay = document.getElementById('victoryOverlay');
+                const title = document.getElementById('victoryTitle');
+                const message = document.getElementById('victoryMessage');
+
+                if (title) title.textContent = SUCCESS_TITLE;
+                if (message) message.textContent = SUCCESS_MESSAGE;
+
+                if (overlay) {
+                    overlay.style.opacity = '1';
+                    overlay.style.pointerEvents = 'auto';
+                }
+
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                }
+            }
+
+            function startGame() {
+                const overlay = document.getElementById('victoryOverlay');
+                const grid = document.getElementById('cardGrid');
+                if (overlay) {
+                    overlay.style.opacity = '0';
+                    overlay.style.pointerEvents = 'none';
+                }
+
+                state.busy = false;
+                state.currentIndex = 0;
+                setQuestionImage('', '');
+
+                if (GAME_TYPE === 'image') {
+                    if (!QUESTIONS.length) {
+                        setQuestionText('No questions available.');
+                        if (grid) grid.innerHTML = '';
+                        return;
+                    }
+
+                    state.questions = shuffle(QUESTIONS).map(function (question) {
+                        return {
+                            prompt: normalizeText(question.prompt),
+                            image: question.image || '',
+                            correct_key: question.correct_key || '',
+                            correct_text: normalizeText(question.correct_text),
+                            options: shuffle((question.options || []).map(function (option) {
+                                return {
+                                    key: option.key || '',
+                                    text: normalizeText(option.text),
+                                    image: option.image || '',
+                                    caption: normalizeText(option.caption),
+                                };
+                            })),
+                        };
+                    });
+                    renderImageQuestion();
+                    return;
+                }
+
+                if (!ITEMS.length) {
+                    setQuestionText('No items available.');
+                    if (grid) grid.innerHTML = '';
+                    return;
+                }
+
+                state.deck = shuffle(ITEMS).map(function (item) {
+                    return {
+                        key: item.key || '',
+                        text: normalizeText(item.text),
+                        image: item.image || '',
+                        caption: normalizeText(item.caption),
+                    };
+                });
+                renderGridCards();
+                showNextGridPrompt();
+            }
+
+            onReady(startGame);
+            window.startGame = startGame;
+        })();
     </script>
 @endsection
 
-@section("content")
-    <div class="relative min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto">
+@section('content')
+    <div class="relative min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto flex flex-col justify-center">
         @include('slider.components.title-subtitle')
 
-        <section class="relative mx-auto w-full max-w-5xl px-4 sm:px-8">
+        <section class="relative mx-auto w-full max-w-5xl px-4 sm:px-8 text-center">
             <div class="rounded-[2rem] border border-slate-200/80 bg-white/60 px-4 py-5 backdrop-blur dark:border-slate-700 dark:bg-slate-800/60 sm:px-6 sm:py-6 md:px-8">
+                <div id="questionImageWrap" class="hidden mb-4 flex justify-center">
+                    <img id="questionImage" src="" alt="" class="max-h-48 w-full max-w-md rounded-2xl object-cover object-center">
+                </div>
                 <div class="question-mask">
                     <h2 id="questionText" class="text-center text-2xl font-extrabold leading-tight text-slate-700 dark:text-slate-100 md:text-4xl lg:text-4xl"></h2>
                 </div>
             </div>
         </section>
 
-        <main class="mx-auto flex max-w-7xl items-center justify-center px-4 py-5 sm:px-8 sm:py-6 md:px-8">
-            <div id="cardGrid" class="grid w-full {{ $gridClass }} gap-6"></div>
+        <main class="mx-auto flex w-full max-w-7xl items-center justify-center px-4 py-5 sm:px-8 sm:py-6 md:px-8">
+            <div id="cardGrid" class="mx-auto grid w-full {{ $gridClass }} justify-center gap-6"></div>
         </main>
 
-        <div id="victoryOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-white/95 backdrop-blur-xl opacity-0 pointer-events-none dark:bg-slate-900/95">
+        <div id="victoryOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-white/95 opacity-0 pointer-events-none backdrop-blur-xl dark:bg-slate-900/95">
             <div class="max-w-lg p-8 text-center">
                 <div class="mb-8 text-8xl">🎉</div>
-                <h2 class="mb-6 text-4xl font-black text-slate-800 dark:text-slate-100 sm:text-5xl">Excellent!</h2>
-                <p class="mb-10 text-lg text-slate-500 dark:text-slate-300 sm:text-xl">You identified all professions correctly.</p>
+                <h2 id="victoryTitle" class="mb-6 text-4xl font-black text-slate-800 dark:text-slate-100 sm:text-5xl">{{ $successTitle }}</h2>
+                <p id="victoryMessage" class="mb-10 text-lg text-slate-500 dark:text-slate-300 sm:text-xl">{{ $successMessage }}</p>
                 <button onclick="startGame()" class="rounded-2xl bg-blue-500 px-12 py-5 text-xl font-bold text-white shadow-lg">
                     Play Again
                 </button>

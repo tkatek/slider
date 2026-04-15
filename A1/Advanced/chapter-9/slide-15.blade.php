@@ -3,6 +3,7 @@ $content = [
     'page_title' => 'Practice 9',
     'title' => 'Practice 9',
     'subtitle' => 'Put the words in order to make a correct sentence',
+    'type' => 'sentence',
     'sentences' => [
         '{{1}}',
         '{{2}}',
@@ -19,4 +20,5 @@ $content = [
     ],
 ];
 ?>
+
 @include('slider.game.unscramble', ['content' => $content])

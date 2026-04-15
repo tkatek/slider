@@ -1,6 +1,6 @@
 <?php
 $content = [
-    'title' => 'New Vocabulary',
+    'title' => 'New Language',
     'subtitle' => '',
     'cards_grid_class' => 'mt-7 grid grid-cols-1 gap-4 md:grid-cols-2',
 

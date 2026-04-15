@@ -261,25 +261,12 @@
             100% { transform: translateY(-34px) scale(1.12) rotate(10deg); opacity: 0; }
         }
 
-        @keyframes waveGrowth {
-            0%,100% { height: 7px; }
-            50% { height: 15px; }
-        }
-
         #dragDropBlanksGame {
             min-height: 100dvh;
             display: flex;
             flex-direction: column;
             -webkit-user-select: none;
             user-select: none;
-        }
-
-        .play-hit {
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .play-hit:focus-visible {
-            outline: none;
         }
 
         .game-btn {
@@ -318,15 +305,6 @@
         .game-btn:active,
         .ddb-btn-primary:active {
             transform: scale(.98);
-        }
-
-        .ddb-btn-script {
-            background: linear-gradient(135deg, #4f46e5, #3b82f6);
-            box-shadow: 0 10px 24px rgba(59,130,246,.14);
-        }
-
-        .ddb-btn-script:hover {
-            box-shadow: 0 12px 28px rgba(59,130,246,.20);
         }
 
         .ddb-btn-reveal {
@@ -376,45 +354,6 @@
             background: rgb(51 65 85);
         }
 
-        .ddb-modal-close {
-            display: inline-flex;
-            height: 2.9rem;
-            width: 2.9rem;
-            align-items: center;
-            justify-content: center;
-            border-radius: .9rem;
-            border: 1px solid rgba(251,146,60,.35);
-            background: rgba(255,237,213,.95);
-            color: #c2410c;
-            box-shadow: 0 8px 22px rgba(234,88,12,.10);
-            transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
-        }
-
-        .ddb-modal-close:hover {
-            background: rgb(254 215 170);
-            border-color: rgb(253 186 116);
-            color: #9a3412;
-            transform: scale(1.04);
-            box-shadow: 0 10px 24px rgba(234,88,12,.14);
-        }
-
-        .dark .ddb-modal-close {
-            border-color: rgba(194,65,12,.45);
-            background: rgba(154,52,18,.35);
-            color: rgb(254 215 170);
-            box-shadow: 0 8px 22px rgba(120,53,15,.16);
-        }
-
-        .dark .ddb-modal-close:hover {
-            background: rgba(154,52,18,.5);
-            color: rgb(254 237 213);
-        }
-
-        .ddb-modal-close-sm {
-            height: 2.35rem;
-            width: 2.35rem;
-        }
-
         .dark .ddb-btn-reveal {
             color: rgb(254 215 170);
             border-color: rgba(194, 65, 12, .45);
@@ -423,62 +362,6 @@
 
         .dark .ddb-btn-reveal:hover {
             background: rgba(154, 52, 18, .5);
-        }
-
-        .wave-bar {
-            display: none;
-            width: 3px;
-            height: 10px;
-            background: currentColor;
-            border-radius: 999px;
-            margin: 0 1px;
-        }
-
-        .audio-listen-btn.playing .wave-bar {
-            display: block;
-            animation: waveGrowth .6s infinite ease-in-out;
-        }
-
-        .audio-listen-btn.playing .static-icon {
-            display: none;
-        }
-
-        .ddb-native-audio {
-            display: none;
-        }
-
-        .ddb-audio-track {
-            position: relative;
-            height: 10px;
-            width: 100%;
-            border-radius: 999px;
-            overflow: hidden;
-            background: rgba(199,210,254,0.55);
-        }
-
-        .dark .ddb-audio-track {
-            background: rgba(99,102,241,0.25);
-        }
-
-        .ddb-audio-fill {
-            height: 100%;
-            width: 0%;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #4f46e5 0%, #8b5cf6 100%);
-        }
-
-        .ddb-audio-knob {
-            position: absolute;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 14px;
-            height: 14px;
-            border-radius: 9999px;
-            background: white;
-            border: 2px solid #4f46e5;
-            box-shadow: 0 6px 14px rgba(2,6,23,0.18);
-            left: 0%;
-            pointer-events: none;
         }
 
         .ddb-dragging {
@@ -533,15 +416,15 @@
 
         @media (max-width: 1279.98px) {
             #ddbWordBankPanel {
-                max-height: min(35vh, 310px);
+                max-height: none;
             }
 
             #ddbPoolContent {
-                max-height: calc(min(35vh, 310px) - 108px);
-                overflow-y: auto;
-                overflow-x: hidden;
+                max-height: none;
+                overflow-y: visible;
+                overflow-x: visible;
                 padding-bottom: .9rem;
-                padding-right: .2rem;
+                padding-right: 0;
             }
         }
 
@@ -671,56 +554,7 @@
                              class="relative isolate {{ $dialogueCardClass }} text-left overflow-hidden rounded-[1.6rem] border border-slate-200/70 bg-white/70 shadow-[0_18px_55px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60 lg:overflow-visible mb-4">
                             <div id="ddbDialogueInner" class="relative z-[1] px-3 py-3 sm:px-4 sm:py-3.5 lg:overflow-visible">
                                 <div class="space-y-3 sm:space-y-4">
-                                    @if(!empty($playerAudio))
-                                        <div class="rounded-2xl border border-indigo-100 bg-indigo-50/90 px-3 py-2 shadow-sm dark:border-indigo-700/60 dark:bg-indigo-900/30 sm:px-4 sm:py-3">
-                                            <div class="flex items-center gap-2.5 sm:gap-3">
-                                                <button
-                                                        id="ddbPlayAudioBtn"
-                                                        type="button"
-                                                        class="play-hit audio-listen-btn inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-900/20 transition-all duration-150 active:scale-95 hover:scale-[1.06] focus-visible:ring-4 focus-visible:ring-indigo-300/40"
-                                                        aria-label="Play audio"
-                                                >
-                                                    <svg class="static-icon h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                        <path d="M8 5v14l11-7-11-7z"/>
-                                                    </svg>
-
-                                                    <span class="wave-bar" style="animation-delay:.1s"></span>
-                                                    <span class="wave-bar" style="animation-delay:.2s"></span>
-                                                    <span class="wave-bar" style="animation-delay:.3s"></span>
-                                                </button>
-
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center gap-2 sm:gap-2.5">
-                                                        <div class="flex-1 min-w-0 flex flex-col gap-1 sm:gap-1.5">
-                                                            <div class="ddb-audio-track cursor-pointer" id="ddbProgressTrack" aria-label="Audio progress">
-                                                                <div class="ddb-audio-fill" id="ddbProgressFill"></div>
-                                                                <div class="ddb-audio-knob" id="ddbProgressKnob"></div>
-                                                            </div>
-
-                                                            <div class="flex justify-between text-[10px] sm:text-[11px] font-extrabold text-indigo-700 dark:text-indigo-200">
-                                                                <span id="ddbCurrentTime">0:00</span>
-                                                                <span id="ddbTotalTime">0:00</span>
-                                                            </div>
-                                                        </div>
-
-                                                        @if($hasScript)
-                                                            <button
-                                                                    id="ddbShowScriptBtn"
-                                                                    type="button"
-                                                                    class="ddb-btn-primary ddb-btn-script shrink-0 px-2.5 py-1.5 text-[11px] sm:px-3 sm:text-xs"
-                                                            >
-                                                                <span>Script</span>
-                                                            </button>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <audio id="ddbPromptAudio" class="ddb-native-audio" preload="metadata">
-                                                <source src="{{ $playerAudio }}" type="audio/mpeg">
-                                            </audio>
-                                        </div>
-                                    @endif
+                                    @include('slider.components.audio-player')
 
                                     <div class="ddb-game-section w-full rounded-[1.2rem]">
                                         @if($isSpeakerMatchingMode)
@@ -807,53 +641,6 @@
 
                     @include('slider.components.game-win-modal')
 
-                    @if($hasScript)
-                        <div id="ddbScriptModal" class="hidden fixed inset-0 z-[3000]">
-                            <div id="ddbScriptBackdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm dark:bg-black/60"></div>
-
-                            <div class="relative flex min-h-full w-full items-center justify-center p-4 sm:p-6">
-                                <div class="relative w-full max-w-3xl max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 bg-white/95 shadow-2xl dark:border-slate-700/70 dark:bg-slate-900/95 text-left">
-                                    <button
-                                            id="ddbCloseScriptBtn"
-                                            type="button"
-                                            class="ddb-modal-close absolute right-4 top-4 z-10"
-                                            aria-label="Close script"
-                                    >
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
-                                        </svg>
-                                    </button>
-
-                                    <div class="flex items-center justify-between border-b border-slate-200/70 px-4 py-3 pr-16 dark:border-slate-700/70 sm:px-5 sm:py-4 sm:pr-16">
-                                        <div class="font-black text-sm text-slate-900 dark:text-slate-50 sm:text-base">
-                                            Script
-                                        </div>
-                                    </div>
-
-                                    <div class="max-h-[70vh] overflow-auto p-3 sm:p-4">
-                                        <div class="space-y-2">
-                                            @foreach($scriptLines as $i => $line)
-                                                <div class="rounded-2xl border border-slate-200/60 bg-white/70 p-2.5 dark:border-slate-700/30 dark:bg-slate-900/20">
-                                                    <div class="flex items-start gap-2.5">
-                                                        <div class="flex h-7 w-7 items-center justify-center rounded-2xl border border-slate-200/70 bg-white/70 text-xs font-black text-slate-700 dark:border-slate-700/35 dark:bg-slate-900/20 dark:text-slate-200">
-                                                            {{ $i + 1 }}
-                                                        </div>
-
-                                                        <div class="min-w-0 flex-1">
-                                                            <div class="text-xs font-semibold text-slate-700 dark:text-slate-200 sm:text-sm">
-                                                                {{ $line }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
                     <template id="ddbTileTpl">
                         <div
                                 class="ddb-draggable-item {{ $tileClass }} select-none touch-none cursor-grab rounded-xl px-2 py-2 sm:px-2.5 sm:py-2.5 text-base inline-flex min-h-[42px] w-auto max-w-full shrink-0 items-center justify-center text-center leading-snug font-black text-white shadow-[0_10px_20px_rgba(2,6,23,0.16)] border border-white/20 transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0"
@@ -937,13 +724,6 @@
             var DESKTOP_LAYOUT_BREAKPOINT = Number(@json($desktopLayoutBreakpoint));
             var MOBILE_BANK_GAP = Number(@json($content['mobile_bank_gap'] ?? 20));
             var DESKTOP_STICKY_TOP = Number(@json($content['desktop_sticky_top'] ?? 16));
-            var playerAudio = document.getElementById('ddbPromptAudio');
-            var playAudioBtn = document.getElementById('ddbPlayAudioBtn');
-            var progressTrack = document.getElementById('ddbProgressTrack');
-            var showScriptBtn = document.getElementById('ddbShowScriptBtn');
-            var scriptModal = document.getElementById('ddbScriptModal');
-            var scriptBackdrop = document.getElementById('ddbScriptBackdrop');
-            var closeScriptBtn = document.getElementById('ddbCloseScriptBtn');
 
             var SFX = {
                 enabled: true,
@@ -985,32 +765,6 @@
             function playWrong(){ play(audio.wrong); }
             function playWin(){ play(audio.success); }
 
-            function formatTime(seconds){
-                if (!isFinite(seconds) || seconds < 0) seconds = 0;
-                var m = Math.floor(seconds / 60);
-                var s = Math.floor(seconds % 60);
-                return m + ':' + String(s).padStart(2, '0');
-            }
-
-            function syncPlayerUI(){
-                if (!playerAudio) return;
-
-                var duration = isFinite(playerAudio.duration) ? playerAudio.duration : 0;
-                var current = isFinite(playerAudio.currentTime) ? playerAudio.currentTime : 0;
-                var pct = duration > 0 ? (current / duration) * 100 : 0;
-
-                var currentTimeEl = document.getElementById('ddbCurrentTime');
-                var totalTimeEl = document.getElementById('ddbTotalTime');
-                var progressFill = document.getElementById('ddbProgressFill');
-                var progressKnob = document.getElementById('ddbProgressKnob');
-
-                if (currentTimeEl) currentTimeEl.textContent = formatTime(current);
-                if (totalTimeEl) totalTimeEl.textContent = duration ? formatTime(duration) : '0:00';
-                if (progressFill) progressFill.style.width = pct + '%';
-                if (progressKnob) progressKnob.style.left = pct + '%';
-                if (playAudioBtn) playAudioBtn.classList.toggle('playing', !playerAudio.paused);
-            }
-
             function isEmbedded(){
                 try { return window.top !== window.self; }
                 catch(e){ return true; }
@@ -1040,59 +794,10 @@
                     }
                 });
 
-                if (playerAudio) {
-                    playerAudio.pause();
-                    playerAudio.currentTime = 0;
-                    syncPlayerUI();
+                if (typeof window.stopAudioPlayer === 'function') {
+                    window.stopAudioPlayer();
                 }
             };
-
-            if (playAudioBtn && playerAudio) {
-                playAudioBtn.addEventListener('click', function(){
-                    if (playerAudio.paused) playerAudio.play().catch(function(){});
-                    else playerAudio.pause();
-                });
-            }
-
-            if (progressTrack && playerAudio) {
-                progressTrack.addEventListener('click', function(e){
-                    var rect = e.currentTarget.getBoundingClientRect();
-                    var x = Math.min(Math.max(0, e.clientX - rect.left), rect.width);
-                    var ratio = rect.width > 0 ? x / rect.width : 0;
-
-                    if (isFinite(playerAudio.duration) && playerAudio.duration > 0) {
-                        playerAudio.currentTime = ratio * playerAudio.duration;
-                        syncPlayerUI();
-                    }
-                });
-            }
-
-            if (playerAudio) {
-                playerAudio.preload = 'metadata';
-                playerAudio.addEventListener('loadedmetadata', syncPlayerUI);
-                playerAudio.addEventListener('timeupdate', syncPlayerUI);
-                playerAudio.addEventListener('ended', syncPlayerUI);
-                playerAudio.addEventListener('play', syncPlayerUI);
-                playerAudio.addEventListener('pause', syncPlayerUI);
-            }
-
-            if (showScriptBtn) {
-                showScriptBtn.addEventListener('click', function () {
-                    if (scriptModal) scriptModal.classList.remove('hidden');
-                });
-            }
-
-            if (closeScriptBtn) {
-                closeScriptBtn.addEventListener('click', function () {
-                    if (scriptModal) scriptModal.classList.add('hidden');
-                });
-            }
-
-            if (scriptBackdrop) {
-                scriptBackdrop.addEventListener('click', function () {
-                    if (scriptModal) scriptModal.classList.add('hidden');
-                });
-            }
 
             function getInitialBlankMinWidth(blank){
                 var w = window.innerWidth || document.documentElement.clientWidth || 0;
@@ -1197,10 +902,8 @@
                 this.startTimer();
                 this.updateStats();
 
-                if (playerAudio) {
-                    playerAudio.pause();
-                    playerAudio.currentTime = 0;
-                    syncPlayerUI();
+                if (typeof window.stopAudioPlayer === 'function') {
+                    window.stopAudioPlayer();
                 }
 
                 Array.prototype.slice.call(document.querySelectorAll('.ddb-blank-slot')).forEach(function(s){
@@ -2107,7 +1810,6 @@
             window.dragDropBlanksGame = new DragDropBlanksGame();
 
             document.addEventListener('DOMContentLoaded', function(){
-                syncPlayerUI();
                 window.dragDropBlanksGame.init();
             });
         })();

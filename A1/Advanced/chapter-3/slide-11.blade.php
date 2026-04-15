@@ -3,6 +3,7 @@ $content = [
     'page_title' => 'Language Focus (Functional Expressions)',
     'title' => 'Language Focus (Functional Expressions)',
     'subtitle' => 'Match the sentences to their function',
+    'title_class' => 'text-3xl md:text-4xl lg:text-5xl',
 
     'cards_grid' => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-2',
     'desktop_game_width' => 100,

@@ -16,12 +16,12 @@ $content = [
             'image'   => materialAsset('slider/A1/Advanced/chapter-7/img/sign.webp'),
 
             'prompt'  => 'Test your understanding of signs! What does this sign mean?',
-            'correct' => 'D. You’re allowed to walk',
+            'correct' => 'No pedestrians',
             'options' => [
-                'A. Walking only',
-                'B. No pedestrians',
-                'C. Pedestrians must stop',
-                'D. You’re allowed to walk',
+                'Walking only',
+                'No pedestrians',
+                'Pedestrians must stop',
+                'You’re allowed to walk',
             ],
         ],
     ],

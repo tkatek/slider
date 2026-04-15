@@ -2,7 +2,7 @@
     $content = [
         'page_title' => 'Practice 8: Writing',
         'title'      => 'Practice 8: Writing',
-        'subtitle'   => 'Drag & Drop the suitable word in the text',
+        'subtitle'   => 'Listen then Drag & Drop the suitable word in the text',
         'audio'      => materialAsset('slider/A1/Advanced/chapter-2/audios/slide15.mp3'),
         'script'     => [
             "Receptionist: Good morning, sir. How may I help you?",

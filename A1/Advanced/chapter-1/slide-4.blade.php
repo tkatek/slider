@@ -1,108 +1,96 @@
 <?php
-$content['page_title'] = 'Practice 1';
-$content['title'] = 'Practice 1';
-$content['subtitle'] = 'Read & find the match';
-
-$content['professions'] = [
-    [
-        'id' => 'hotel-reception',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/hotel-reception.webp'),
-        'color' => 'bg-card-pink',
-        'desc' => 'Hotel reception',
-    ],
-    [
-        'id' => 'lift-or-elevator',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/elevator.webp'),
-        'color' => 'bg-card-blue',
-        'desc' => 'Lift or elevator',
-    ],
-    [
-        'id' => 'receptionist',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/receptionist.webp'),
-        'color' => 'bg-card-green',
-        'desc' => 'Receptionist',
-    ],
-    [
-        'id' => 'guests',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/guests.webp'),
-        'color' => 'bg-card-yellow',
-        'desc' => 'Guests',
-    ],
-    [
-        'id' => 'front-desk-or-counter',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/front-desk.webp'),
-        'color' => 'bg-card-purple',
-        'desc' => 'Front desk or counter',
-    ],
-    [
-        'id' => 'double-room',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/double-room.webp'),
-        'color' => 'bg-card-red',
-        'desc' => 'Double room: a room with one double bed',
-    ],
-    [
-        'id' => 'twin-room',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/twin-room.webp'),
-        'color' => 'bg-card-cyan',
-        'desc' => 'Twin room: a room with two single beds',
-    ],
-    [
-        'id' => 'single-room',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/single-room.webp'),
-        'color' => 'bg-card-orange',
-        'desc' => 'Single room: a room with one single bed',
-    ],
-    [
-        'id' => 'ground-floor-or-first-floor',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/first-floor.webp'),
-        'color' => 'bg-card-teal',
-        'desc' => 'The ground floor or first floor',
-    ],
-    [
-        'id' => 'bar',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/bar.webp'),
-        'color' => 'bg-card-pink',
-        'desc' => 'The bar',
-    ],
-    [
-        'id' => 'triple-room',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/triple-room.webp'),
-        'color' => 'bg-card-blue',
-        'desc' => 'Triple room: a room with three single beds',
-    ],
-    [
-        'id' => 'four-bed-room',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/four-bed-room.webp'),
-        'color' => 'bg-card-indigo',
-        'desc' => 'Four-bed room: a room with four single beds',
-    ],
-    [
-        'id' => 'quad',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/four-bed-room.webp'),
-        'color' => 'bg-card-lime',
-        'desc' => 'Quad: a room for 4 guests with different types of beds',
-    ],
-    [
-        'id' => 'bunk-bed',
-        'label' => '',
-        'img' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/bunk-bed.webp'),
-        'color' => 'bg-card-sky',
-        'desc' => 'A bunk bed',
+$content = [
+    'page_title' => 'Practice 1',
+    'title' => 'Practice 1',
+    'subtitle' => 'Read & find the match',
+    'type' => 'grid',
+    'items' => [
+        [
+            'key' => 'hotel-reception',
+            'text' => 'Hotel reception',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/hotel-reception.webp'),
+            'caption' => '',
+        ],
+        [
+            'key' => 'lift-or-elevator',
+            'text' => 'Lift or elevator',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/elevator.webp'),
+            'caption' => '',
+        ],
+        [
+            'key' => 'receptionist',
+            'text' => 'Receptionist',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/receptionist.webp'),
+            'caption' => '',
+        ],
+        [
+            'key' => 'guests',
+            'text' => 'Guests',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/guests.webp'),
+            'caption' => '',
+        ],
+        [
+            'key' => 'front-desk-or-counter',
+            'text' => 'Front desk or counter',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/front-desk.webp'),
+            'caption' => '',
+        ],
+        [
+            'key' => 'double-room',
+            'text' => 'Double room: a room with one double bed',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/double-room.webp'),
+            'caption' => '',
+        ],
+        [
+            'key' => 'twin-room',
+            'text' => 'Twin room: a room with two single beds',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/twin-room.webp'),
+            'caption' => '',
+        ],
+        [
+            'key' => 'single-room',
+            'text' => 'Single room: a room with one single bed',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/single-room.webp'),
+            'caption' => '',
+        ],
+        [
+            'key' => 'ground-floor-or-first-floor',
+            'text' => 'The ground floor or first floor',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/first-floor.webp'),
+            'caption' => '',
+        ],
+        [
+            'key' => 'bar',
+            'text' => 'The bar',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/bar.webp'),
+            'caption' => '',
+        ],
+        [
+            'key' => 'triple-room',
+            'text' => 'Triple room: a room with three single beds',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/triple-room.webp'),
+            'caption' => '',
+        ],
+        [
+            'key' => 'four-bed-room',
+            'text' => 'Four-bed room: a room with four single beds',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/four-bed-room.webp'),
+            'caption' => '',
+        ],
+        [
+            'key' => 'quad',
+            'text' => 'Quad: a room for 4 guests with different types of beds',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/four-bed-room.webp'),
+            'caption' => '',
+        ],
+        [
+            'key' => 'bunk-bed',
+            'text' => 'A bunk bed',
+            'image' => materialAsset('slider/A1/Advanced/chapter-1/img/slide4/bunk-bed.webp'),
+            'caption' => '',
+        ],
     ],
 ];
 ?>
 
-@include("slider.game.guess-who", ['content' => $content])
+@include('slider.game.guess-who', ['content' => $content])

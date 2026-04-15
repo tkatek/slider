@@ -2,79 +2,70 @@
 $content['page_title'] = 'Let’s practise!';
 $content['title'] = 'Let’s practise!';
 $content['subtitle'] = 'Read and choose the correct word.';
-$content['professions']=[
+$content['type'] = 'grid';
+
+$content['items'] = [
     [
-        'id' => 'artist',
-        'label' => 'artist',
-        'img' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/artist.webp'),
-        'color' => 'bg-card-pink',
-        'desc' => 'a person who draws pictures.',
+        'key' => 'artist',
+        'text' => 'a person who draws pictures.',
+        'image' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/artist.webp'),
+        'caption' => 'artist',
     ],
     [
-        'id' => 'farmer',
-        'label' => 'farmer',
-        'img' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/farmer.webp'),
-        'color' => 'bg-card-blue',
-        'desc' => 'a person who grows food.',
+        'key' => 'farmer',
+        'text' => 'a person who grows food.',
+        'image' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/farmer.webp'),
+        'caption' => 'farmer',
     ],
     [
-        'id' => 'teacher',
-        'label' => 'teacher',
-        'img' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/teacher.webp'),
-        'color' => 'bg-card-orange',
-        'desc' => 'a person who teaches students.',
+        'key' => 'teacher',
+        'text' => 'a person who teaches students.',
+        'image' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/teacher.webp'),
+        'caption' => 'teacher',
     ],
     [
-        'id' => 'pilot',
-        'label' => 'pilot',
-        'img' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/pilot.webp'),
-        'color' => 'bg-card-indigo',
-        'desc' => 'a person who flies the plane.',
+        'key' => 'pilot',
+        'text' => 'a person who flies the plane.',
+        'image' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/pilot.webp'),
+        'caption' => 'pilot',
     ],
     [
-        'id' => 'vet',
-        'label' => 'vet',
-        'img' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/vet.webp'),
-        'color' => 'bg-card-green',
-        'desc' => 'a person who helps sick animals.',
+        'key' => 'vet',
+        'text' => 'a person who helps sick animals.',
+        'image' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/vet.webp'),
+        'caption' => 'vet',
     ],
     [
-        'id' => 'doctor',
-        'label' => 'doctor',
-        'img' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/doctor.webp'),
-        'color' => 'bg-card-teal',
-        'desc' => 'a person who helps sick people.',
+        'key' => 'doctor',
+        'text' => 'a person who helps sick people.',
+        'image' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/doctor.webp'),
+        'caption' => 'doctor',
     ],
     [
-        'id' => 'chef',
-        'label' => 'chef',
-        'img' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/chef.webp'),
-        'color' => 'bg-card-orange',
-        'desc' => 'a person who cooks delicious meals.',
+        'key' => 'chef',
+        'text' => 'a person who cooks delicious meals.',
+        'image' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/chef.webp'),
+        'caption' => 'chef',
     ],
     [
-        'id' => 'writer',
-        'label' => 'writer',
-        'img' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/writer.webp'),
-        'color' => 'bg-card-indigo',
-        'desc' => 'a person who writes.',
+        'key' => 'writer',
+        'text' => 'a person who writes.',
+        'image' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/writer.webp'),
+        'caption' => 'writer',
     ],
     [
-        'id' => 'actor',
-        'label' => 'actor',
-        'img' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/actor.webp'),
-        'color' => 'bg-card-purple',
-        'desc' => 'a person who acts in movies.',
+        'key' => 'actor',
+        'text' => 'a person who acts in movies.',
+        'image' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/actor.webp'),
+        'caption' => 'actor',
     ],
     [
-        'id' => 'singer',
-        'label' => 'singer',
-        'img' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/singer.webp'),
-        'color' => 'bg-card-green',
-        'desc' => 'a person who sings songs.',
+        'key' => 'singer',
+        'text' => 'a person who sings songs.',
+        'image' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/singer.webp'),
+        'caption' => 'singer',
     ],
 ];
 ?>
 
-
-@include("slider.game.guess-who",['content'=>$content])
+@include('slider.game.guess-who', ['content' => $content])
