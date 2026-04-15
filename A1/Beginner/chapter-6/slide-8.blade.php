@@ -3,6 +3,7 @@ $content = [
     'page_title'    => 'Daily Routine — Sentence Order',
     'title'         => 'Sentence Order',
     'subtitle'      => 'Drag the words to make the correct sentence.',
+    'type'          => 'sentence',
     'sentences'=>[
         "{{1}}",
         "{{2}}",

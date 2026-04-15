@@ -1,58 +1,12 @@
 <?php
 $content = [
     'page_title' => 'Listening',
-    'title' => 'Practice 3',
-    'subtitle' => 'People are talking about transportation. Listen and number the pictures.',
-    'type' => 'audio',
-    'option_type' => 'image',
-    'audio' => materialAsset('slider/A1/Advanced/chapter-4/audios/slide9.mp3'),
-    'shuffle_options' => false,
-    'show_image_option_label' => false,
-    'game_card_width' => 'max-w-6xl',
-    'answer_panel_inner_class' => 'h-full w-full p-4 sm:p-5 lg:p-6 text-left',
-    'image_option_tile_class' => 'mx-auto max-w-[10.5rem] sm:max-w-[11.25rem] lg:max-w-[12rem] aspect-[1.08]',
-    'options_grid_class' => 'mt-4 grid grid-cols-2 gap-2 sm:mt-5 sm:grid-cols-3 sm:gap-4',
-    'question_prompt_label' => 'Choose the correct picture:',
-    'transport_options' => [
-        [
-            'value' => 'a',
-            'label' => 'Bus',
-            'image' => materialAsset('slider/A1/Advanced/chapter-4/img/slide9/bus.webp'),
-            'alt'   => 'Bus',
-        ],
-        [
-            'value' => 'b',
-            'label' => 'Subway',
-            'image' => materialAsset('slider/A1/Advanced/chapter-4/img/slide9/subway.webp'),
-            'alt'   => 'Subway',
-        ],
-        [
-            'value' => 'c',
-            'label' => 'Train',
-            'image' => materialAsset('slider/A1/Advanced/chapter-4/img/slide9/train.webp'),
-            'alt'   => 'Train',
-        ],
-        [
-            'value' => 'd',
-            'label' => 'Plane',
-            'image' => materialAsset('slider/A1/Advanced/chapter-4/img/slide9/plane.webp'),
-            'alt'   => 'Plane',
-        ],
-        [
-            'value' => 'e',
-            'label' => 'Ferry',
-            'image' => materialAsset('slider/A1/Advanced/chapter-4/img/slide9/ferry.webp'),
-            'alt'   => 'Ferry',
-        ],
-        [
-            'value' => 'f',
-            'label' => 'Taxi',
-            'image' => materialAsset('slider/A1/Advanced/chapter-4/img/slide9/taxi.webp'),
-            'alt'   => 'Taxi',
-        ],
-    ],
-    'script' => [
+    'title'      => 'Practice 3',
+    'subtitle'   => 'Listen to the audio. Match each conversation to the correct picture. Type the conversation number in each gap.',
+    'audio'      => materialAsset('slider/A1/Advanced/chapter-4/audios/slide9.mp3'),
 
+
+    'script' => [
         '1',
         'A: Are all your subways this nice?',
         'B: Yeah. The city replaced all the subway cars last year.',
@@ -87,42 +41,49 @@ $content = [
         'A: Wow! I didn\'t think it would be so big.',
         'B: Neither did I.',
     ],
-    'questions' => [
+
+    'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-6',
+    'square_images' => true,
+
+    'items' => [
         [
-            'prompt' => 'Which picture matches dialogue 1?',
-            'correct' => 'b',
+            'image'       => materialAsset('slider/A1/Advanced/chapter-4/img/slide9/bus.webp'),
+            'prefix'      => 'A. ',
+            'answer'      => '2',
+            'placeholder' => '',
         ],
         [
-            'prompt' => 'Which picture matches dialogue 2?',
-            'correct' => 'a',
+            'image'       => materialAsset('slider/A1/Advanced/chapter-4/img/slide9/subway.webp'),
+            'prefix'      => 'B. ',
+            'answer'      => '1',
+            'placeholder' => '',
         ],
         [
-            'prompt' => 'Which picture matches dialogue 3?',
-            'correct' => 'f',
+            'image'       => materialAsset('slider/A1/Advanced/chapter-4/img/slide9/train.webp'),
+            'prefix'      => 'C. ',
+            'answer'      => '4',
+            'placeholder' => '',
         ],
         [
-            'prompt' => 'Which picture matches dialogue 4?',
-            'correct' => 'c',
+            'image'       => materialAsset('slider/A1/Advanced/chapter-4/img/slide9/plane.webp'),
+            'prefix'      => 'D. ',
+            'answer'      => '5',
+            'placeholder' => '',
         ],
         [
-            'prompt' => 'Which picture matches dialogue 5?',
-            'correct' => 'd',
+            'image'       => materialAsset('slider/A1/Advanced/chapter-4/img/slide9/ferry.webp'),
+            'prefix'      => 'E. ',
+            'answer'      => '6',
+            'placeholder' => '',
         ],
         [
-            'prompt' => 'Which picture matches dialogue 6?',
-            'correct' => 'e',
+            'image'       => materialAsset('slider/A1/Advanced/chapter-4/img/slide9/taxi.webp'),
+            'prefix'      => 'F. ',
+            'answer'      => '3',
+            'placeholder' => '',
         ],
     ],
 ];
-
-$content['questions'] = array_map(
-    static function (array $question) use ($content) {
-        $question['options'] = $content['transport_options'];
-        return $question;
-    },
-    $content['questions']
-);
-
-unset($content['transport_options']);
 ?>
-@include('slider.game.multi-choice-all-in-one', ['content' => $content])
+
+@include('slider.game.image-missing-words', ['content' => $content])

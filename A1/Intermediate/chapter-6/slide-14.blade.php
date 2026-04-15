@@ -3,6 +3,7 @@ $content = [
     'page_title' => 'Practice 3',
     'title' => 'Practice 3',
     'subtitle' => 'ESOL Emergency Services',
+    'type' => 'sentence',
     'sentences' => [
         '{{1}}',
         '{{2}}',

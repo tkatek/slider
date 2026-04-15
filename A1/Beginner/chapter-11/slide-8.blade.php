@@ -3,6 +3,7 @@ $content = [
     'page_title' => 'Can you do this?!',
     'title' => 'Can you do this?!',
     'subtitle' => 'Drag the words to make the correct sentence.',
+    'type' => 'sentence',
     'sentences' => [
         '{{1}}',
         '{{2}}',

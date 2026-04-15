@@ -15,9 +15,9 @@
     $hasScript = $scriptLines !== [];
 
     $defaultInstructions = [
-        'letters' => 'Drag the letters to make the correct word.',
-        'words' => 'Drag the words to make the correct answer.',
-        'sentence' => 'Drag the words to make the correct sentence.',
+        'letters' => 'Unscramble the letters to make the correct word.',
+        'words' => 'Unscramble the words to make the correct answer.',
+        'sentence' => 'Put the words in order to make the correct sentence.',
     ];
 
     $instructionText = trim((string) ($content['instruction'] ?? $defaultInstructions[$gameType] ?? 'Drag the tiles to make the correct answer.'));
@@ -66,7 +66,7 @@
     $baseQuestions = [];
     $rawQuestions = is_array($content['questions'] ?? null) ? array_values($content['questions']) : [];
 
-    foreach ($rawQuestions as $questionIndex => $question) {
+    foreach ($rawQuestions as $question) {
         if (!is_array($question)) {
             continue;
         }
@@ -120,7 +120,6 @@
 
             $allMatches = $matches[0];
             $numberMatches = $matches[1];
-            $firstMatch = $allMatches[0][0] ?? '';
             $firstOffset = $allMatches[0][1] ?? 0;
             $lastIndex = count($allMatches) - 1;
             $lastMatchText = $allMatches[$lastIndex][0] ?? '';
@@ -184,9 +183,19 @@
         if ($gameType === 'sentence') {
             $tokens = $flatWords;
         } elseif ($gameType === 'words') {
-            foreach ($flatWords as $word) {
-                $tokens[] = $word;
-                $groupSizes[] = 1;
+            foreach ($question['chunks'] as $chunkWords) {
+                $chunkCount = 0;
+                foreach ($chunkWords as $word) {
+                    $word = trim((string) $word);
+                    if ($word === '') {
+                        continue;
+                    }
+                    $tokens[] = $word;
+                    $chunkCount += 1;
+                }
+                if ($chunkCount > 0) {
+                    $groupSizes[] = $chunkCount;
+                }
             }
         } else {
             foreach ($flatWords as $word) {
@@ -223,72 +232,83 @@
 @section('title', $pageTitle)
 
 @section('content')
-    <main id="unscramble-game" class="min-h-[100dvh] w-full overflow-x-hidden bg-transparent text-slate-900 transition-colors dark:text-slate-100">
-        <div class="mx-auto flex min-h-[100dvh] w-full max-w-6xl flex-col px-4 py-6 sm:px-8 sm:py-8 lg:justify-center">
+    <main id="unscramble-game" class="min-h-[100dvh] w-full overflow-x-hidden bg-transparent text-slate-900 dark:text-slate-100">
+        <div class="mx-auto flex min-h-[100dvh] w-full max-w-[1320px] flex-col px-4 py-6 sm:px-6 sm:py-8 lg:justify-center">
             <div class="grid place-items-center gap-5 text-center sm:gap-6">
                 @include('slider.components.title-subtitle')
-                @include('slider.components.game-status')
+                @unless(!empty($content['hide_status_bar']))
+                    @include('slider.components.game-status')
+                @endunless
 
                 @if($playerAudio || $hasScript)
-                    <section class="w-full max-w-4xl rounded-3xl border border-slate-200/70 bg-white/70 p-4 shadow-xl backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60">
+                    <section class="w-full max-w-4xl rounded-[28px] border border-slate-200/70 bg-white/75 p-4 shadow-xl backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/65">
                         @include('slider.components.audio-player')
                     </section>
                 @endif
-                <section class="w-full max-w-5xl rounded-3xl border border-slate-200/70 bg-white/70 p-4 shadow-xl backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/60 sm:p-6">
+
+                <section class="w-full max-w-[1180px] rounded-[30px] border border-slate-200/70 bg-white/75 p-4 shadow-xl backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/65 sm:p-5">
                     <div class="flex flex-wrap items-center justify-between gap-3 text-left">
-                        <div class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]">
+                        <div class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.1rem]">
                             {{ $instructionText }}
                         </div>
 
                         <button
                                 id="uns-reveal"
                                 type="button"
-                                class="inline-flex items-center justify-center gap-2 rounded-lg border border-amber-300 bg-amber-100 px-3 py-2 text-xs font-black text-amber-900 shadow-sm transition hover:scale-105 active:scale-95 dark:border-amber-700/50 dark:bg-amber-900/30 dark:text-amber-200"
+                                class="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-300 bg-amber-100 px-3 py-2 text-xs font-black text-amber-900 shadow-sm transition hover:scale-[1.03] active:scale-[.98] dark:border-amber-700/50 dark:bg-amber-900/30 dark:text-amber-200"
                         >
                             Reveal answer
                         </button>
                     </div>
 
-                    <div class="mt-4 grid gap-4">
+                    <div class="mt-4 grid gap-3.5 sm:gap-4">
                         <div id="uns-image-wrap" class="hidden justify-center">
-                            <img id="uns-image" src="" alt="" class="h-40 w-full max-w-md rounded-2xl object-cover shadow-lg sm:h-52">
+                            <img id="uns-image" src="" alt="" class="aspect-[5/3] w-full max-w-[16rem] rounded-[24px] object-cover shadow-lg sm:max-w-[17rem] lg:max-w-[19rem]">
                         </div>
 
-                        <div class="rounded-3xl border border-slate-200/70 bg-white/80 p-4 shadow-sm dark:border-slate-700 dark:bg-slate-950/30 sm:p-6">
-                            <div id="uns-prompt" class="hidden mb-3 text-center text-sm font-black uppercase tracking-[0.14em] text-indigo-600 dark:text-indigo-300"></div>
+                        <div class="rounded-[26px] border border-slate-200/70 bg-white/85 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-950/35 sm:p-4">
+                            <div id="uns-prompt" class="hidden mb-2 text-center text-xs font-black uppercase tracking-[0.14em] text-indigo-600 dark:text-indigo-300 sm:text-sm"></div>
+                            <div id="uns-answer-feedback" class="hidden mb-3 text-center">
+                                <span class="inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-black tracking-[0.08em] sm:text-sm"></span>
+                            </div>
 
-                            <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 text-center">
-                                <span id="uns-before" class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]"></span>
-                                <div id="uns-slots" class="flex flex-wrap items-center justify-center gap-2 sm:gap-3"></div>
-                                <span id="uns-after" class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]"></span>
+                            <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-center">
+                                <span id="uns-before" class="text-sm font-bold leading-[1.4] text-slate-900 dark:text-slate-100 sm:text-base lg:text-[1.05rem]"></span>
+                                <div id="uns-slots" class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5"></div>
+                                <span id="uns-after" class="text-sm font-bold leading-[1.4] text-slate-900 dark:text-slate-100 sm:text-base lg:text-[1.05rem]"></span>
                             </div>
                         </div>
 
-                        <div class="rounded-3xl border border-slate-200/70 bg-slate-50/80 p-4 dark:border-slate-700 dark:bg-slate-950/30 sm:p-5">
-                            <div id="uns-bank" class="flex flex-wrap items-center justify-center gap-2 sm:gap-3"></div>
-                        </div>
+                        <div class="rounded-[26px] border border-slate-200/70 bg-slate-50/80 p-3 dark:border-slate-700 dark:bg-slate-950/35 sm:p-4">
+                            <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2">
+                                <div class="text-left text-[11px] font-black uppercase tracking-[0.14em] text-slate-500 dark:text-slate-300">
+                                    Tile Bank
+                                </div>
+                                <div class="flex flex-wrap items-center justify-center gap-1.5 text-[10px] font-semibold text-slate-600 dark:text-slate-300 sm:text-[11px]">
+                                    <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/85 px-2 py-1 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">👆 Tap</span>
+                                    <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/85 px-2 py-1 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">🤏 Drag</span>
+                                    <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/85 px-2 py-1 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">✖ Tap to remove</span>
+                                </div> 
+                            </div>
 
-                        <div class="flex flex-wrap items-center justify-center gap-2 text-[11px] font-semibold text-slate-700 dark:text-slate-200 sm:text-sm">
-                            <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/80 px-3 py-1.5 shadow-sm dark:border-slate-700 dark:bg-slate-900/60">👆 Tap</span>
-                            <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/80 px-3 py-1.5 shadow-sm dark:border-slate-700 dark:bg-slate-900/60">🤏 Drag</span>
-                            <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/80 px-3 py-1.5 shadow-sm dark:border-slate-700 dark:bg-slate-900/60">✖ Tap slot to remove</span>
+                            <div id="uns-bank" class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5"></div>
                         </div>
-                    </div>
+                    </div> 
 
                     <div class="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-                        <button id="uns-reset" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm font-black text-slate-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+                        <button id="uns-reset" type="button" class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-black text-slate-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
                             Reset 🔁
                         </button>
 
-                        <button id="uns-hint" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-amber-300 bg-amber-100 px-3 py-3 text-sm font-black text-amber-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-amber-700/50 dark:bg-amber-900/30 dark:text-amber-200">
+                        <button id="uns-hint" type="button" class="inline-flex w-full items-center justify-center rounded-xl border border-amber-300 bg-amber-100 px-3 py-3 text-sm font-black text-amber-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-amber-700/50 dark:bg-amber-900/30 dark:text-amber-200">
                             Hint 💡 (<span id="uns-hint-count">2</span>)
                         </button>
 
-                        <button id="uns-prev" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm font-black text-slate-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+                        <button id="uns-prev" type="button" class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-black text-slate-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
                             Previous
                         </button>
 
-                        <button id="uns-next" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-indigo-500 bg-indigo-600 px-3 py-3 text-sm font-black text-white shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-indigo-400 dark:bg-indigo-500">
+                        <button id="uns-next" type="button" class="inline-flex w-full items-center justify-center rounded-xl border border-indigo-500 bg-indigo-600 px-3 py-3 text-sm font-black text-white shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-indigo-400 dark:bg-indigo-500">
                             Next
                         </button>
                     </div>
@@ -296,36 +316,27 @@
             </div>
         </div>
 
-        <div id="uns-results" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/45 p-4 backdrop-blur-sm">
-            <div class="w-full max-w-lg rounded-3xl border border-slate-200/70 bg-white/95 p-6 shadow-2xl dark:border-slate-700 dark:bg-slate-900/95 sm:p-8">
-                <div class="mb-3 text-6xl">🎉</div>
-                <h2 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white sm:text-4xl">Done!</h2>
-
-                <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                    <div class="rounded-2xl border border-slate-200/70 bg-white/80 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-800/80">
-                        <div class="text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Score</div>
-                        <div id="uns-final-score" class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]">0</div>
-                    </div>
-                    <div class="rounded-2xl border border-slate-200/70 bg-white/80 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-800/80">
-                        <div class="text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Time</div>
-                        <div id="uns-final-time" class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]">00:00</div>
-                    </div>
-                    <div class="rounded-2xl border border-slate-200/70 bg-white/80 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-800/80">
-                        <div class="text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-400">Mistakes</div>
-                        <div id="uns-final-mistakes" class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]">0</div>
-                    </div>
-                </div>
-
-                <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <button id="uns-restart-popup" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm font-black text-slate-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
-                        Restart 🔁
-                    </button>
-                    <button id="uns-continue-popup" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-indigo-500 bg-indigo-600 px-3 py-3 text-sm font-black text-white shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-indigo-400 dark:bg-indigo-500">
-                        Continue ⚡
-                    </button>
-                </div>
-            </div>
-        </div>
+        @include('slider.components.game-win-modal', [
+            'modalId' => 'uns-results',
+            'modalTitle' => 'Done!',
+            'modalStats' => [
+                ['label' => 'Score', 'id' => 'uns-final-score'],
+                ['label' => 'Time', 'id' => 'uns-final-time'],
+                ['label' => 'Mistakes', 'id' => 'uns-final-mistakes'],
+            ],
+            'modalActions' => [
+                [
+                    'label' => 'Restart',
+                    'id' => 'uns-restart-popup',
+                    'class' => 'game-btn w-full border border-slate-200 bg-white px-8 py-3 text-sm text-slate-900 shadow-[0_8px_22px_#0206170D] hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700',
+                ],
+                [
+                    'label' => 'Continue',
+                    'id' => 'uns-continue-popup',
+                    'class' => 'game-btn w-full border border-white/20 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-8 py-3 text-sm text-white shadow-[0_10px_24px_#4F46E51A]',
+                ],
+            ],
+        ])
     </main>
 @endsection
 
@@ -349,6 +360,8 @@
             const afterEl = document.getElementById('uns-after');
             const imageWrap = document.getElementById('uns-image-wrap');
             const imageEl = document.getElementById('uns-image');
+            const feedbackWrap = document.getElementById('uns-answer-feedback');
+            const feedbackPill = feedbackWrap ? feedbackWrap.querySelector('span') : null;
             const bankEl = document.getElementById('uns-bank');
             const slotsEl = document.getElementById('uns-slots');
 
@@ -364,6 +377,7 @@
             const finalMistakesEl = document.getElementById('uns-final-mistakes');
             const restartPopupBtn = document.getElementById('uns-restart-popup');
             const continuePopupBtn = document.getElementById('uns-continue-popup');
+            let feedbackResetTimer = null;
 
             const sfx = {
                 correct: new Audio('/slider/sounds/correct.wav'),
@@ -413,18 +427,9 @@
                 return Math.random().toString(16).slice(2) + Date.now().toString(16);
             }
 
-            function buildShuffledTiles(tokens) {
-                const source = tokens.map(function (token, index) {
-                    return {
-                        id: makeId(),
-                        text: token,
-                        used: false,
-                        originalIndex: index
-                    };
-                });
-
+            function shuffleTileGroup(source) {
                 if (source.length <= 1) {
-                    return source;
+                    return source.slice();
                 }
 
                 let shuffled = shuffle(source);
@@ -439,6 +444,44 @@
                 return shuffled;
             }
 
+            function buildShuffledTiles(tokens, groups) {
+                const source = tokens.map(function (token, index) {
+                    return {
+                        id: makeId(),
+                        text: token,
+                        used: false
+                    };
+                });
+
+                if (source.length <= 1) {
+                    return source;
+                }
+
+                const normalizedGroups = Array.isArray(groups)
+                    ? groups.map(function (size) { return Number(size) || 0; }).filter(function (size) { return size > 0; })
+                    : [];
+
+                if (!normalizedGroups.length) {
+                    return shuffleTileGroup(source);
+                }
+
+                const groupedTiles = [];
+                let cursor = 0;
+
+                normalizedGroups.forEach(function (size) {
+                    const group = source.slice(cursor, cursor + size);
+                    if (!group.length) return;
+                    groupedTiles.push.apply(groupedTiles, shuffleTileGroup(group));
+                    cursor += size;
+                });
+
+                if (cursor < source.length) {
+                    groupedTiles.push.apply(groupedTiles, shuffleTileGroup(source.slice(cursor)));
+                }
+
+                return groupedTiles;
+            }
+
             function buildRound(round) {
                 return {
                     prompt: String(round.prompt || '').trim(),
@@ -450,19 +493,21 @@
                     answerNormalized: String(round.answer_normalized || '').trim().toLowerCase(),
                     tiles: [],
                     slots: [],
-                    solved: false,
-                    revealed: false
+                    solved: false
                 };
             }
 
             function prepareRound(round) {
-                round.tiles = buildShuffledTiles(round.tokens);
+                round.tiles = buildShuffledTiles(round.tokens, round.groups);
                 round.slots = round.tokens.map(function () {
                     return { tileId: null, text: '' };
                 });
                 round.solved = false;
-                round.revealed = false;
                 return round;
+            }
+
+            function buildRounds() {
+                return QUESTION_SOURCE.map(buildRound).map(prepareRound);
             }
 
             const state = {
@@ -471,7 +516,7 @@
                 correct: 0,
                 mistakes: 0,
                 hintsLeft: 2,
-                rounds: QUESTION_SOURCE.map(buildRound).map(prepareRound)
+                rounds: buildRounds()
             };
 
             let timerInt = null;
@@ -539,6 +584,56 @@
                 button.classList.toggle('cursor-not-allowed', disabled);
             }
 
+            function clearAnswerFeedback() {
+                if (!feedbackWrap || !feedbackPill) return;
+                feedbackWrap.classList.add('hidden');
+                feedbackPill.textContent = '';
+                feedbackPill.className = 'inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-black tracking-[0.08em] sm:text-sm';
+            }
+
+            function animateAnswerFeedback(type) {
+                if (!feedbackWrap || !feedbackPill) return;
+
+                if (feedbackResetTimer) {
+                    clearTimeout(feedbackResetTimer);
+                    feedbackResetTimer = null;
+                }
+
+                clearAnswerFeedback();
+
+                const isCorrect = type === 'correct';
+                const isNeutral = type === 'neutral';
+                feedbackWrap.classList.remove('hidden');
+                feedbackPill.textContent = isCorrect ? 'Correct' : (isNeutral ? 'Answer revealed' : 'Try again');
+                feedbackPill.classList.add(
+                    isCorrect ? 'bg-emerald-100' : (isNeutral ? 'bg-slate-100' : 'bg-rose-100'),
+                    isCorrect ? 'text-emerald-800' : (isNeutral ? 'text-slate-700' : 'text-rose-800'),
+                    isCorrect ? 'dark:bg-emerald-500/15' : (isNeutral ? 'dark:bg-slate-700/40' : 'dark:bg-rose-500/15'),
+                    isCorrect ? 'dark:text-emerald-300' : (isNeutral ? 'dark:text-slate-200' : 'dark:text-rose-300')
+                );
+
+                feedbackPill.getAnimations().forEach(function (animation) {
+                    animation.cancel();
+                });
+                feedbackPill.animate(
+                    [
+                        { opacity: 0, transform: 'translateY(-6px) scale(0.96)', offset: 0 },
+                        { opacity: 1, transform: 'translateY(0) scale(1)', offset: 0.45 },
+                        { opacity: 1, transform: 'translateY(0) scale(1)', offset: 1 }
+                    ],
+                    {
+                        duration: 260,
+                        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+                        fill: 'both'
+                    }
+                );
+
+                feedbackResetTimer = setTimeout(function () {
+                    clearAnswerFeedback();
+                    feedbackResetTimer = null;
+                }, isCorrect ? 700 : (isNeutral ? 750 : 600));
+            }
+
             function updateTopUI() {
                 const total = state.rounds.length;
                 const round = currentRound();
@@ -579,19 +674,22 @@
 
             function slotSizeClasses() {
                 if (GAME_TYPE === 'letters') {
-                    return 'min-h-[44px] min-w-[44px] px-3 py-2 text-base sm:min-h-[56px] sm:min-w-[56px] sm:px-4 sm:text-xl';
+                    return 'min-h-[42px] min-w-[42px] px-2.5 py-2 text-sm sm:min-h-[52px] sm:min-w-[52px] sm:px-3 sm:text-lg';
                 }
-                return 'min-h-[48px] min-w-[72px] px-3 py-2.5 text-sm sm:min-h-[58px] sm:min-w-[92px] sm:px-4 sm:text-base';
+                if (GAME_TYPE === 'sentence') {
+                    return 'min-h-[44px] min-w-[64px] px-3 py-2 text-sm sm:min-h-[52px] sm:min-w-[78px] sm:px-3.5 sm:text-base';
+                }
+                return 'min-h-[44px] min-w-[72px] px-3 py-2 text-sm sm:min-h-[52px] sm:min-w-[88px] sm:px-3.5 sm:text-base';
             }
 
             function tileSizeClasses() {
                 if (GAME_TYPE === 'letters') {
-                    return 'min-h-[44px] min-w-[56px] px-3 py-2 text-base sm:min-h-[56px] sm:min-w-[72px] sm:px-4 sm:text-xl';
+                    return 'min-h-[42px] min-w-[48px] px-2.5 py-2 text-sm sm:min-h-[52px] sm:min-w-[58px] sm:px-3 sm:text-lg';
                 }
                 if (GAME_TYPE === 'sentence') {
-                    return 'min-h-[46px] px-3 py-2.5 text-sm sm:min-h-[56px] sm:px-4 sm:text-base';
+                    return 'min-h-[44px] px-3 py-2 text-sm sm:min-h-[52px] sm:px-3.5 sm:text-base';
                 }
-                return 'min-h-[46px] min-w-[72px] px-3 py-2.5 text-sm sm:min-h-[56px] sm:min-w-[92px] sm:px-4 sm:text-base';
+                return 'min-h-[44px] min-w-[72px] px-3 py-2 text-sm sm:min-h-[52px] sm:min-w-[88px] sm:px-3.5 sm:text-base';
             }
 
             function buildGroupedIndexes(groups, total) {
@@ -622,14 +720,14 @@
                     'border',
                     'border-dashed',
                     'border-slate-300',
-                    'bg-white/80',
+                    'bg-white/85',
                     'font-black',
                     'text-slate-900',
                     'shadow-sm',
                     'transition',
                     'active:scale-95',
                     'dark:border-slate-600',
-                    'dark:bg-slate-950/40',
+                    'dark:bg-slate-950/45',
                     'dark:text-slate-50',
                     slotSizeClasses()
                 ].join(' ');
@@ -651,8 +749,8 @@
 
                 const groupedIndexes = buildGroupedIndexes(round.groups || [], round.slots.length);
                 const wrapperClasses = GAME_TYPE === 'sentence'
-                    ? 'flex flex-wrap items-center justify-center gap-2 sm:gap-3'
-                    : 'inline-flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-dashed border-indigo-200 bg-indigo-50/60 px-2.5 py-2 dark:border-indigo-500/30 dark:bg-indigo-500/10';
+                    ? 'flex flex-wrap items-center justify-center gap-2 sm:gap-2.5'
+                    : 'inline-flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-dashed border-indigo-200/80 bg-indigo-50/70 px-2 py-2 dark:border-indigo-500/30 dark:bg-indigo-500/10';
 
                 groupedIndexes.forEach(function (indexes) {
                     const group = document.createElement('div');
@@ -669,8 +767,8 @@
                 ghost.style.position = 'fixed';
                 ghost.style.zIndex = '9999';
                 ghost.style.pointerEvents = 'none';
-                ghost.style.opacity = '0.92';
-                ghost.style.transform = 'translate(-50%, -50%) scale(1.05)';
+                ghost.style.opacity = '0.94';
+                ghost.style.transform = 'translate(-50%, -50%) scale(1.06)';
                 ghost.classList.add('shadow-2xl');
                 document.body.appendChild(ghost);
                 drag.ghost = ghost;
@@ -772,7 +870,7 @@
                     'rounded-2xl',
                     'border',
                     'border-slate-200',
-                    'bg-white/85',
+                    'bg-white/90',
                     'font-black',
                     'text-slate-900',
                     'shadow-sm',
@@ -780,7 +878,7 @@
                     'hover:-translate-y-0.5',
                     'active:scale-95',
                     'dark:border-slate-700',
-                    'dark:bg-slate-900/70',
+                    'dark:bg-slate-900/75',
                     'dark:text-slate-50',
                     tileSizeClasses()
                 ].join(' ');
@@ -821,13 +919,12 @@
 
                 const wrapperClass = GAME_TYPE === 'sentence'
                     ? 'contents'
-                    : 'inline-flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-dashed border-indigo-200 bg-indigo-50/60 px-2.5 py-2 dark:border-indigo-500/30 dark:bg-indigo-500/10';
+                    : 'inline-flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-dashed border-indigo-200/80 bg-indigo-50/70 px-2 py-2 dark:border-indigo-500/30 dark:bg-indigo-500/10';
 
-                let currentGroup = null;
                 const groups = buildGroupedIndexes(round.groups || [], round.tiles.length);
 
                 groups.forEach(function (indexes) {
-                    currentGroup = document.createElement('div');
+                    const currentGroup = document.createElement('div');
                     currentGroup.className = wrapperClass;
                     indexes.forEach(function (tileIndex) {
                         const tile = round.tiles[tileIndex];
@@ -856,7 +953,7 @@
                 const tile = findTile(tileId);
                 if (!round || !tile || tile.used || round.solved || state.locked) return;
 
-                let slotIndex = typeof options?.preferredSlot === 'number' ? options.preferredSlot : -1;
+                let slotIndex = typeof (options && options.preferredSlot) === 'number' ? options.preferredSlot : -1;
                 if (!(slotIndex >= 0 && round.slots[slotIndex] && !round.slots[slotIndex].tileId)) {
                     slotIndex = nextEmptySlot();
                 }
@@ -888,12 +985,11 @@
                 const round = currentRound();
                 if (!round || state.locked) return;
                 round.tiles.forEach(function (tile) { tile.used = false; });
-                round.tiles = buildShuffledTiles(round.tokens);
+                round.tiles = buildShuffledTiles(round.tokens, round.groups);
                 round.slots = round.tokens.map(function () {
                     return { tileId: null, text: '' };
                 });
                 round.solved = false;
-                round.revealed = false;
                 syncUI();
             }
 
@@ -916,7 +1012,9 @@
                 const round = currentRound();
                 if (!round || round.solved || state.locked) return;
 
-                round.tiles.forEach(function (tile) { tile.used = false; });
+                round.tiles.forEach(function (tile) {
+                    tile.used = false;
+                });
                 round.slots.forEach(function (slot) {
                     slot.tileId = null;
                     slot.text = '';
@@ -927,16 +1025,17 @@
                         return !entry.used && entry.text === token;
                     });
                     if (!tile) return;
+
                     tile.used = true;
                     round.slots[index].tileId = tile.id;
                     round.slots[index].text = tile.text;
                 });
 
                 round.solved = true;
-                round.revealed = true;
                 state.mistakes += 1;
                 play(sfx.wrong);
                 syncUI();
+                animateAnswerFeedback('neutral');
 
                 if (state.rounds.every(function (entry) { return entry.solved; })) {
                     setTimeout(finishGame, 500);
@@ -957,6 +1056,7 @@
                     state.correct += 1;
                     play(sfx.correct);
                     syncUI();
+                    animateAnswerFeedback('correct');
 
                     setTimeout(function () {
                         if (state.rounds.every(function (entry) { return entry.solved; })) {
@@ -982,6 +1082,7 @@
                     state.mistakes += 1;
                     play(sfx.wrong);
                     updateTopUI();
+                    animateAnswerFeedback('wrong');
                 }
             }
 
@@ -995,8 +1096,8 @@
             }
 
             function loadRound(index) {
+                clearAnswerFeedback();
                 resultsOverlay.classList.add('hidden');
-                resultsOverlay.classList.remove('flex');
                 state.idx = index;
                 syncUI();
             }
@@ -1012,7 +1113,6 @@
                 if (finalMistakesEl) finalMistakesEl.textContent = String(state.mistakes);
 
                 resultsOverlay.classList.remove('hidden');
-                resultsOverlay.classList.add('flex');
             }
 
             function isEmbedded() {
@@ -1042,7 +1142,6 @@
                     modal.classList.add('hidden');
                 }
             }
-
             function resetSlide() {
                 if (timerInt) clearInterval(timerInt);
                 stopDragging();
@@ -1051,7 +1150,7 @@
                 state.correct = 0;
                 state.mistakes = 0;
                 state.hintsLeft = 2;
-                state.rounds = QUESTION_SOURCE.map(buildRound).map(prepareRound);
+                state.rounds = buildRounds();
                 if (correctCount) correctCount.textContent = '0';
                 if (mistakesCount) mistakesCount.textContent = '0';
                 if (timerEl) timerEl.textContent = '00:00';
@@ -1059,8 +1158,6 @@
                 if (typeof window.stopAudioPlayer === 'function') {
                     window.stopAudioPlayer();
                 }
-                resultsOverlay.classList.add('hidden');
-                resultsOverlay.classList.remove('flex');
                 startTimer();
                 loadRound(0);
             }

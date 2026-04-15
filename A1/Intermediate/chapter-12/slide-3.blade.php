@@ -2,6 +2,7 @@
 $content = [
     'page_title' => 'Practice 1: Warm-Up',
     'title' => 'Practice 1: Warm-Up',
+    'type' => 'sentence',
     'subtitle' => 'Let’s do a quick Revision!',
     'sentences' => [
         '{{1}}',

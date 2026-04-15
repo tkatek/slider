@@ -3,6 +3,7 @@ $content = [
     'page_title' => 'Practice 5',
     'title'      => 'Practice 5',
     'subtitle'   => 'Put the words in order',
+    'type'       => 'sentence',
     'sentences'  => [
         "{{1}}", "{{2}}", "{{3}}", "{{4}}", "{{5}}","{{6}}", "{{7}}", "{{8}}", "{{9}}", "{{10}}",
     ],

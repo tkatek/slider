@@ -3,7 +3,7 @@ $content = [
     'page_title' => 'Practice',
     'title' => 'Practice',
     'subtitle' => 'Unscramble the following words',
-    'theme_color' => '#673fe7',
+    'type' => 'letters',
     'sentences'=>[
         "{{1}}",
         "{{2}}",

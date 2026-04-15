@@ -8,6 +8,20 @@
     $subtitle = $content['subtitle'] ?? '';
     $gridClass = (string) ($content['grid_class'] ?? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4');
     $items = is_array($content['items'] ?? null) ? $content['items'] : [];
+    $squareImages = !empty($content['square_images']);
+    $playerAudio = !empty($content['audio']) ? $content['audio'] : null;
+
+    $normalizeScriptLines = static function ($rawScript) {
+        return is_array($rawScript)
+            ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $rawScript), static fn ($line) => $line !== ''))
+            : array_values(array_filter(
+                array_map('trim', preg_split('/(?<=[.!?])\s+/', trim((string) $rawScript)) ?: []),
+                static fn ($line) => $line !== ''
+            ));
+    };
+
+    $scriptLines = $normalizeScriptLines($content['script'] ?? []);
+    $hasScript = $scriptLines !== [];
 
     $normalizeCols = static fn ($cols) => max(1, min(6, (int) $cols));
 
@@ -497,13 +511,23 @@
                 height:34px;
             }
         }
+
+        .word-game-square-images .word-image-frame{
+            aspect-ratio:1 / 1;
+            height:auto;
+            min-height:0;
+        }
+
+        .word-game-square-images .word-image{
+            object-fit:cover;
+        }
     </style>
 @endsection
 
 @section('content')
     <div class="word-game-shell">
         <div class="word-game-inner">
-            <main class="word-game-main">
+            <main class="word-game-main{{ $squareImages ? ' word-game-square-images' : '' }}">
                 <div class="header-spacing text-center space-y-6 my-8">
                     @if($title !== '')
                         <h1 class="tracking-tight text-4xl md:text-5xl lg:text-6xl font-black mb-5">
@@ -521,6 +545,12 @@
                 </div>
 
                 @include('slider.components.game-status')
+
+                @if(!empty($playerAudio))
+                    <div class="mx-auto mt-4 mb-6 max-w-4xl px-1 sm:px-0">
+                        @include('slider.components.audio-player')
+                    </div>
+                @endif
 
                 <div class="top-actions">
                     <div class="top-actions-buttons">
@@ -715,6 +745,7 @@
                 }
 
                 stopVocabAudio();
+                window.stopAudioPlayer?.();
 
                 currentAudioBtn = btn;
                 currentAudioCard = card;
@@ -757,7 +788,7 @@
             const normalizeValue = (value) => {
                 return (value || '')
                     .toUpperCase()
-                    .replace(/[^A-Z]/g, '');
+                    .replace(/[^A-Z0-9]/g, '');
             };
 
             const formatTime = (seconds) => {
@@ -810,9 +841,8 @@
             const updateStatusUI = () => {
                 const correctTotal = getCorrectTotal();
                 const totalCards = cards.length;
-                const nextQuestion = correctTotal >= totalCards ? totalCards : (correctTotal + 1);
 
-                if (progressCountEl) progressCountEl.textContent = `${nextQuestion}/${totalCards}`;
+                if (progressCountEl) progressCountEl.textContent = `${correctTotal}/${totalCards}`;
                 if (correctCountEl) correctCountEl.textContent = String(correctTotal);
                 if (mistakesCountEl) mistakesCountEl.textContent = String(wrongTries);
             };
@@ -960,6 +990,7 @@
 
             window.resetSlide = () => {
                 stopVocabAudio();
+                window.stopAudioPlayer?.();
 
                 inputs.forEach((input) => {
                     input.value = '';
@@ -978,6 +1009,7 @@
             window.stopSlideAudio = () => {
                 clearInterval(timerInt);
                 stopVocabAudio();
+                window.stopAudioPlayer?.();
                 Object.values(audio).forEach((sound) => {
                     try {
                         sound.pause();

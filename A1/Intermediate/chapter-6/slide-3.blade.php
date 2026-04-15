@@ -3,7 +3,7 @@ $content = [
     'page_title'  => 'Warm-up:',
     'title'       => 'Warm-up: Practice 1',
     'subtitle'    => 'Listen to this audio first, then click on letters between brackets to build correct words.',
-    'theme_color' => '#673fe7',
+    'type'        => 'letters',
     'audio'       => materialAsset('slider/A1/Intermediate/chapter-6/audios/slide3.mp3'),
     'script'      => [
         'Customer: Hello, do you have anything for stomach ache?',

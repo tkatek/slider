@@ -3,6 +3,7 @@ $content = [
     'page_title' => 'Practice 5',
     'title' => 'Practice 5',
     'subtitle' => 'Drag and drop words to rearrange each sentence into its correct order',
+    'type' => 'sentence',
     'sentences' => [
         '{{1}}',
         '{{2}}',

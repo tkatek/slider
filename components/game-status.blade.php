@@ -1,6 +1,6 @@
 @php
     $statusItems = [
-        ['label' => 'Progress', 'id' => 'tilesCount', 'default' => '0/0', 'icon' => '&#129513;'],
+        ['label' => 'Progress', 'id' => 'tilesCount', 'default' => '0', 'icon' => '&#129513;'],
         ['label' => 'Correct', 'id' => 'correctCount', 'default' => '0', 'icon' => '&#9989;'],
         ['label' => 'Mistakes', 'id' => 'mistakesCount', 'default' => '0', 'icon' => '&#10060;'],
         ['label' => 'Time', 'id' => 'gameTimer', 'default' => '00:00', 'icon' => '&#9201;&#65039;'],

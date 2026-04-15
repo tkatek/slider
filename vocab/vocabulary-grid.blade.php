@@ -16,6 +16,36 @@
     $useObjectivesTypography = !empty($content['use_objectives_typography']);
     $wordLabelStyle = trim((string) ($content['word_label_style'] ?? 'font-size: 0.9rem; line-height: 1.05;'));
     $extraCss = trim((string) ($content['extra_css'] ?? ''));
+    $normalizeToneKey = static fn ($value) => strtolower(trim((string) preg_replace('/\s+/', ' ', strip_tags((string) $value))));
+    $toneAliases = [
+        'blue' => 'play',
+        'indigo' => 'play',
+        'play' => 'play',
+        'purple' => 'violet',
+        'violet' => 'violet',
+        'green' => 'go',
+        'teal' => 'go',
+        'go' => 'go',
+        'orange' => 'do',
+        'amber' => 'do',
+        'do' => 'do',
+    ];
+    $knownTones = array_values(array_unique(array_values($toneAliases)));
+    $resolveTone = static function ($tone) use ($normalizeToneKey, $toneAliases) {
+        $toneKey = $normalizeToneKey($tone);
+
+        return $toneAliases[$toneKey] ?? $toneKey;
+    };
+    $groupToneMap = [];
+
+    foreach ($sentences as $sentence) {
+        $sentenceLabel = $normalizeToneKey($sentence['text'] ?? '');
+        $sentenceTone = $resolveTone($sentence['tone'] ?? '');
+
+        if ($sentenceLabel !== '' && in_array($sentenceTone, $knownTones, true)) {
+            $groupToneMap[$sentenceLabel] = $sentenceTone;
+        }
+    }
 
     $sentenceGridBreakpoints = [
         'base' => null,
@@ -769,6 +799,16 @@
             letter-spacing: -0.02em;
         }
 
+        .word-subtitle {
+            display: block;
+            margin-top: 4px;
+            color: rgba(255,255,255,.88);
+            font-size: .72rem;
+            line-height: 1.28;
+            font-weight: 600;
+            letter-spacing: 0;
+        }
+
         .word-label .hot,
         .sentence-title .hot,
         .sentence-pill .hot {
@@ -881,6 +921,10 @@
                 font-size: .88rem;
             }
 
+            .word-subtitle {
+                font-size: .68rem;
+            }
+
             .hide-mobile {
                 display: none !important;
             }
@@ -922,7 +966,9 @@
                                 $sentenceText = (string) ($s['text'] ?? '');
                                 $sentenceTextHtml = strip_tags($sentenceText, '<span><strong><em><b><i><br>');
                                 $sentenceTextPlain = trim((string) preg_replace('/\s+/', ' ', strip_tags($sentenceText)));
-                                $tone = $s['tone'] ?? $defaultTone;
+                                $sentenceSound = trim((string) ($s['sound'] ?? ''));
+                                $hasSentenceAudio = $sentenceSound !== '';
+                                $tone = $resolveTone($s['tone'] ?? $defaultTone);
 
                                 $sentenceClass = match($tone) {
                                     'play' => 'tone-play',
@@ -951,19 +997,21 @@
 
                             <article class="sentence-card {{ $sentenceClass }}" data-tone="{{ $tone }}">
                                 <div class="sentence-row">
-                                    <button
-                                            type="button"
-                                            class="speak-btn sentence-btn {{ $btnClass }}"
-                                            data-audio="{{ $s['sound'] ?? '' }}"
-                                            aria-label="Play sentence audio"
-                                    >
-                                        <svg class="static-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                            <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-                                        </svg>
-                                        <div class="wave-bar" style="animation-delay:.1s"></div>
-                                        <div class="wave-bar" style="animation-delay:.2s"></div>
-                                        <div class="wave-bar" style="animation-delay:.3s"></div>
-                                    </button>
+                                    @if($hasSentenceAudio)
+                                        <button
+                                                type="button"
+                                                class="speak-btn sentence-btn {{ $btnClass }}"
+                                                data-audio="{{ $sentenceSound }}"
+                                                aria-label="Play sentence audio"
+                                        >
+                                            <svg class="static-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                            </svg>
+                                            <div class="wave-bar" style="animation-delay:.1s"></div>
+                                            <div class="wave-bar" style="animation-delay:.2s"></div>
+                                            <div class="wave-bar" style="animation-delay:.3s"></div>
+                                        </button>
+                                    @endif
 
                                     <div class="sentence-copy">
                                         @if($showSentencePill)
@@ -992,20 +1040,30 @@
                             $itemText = (string) ($item['text'] ?? '');
                             $itemTextHtml = strip_tags($itemText, '<span><strong><em><b><i><br>');
                             $itemTextPlain = trim((string) preg_replace('/\s+/', ' ', strip_tags($itemText)));
+                            $itemSubtitle = trim((string) ($item['subtitle'] ?? ''));
+                            $itemSubtitleHtml = strip_tags($itemSubtitle, '<span><strong><em><b><i><br>');
+                            $itemSound = trim((string) ($item['sound'] ?? ''));
+                            $hasItemAudio = $itemSound !== '';
                             preg_match('/^\X/u', $item['emoji'] ?? '', $m);
                             $oneEmoji = $m[0] ?? '';
-                            $group = $item['group'] ?? $defaultGroup;
-                            $groupLabel = trim((string) ($item['group_label'] ?? $group));
+                            $rawGroup = trim((string) ($item['group'] ?? $defaultGroup));
+                            $groupLabel = trim((string) ($item['group_label'] ?? $rawGroup));
+                            $mappedGroupTone = $groupToneMap[$normalizeToneKey($groupLabel)] ?? '';
+                            $groupTone = $resolveTone($item['tone'] ?? $item['group_tone'] ?? $mappedGroupTone);
 
-                            $groupClass = match($group) {
+                            if ($groupTone === '' && in_array($resolveTone($rawGroup), $knownTones, true)) {
+                                $groupTone = $resolveTone($rawGroup);
+                            }
+
+                            $groupClass = match($groupTone) {
                                 'play' => 'group-play',
                                 'violet' => 'group-violet',
                                 'go' => 'group-go',
                                 'do' => 'group-do',
-                                default => ($group === '' ? '' : 'group-neutral'),
+                                default => ($groupTone === '' ? '' : 'group-neutral'),
                             };
 
-                            $btnClass = match($group) {
+                            $btnClass = match($groupTone) {
                                 'play' => 'btn-play',
                                 'violet' => 'btn-violet',
                                 'go' => 'btn-go',
@@ -1013,7 +1071,7 @@
                                 default => 'btn-neutral',
                             };
 
-                            $pillClass = match($group) {
+                            $pillClass = match($groupTone) {
                                 'play' => 'pill-play',
                                 'violet' => 'pill-violet',
                                 'go' => 'pill-go',
@@ -1022,7 +1080,7 @@
                             };
                         @endphp
 
-                        <article class="vocab-card {{ $groupClass }}" data-tone="{{ $group }}">
+                        <article class="vocab-card {{ $groupClass }}" data-tone="{{ $groupTone }}">
                             <div class="media-box">
                                 <img src="{{ $item['image'] ?? '' }}" alt="{{ $itemTextPlain }}" class="card-img" loading="lazy" draggable="false">
                                 <div class="card-overlay"></div>
@@ -1033,26 +1091,31 @@
                                     </span>
                                 @endif
 
-                                <div class="card-center-btn">
-                                    <button
-                                            type="button"
-                                            class="speak-btn audio-main {{ $btnClass }}"
-                                            data-audio="{{ $item['sound'] ?? '' }}"
-                                            aria-label="Play item audio"
-                                    >
-                                        <svg class="static-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                            <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-                                        </svg>
-                                        <div class="wave-bar" style="animation-delay:.1s"></div>
-                                        <div class="wave-bar" style="animation-delay:.2s"></div>
-                                        <div class="wave-bar" style="animation-delay:.3s"></div>
-                                    </button>
-                                </div>
+                                @if($hasItemAudio)
+                                    <div class="card-center-btn">
+                                        <button
+                                                type="button"
+                                                class="speak-btn audio-main {{ $btnClass }}"
+                                                data-audio="{{ $itemSound }}"
+                                                aria-label="Play item audio"
+                                        >
+                                            <svg class="static-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                            </svg>
+                                            <div class="wave-bar" style="animation-delay:.1s"></div>
+                                            <div class="wave-bar" style="animation-delay:.2s"></div>
+                                            <div class="wave-bar" style="animation-delay:.3s"></div>
+                                        </button>
+                                    </div>
+                                @endif
 
                                 <div class="card-bottom">
                                     <div class="word-row">
                                         <div class="title-wrap min-w-0 flex-1 txt-shadow">
                                             <span class="title-text word-label" @if($wordLabelStyle !== '') style="{{ $wordLabelStyle }}" @endif aria-label="{{ $itemTextPlain }}">{!! $itemTextHtml !!}</span>
+                                            @if($itemSubtitleHtml !== '')
+                                                <span class="word-subtitle">{!! $itemSubtitleHtml !!}</span>
+                                            @endif
                                         </div>
                                         @if($oneEmoji !== '')
                                             <span class="tile-emoji txt-shadow">{{ $oneEmoji }}</span>

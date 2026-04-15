@@ -3,7 +3,7 @@ $content = [
     'page_title'    => 'Unscramble Practice',
     'title'         => 'Unscramble the highlighted words',
     'subtitle'      => 'Drag the letters to put them in the correct order.',
-    'theme_color'   => '#673fe7',
+    'type'          => 'letters',
     'sentences' => [
         "How often do you {{1}} TV?",
         "Do you usually {{2}} {{3}} in the morning?",
