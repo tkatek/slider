@@ -22,6 +22,7 @@
 
     $instructionText = trim((string) ($content['instruction'] ?? $defaultInstructions[$gameType] ?? 'Drag the tiles to make the correct answer.'));
     $pageTitle = trim((string) ($content['page_title'] ?? $content['title'] ?? 'Unscramble'));
+    $nextButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-indigo-600 hover:bg-indigo-500'));
 
     $normalizeChunkWords = static function ($value): array {
         if (is_array($value)) {
@@ -288,7 +289,7 @@
                                     <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/85 px-2 py-1 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">👆 Tap</span>
                                     <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/85 px-2 py-1 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">🤏 Drag</span>
                                     <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/85 px-2 py-1 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">✖ Tap to remove</span>
-                                </div> 
+                                </div>
                             </div>
 
                             <div id="uns-bank" class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5"></div>
@@ -308,7 +309,7 @@
                             Previous
                         </button>
 
-                        <button id="uns-next" type="button" class="inline-flex w-full items-center justify-center rounded-xl border border-indigo-500 bg-indigo-600 px-3 py-3 text-sm font-black text-white shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-indigo-400 dark:bg-indigo-500">
+                        <button id="uns-next" type="button" class="inline-flex w-full items-center justify-center rounded-xl border border-transparent px-3 py-3 text-sm font-black text-white shadow-sm transition hover:scale-[1.02] active:scale-[.98] {{ $nextButtonClass }}">
                             Next
                         </button>
                     </div>

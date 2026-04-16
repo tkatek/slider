@@ -43,6 +43,7 @@
     $xlCols = $extractCols('xl', $gridClass, $lgCols);
 
     $storageKey = 'missing-word-game-' . md5(request()->path());
+    $checkButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500'));
 @endphp
 
 @section('title', $pageTitle)
@@ -146,11 +147,6 @@
 
         .dark .mca-btn-reveal:hover{
             background:rgba(154, 52, 18, .5);
-        }
-
-        .mca-btn-check{
-            background:linear-gradient(135deg, #4f46e5, #3b82f6);
-            box-shadow:0 10px 24px rgba(59,130,246,.14);
         }
 
         .mca-btn-check:hover{
@@ -543,7 +539,7 @@
                     <div class="top-actions-buttons">
                         <button type="button" class="mca-btn-primary mca-btn-reveal" id="btnRevealAnswers">Reveal answers</button>
                         <button type="button" class="mca-btn-secondary hidden" id="btnRetakeTest">Retake test</button>
-                        <button type="button" class="mca-btn-primary mca-btn-check" id="checkAnswersBtn">Check Answers</button>
+                        <button type="button" class="mca-btn-primary mca-btn-check {{ $checkButtonClass }}" id="checkAnswersBtn">Check Answers</button>
                     </div>
                 </div>
 

@@ -1,7 +1,7 @@
 <?php
 $content=[
-    'subtitle'=>'New Vocabulary',
-    'paragraph'=>'Explore common professions and practice their pronunciation.',
+    'title'=>'New Vocabulary',
+    'subtitle'=>'Explore common professions and practice their pronunciation.',
 ];
 $content['professions'] = [
     [

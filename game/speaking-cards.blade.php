@@ -2,7 +2,14 @@
 
 @php
     $content = $content ?? [];
-
+    $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+    $accentGradient = $isOrangeTheme
+        ? 'linear-gradient(135deg, rgba(249,115,22,.95), rgba(234,88,12,.92))'
+        : 'linear-gradient(135deg, rgba(79,70,229,.95), rgba(37,99,235,.92))';
+    $accentShadow = $isOrangeTheme ? 'rgba(249,115,22,.45)' : 'rgba(79,70,229,.55)';
+    $accentSolid = $isOrangeTheme ? 'rgb(234 88 12)' : 'rgb(79 70 229)';
+    $accentSoft = $isOrangeTheme ? 'rgba(249,115,22,.12)' : 'rgba(79,70,229,.12)';
+    $dealButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 via-indigo-600 to-blue-600'));
 
     $SFX = [
         'click'  => asset('slider/sounds/tap.wav'),
@@ -31,10 +38,10 @@
         .deck-back{
             border-radius: 28px;
             border: 2px solid rgba(255,255,255,.18);
-            background: linear-gradient(135deg, rgba(79,70,229,.95), rgba(37,99,235,.92));
+            background: {{ $accentGradient }};
             position: relative;
             overflow: hidden;
-            box-shadow: 0 20px 40px -28px rgba(79,70,229,.55);
+            box-shadow: 0 20px 40px -28px {{ $accentShadow }};
         }
         .deck-back::before{
             content:"";
@@ -57,11 +64,11 @@
             align-items:flex-end;
             justify-content:center;
             padding:.08rem .55rem;
-            border-bottom: 3px solid rgb(79 70 229);
-            color: rgb(79 70 229);
+            border-bottom: 3px solid {{ $accentSolid }};
+            color: {{ $accentSolid }};
             font-weight: 700;
             letter-spacing: .06em;
-            background: rgba(79,70,229,.12);
+            background: {{ $accentSoft }};
             border-radius: 14px;
             min-width: calc(var(--chars) * 0.65em + 1.35em);
             line-height: 1.05;
@@ -250,8 +257,7 @@
                     <button id="btnDeal"
                             class="w-24 sm:w-28 rounded-2xl font-black
                                    flex flex-col items-center justify-center gap-1 py-2.5 sm:py-3.5 text-white
-                                   shadow-xl shadow-indigo-600/10
-                                   bg-gradient-to-br from-indigo-600 via-indigo-600 to-blue-600">
+                                   shadow-xl {{ $dealButtonClass }}">
                         <div class="text-xl sm:text-2xl leading-none">✨</div>
                         <div class="text-[11px] sm:text-sm leading-none">Deal</div>
                     </button>

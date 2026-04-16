@@ -1,10 +1,15 @@
 <?php
-    $content=[
-        'title'=>'Greeting forms',
-        'subtitle'=>'Formal / Informal Greetings',
-        'card1Title'=>'Formal Greetings',
-        'card2Title'=>'Informal Greetings',
-        'card1'=>[
+$content = [
+    'title' => 'Greeting forms',
+    'subtitle' => 'Formal / Informal Greetings',
+    'cards_grid_class' => 'mt-7 grid grid-cols-1 gap-4 md:grid-cols-2',
+
+    'cards' => [
+        [
+            'type' => 'audio-list',
+            'title' => 'Formal Greetings',
+            'tone' => 'from-sky-400 to-blue-500',
+            'items' => [
                 [
                     'label' => 'Good Morning',
                     'sound' => materialAsset('slider/A1/Beginner/chapter-1/audios/greeting/gm.mpeg'),
@@ -26,7 +31,12 @@
                     'sound' => materialAsset('slider/A1/Beginner/chapter-1/audios/greeting/nicetomeet.mpeg'),
                 ],
             ],
-        'card2'=>[
+        ],
+        [
+            'type' => 'audio-list',
+            'title' => 'Informal Greetings',
+            'tone' => 'from-purple-400 to-violet-500',
+            'items' => [
                 [
                     'label' => 'Hi !',
                     'sound' => materialAsset('slider/A1/Beginner/chapter-1/audios/greeting/hi.mpeg'),
@@ -47,9 +57,10 @@
                     'label' => "How's it going?",
                     'sound' => materialAsset('slider/A1/Beginner/chapter-1/audios/greeting/howItGoing.mpeg'),
                 ],
-            ]
-    ];
-
+            ],
+        ],
+    ],
+];
 ?>
 
-@include("slider.cards.two-cards-with-audio",['content'=>$content])
+@include("slider.other.grammar-info-cards", ['content' => $content])

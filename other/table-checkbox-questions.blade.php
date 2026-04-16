@@ -235,29 +235,7 @@
             <div id="slideShell" class="slide-shell mx-auto w-full max-w-[1280px] px-4 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6">
                 <main class="w-full">
                     <section class="grid place-items-center text-center gap-6 sm:gap-8">
-                        <div id="heroBlock" class="flex flex-col justify-start text-center">
-                            <div class="mx-auto w-full max-w-[42rem]">
-                                @if($topBadge !== '')
-                                    <div class="inline-flex items-center rounded-full border border-indigo-200/80 bg-white/75 px-4 py-1.5 text-sm font-black text-indigo-700 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-indigo-200 sm:text-base">
-                                        {{ $topBadge }}
-                                    </div>
-                                @endif
-
-                                @if($title !== '')
-                                    <h1 class="mt-3 mx-auto mb-5 max-w-4xl text-4xl font-black tracking-tight sm:mt-4 md:text-5xl lg:mt-5 lg:text-6xl">
-                                        <span class="bg-gradient-to-br from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-                                            {{ $title }}
-                                        </span>
-                                    </h1>
-                                @endif
-
-                                @if($subtitle !== '')
-                                    <p class="mx-auto mt-3 max-w-2xl text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:mt-4 lg:max-w-[31rem] lg:text-[1.15rem]">
-                                        {{ $subtitle }}
-                                    </p>
-                                @endif
-                            </div>
-                        </div>
+                        @include('slider.components.title-subtitle')
 
                         <div class="w-full max-w-5xl text-left">
                             <div class="grid {{ $cardGridClass }} gap-3 sm:gap-4 lg:gap-4">

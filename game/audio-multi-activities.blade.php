@@ -3,6 +3,32 @@
 @php
     $playerAudio = $content['audio'] ?? null;
     $scriptLines = [];
+    $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+    $accentRgb = $isOrangeTheme ? '249, 115, 22' : '99, 102, 241';
+    $accentTextRgb = $isOrangeTheme ? '194 65 12' : '99 102 241';
+    $accentDarkTextRgb = $isOrangeTheme ? '253 186 116' : '165 180 252';
+    $tabHoverClass = $isOrangeTheme
+        ? 'hover:border-orange-400 hover:text-orange-600 dark:hover:text-orange-300'
+        : 'hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300';
+    $badgeClass = $isOrangeTheme
+        ? 'rounded-full bg-orange-100 px-2 py-0.5 text-xs font-black uppercase tracking-[0.12em] text-orange-700 dark:bg-orange-500/20 dark:text-orange-300'
+        : 'rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-black uppercase tracking-[0.12em] text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300';
+    $speakerAccentClass = $isOrangeTheme
+        ? 'text-orange-700 dark:text-orange-300'
+        : 'text-indigo-700 dark:text-indigo-300';
+    $examplePanelClass = $isOrangeTheme
+        ? 'rounded-xl border border-orange-200/70 bg-orange-50/70 p-3 dark:border-orange-400/20 dark:bg-orange-500/10'
+        : 'rounded-xl border border-indigo-200/70 bg-indigo-50/70 p-3 dark:border-indigo-400/20 dark:bg-indigo-500/10';
+    $answerChipClass = $isOrangeTheme
+        ? 'rounded-full border border-orange-200/70 bg-white/90 px-2.5 py-1 text-sm font-black text-orange-700 dark:border-orange-400/25 dark:bg-slate-900/60 dark:text-orange-300'
+        : 'rounded-full border border-indigo-200/70 bg-white/90 px-2.5 py-1 text-sm font-black text-indigo-700 dark:border-indigo-400/25 dark:bg-slate-900/60 dark:text-indigo-300';
+    $questionLabelClass = $isOrangeTheme
+        ? 'text-xs font-black uppercase tracking-[0.12em] text-orange-700 dark:text-orange-300'
+        : 'text-xs font-black uppercase tracking-[0.12em] text-indigo-700 dark:text-indigo-300';
+    $instructionClass = $isOrangeTheme
+        ? 'mb-3 rounded-xl border border-orange-200/70 bg-orange-50/80 px-3 py-2 text-md font-bold text-orange-700 dark:border-orange-400/25 dark:bg-orange-500/10 dark:text-orange-300'
+        : 'mb-3 rounded-xl border border-indigo-200/70 bg-indigo-50/80 px-3 py-2 text-md font-bold text-indigo-700 dark:border-indigo-400/25 dark:bg-indigo-500/10 dark:text-indigo-300';
+    $primaryButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500'));
 
     foreach (($content['script'] ?? []) as $conversation) {
         foreach (($conversation['dialogue'] ?? []) as $line) {
@@ -34,20 +60,20 @@
         .activity-panel[data-active="true"] { display: block; }
 
         .tab-btn[data-active="true"] {
-            color: rgb(99 102 241);
-            border-color: rgba(99, 102, 241, 0.45);
-            background: rgba(99, 102, 241, 0.12);
+            color: rgb({{ $accentTextRgb }});
+            border-color: rgba({{ $accentRgb }}, 0.45);
+            background: rgba({{ $accentRgb }}, 0.12);
         }
 
         .dark .tab-btn[data-active="true"] {
-            color: rgb(165 180 252);
-            border-color: rgba(129, 140, 248, 0.45);
-            background: rgba(99, 102, 241, 0.2);
+            color: rgb({{ $accentDarkTextRgb }});
+            border-color: rgba({{ $accentRgb }}, 0.45);
+            background: rgba({{ $accentRgb }}, 0.2);
         }
 
         .quiz-option[data-state="selected"] {
-            border-color: rgba(99, 102, 241, 0.5);
-            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba({{ $accentRgb }}, 0.5);
+            background: rgba({{ $accentRgb }}, 0.1);
         }
 
         .quiz-option[data-state="correct"] {
@@ -90,15 +116,15 @@
         .drag-token:active { cursor: grabbing; }
 
         .drag-token.is-selected {
-            border-color: rgba(99, 102, 241, 0.55);
-            background: rgba(99, 102, 241, 0.12);
-            color: rgb(67 56 202);
+            border-color: rgba({{ $accentRgb }}, 0.55);
+            background: rgba({{ $accentRgb }}, 0.12);
+            color: rgb({{ $accentTextRgb }});
         }
 
         .dark .drag-token.is-selected {
-            border-color: rgba(129, 140, 248, 0.5);
-            background: rgba(99, 102, 241, 0.2);
-            color: rgb(199 210 254);
+            border-color: rgba({{ $accentRgb }}, 0.5);
+            background: rgba({{ $accentRgb }}, 0.2);
+            color: rgb({{ $accentDarkTextRgb }});
         }
 
         .drag-token.is-hidden { display: none; }
@@ -124,23 +150,23 @@
         }
 
         .blank-drop[data-over="true"] {
-            border-color: rgba(99, 102, 241, 0.75);
-            background: rgba(99, 102, 241, 0.12);
-            color: rgb(67 56 202);
+            border-color: rgba({{ $accentRgb }}, 0.75);
+            background: rgba({{ $accentRgb }}, 0.12);
+            color: rgb({{ $accentTextRgb }});
         }
 
         .dark .blank-drop[data-over="true"] {
-            color: rgb(199 210 254);
+            color: rgb({{ $accentDarkTextRgb }});
         }
 
         .blank-drop[data-filled="true"] {
             border-style: solid;
-            border-color: rgba(99, 102, 241, 0.6);
-            color: rgb(67 56 202);
+            border-color: rgba({{ $accentRgb }}, 0.6);
+            color: rgb({{ $accentTextRgb }});
         }
 
         .dark .blank-drop[data-filled="true"] {
-            color: rgb(199 210 254);
+            color: rgb({{ $accentDarkTextRgb }});
         }
 
         .blank-drop[data-state="correct"] {
@@ -245,7 +271,7 @@
                         @foreach($content['tabs'] as $tab)
                             <button
                                     type="button"
-                                    class="tab-btn rounded-xl border border-slate-300/70 bg-white/80 px-3 py-2 text-sm font-extrabold tracking-wide text-slate-700 transition-all hover:border-indigo-400 hover:text-indigo-600 dark:border-slate-200/20 dark:bg-slate-900/45 dark:text-slate-200 dark:hover:text-indigo-300 sm:text-md"
+                                    class="tab-btn rounded-xl border border-slate-300/70 bg-white/80 px-3 py-2 text-sm font-extrabold tracking-wide text-slate-700 transition-all dark:border-slate-200/20 dark:bg-slate-900/45 dark:text-slate-200 sm:text-md {{ $tabHoverClass }}"
                                     data-tab-target="{{ $tab['id'] }}"
                                     data-active="{{ $loop->first ? 'true' : 'false' }}"
                                     aria-selected="{{ $loop->first ? 'true' : 'false' }}"
@@ -265,7 +291,7 @@
                                 <article class="rounded-2xl border border-slate-300/60 bg-slate-50/95 p-3 dark:border-slate-200/20 dark:bg-slate-900/55">
                                     <div class="mb-2 flex items-center justify-between gap-2">
                                         <h2 class="text-md font-extrabold text-slate-900 dark:text-slate-100 sm:text-base">{{ $conversation['topic'] }}</h2>
-                                        <span class="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-black uppercase tracking-[0.12em] text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">
+                                        <span class="{{ $badgeClass }}">
                                             {{ count($conversation['dialogue']) }} lines
                                         </span>
                                     </div>
@@ -273,7 +299,7 @@
                                         @foreach($conversation['dialogue'] as $line)
                                             @php $isWoman = strtolower($line['speaker']) === 'woman'; @endphp
                                             <p class="px-2.5 py-1.5 text-md font-semibold leading-5 text-slate-800 dark:text-slate-100 sm:text-md {{ !$loop->last ? 'border-b border-slate-200/70 dark:border-slate-700/60' : '' }}">
-                                                <span class="mr-1 text-md font-black uppercase tracking-[0.1em] {{ $isWoman ? 'text-indigo-700 dark:text-indigo-300' : 'text-slate-600 dark:text-slate-300' }}">{{ $line['speaker'] }}:</span>
+                                                <span class="mr-1 text-md font-black uppercase tracking-[0.1em] {{ $isWoman ? $speakerAccentClass : 'text-slate-600 dark:text-slate-300' }}">{{ $line['speaker'] }}:</span>
                                                 {{ $line['text'] }}
                                             </p>
                                         @endforeach
@@ -292,11 +318,11 @@
                                     <div class="mt-3 space-y-2">
                                         @foreach($point['examples'] as $example)
                                             @if(is_array($example))
-                                                <div class="rounded-xl border border-indigo-200/70 bg-indigo-50/70 p-3 dark:border-indigo-400/20 dark:bg-indigo-500/10">
+                                                <div class="{{ $examplePanelClass }}">
                                                     <p class="text-md font-extrabold text-slate-900 dark:text-slate-100">{{ $example['question'] }}</p>
                                                     <div class="mt-2 flex flex-wrap gap-2">
                                                         @foreach($example['answers'] as $answer)
-                                                            <span class="rounded-full border border-indigo-200/70 bg-white/90 px-2.5 py-1 text-sm font-black text-indigo-700 dark:border-indigo-400/25 dark:bg-slate-900/60 dark:text-indigo-300">{{ $answer }}</span>
+                                                            <span class="{{ $answerChipClass }}">{{ $answer }}</span>
                                                         @endforeach
                                                     </div>
                                                 </div>
@@ -319,7 +345,7 @@
                         <div class="grid grid-cols-1 gap-2 lg:grid-cols-2">
                             @foreach($content['quiz'] as $idx => $question)
                                 <article class="quiz-card rounded-xl border border-slate-300/60 bg-slate-50/95 p-3 dark:border-slate-200/20 dark:bg-slate-900/55" data-correct="{{ $question['correct_answer'] }}">
-                                    <h2 class="text-xs font-black uppercase tracking-[0.12em] text-indigo-700 dark:text-indigo-300">Question {{ $idx + 1 }}</h2>
+                                    <h2 class="{{ $questionLabelClass }}">Question {{ $idx + 1 }}</h2>
                                     <p class="mt-1.5 text-md font-extrabold leading-6 text-slate-900 dark:text-slate-100 sm:text-base">{{ $question['question'] }}</p>
                                     <div class="mt-2 grid grid-cols-2 gap-1.5">
                                         @foreach($question['options'] as $optIndex => $option)
@@ -334,7 +360,7 @@
                         </div>
 
                         <div class="mt-3 flex flex-wrap items-center gap-2">
-                            <button type="button" id="quiz-check-btn" class="rounded-xl bg-gradient-to-br from-indigo-600 to-blue-500 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-white transition-transform hover:scale-[1.03]">
+                            <button type="button" id="quiz-check-btn" class="rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-white transition-transform hover:scale-[1.03] {{ $primaryButtonClass }}">
                                 Check Quiz
                             </button>
                             <p id="quiz-score" class="text-xs font-extrabold text-slate-700 dark:text-slate-200">Score: 0/{{ count($content['quiz']) }}</p>
@@ -342,7 +368,7 @@
                     </div>
 
                     <div id="panel-puzzle" class="activity-panel" data-active="false">
-                        <p class="mb-3 rounded-xl border border-indigo-200/70 bg-indigo-50/80 px-3 py-2 text-md font-bold text-indigo-700 dark:border-indigo-400/25 dark:bg-indigo-500/10 dark:text-indigo-300">
+                        <p class="{{ $instructionClass }}">
                             {{ $content['puzzle']['instruction'] }}
                         </p>
 
@@ -402,7 +428,7 @@
                                     </div>
 
                                     <div class="mt-3 flex flex-wrap items-center gap-2">
-                                        <button type="button" class="check-puzzle-btn rounded-xl bg-gradient-to-br from-indigo-600 to-blue-500 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-white transition-transform hover:scale-[1.03]">
+                                        <button type="button" class="check-puzzle-btn rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-white transition-transform hover:scale-[1.03] {{ $primaryButtonClass }}">
                                             Check Activity
                                         </button>
                                         <p class="puzzle-feedback text-xs font-extrabold text-slate-700 dark:text-slate-200"></p>

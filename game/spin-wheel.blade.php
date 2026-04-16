@@ -119,7 +119,7 @@
                 </div>
 
                 <div class="flex flex-col gap-4 w-full max-w-sm mx-auto">
-                    <button id="spin-btn" class="spin-btn w-full rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 px-10 py-5 text-sm font-extrabold uppercase tracking-[0.05em] text-white shadow-[0_10px_20px_rgba(79,70,229,0.2)] transition-all hover:-translate-y-0.5 hover:shadow-[0_15px_30px_rgba(79,70,229,0.2)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50">
+                    <button id="spin-btn" class="spin-btn w-full rounded-2xl bg-gradient-to-br from-slate-900 to-slate-700 px-10 py-5 text-sm font-extrabold uppercase tracking-[0.05em] text-white shadow-[0_10px_20px_rgba(2,6,23,0.22)] transition-all hover:-translate-y-0.5 hover:shadow-[0_15px_30px_rgba(2,6,23,0.26)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50">
                         {{ $spinButtonText }}
                     </button>
 
@@ -144,7 +144,7 @@
                     <svg id="wheel-svg" class="h-full w-full origin-center" viewBox="0 0 1000 1000"></svg>
 
                     <div class="center-hub absolute left-1/2 top-1/2 z-50 flex aspect-square w-[32%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-4 border-white bg-white/90 p-6 text-center shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1)] backdrop-blur transition-colors dark:border-slate-800 dark:bg-slate-800/90">
-                        <div id="hub-message" class="text-sm font-black text-indigo-600 uppercase tracking-widest">Ready?</div>
+                        <div id="hub-message" class="text-sm font-black text-slate-800 uppercase tracking-widest dark:text-slate-100">Ready?</div>
                     </div>
                 </div>
             </div>
