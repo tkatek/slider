@@ -414,6 +414,32 @@
             align-content: start;
         }
 
+        #ddbPoolRail {
+            order: -1;
+            width: 100%;
+            max-width: 100%;
+            flex: 0 0 auto;
+        }
+
+        #ddbPoolBar {
+            position: relative; 
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+        }
+
+        #ddbPoolRail.ddb-pool-fixed {
+            min-height: var(--ddb-pool-height, 0px);
+        }
+
+        #ddbPoolRail.ddb-pool-fixed #ddbPoolBar {
+            position: fixed;
+            top: var(--ddb-pool-top, .5rem);
+            left: var(--ddb-pool-left, 0px);
+            width: var(--ddb-pool-width, 100%);
+            z-index: 1500;
+        }
+
         @media (max-width: 1279.98px) {
             #ddbWordBankPanel {
                 max-height: none;
@@ -425,71 +451,6 @@
                 overflow-x: visible;
                 padding-bottom: .9rem;
                 padding-right: 0;
-            }
-        }
-
-        @media (min-width: 1280px) {
-            #ddbPoolRail {
-                position: relative;
-                align-self: stretch;
-            }
-
-            #ddbPoolBar {
-                inset-inline: auto;
-                bottom: auto;
-            }
-
-            #ddbPoolBar.ddb-desktop-fixed {
-                position: fixed;
-                top: var(--ddb-sticky-top, 16px);
-                bottom: auto;
-                z-index: 1400;
-            }
-
-            #ddbPoolBar.ddb-desktop-bottom {
-                position: absolute;
-                top: auto;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                z-index: 1;
-            }
-        }
-
-        @media (min-width: {{ $desktopLayoutBreakpoint }}px) {
-            #ddbLayoutShell {
-                flex-direction: row;
-                align-items: flex-start;
-                justify-content: center;
-                gap: 1.25rem;
-                padding-bottom: 0;
-            }
-
-            #ddbGameColumn {
-                width: 70%;
-                max-width: 70%;
-                flex: 0 0 70%;
-            }
-
-            #ddbPoolRail {
-                position: relative;
-                order: -1;
-                width: 30%;
-                max-width: 30%;
-                flex: 0 0 30%;
-                align-self: stretch;
-            }
-
-            #ddbPoolBar {
-                position: relative;
-                inset: auto;
-                bottom: auto;
-                top: auto;
-                left: auto;
-                right: auto;
-                padding: 0;
-                width: 100%;
-                max-width: 100%;
             }
         }
 
@@ -546,10 +507,10 @@
 
         @include('slider.components.game-status')
 
-        <div id="ddbLayoutShell" class="mx-auto flex w-full flex-none min-h-0 flex-col px-4 pt-2 pb-[calc(min(35vh,310px)+16px)] sm:px-6 sm:pt-3 sm:pb-[calc(min(35vh,310px)+20px)] xl:flex-row xl:items-start xl:justify-center xl:gap-5 lg:px-8 xl:pt-2 xl:pb-0">
-            <section id="ddbGameColumn" class="w-full flex flex-col xl:w-[70%] xl:flex-none">
+        <div id="ddbLayoutShell" class="mx-auto flex w-full flex-none min-h-0 flex-col gap-3 px-4 pt-2 pb-4 sm:gap-4 sm:px-6 sm:pt-3 sm:pb-5 lg:px-8 xl:pt-2">
+            <section id="ddbGameColumn" class="w-full flex flex-col">
                 <div class="grid place-items-center text-center gap-3 sm:gap-4 auto-rows-max">
-                    <div class="w-full">
+                    <div class="mx-auto w-full max-w-5xl">
                         <div id="ddbDialogueCard"
                              class="relative isolate {{ $dialogueCardClass }} text-left overflow-hidden rounded-[1.6rem] border border-slate-200/70 bg-white/70 shadow-[0_18px_55px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60 lg:overflow-visible mb-4">
                             <div id="ddbDialogueInner" class="relative z-[1] px-3 py-3 sm:px-4 sm:py-3.5 lg:overflow-visible">
@@ -650,11 +611,11 @@
                 </div>
             </section>
 
-            <div id="ddbPoolRail" class="w-full xl:order-first xl:self-stretch">
-                <div id="ddbPoolBar" class="fixed inset-x-0 bottom-0 z-[1500] p-3 sm:p-4 xl:relative xl:inset-auto xl:bottom-auto xl:top-auto xl:left-auto xl:p-0">
+            <div id="ddbPoolRail">
+                <div id="ddbPoolBar">
                     <div class="mx-auto w-full max-w-6xl px-0 pb-0">
                         <div id="ddbWordBankPanel"
-                             class="relative overflow-hidden rounded-t-3xl border border-slate-200/70 bg-white/90 backdrop-blur-xl shadow-[0_-18px_55px_rgba(2,6,23,0.16)] dark:border-slate-700/60 dark:bg-slate-950/75 sm:rounded-3xl xl:rounded-3xl xl:shadow-[0_18px_45px_rgba(2,6,23,0.10)] {{ $wordBankPanelClass }}">
+                             class="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/90 backdrop-blur-xl shadow-[0_18px_45px_rgba(2,6,23,0.10)] dark:border-slate-700/60 dark:bg-slate-950/75 {{ $wordBankPanelClass }}">
                             <div class="pointer-events-none absolute inset-0 opacity-80 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(99,102,241,0.16)_0%,transparent_55%),radial-gradient(120%_120%_at_100%_0%,rgba(59,130,246,0.12)_0%,transparent_55%)]"></div>
 
                             <div class="relative px-3 pt-3 pb-4 sm:px-4 sm:py-4 xl:px-6">
@@ -719,11 +680,7 @@
         (function () {
             var ANSWERS = @json($answersForJs);
             var IS_SPEAKER_MATCHING_MODE = @json($isSpeakerMatchingMode);
-            var DESKTOP_GAME_WIDTH = Number(@json($content['desktop_game_width'] ?? 70));
-            var DESKTOP_POOL_WIDTH = Number(@json($content['desktop_pool_width'] ?? 30));
             var DESKTOP_LAYOUT_BREAKPOINT = Number(@json($desktopLayoutBreakpoint));
-            var MOBILE_BANK_GAP = Number(@json($content['mobile_bank_gap'] ?? 20));
-            var DESKTOP_STICKY_TOP = Number(@json($content['desktop_sticky_top'] ?? 16));
 
             var SFX = {
                 enabled: true,
@@ -937,14 +894,13 @@
                 this.loadTiles();
                 this.updatePoolCount();
                 this.updateActionButtons();
-                this.updateDesktopColumnWidths();
-                this.updateMobileBottomSpacing();
-
                 window.removeEventListener('resize', this.handleResize);
                 window.addEventListener('resize', this.handleResize, { passive: true });
 
                 window.removeEventListener('scroll', this.handleScroll);
                 window.addEventListener('scroll', this.handleScroll, { passive: true });
+                document.removeEventListener('scroll', this.handleScroll, true);
+                document.addEventListener('scroll', this.handleScroll, { passive: true, capture: true });
 
                 if (this.prevWordsBtn) {
                     this.prevWordsBtn.removeEventListener('click', this.showPrevWords);
@@ -957,8 +913,8 @@
                 }
 
                 setTimeout(function(){
-                    self.updateMobileBottomSpacing();
-                    self.updateDesktopStickyPosition();
+                    self.syncVisibleTileCount();
+                    self.updatePoolSticky();
                 }, 120);
             };
 
@@ -1001,29 +957,46 @@
                 clearTimeout(this.resizeTimer);
                 this.resizeTimer = setTimeout(function(){
                     self.syncVisibleTileCount();
-                    self.updateDesktopColumnWidths();
-                    self.updateMobileBottomSpacing();
-                    self.updateDesktopStickyPosition();
+                    self.updatePoolSticky();
                 }, 120);
             };
 
             DragDropBlanksGame.prototype.handleScroll = function(){
-                this.updateDesktopStickyPosition();
+                this.updatePoolSticky();
             };
 
-            DragDropBlanksGame.prototype.updateMobileBottomSpacing = function(){
-                var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
-                var panelHeight;
+            DragDropBlanksGame.prototype.getPoolStickyTop = function(){
+                var w = window.innerWidth || document.documentElement.clientWidth || 0;
+                if (w >= DESKTOP_LAYOUT_BREAKPOINT) return 16;
+                if (w >= 640) return 12;
+                return 8;
+            };
 
-                if (!this.layoutShell || !this.poolBar) return;
+            DragDropBlanksGame.prototype.updatePoolSticky = function(){
+                var top;
+                var railRect;
+                var barHeight;
 
-                if (viewportWidth >= DESKTOP_LAYOUT_BREAKPOINT) {
-                    this.layoutShell.style.paddingBottom = '';
+                if (!this.poolRail || !this.poolBar) return;
+
+                top = this.getPoolStickyTop();
+                railRect = this.poolRail.getBoundingClientRect();
+                barHeight = Math.ceil(this.poolBar.offsetHeight || 0);
+
+                if (railRect.top > top) {
+                    this.poolRail.classList.remove('ddb-pool-fixed');
+                    this.poolRail.style.removeProperty('--ddb-pool-height');
+                    this.poolRail.style.removeProperty('--ddb-pool-top');
+                    this.poolRail.style.removeProperty('--ddb-pool-left');
+                    this.poolRail.style.removeProperty('--ddb-pool-width');
                     return;
                 }
 
-                panelHeight = Math.ceil(this.poolBar.getBoundingClientRect().height || 0);
-                this.layoutShell.style.paddingBottom = (panelHeight + MOBILE_BANK_GAP) + 'px';
+                this.poolRail.style.setProperty('--ddb-pool-height', barHeight + 'px');
+                this.poolRail.style.setProperty('--ddb-pool-top', top + 'px');
+                this.poolRail.style.setProperty('--ddb-pool-left', Math.round(railRect.left) + 'px');
+                this.poolRail.style.setProperty('--ddb-pool-width', Math.round(railRect.width) + 'px');
+                this.poolRail.classList.add('ddb-pool-fixed');
             };
 
             DragDropBlanksGame.prototype.getVisibleWordLimit = function(){
@@ -1031,115 +1004,6 @@
                 if (w >= DESKTOP_LAYOUT_BREAKPOINT) return Number.MAX_SAFE_INTEGER;
                 if (w < 640) return 8;
                 return 9;
-            };
-
-            DragDropBlanksGame.prototype.getDesktopStickyTop = function(){
-                return Math.max(0, Number.isFinite(DESKTOP_STICKY_TOP) ? DESKTOP_STICKY_TOP : 16);
-            };
-
-            DragDropBlanksGame.prototype.resetDesktopStickyState = function(){
-                if (!this.poolBar) return;
-
-                this.poolBar.classList.remove('ddb-desktop-fixed', 'ddb-desktop-bottom');
-                this.poolBar.style.top = '';
-                this.poolBar.style.left = '';
-                this.poolBar.style.right = '';
-                this.poolBar.style.width = '';
-                this.poolBar.style.maxWidth = '';
-                this.poolBar.style.setProperty('--ddb-sticky-top', '');
-
-                if (this.poolRail) {
-                    this.poolRail.style.minHeight = '';
-                }
-            };
-
-            DragDropBlanksGame.prototype.updateDesktopStickyPosition = function(){
-                var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
-                var stickyTop = this.getDesktopStickyTop();
-                var railRect;
-                var barHeight;
-                var fixedWidth;
-                var fixedLeft;
-
-                if (!this.poolBar || !this.poolRail) return;
-
-                if (viewportWidth < DESKTOP_LAYOUT_BREAKPOINT) {
-                    this.resetDesktopStickyState();
-                    return;
-                }
-
-                barHeight = Math.ceil(this.poolBar.offsetHeight || 0);
-                this.poolRail.style.minHeight = barHeight + 'px';
-                railRect = this.poolRail.getBoundingClientRect();
-
-                this.poolBar.style.setProperty('--ddb-sticky-top', stickyTop + 'px');
-
-                if (railRect.top > stickyTop) {
-                    this.resetDesktopStickyState();
-                    this.poolRail.style.minHeight = barHeight + 'px';
-                    return;
-                }
-
-                if (railRect.bottom <= stickyTop + barHeight) {
-                    this.poolBar.classList.remove('ddb-desktop-fixed');
-                    this.poolBar.classList.add('ddb-desktop-bottom');
-                    this.poolBar.style.top = '';
-                    this.poolBar.style.left = '0';
-                    this.poolBar.style.right = '0';
-                    this.poolBar.style.width = '100%';
-                    this.poolBar.style.maxWidth = '100%';
-                    return;
-                }
-
-                fixedWidth = Math.round(railRect.width);
-                fixedLeft = Math.round(railRect.left);
-
-                this.poolBar.classList.remove('ddb-desktop-bottom');
-                this.poolBar.classList.add('ddb-desktop-fixed');
-                this.poolBar.style.top = stickyTop + 'px';
-                this.poolBar.style.left = fixedLeft + 'px';
-                this.poolBar.style.right = 'auto';
-                this.poolBar.style.width = fixedWidth + 'px';
-                this.poolBar.style.maxWidth = fixedWidth + 'px';
-            };
-
-            DragDropBlanksGame.prototype.updateDesktopColumnWidths = function(){
-                var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
-                var hasCustomGameWidth = DESKTOP_GAME_WIDTH > 0;
-                var hasCustomPoolWidth = DESKTOP_POOL_WIDTH > 0;
-                var dialoguePercent = hasCustomGameWidth ? DESKTOP_GAME_WIDTH : 70;
-                var poolPercent = hasCustomPoolWidth ? DESKTOP_POOL_WIDTH : 30;
-
-                if (!this.gameColumn || !this.poolRail || !this.dialogueCard) return;
-
-                if (viewportWidth < DESKTOP_LAYOUT_BREAKPOINT) {
-                    this.gameColumn.style.width = '';
-                    this.gameColumn.style.maxWidth = '';
-                    this.gameColumn.style.flexBasis = '';
-
-                    this.poolRail.style.width = '';
-                    this.poolRail.style.maxWidth = '';
-                    this.poolRail.style.flexBasis = '';
-
-                    this.resetDesktopStickyState();
-                    return;
-                }
-
-                if (hasCustomGameWidth && !hasCustomPoolWidth) {
-                    poolPercent = Math.max(0, 100 - dialoguePercent);
-                } else if (!hasCustomGameWidth && hasCustomPoolWidth) {
-                    dialoguePercent = Math.max(0, 100 - poolPercent);
-                }
-
-                this.gameColumn.style.width = dialoguePercent + '%';
-                this.gameColumn.style.maxWidth = dialoguePercent + '%';
-                this.gameColumn.style.flexBasis = dialoguePercent + '%';
-
-                this.poolRail.style.width = poolPercent + '%';
-                this.poolRail.style.maxWidth = poolPercent + '%';
-                this.poolRail.style.flexBasis = poolPercent + '%';
-
-                this.updateDesktopStickyPosition();
             };
 
             DragDropBlanksGame.prototype.createTileNode = function(itemData, index){
@@ -1189,7 +1053,7 @@
                 });
 
                 this.updateNavButtons();
-                this.updateDesktopStickyPosition();
+                this.updatePoolSticky();
             };
 
             DragDropBlanksGame.prototype.updateNavButtons = function(){
@@ -1215,7 +1079,6 @@
                 this.ensureActiveTileCount();
                 this.renderActiveTiles();
                 this.updatePoolCount();
-                this.updateDesktopColumnWidths();
             };
 
             DragDropBlanksGame.prototype.refillPoolAfterLock = function(){
@@ -1282,8 +1145,6 @@
                 if (this.retakeTestBtn) {
                     this.retakeTestBtn.classList.toggle('hidden', !canRetake);
                 }
-
-                this.updateDesktopStickyPosition();
             };
 
             DragDropBlanksGame.prototype.shuffle = function(arr){
@@ -1657,7 +1518,6 @@
                 });
 
                 this.refillPoolAfterLock();
-                this.updateDesktopColumnWidths();
                 this.updateActionButtons();
                 this.checkComplete();
             };
@@ -1791,7 +1651,7 @@
                     if (self.poolCount) self.poolCount.textContent = '0/0';
                     self.updateNavButtons();
                     self.updateActionButtons();
-                    self.updateDesktopStickyPosition();
+                    self.updatePoolSticky();
 
                     if (!shouldShowModal) return;
 

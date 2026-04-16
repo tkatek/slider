@@ -1,5 +1,21 @@
 @extends('slider.simple-layout')
 @section('content')
+    @php
+        $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+
+        $buttonGradientClass = $isOrangeTheme
+            ? 'bg-gradient-to-br from-amber-400 via-orange-500 to-orange-600 dark:from-amber-400 dark:via-orange-500 dark:to-orange-700'
+            : 'bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 dark:from-purple-500 dark:via-indigo-600 dark:to-purple-700';
+
+        $buttonShadowClass = $isOrangeTheme
+            ? 'shadow-orange-500/20'
+            : 'shadow-indigo-600/10';
+
+        $buttonRingClass = $isOrangeTheme
+            ? 'focus-visible:ring-orange-400/30'
+            : 'focus-visible:ring-indigo-500/30';
+    @endphp
+
     <div class="relative min-h-[100dvh] w-full overflow-x-hidden">
         <main class="w-full">
             <div class="mx-auto w-full max-w-5xl px-4 sm:px-8 py-6 sm:py-8 lg:min-h-[100dvh] lg:flex lg:items-center">
@@ -39,14 +55,13 @@
                                 type="button"
                                 aria-label="Next slide"
                                 class="mt-0.5 inline-flex items-center justify-center gap-2 rounded-xl
-                               px-5 py-3 sm:px-7 sm:py-3.5 lg:px-6 lg:py-3
-                               text-sm sm:text-base font-black
-                               text-white border border-white/20
-                               bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600
-                               dark:bg-gradient-to-br dark:from-purple-500 dark:via-indigo-600 dark:to-purple-700
-                               shadow-xl shadow-indigo-600/10
-                               transition-transform duration-200 hover:scale-110 active:scale-95
-                               focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30">
+                                   px-5 py-3 sm:px-7 sm:py-3.5 lg:px-6 lg:py-3
+                                   text-sm sm:text-base font-black
+                                   text-white border border-white/20
+                                   {{ $buttonGradientClass }}
+                                   shadow-xl {{ $buttonShadowClass }}
+                                   transition-transform duration-200 hover:scale-110 active:scale-95
+                                   focus-visible:outline-none focus-visible:ring-4 {{ $buttonRingClass }}">
                             <span>{{ $content['button'] }}</span>
                             <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/20 border border-white/25 text-white leading-none">🚀</span>
                         </button>
@@ -56,48 +71,4 @@
             </div>
         </main>
     </div>
-@endsection
-
-@section('script')
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const btn = document.getElementById("startLessonBtn");
-
-            function isEmbedded(){
-                try { return window.top !== window.self; }
-                catch(e){ return true; }
-            }
-
-            btn.addEventListener("mouseenter", () => {
-                if (!window.gsap) return;
-                if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-                gsap.to(btn, { scale: 1.12, duration: 0.18, ease: "power2.out" });
-            });
-
-            btn.addEventListener("mouseleave", () => {
-                if (!window.gsap) return;
-                gsap.to(btn, { scale: 1, duration: 0.18, ease: "power2.out" });
-            });
-
-            btn.addEventListener("click", () => {
-                if (window.gsap) gsap.fromTo(btn, { scale: 1 }, { scale: 0.96, duration: 0.08, yoyo: true, repeat: 1 });
-
-                if (isEmbedded()){
-                    try{
-                        if (window.parent && typeof window.parent.nextSlide === "function"){
-                            window.parent.nextSlide();
-                            return;
-                        }
-                    }catch(e){}
-
-                    try{
-                        window.parent.postMessage({ type: "BEC_NAV", action: "next" }, "*");
-                        return;
-                    }catch(e){}
-                    return;
-                }
-
-            });
-        });
-    </script>
 @endsection

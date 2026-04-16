@@ -44,7 +44,6 @@
             height: 110px;
             top: -34px;
             right: -22px;
-            background: radial-gradient(circle, rgba(249, 115, 22, 0.24) 0%, rgba(249, 115, 22, 0) 72%);
         }
 
         .sentence-card::after {
@@ -53,7 +52,22 @@
             bottom: -34px;
             left: -18px;
             opacity: 0.55;
+        }
+
+        .sentence-card.sentence-card-orange::before {
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.24) 0%, rgba(249, 115, 22, 0) 72%);
+        }
+
+        .sentence-card.sentence-card-orange::after {
             background: radial-gradient(circle, rgba(251, 191, 36, 0.18) 0%, rgba(251, 191, 36, 0) 72%);
+        }
+
+        .sentence-card.sentence-card-indigo::before {
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.24) 0%, rgba(79, 70, 229, 0) 72%);
+        }
+
+        .sentence-card.sentence-card-indigo::after {
+            background: radial-gradient(circle, rgba(96, 165, 250, 0.18) 0%, rgba(96, 165, 250, 0) 72%);
         }
 
         .play-hit { -webkit-tap-highlight-color: transparent; }
@@ -124,6 +138,40 @@
         $footerBelowImage = (bool)($content['footer_below_image'] ?? false);
         $hideImage = (bool)($content['hide_image'] ?? false);
         $itemsGridClass = trim((string)($content['items_grid_class'] ?? 'grid grid-cols-1 gap-3 sm:gap-4 text-left'));
+
+        $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+
+        $sentenceCardThemeClass = $isOrangeTheme
+            ? 'sentence-card-orange'
+            : 'sentence-card-indigo';
+
+        $frameBorderOne = $isOrangeTheme
+            ? 'border-amber-300/60'
+            : 'border-indigo-300/60';
+
+        $frameBorderTwo = $isOrangeTheme
+            ? 'border-orange-300/40'
+            : 'border-blue-300/40';
+
+        $imageShellShadow = $isOrangeTheme
+            ? 'shadow-orange-400/20 dark:shadow-orange-400/10'
+            : 'shadow-indigo-500/20 dark:shadow-indigo-500/10';
+
+        $imageBgClass = $isOrangeTheme
+            ? 'bg-gradient-to-br from-orange-100 via-amber-100 to-yellow-100 dark:from-slate-800 dark:via-orange-950/30 dark:to-slate-700'
+            : 'bg-gradient-to-br from-indigo-100 via-blue-100 to-violet-100 dark:from-slate-800 dark:via-indigo-950/30 dark:to-slate-700';
+
+        $glowOneClass = $isOrangeTheme
+            ? 'bg-amber-300/30 dark:bg-amber-300/20'
+            : 'bg-blue-300/30 dark:bg-blue-300/20';
+
+        $glowTwoClass = $isOrangeTheme
+            ? 'bg-orange-400/20 dark:bg-orange-400/20'
+            : 'bg-violet-400/20 dark:bg-violet-400/20';
+
+        $audioBtnClass = $isOrangeTheme
+            ? 'bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 shadow-orange-500/20 focus-visible:ring-orange-300/40'
+            : 'bg-gradient-to-br from-indigo-500 via-blue-500 to-violet-500 shadow-indigo-500/20 focus-visible:ring-indigo-300/40';
     @endphp
 
     <div class="language-page relative h-[100dvh] w-full overflow-hidden">
@@ -138,13 +186,13 @@
                             @unless($hideImage)
                                 <div class="w-full mx-auto max-w-[300px] sm:max-w-[420px] lg:max-w-[460px]">
                                     <div class="relative p-4">
-                                        <div class="absolute inset-0 -translate-x-3.5 translate-y-3.5 rounded-[26px] border-2 border-amber-300/60 pointer-events-none"></div>
-                                        <div class="absolute inset-0 translate-x-3.5 -translate-y-3.5 rounded-[26px] border border-dashed border-orange-300/40 pointer-events-none"></div>
+                                        <div class="absolute inset-0 -translate-x-3.5 translate-y-3.5 rounded-[26px] border-2 {{ $frameBorderOne }} pointer-events-none"></div>
+                                        <div class="absolute inset-0 translate-x-3.5 -translate-y-3.5 rounded-[26px] border border-dashed {{ $frameBorderTwo }} pointer-events-none"></div>
 
-                                        <div class="relative aspect-square w-full overflow-hidden rounded-[22px] shadow-2xl shadow-orange-400/20 dark:shadow-orange-400/10">
-                                            <div class="absolute inset-0 bg-gradient-to-br from-orange-100 via-amber-100 to-yellow-100 dark:from-slate-800 dark:via-orange-950/30 dark:to-slate-700"></div>
-                                            <div class="absolute -left-10 -top-10 h-36 w-36 rounded-full bg-amber-300/30 blur-2xl dark:bg-amber-300/20"></div>
-                                            <div class="absolute -right-10 -bottom-10 h-40 w-40 rounded-full bg-orange-400/20 blur-2xl dark:bg-orange-400/20"></div>
+                                        <div class="relative aspect-square w-full overflow-hidden rounded-[22px] shadow-2xl {{ $imageShellShadow }}">
+                                            <div class="absolute inset-0 {{ $imageBgClass }}"></div>
+                                            <div class="absolute -left-10 -top-10 h-36 w-36 rounded-full {{ $glowOneClass }} blur-2xl"></div>
+                                            <div class="absolute -right-10 -bottom-10 h-40 w-40 rounded-full {{ $glowTwoClass }} blur-2xl"></div>
 
                                             <img
                                                     src="{{ $content['image'] }}"
@@ -181,7 +229,7 @@
                             <section id="cards" class="w-full">
                                 <div class="{{ $itemsGridClass }}">
                                     @foreach($content['items'] as $item)
-                                        <article class="sentence-card rounded-[20px] border border-white/70 bg-white/70 p-3 text-left shadow-[0_16px_34px_-24px_rgba(15,23,42,0.18)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:min-h-[76px] sm:p-3.5">
+                                        <article class="sentence-card {{ $sentenceCardThemeClass }} rounded-[20px] border border-white/70 bg-white/70 p-3 text-left shadow-[0_16px_34px_-24px_rgba(15,23,42,0.18)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:min-h-[76px] sm:p-3.5">
                                             <div class="relative z-10 flex items-center gap-3">
                                                 <div class="shrink-0 text-xl leading-none sm:text-2xl">
                                                     {{ $item['emoji'] ?? '🎉' }}
@@ -196,7 +244,7 @@
                                                 <div class="shrink-0">
                                                     <button
                                                             type="button"
-                                                            class="audio-btn speak-btn play-hit inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 text-white backdrop-blur-md ring-1 ring-white/25 shadow-lg shadow-orange-500/20 focus-visible:ring-4 focus-visible:ring-orange-300/40"
+                                                            class="audio-btn speak-btn play-hit inline-flex h-9 w-9 items-center justify-center rounded-full {{ $audioBtnClass }} text-white backdrop-blur-md ring-1 ring-white/25 shadow-lg focus-visible:ring-4"
                                                             aria-label="{{ $playLabel }}"
                                                             data-sound="{{ $item['sound'] }}"
                                                     >
@@ -239,141 +287,4 @@
             </div>
         </div>
     </div>
-@endsection
-@section('script')
-    @parent
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const viewport = document.getElementById("slideViewport");
-            const shell = document.getElementById("slideShell");
-
-            function syncLayoutMode() {
-                if (!viewport || !shell) return;
-
-                shell.classList.remove("is-scrollable");
-
-                requestAnimationFrame(() => {
-                    const needsScroll = viewport.scrollHeight > viewport.clientHeight + 2;
-                    shell.classList.toggle("is-scrollable", needsScroll);
-                });
-            }
-
-            let resizeRaf = null;
-
-            function handleResize() {
-                if (resizeRaf) cancelAnimationFrame(resizeRaf);
-                resizeRaf = requestAnimationFrame(syncLayoutMode);
-            }
-
-            window.addEventListener("resize", handleResize);
-            window.addEventListener("load", syncLayoutMode);
-
-            if (document.fonts && document.fonts.ready) {
-                document.fonts.ready.then(syncLayoutMode);
-            }
-
-            syncLayoutMode();
-        });
-
-        (function () {
-            const KEY = "__BEC_GLOBAL_SLIDER_AUDIO__";
-
-            if (!window[KEY]) {
-                const audio = new Audio();
-                audio.preload = "auto";
-                audio.crossOrigin = "anonymous";
-
-                let activeButton = null;
-
-                function setSpeaking(button, isSpeaking) {
-                    if (!button) return;
-                    button.classList.toggle("speaking", isSpeaking);
-                }
-
-                function clearActive() {
-                    if (activeButton) {
-                        setSpeaking(activeButton, false);
-                        activeButton = null;
-                    }
-                }
-
-                function stop() {
-                    try {
-                        audio.pause();
-                        audio.currentTime = 0;
-                    } catch (e) {}
-                    clearActive();
-                }
-
-                function play(src, button) {
-                    if (!src) return;
-
-                    const resolved = new URL(src, window.location.href).toString();
-
-                    if (activeButton === button && !audio.paused && audio.src === resolved) {
-                        stop();
-                        return;
-                    }
-
-                    stop();
-
-                    try {
-                        if (audio.src !== resolved) audio.src = resolved;
-                        audio.currentTime = 0;
-                        activeButton = button;
-                        setSpeaking(activeButton, true);
-
-                        const p = audio.play();
-                        if (p && typeof p.catch === "function") {
-                            p.catch(() => stop());
-                        }
-                    } catch (e) {
-                        stop();
-                    }
-                }
-
-                audio.addEventListener("ended", stop);
-                audio.addEventListener("pause", () => {
-                    if (audio.currentTime === 0 || audio.ended) {
-                        clearActive();
-                    }
-                });
-                audio.addEventListener("error", stop);
-
-                window[KEY] = { audio, play, stop };
-            }
-
-            window.stopSlideAudio = function () {
-                window[KEY].stop();
-            };
-
-            if (!window.__BEC_AUDIO_DELEGATE__) {
-                window.__BEC_AUDIO_DELEGATE__ = true;
-
-                document.addEventListener("click", (e) => {
-                    const btn = e.target.closest(".audio-btn");
-                    if (!btn) return;
-
-                    e.preventDefault();
-                    const src = btn.dataset.sound || btn.getAttribute("data-sound") || "";
-                    window[KEY].play(src, btn);
-                });
-            }
-        })();
-
-        window.resetSlide = function () {
-            window.stopSlideAudio?.();
-
-            const viewport = document.getElementById("slideViewport");
-            const shell = document.getElementById("slideShell");
-            if (!viewport || !shell) return;
-
-            shell.classList.remove("is-scrollable");
-
-            requestAnimationFrame(() => {
-                const needsScroll = viewport.scrollHeight > viewport.clientHeight + 2;
-                shell.classList.toggle("is-scrollable", needsScroll);
-            });
-        };
-    </script>
 @endsection

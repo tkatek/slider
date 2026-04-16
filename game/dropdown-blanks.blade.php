@@ -420,8 +420,13 @@
                     .to(toastOne, { opacity: 0, y: -10, duration: 0.3 }, "+=1");
             }
 
+            function getProgressCount() {
+                const progressedQuestions = new Set([...completedQuestions, ...revealedQuestions]);
+                return Math.min(progressedQuestions.size, TOTAL);
+            }
+
             function updateUI() {
-                if (progressCount) progressCount.textContent = `${Math.min(idx + 1, Math.max(TOTAL, 1))}/${Math.max(TOTAL, 1)}`;
+                if (progressCount) progressCount.textContent = `${getProgressCount()}/${TOTAL}`;
                 if (correctCount) correctCount.textContent = String(firstTryCorrect);
                 if (mistakesCount) mistakesCount.textContent = String(wrongTries);
                 if (autoCheckBadge) autoCheckBadge.textContent = String(autoChecksLeft);
@@ -769,6 +774,7 @@
                 }
 
                 wrongTries += revealedQuestions.size;
+                updateUI();
                 clearInterval(timerInt);
                 finalScore.textContent = `${firstTryCorrect}/${TOTAL}`;
                 finalMistakes.textContent = String(wrongTries);

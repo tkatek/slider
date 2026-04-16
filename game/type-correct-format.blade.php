@@ -24,7 +24,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        } 
+        }
 
         .verb-game-main {
             width: 100%;

@@ -1392,7 +1392,7 @@
                 revealedQuestions = new Set();
                 selectedCorrectValues = new Map();
                 startTime = Date.now();
-                document.getElementById('tilesCount').textContent = `1/${Math.max(QUESTIONS.length, 1)}`;
+                document.getElementById('tilesCount').textContent = `0/${QUESTIONS.length}`;
                 document.getElementById('correctCount').textContent = '0';
                 document.getElementById('mistakesCount').textContent = '0';
                 startTimer();
@@ -1484,8 +1484,13 @@
                 button.classList.toggle('cursor-not-allowed', disabled);
             }
 
+            function getProgressCount() {
+                const progressedQuestions = new Set([...completedQuestions, ...revealedQuestions]);
+                return Math.min(progressedQuestions.size, QUESTIONS.length);
+            }
+
             function updateStatusUI() {
-                document.getElementById('tilesCount').textContent = `${Math.min(idx + 1, Math.max(QUESTIONS.length, 1))}/${Math.max(QUESTIONS.length, 1)}`;
+                document.getElementById('tilesCount').textContent = `${getProgressCount()}/${QUESTIONS.length}`;
                 document.getElementById('correctCount').textContent = String(firstTryCorrect);
                 document.getElementById('mistakesCount').textContent = String(wrongTries);
                 document.getElementById('hintBadge').textContent = String(hintsLeft);
