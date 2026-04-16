@@ -42,8 +42,8 @@
 
         [data-qa-game] .board-shell {
             background:
-                radial-gradient(120% 120% at 0% 0%, rgba(99, 102, 241, 0.10) 0%, transparent 45%),
-                radial-gradient(120% 120% at 100% 0%, rgba(59, 130, 246, 0.10) 0%, transparent 42%),
+                radial-gradient(120% 120% at 0% 0%, rgba(148, 163, 184, 0.14) 0%, transparent 45%),
+                radial-gradient(120% 120% at 100% 0%, rgba(203, 213, 225, 0.16) 0%, transparent 42%),
                 linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.56) 100%);
             border: 1px solid rgba(226, 232, 240, 0.8);
             box-shadow: 0 24px 54px rgba(15, 23, 42, 0.10);
@@ -59,16 +59,16 @@
 
         [data-qa-game] .qa-card-art {
             background:
-                radial-gradient(120% 120% at 0% 0%, rgba(99, 102, 241, 0.38) 0%, transparent 42%),
-                radial-gradient(120% 120% at 100% 0%, rgba(59, 130, 246, 0.32) 0%, transparent 40%),
+                radial-gradient(120% 120% at 0% 0%, rgba(148, 163, 184, 0.34) 0%, transparent 42%),
+                radial-gradient(120% 120% at 100% 0%, rgba(203, 213, 225, 0.24) 0%, transparent 40%),
                 radial-gradient(120% 140% at 50% 100%, rgba(15, 23, 42, 0.28) 0%, transparent 58%),
-                linear-gradient(145deg, rgba(49, 46, 129, 0.96) 0%, rgba(79, 70, 229, 0.92) 38%, rgba(37, 99, 235, 0.9) 100%);
+                linear-gradient(145deg, rgba(30, 41, 59, 0.96) 0%, rgba(51, 65, 85, 0.94) 42%, rgba(71, 85, 105, 0.9) 100%);
         }
 
         [data-qa-game] .qa-card:hover {
             transform: translateY(-6px) scale(1.01);
-            border-color: rgba(99, 102, 241, 0.34);
-            box-shadow: 0 26px 52px rgba(79, 70, 229, 0.16);
+            border-color: rgba(100, 116, 139, 0.38);
+            box-shadow: 0 26px 52px rgba(15, 23, 42, 0.14);
         }
 
         [data-qa-game] .qa-card.is-locked {
@@ -117,8 +117,8 @@
 
         .dark [data-qa-game] .board-shell {
             background:
-                radial-gradient(120% 120% at 0% 0%, rgba(99, 102, 241, 0.18) 0%, transparent 45%),
-                radial-gradient(120% 120% at 100% 0%, rgba(59, 130, 246, 0.16) 0%, transparent 42%),
+                radial-gradient(120% 120% at 0% 0%, rgba(100, 116, 139, 0.24) 0%, transparent 45%),
+                radial-gradient(120% 120% at 100% 0%, rgba(71, 85, 105, 0.22) 0%, transparent 42%),
                 linear-gradient(180deg, rgba(15, 23, 42, 0.72) 0%, rgba(15, 23, 42, 0.64) 100%);
             border-color: rgba(51, 65, 85, 0.9);
             box-shadow: 0 24px 54px rgba(2, 6, 23, 0.35);
@@ -132,10 +132,10 @@
 
         .dark [data-qa-game] .qa-card-art {
             background:
-                radial-gradient(120% 120% at 0% 0%, rgba(129, 140, 248, 0.34) 0%, transparent 42%),
-                radial-gradient(120% 120% at 100% 0%, rgba(96, 165, 250, 0.28) 0%, transparent 40%),
+                radial-gradient(120% 120% at 0% 0%, rgba(148, 163, 184, 0.22) 0%, transparent 42%),
+                radial-gradient(120% 120% at 100% 0%, rgba(100, 116, 139, 0.24) 0%, transparent 40%),
                 radial-gradient(120% 140% at 50% 100%, rgba(2, 6, 23, 0.5) 0%, transparent 58%),
-                linear-gradient(145deg, rgba(30, 41, 59, 0.98) 0%, rgba(49, 46, 129, 0.94) 42%, rgba(30, 64, 175, 0.9) 100%);
+                linear-gradient(145deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.96) 42%, rgba(51, 65, 85, 0.9) 100%);
         }
 
         .dark [data-qa-game] .metric-tile {
@@ -156,7 +156,7 @@
                     <section class="relative w-full max-w-[92rem] p-1 sm:p-3 lg:p-4 flex-1">
                         <div class="board-shell w-full rounded-[2rem] p-4 sm:p-6">
                             <div class="mb-4 sm:mb-5 flex justify-center">
-                                <div class="inline-flex items-center gap-2 rounded-full border border-indigo-200/70 bg-white/80 px-4 py-2 text-sm sm:text-base font-black tracking-[0.08em] text-slate-900 shadow-md dark:border-indigo-400/20 dark:bg-slate-900/70 dark:text-slate-100">
+                                <div class="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/80 px-4 py-2 text-sm sm:text-base font-black tracking-[0.08em] text-slate-900 shadow-md dark:border-slate-600/40 dark:bg-slate-900/70 dark:text-slate-100">
                                     <span aria-hidden="true">🔢</span>
                                     <span>Pick a Number</span>
                                 </div>
@@ -193,7 +193,7 @@
                 <div class="modal-pop w-full max-w-5xl max-h-[85dvh] overflow-y-auto rounded-3xl border border-slate-200/70 dark:border-slate-700/70 bg-white/95 dark:bg-slate-900/95 shadow-2xl">
                     <div class="p-6 sm:p-8">
                         <div class="flex items-center justify-between gap-4">
-                            <div class="text-[11px] font-black uppercase tracking-[0.25em] text-indigo-500">
+                            <div class="text-[11px] font-black uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">
                                 Question
                             </div>
 
@@ -216,13 +216,13 @@
 
                                 <button id="checkBtn"
                                         type="button"
-                                        class="w-full rounded-2xl bg-indigo-600 px-6 py-4 text-base sm:text-lg font-black text-white shadow-lg transition-colors hover:bg-indigo-500">
+                                        class="w-full rounded-2xl bg-slate-700 px-6 py-4 text-base sm:text-lg font-black text-white shadow-lg transition-colors hover:bg-slate-600 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-white">
                                     Reveal Answer
                                 </button>
 
                                 <div id="mAnswerContainer" class="hidden">
-                                    <div class="rounded-2xl border border-indigo-200/70 bg-indigo-50/70 p-5 dark:border-indigo-400/20 dark:bg-indigo-500/10">
-                                        <div class="text-xs font-black uppercase tracking-[0.2em] text-indigo-500">Answer</div>
+                                    <div class="rounded-2xl border border-slate-200/70 bg-slate-100/80 p-5 dark:border-slate-600/40 dark:bg-slate-800/50">
+                                        <div class="text-xs font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Answer</div>
                                         <p id="mAnswerText" class="mt-3 text-lg sm:text-xl font-black leading-relaxed text-slate-900 dark:text-slate-100"></p>
                                     </div>
 
@@ -279,7 +279,7 @@
 
                             <button
                                     id="btnContinue"
-                                    class="w-full px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black shadow-lg transition-colors"
+                                    class="w-full rounded-2xl bg-slate-700 px-8 py-3 font-black text-white shadow-lg transition-colors hover:bg-slate-600 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-white"
                                     type="button"
                             >
                                 Continue ⚡

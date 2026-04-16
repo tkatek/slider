@@ -101,6 +101,18 @@
         .dropdown-btn-primary:hover { transform: scale(1.05); }
         .dropdown-btn-primary:active { transform: scale(.95); }
 
+        .dropdown-btn-neutral {
+            color: #fff;
+            border-color: rgba(15, 23, 42, .14);
+            background: linear-gradient(135deg, #0f172a, #111827, #1f2937);
+            box-shadow: 0 10px 24px rgba(2,6,23,.18);
+        }
+
+        .dropdown-btn-neutral:hover {
+            background: linear-gradient(135deg, #020617, #0f172a, #1e293b);
+            box-shadow: 0 12px 28px rgba(2,6,23,.22);
+        }
+
         .dropdown-btn-reveal {
             color: rgb(154 52 18);
             border-color: rgb(253 186 116);
@@ -154,6 +166,17 @@
 
         .dark .dropdown-btn-reveal:hover {
             background: rgba(154, 52, 18, .5);
+        }
+
+        .dark .dropdown-btn-neutral {
+            color: rgb(248 250 252);
+            border-color: rgba(71, 85, 105, .7);
+            background: linear-gradient(135deg, rgba(15,23,42,.98), rgba(17,24,39,.96), rgba(30,41,59,.94));
+            box-shadow: 0 12px 26px rgba(0,0,0,.35);
+        }
+
+        .dark .dropdown-btn-neutral:hover {
+            background: linear-gradient(135deg, rgba(2,6,23,1), rgba(15,23,42,.98), rgba(30,41,59,.96));
         }
 
         .dropdown-btn-warning {
@@ -260,7 +283,7 @@
 
                                     <button
                                         id="btnNext"
-                                        class="dropdown-btn-primary py-3"
+                                        class="dropdown-btn-primary dropdown-btn-neutral py-3"
                                     >
                                         Next
                                     </button>
@@ -268,9 +291,9 @@
                             </div>
                         </div>
 
-                        <div id="resultsOverlay" class="hidden fixed inset-0 z-50">
-                            <div class="absolute inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm"></div>
+                        @include('slider.components.game-win-modal-correction')
 
+                        {{--
                             <div class="relative min-h-full w-full flex items-center justify-center p-4 sm:p-6">
                                 <div class="w-full max-w-[42rem] lg:max-w-[46rem] max-h-[88dvh] overflow-y-auto rounded-3xl border border-slate-200/70 dark:border-slate-700/70 bg-white/95 dark:bg-slate-900/95 shadow-2xl">
                                     <div class="p-5 sm:p-7 lg:p-8 text-center">
@@ -314,7 +337,7 @@
 
                                             <button
                                                 id="btnContinue"
-                                                class="dropdown-btn-primary w-full px-4 py-3 sm:px-8 text-sm"
+                                                class="dropdown-btn-primary dropdown-btn-neutral w-full px-4 py-3 sm:px-8 text-sm"
                                             >
                                                 Continue ⚡
                                             </button>
@@ -323,6 +346,7 @@
                                 </div>
                             </div>
                         </div>
+                        --}}
                     </section>
 
                     <div id="toastOne" class="fixed left-1/2 -translate-x-1/2 bottom-24 opacity-0 pointer-events-none z-50">
@@ -353,19 +377,20 @@
             const mistakesCount = document.getElementById("mistakesCount");
             const timer = document.getElementById("gameTimer");
 
-            const finalScore = document.getElementById("finalScore");
+            const finalCorrect = document.getElementById("finalCorrect");
             const finalMistakes = document.getElementById("finalMistakes");
             const finalTime = document.getElementById("finalTime");
             const finalCorrection = document.getElementById("finalCorrection");
+            const resultsCorrectionCard = document.getElementById("resultsCorrectionCard");
 
             const questionPanel = document.getElementById("questionPanel");
-            const resultsOverlay = document.getElementById("resultsOverlay");
+            const winModal = document.getElementById("winModal");
             const toastOne = document.getElementById("toastOne");
             const toastIcon = document.getElementById("toastIcon");
             const toastText = document.getElementById("toastText");
 
-            const btnContinue = document.getElementById("btnContinue");
-            const btnReset = document.getElementById("btnReset");
+            const continueBtnModal = document.getElementById("continueBtnModal");
+            const restartBtnModal = document.getElementById("restartBtnModal");
             const btnResetInline = document.getElementById("btnResetInline");
             const btnAutoCheck = document.getElementById("btnAutoCheck");
             const autoCheckBadge = document.getElementById("autoCheckBadge");
@@ -501,7 +526,7 @@
             }
 
             function hideOverlay() {
-                resultsOverlay.classList.add("hidden");
+                if (winModal) winModal.classList.add("hidden");
                 document.documentElement.classList.remove("overflow-hidden");
             }
 
@@ -608,7 +633,7 @@
             }
 
             function evaluateQuestion() {
-                if (!resultsOverlay.classList.contains("hidden")) return;
+                if (winModal && !winModal.classList.contains("hidden")) return;
 
                 const all = Array.from(document.querySelectorAll(".quiz-select"));
                 const filled = all.every(s => !!s.value);
@@ -680,7 +705,7 @@
             }
 
             function revealOneCorrectAnswer() {
-                if (!resultsOverlay.classList.contains("hidden")) return;
+                if (winModal && !winModal.classList.contains("hidden")) return;
 
                 if (autoChecksLeft <= 0) {
                     showToast("No auto checks left", "⚠️");
@@ -712,7 +737,8 @@
             }
 
             function showOverlay() {
-                resultsOverlay.classList.remove("hidden");
+                if (winModal) winModal.classList.remove("hidden");
+                if (resultsCorrectionCard) resultsCorrectionCard.classList.remove("hidden");
                 document.documentElement.classList.add("overflow-hidden");
             }
 
@@ -754,9 +780,9 @@
 
             function finish() {
                 clearInterval(timerInt);
-                finalScore.textContent = `${firstTryCorrect}/${TOTAL}`;
-                finalMistakes.textContent = String(wrongTries);
-                finalTime.textContent = timer ? timer.textContent : "00:00";
+                if (finalCorrect) finalCorrect.textContent = `${firstTryCorrect}/${TOTAL}`;
+                if (finalMistakes) finalMistakes.textContent = String(wrongTries);
+                if (finalTime) finalTime.textContent = timer ? timer.textContent : "00:00";
                 if (finalCorrection) finalCorrection.innerHTML = buildAllCorrectionsHTML();
 
                 showOverlay();
@@ -776,9 +802,9 @@
                 wrongTries += revealedQuestions.size;
                 updateUI();
                 clearInterval(timerInt);
-                finalScore.textContent = `${firstTryCorrect}/${TOTAL}`;
-                finalMistakes.textContent = String(wrongTries);
-                finalTime.textContent = timer ? timer.textContent : "00:00";
+                if (finalCorrect) finalCorrect.textContent = `${firstTryCorrect}/${TOTAL}`;
+                if (finalMistakes) finalMistakes.textContent = String(wrongTries);
+                if (finalTime) finalTime.textContent = timer ? timer.textContent : "00:00";
                 if (finalCorrection) finalCorrection.innerHTML = buildAllCorrectionsHTML();
 
                 showOverlay();
@@ -819,8 +845,8 @@
                 });
             };
 
-            btnContinue?.addEventListener("click", goNext);
-            btnReset?.addEventListener("click", restart);
+            continueBtnModal?.addEventListener("click", goNext);
+            restartBtnModal?.addEventListener("click", restart);
             btnResetInline?.addEventListener("click", restart);
             btnAutoCheck?.addEventListener("click", revealOneCorrectAnswer);
             btnRevealCorrection?.addEventListener("click", revealCorrection);

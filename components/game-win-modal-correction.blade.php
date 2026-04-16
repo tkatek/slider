@@ -3,7 +3,8 @@
     $modalTitle = $modalTitle ?? 'Done!';
     $modalTitleClass = trim((string) ($modalTitleClass ?? 'text-3xl font-black text-slate-900 dark:text-white sm:text-4xl'));
     $modalEmoji = $modalEmoji ?? '🎉';
-    $modalEmojiClass = trim((string) ($modalEmojiClass ?? 'mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-3xl border border-indigo-200 bg-indigo-50 text-4xl shadow-sm dark:border-indigo-500/30 dark:bg-indigo-500/15'));
+    $modalEmojiClass = trim((string) ($modalEmojiClass ?? 'mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-3xl border border-slate-200 bg-slate-100 text-4xl shadow-sm dark:border-slate-600/40 dark:bg-slate-800/70'));
+    $continueThemeClass = trim((string) (($theme['button_primary_color'] ?? 'bg-indigo-600 hover:bg-indigo-500')));
 @endphp
 
 <div id="{{ $modalId }}" class="hidden fixed inset-0 z-[3000]">
@@ -17,7 +18,7 @@
                     <span aria-hidden="true">{{ $modalEmoji }}</span>
                 </div>
 
-                <h2 class="{{ $modalTitleClass }}">
+                <h2 class="{{ $modalTitleClass }}"> 
                     {{ $modalTitle }}
                 </h2>
 
@@ -47,7 +48,7 @@
                     <button
                         id="restartBtnModal"
                         type="button"
-                        class="game-btn w-full border border-slate-200 bg-white px-8 py-3 text-sm text-slate-900 shadow-[0_8px_22px_#0206170D] hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
+                        class="game-btn inline-flex min-h-[3.25rem] w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-8 py-3 text-sm font-black tracking-[0.01em] text-slate-900 shadow-[0_8px_22px_#0206170D] transition-all duration-200 hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-[0_16px_34px_rgba(2,6,23,.10)] active:translate-y-0 active:scale-[0.985] dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 dark:hover:shadow-[0_16px_34px_rgba(0,0,0,.26)]"
                     >
                         Restart
                     </button>
@@ -55,7 +56,7 @@
                     <button
                         id="continueBtnModal"
                         type="button"
-                        class="game-btn w-full border border-white/20 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-8 py-3 text-sm text-white shadow-[0_10px_24px_#4F46E51A]"
+                        class="game-btn inline-flex min-h-[3.25rem] w-full items-center justify-center rounded-2xl border border-transparent px-8 py-3 text-sm font-black tracking-[0.01em] text-white shadow-[0_10px_24px_rgba(2,6,23,.18)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_38px_rgba(2,6,23,.24)] active:translate-y-0 active:scale-[0.985] {{ $continueThemeClass }}"
                     >
                         Continue
                     </button>

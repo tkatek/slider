@@ -3,6 +3,14 @@
 @php
     $items = is_array($content['items'] ?? null) ? $content['items'] : [];
     $gridClass = trim((string)($content['grid_class'] ?? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'));
+
+    $audioBtnClass = ($theme['name'] ?? null) === 'orange'
+        ? 'bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 shadow-lg shadow-orange-500/20'
+        : 'bg-gradient-to-br from-indigo-500 via-blue-500 to-violet-500 shadow-lg shadow-indigo-500/20';
+
+    $audioBtnRingClass = ($theme['name'] ?? null) === 'orange'
+        ? 'focus-visible:ring-orange-300/40'
+        : 'focus-visible:ring-indigo-300/40';
 @endphp
 
 @section('title', $content['page_title'])
@@ -240,15 +248,12 @@
             align-items:center;
             justify-content:center;
             border-radius:999px;
-            background:linear-gradient(135deg, rgba(99,102,241,.95), rgba(59,130,246,.95));
             color:#fff;
-            box-shadow:0 10px 20px rgba(79,70,229,.18);
             transition:transform .16s ease, box-shadow .16s ease;
         }
 
         .speak-btn:hover{
             transform:scale(1.04);
-            box-shadow:0 12px 22px rgba(79,70,229,.22);
         }
 
         .speak-btn:active{
@@ -317,7 +322,7 @@
                                     <div class="audio-wrap">
                                         <button
                                                 type="button"
-                                                class="play-hit speak-btn"
+                                                class="play-hit speak-btn {{ $audioBtnClass }} focus-visible:ring-4 {{ $audioBtnRingClass }}"
                                                 aria-label="Play Audio"
                                                 data-audio="{{ $item['sound'] ?? '' }}"
                                         >

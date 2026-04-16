@@ -2,14 +2,27 @@
 
 @php
     $uid = $content['uid'] ?? ('holiday_' . substr(md5(uniqid('', true)), 0, 10));
-    $content['theme'] = $content['theme'] ?? '#6366f1';
     $cols = $content['grid']['cols'];
     $gridCols = "grid-cols-{$cols['base']} sm:grid-cols-{$cols['sm']} md:grid-cols-{$cols['md']} lg:grid-cols-{$cols['lg']}";
     $headerWrapClass = $content['header_wrap_class'] ?? 'space-y-3 w-full max-w-3xl';
     $titleClass = $content['title_class'] ?? 'font-black tracking-tight text-2xl sm:text-3xl lg:text-5xl leading-tight';
-    $titleGradientClass = $content['title_gradient_class'] ?? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 bg-clip-text text-transparent';
     $subtitleClass = $content['subtitle_class'] ?? 'font-bold text-sm sm:text-base text-slate-600 dark:text-slate-400';
     $resultModalVariant = $content['result_modal_variant'] ?? 'default';
+
+    $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+    $themeRootClass = $isOrangeTheme ? 'theme-orange' : 'theme-indigo';
+
+    $titleGradientClass = $isOrangeTheme
+        ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent'
+        : 'bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 bg-clip-text text-transparent';
+
+    $resultEyebrowClass = $isOrangeTheme
+        ? 'text-orange-500'
+        : 'text-indigo-500';
+
+    $continueBtnShadowClass = $isOrangeTheme
+        ? 'shadow-[0_16px_40px_rgba(249,115,22,0.22)]'
+        : 'shadow-[0_16px_40px_rgba(79,70,229,0.22)]';
 
     $isGameModal = $resultModalVariant === 'game';
     $resultOverlayClass = $isGameModal
@@ -31,15 +44,45 @@
         ? 'inline-flex w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-8 py-4 font-black text-slate-900 shadow-lg transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700'
         : 'inline-flex w-full items-center justify-center rounded-2xl border border-slate-200/80 bg-white/85 px-6 py-4 text-sm font-black uppercase tracking-[0.12em] text-slate-800 shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-white active:translate-y-0 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-100 dark:hover:bg-slate-900/70';
     $continueBtnClass = $isGameModal
-        ? 'inline-flex w-full items-center justify-center rounded-2xl px-8 py-4 font-black text-white shadow-[0_16px_40px_rgba(79,70,229,0.22)] transition-colors hover:brightness-110 dark:text-slate-900'
-        : 'inline-flex w-full items-center justify-center rounded-2xl px-6 py-4 text-sm font-black uppercase tracking-[0.12em] text-white shadow-[0_16px_40px_rgba(79,70,229,0.22)] transition-transform hover:-translate-y-0.5 active:translate-y-0';
+        ? "inline-flex w-full items-center justify-center rounded-2xl px-8 py-4 font-black text-white {$continueBtnShadowClass} transition-colors hover:brightness-110 dark:text-slate-900"
+        : "inline-flex w-full items-center justify-center rounded-2xl px-6 py-4 text-sm font-black uppercase tracking-[0.12em] text-white {$continueBtnShadowClass} transition-transform hover:-translate-y-0.5 active:translate-y-0";
 @endphp
 
 @section('title', $content['page_title'])
 
 @section('style')
     <style>
-        #{{ $uid }} { --p: {{ $content['theme'] }}; }
+        #{{ $uid }}.theme-indigo {
+            --p: #6366f1;
+            --p-ring: rgba(99, 102, 241, 0.14);
+            --p-shadow: rgba(99, 102, 241, 0.12);
+            --p-check-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --p-chip-text: #312e81;
+            --p-chip-text-dark: #c7d2fe;
+            --p-pill-bg: rgba(99, 102, 241, 0.10);
+            --p-pill-bg-dark: rgba(99, 102, 241, 0.14);
+            --p-pill-text: #4f46e5;
+            --p-pill-text-dark: #a5b4fc;
+            --p-glow-one: rgba(99, 102, 241, 0.16);
+            --p-glow-two: rgba(59, 130, 246, 0.16);
+            --p-orb-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 52%, #3b82f6 100%);
+        }
+
+        #{{ $uid }}.theme-orange {
+             --p: #f97316;
+             --p-ring: rgba(249, 115, 22, 0.14);
+             --p-shadow: rgba(249, 115, 22, 0.12);
+             --p-check-gradient: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+             --p-chip-text: #9a3412;
+             --p-chip-text-dark: #fed7aa;
+             --p-pill-bg: rgba(249, 115, 22, 0.10);
+             --p-pill-bg-dark: rgba(249, 115, 22, 0.16);
+             --p-pill-text: #ea580c;
+             --p-pill-text-dark: #fdba74;
+             --p-glow-one: rgba(249, 115, 22, 0.16);
+             --p-glow-two: rgba(245, 158, 11, 0.16);
+             --p-orb-gradient: linear-gradient(135deg, #fb923c 0%, #f97316 52%, #f59e0b 100%);
+         }
 
         @keyframes pop {
             0% { transform: translateY(10px) scale(.98); opacity: 0; }
@@ -98,12 +141,12 @@
 
         #{{ $uid }} .option-check:checked + .option-label .option-card {
              border-color: color-mix(in srgb, var(--p) 68%, white 32%);
-             box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.14), 0 18px 30px rgba(99, 102, 241, 0.12);
+             box-shadow: 0 0 0 4px var(--p-ring), 0 18px 30px var(--p-shadow);
              transform: translateY(-4px);
          }
 
         #{{ $uid }} .option-check:checked + .option-label .check-badge {
-             background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+             background: var(--p-check-gradient);
              border-color: transparent;
              color: white;
              transform: scale(1.06);
@@ -115,12 +158,12 @@
 
         #{{ $uid }} .option-check:checked + .option-label .label-chip {
              background: rgba(255,255,255,.96);
-             color: #312e81;
+             color: var(--p-chip-text);
          }
 
         .dark #{{ $uid }} .option-check:checked + .option-label .label-chip {
                    background: rgba(15, 23, 42, .92);
-                   color: #c7d2fe;
+                   color: var(--p-chip-text-dark);
                }
 
         #{{ $uid }} .check-badge {
@@ -133,52 +176,45 @@
          }
 
         #{{ $uid }} .selection-pill {
-             background: rgba(99, 102, 241, 0.10);
-             color: #4f46e5;
+             background: var(--p-pill-bg);
+             color: var(--p-pill-text);
          }
 
         .dark #{{ $uid }} .selection-pill {
-                   background: rgba(99, 102, 241, 0.14);
-                   color: #a5b4fc;
+                   background: var(--p-pill-bg-dark);
+                   color: var(--p-pill-text-dark);
                }
 
         #{{ $uid }} .result-chip {
-             background: rgba(99, 102, 241, 0.10);
-             color: #4f46e5;
+             background: var(--p-pill-bg);
+             color: var(--p-pill-text);
          }
 
         .dark #{{ $uid }} .result-chip {
-                   background: rgba(99, 102, 241, 0.14);
-                   color: #c7d2fe;
+                   background: var(--p-pill-bg-dark);
+                   color: var(--p-chip-text-dark);
                }
+
+        #{{ $uid }} .result-aurora {
+             background:
+                     radial-gradient(120% 120% at 0% 0%, var(--p-glow-one) 0%, transparent 55%),
+                     radial-gradient(120% 120% at 100% 0%, var(--p-glow-two) 0%, transparent 55%);
+         }
+
+        #{{ $uid }} .finish-orb,
+        #{{ $uid }} .finish-core {
+             background: var(--p-orb-gradient);
+         }
     </style>
 @endsection
 
 @section('content')
-    <main id="{{ $uid }}" class="w-full min-h-screen transition-colors duration-500">
+    <main id="{{ $uid }}" class="{{ $themeRootClass }} w-full min-h-screen transition-colors duration-500">
         <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 py-6 lg:min-h-[100dvh] lg:flex lg:items-center">
             <section class="w-full">
                 <div class="grid place-items-center text-center gap-6">
 
-                    <div class="{{ $headerWrapClass }}">
-                        <h1 class="{{ $titleClass }}">
-                            <span class="{{ $titleGradientClass }}">
-                                {{ $content['title'] }}
-                            </span>
-                        </h1>
-
-                        @if(!empty($content['subtitle']))
-                            <p class="{{ $subtitleClass }}">
-                                {{ $content['subtitle'] }}
-                            </p>
-                        @endif
-
-                        <div class="flex justify-center">
-                            <span id="selectionCount" class="selection-pill rounded-full px-4 py-2 text-xs sm:text-sm font-black uppercase tracking-[0.14em]">
-                                0 selected
-                            </span>
-                        </div>
-                    </div>
+                    @include('slider.components.title-subtitle')
 
                     <section class="w-full max-w-6xl">
                         <form id="holidayForm">
@@ -240,7 +276,7 @@
 
             <div class="{{ $resultCardClass }}">
                 @unless($isGameModal)
-                    <div class="absolute inset-0 pointer-events-none opacity-80 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(99,102,241,0.16)_0%,transparent_55%),radial-gradient(120%_120%_at_100%_0%,rgba(59,130,246,0.16)_0%,transparent_55%)]"></div>
+                    <div class="result-aurora absolute inset-0 pointer-events-none opacity-80"></div>
                 @endunless
 
                 <div class="{{ $resultInnerClass }}">
@@ -248,8 +284,8 @@
                         <div class="text-5xl sm:text-6xl">🎉</div>
                     @else
                         <div class="mx-auto relative mb-6 h-20 w-20">
-                            <div class="finish-orb absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-blue-500 opacity-20 blur-2xl"></div>
-                            <div class="absolute inset-0 grid place-items-center rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-blue-500 text-white shadow-xl">
+                            <div class="finish-orb absolute inset-0 rounded-full opacity-20 blur-2xl"></div>
+                            <div class="finish-core absolute inset-0 grid place-items-center rounded-full text-white shadow-xl">
                                 <svg id="resultMainIcon" viewBox="0 0 24 24" class="h-10 w-10" fill="none" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6" d="M3 7h18M5 7l1.5 10.5A2 2 0 0 0 8.48 19h7.04a2 2 0 0 0 1.98-1.5L19 7M9 11h6"/>
                                 </svg>
@@ -258,7 +294,7 @@
                     @endif
 
                     @unless($isGameModal)
-                        <p id="resultEyebrow" class="text-[11px] font-black uppercase tracking-[0.25em] text-indigo-500">
+                        <p id="resultEyebrow" class="text-[11px] font-black uppercase tracking-[0.25em] {{ $resultEyebrowClass }}">
                             Your choices
                         </p>
                     @endunless
@@ -341,7 +377,9 @@
 
             function updateCount() {
                 const count = getSelectedValues().length;
-                elements.selectionCount.textContent = `${count} selected`;
+                if (elements.selectionCount) {
+                    elements.selectionCount.textContent = `${count} selected`;
+                }
             }
 
             function openResultModal() {
@@ -380,8 +418,6 @@
                         return;
                     } catch (e) {}
                 }
-
-
             }
 
             function escapeHtml(value) {
