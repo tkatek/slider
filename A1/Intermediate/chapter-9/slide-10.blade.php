@@ -1,12 +1,11 @@
 <?php
 $content = [
     'page_title' => 'Practice 4',
-    'title'      => 'Practice 4',
+    'title' => 'Practice 4',
     'compact_layout' => true,
-    'subtitle'   => 'Read the travel advice to people going to Kenya in East Africa. Complete the text with you should or you shouldn’t',
-    'questions'  => [
+    'subtitle' => 'Read the travel advice to people going to Kenya in East Africa. Complete the text with you should or you shouldn’t',
+    'questions' => [
         [
-            'img'      => '🌍',
             'segments' => [
                 "It’s very hot in Kenya, so ",
                 ['answer' => "you shouldn’t", 'wrong' => "you should"],

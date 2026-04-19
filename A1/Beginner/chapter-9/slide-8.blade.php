@@ -1,11 +1,10 @@
 <?php
 $content = [
     'page_title' => 'Practice time',
-    'title'      => 'Practice time',
-    'subtitle'   => 'Choose the correct option',
-    'questions'  => [
+    'title' => 'Practice time',
+    'subtitle' => 'Choose the correct option',
+    'questions' => [
         [
-            'img'      => '🍊',
             'segments' => [
                 'There ',
                 ['answer' => 'are', 'wrong' => 'is'],
@@ -13,7 +12,6 @@ $content = [
             ],
         ],
         [
-            'img'      => '🥥',
             'segments' => [
                 'There ',
                 ['answer' => 'are', 'wrong' => 'is'],
@@ -21,7 +19,6 @@ $content = [
             ],
         ],
         [
-            'img'      => '🌾',
             'segments' => [
                 'There ',
                 ['answer' => 'is', 'wrong' => 'are'],
@@ -29,7 +26,6 @@ $content = [
             ],
         ],
         [
-            'img'      => '🧂',
             'segments' => [
                 'There ',
                 ['answer' => 'is', 'wrong' => 'are'],
@@ -37,7 +33,6 @@ $content = [
             ],
         ],
         [
-            'img'      => '🍓',
             'segments' => [
                 'There is a lot of ',
                 ['answer' => 'jam', 'wrong' => 'lemons'],

@@ -32,7 +32,6 @@
         $normalizedEnableImageZoom = filter_var($content['enable_image_zoom'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
         $enableImageZoom = $normalizedEnableImageZoom ?? (bool) $content['enable_image_zoom'];
     }
-    $imagePlain = $content['image_plain'] ?? false;
     $imageScale = (float) ($content['image_scale'] ?? 1);
     $imageExtraScale = (float) ($content['image_extra_scale'] ?? 1);
     $imageAspectRatio = trim((string) ($content['image_aspect_ratio'] ?? ''));
@@ -898,42 +897,20 @@
                                         </div>
                                     @elseif($gameType=="image")
                                         <div class="{{ $imagePanelInnerClass }}">
-                                            @if($imagePlain)
-                                                <div
-                                                        id="imageViewport"
-                                                        class="relative mx-auto w-full overflow-hidden {{ $imageRadius }} {{ $enableImageZoom ? 'cursor-zoom-in' : '' }}"
-                                                        style="aspect-ratio: 4 / 3;"
+                                            <div
+                                                    id="imageViewport"
+                                                    class="relative mx-auto w-full overflow-hidden {{ $imageRadius }} {{ $enableImageZoom ? 'cursor-zoom-in' : '' }}"
+                                                    style="aspect-ratio: 4 / 3;"
+                                            >
+                                                <img
+                                                        id="questionImage"
+                                                        src="{{ $content['image'] ?? '' }}"
+                                                        data-default-src="{{ $content['image'] ?? '' }}"
+                                                        alt="{{ $content['title'] ?? 'Question image' }}"
+                                                        draggable="false"
+                                                        class="h-full w-full {{ $imageFitClass }} {{ $imageRadius }} {{ $enableImageZoom ? 'transition-transform duration-150 ease-out will-change-transform' : '' }}"
                                                 >
-                                                    <img
-                                                            id="questionImage"
-                                                            src="{{ $content['image'] ?? '' }}"
-                                                            data-default-src="{{ $content['image'] ?? '' }}"
-                                                            alt="{{ $content['title'] ?? 'Question image' }}"
-                                                            draggable="false"
-                                                            class="h-full w-full {{ $imageFitClass }} {{ $imageRadius }} {{ $enableImageZoom ? 'transition-transform duration-150 ease-out will-change-transform' : '' }}"
-                                                    >
-                                                </div>
-                                            @else
-                                                <div
-                                                        id="imageStage"
-                                                        class="relative mx-auto flex h-full w-full items-center justify-center rounded-3xl border border-slate-200/70 bg-white/85 p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900/85"
-                                                >
-                                                    <div
-                                                            id="imageViewport"
-                                                            class="relative w-full max-w-full overflow-hidden rounded-[1.6rem] bg-slate-100 {{ $enableImageZoom ? 'cursor-zoom-in' : '' }} dark:bg-slate-950/60"
-                                                            style="aspect-ratio: 4 / 3;"
-                                                    >
-                                                        <img
-                                                                id="questionImage"
-                                                                src="{{ $content['image'] ?? '' }}"
-                                                                data-default-src="{{ $content['image'] ?? '' }}"
-                                                                alt="{{ $content['title'] ?? 'Question image' }}"
-                                                                draggable="false"
-                                                                class="h-full w-full {{ $imageFitClass }} {{ $enableImageZoom ? 'transition-transform duration-150 ease-out will-change-transform' : '' }}"
-                                                        >
-                                                    </div>
-                                                </div>
-                                            @endif
+                                            </div>
                                         </div>
 
                                     @else

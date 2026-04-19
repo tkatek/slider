@@ -1,11 +1,10 @@
 <?php
 $content = [
     'page_title' => 'Can you do this?',
-    'title'      => 'Can you do this?',
-    'subtitle'   => 'Choose the correct subject pronouns or possessive adjectives to complete the sentences.',
-    'questions'  => [
+    'title' => 'Can you do this?',
+    'subtitle' => 'Choose the correct subject pronouns or possessive adjectives to complete the sentences.',
+    'questions' => [
         [
-            'img'      => '🏠',
             'segments' => [
                 'Harry is ',
                 ['answer' => 'my', 'wrong' => 'I'],
@@ -15,16 +14,14 @@ $content = [
             ],
         ],
         [
-            'img'      => '🐶',
             'segments' => [
-                ['answer' => 'They',  'wrong' => 'Their'],
+                ['answer' => 'They', 'wrong' => 'Their'],
                 ' are very happy with ',
                 ['answer' => 'their', 'wrong' => 'they'],
                 ' new dog.',
             ],
         ],
         [
-            'img'      => '🐾',
             'segments' => [
                 'We love ',
                 ['answer' => 'our', 'wrong' => 'we'],
@@ -32,19 +29,17 @@ $content = [
             ],
         ],
         [
-            'img'      => '🍳',
             'segments' => [
-                ['answer' => 'He',  'wrong' => 'His'],
+                ['answer' => 'He', 'wrong' => 'His'],
                 ' wants ',
                 ['answer' => 'his', 'wrong' => 'he'],
                 ' breakfast.',
             ],
         ],
         [
-            'img'      => '🏡',
             'segments' => [
                 'Susan lives on ',
-                ['answer' => 'my',  'wrong' => 'I'],
+                ['answer' => 'my', 'wrong' => 'I'],
                 ' street. ',
                 ['answer' => 'Her', 'wrong' => 'His'],
                 ' house is very near.',

@@ -84,7 +84,7 @@
         @include('slider.components.title-subtitle')
         @include('slider.components.game-status')
 
-        <div class="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-4 px-4 pb-4 sm:px-6 lg:px-8">
+        <div id="ticketBoothContent" class="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-start gap-4 px-4 pb-4 sm:px-6 lg:px-8">
             <section id="ddbPoolRail" class="order-[-1] w-full max-w-full flex-none self-stretch">
                 <div id="ddbPoolBar" class="relative w-full max-w-full p-0">
                     <div class="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/90 shadow-[0_18px_45px_rgba(2,6,23,0.10)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/75">
@@ -280,6 +280,7 @@
             };
 
             function TicketBoothGame() {
+                this.pageContent = document.getElementById('ticketBoothContent');
                 this.poolRail = document.getElementById('ddbPoolRail');
                 this.poolBar = document.getElementById('ddbPoolBar');
                 this.poolContent = document.getElementById('ddbPoolContent');
@@ -302,6 +303,7 @@
                 this.dragX = 0;
                 this.dragY = 0;
                 this.poolStickyTimer = null;
+                this.layoutSyncFrame = null;
 
                 this.correctCount = 0;
                 this.mistakeCount = 0;
@@ -325,6 +327,7 @@
                 this.handlePointerUp = this.handlePointerUp.bind(this);
                 this.handleResize = this.handleResize.bind(this);
                 this.handleScroll = this.handleScroll.bind(this);
+                this.syncVerticalLayout = this.syncVerticalLayout.bind(this);
                 this.showPrevWords = this.showPrevWords.bind(this);
                 this.showNextWords = this.showNextWords.bind(this);
                 this.handleCheckAnswers = this.handleCheckAnswers.bind(this);
@@ -343,8 +346,33 @@
                 if (this.restartBtnModal) this.restartBtnModal.addEventListener('click', this.handleRetakeTest);
                 if (this.continueBtnModal) this.continueBtnModal.addEventListener('click', window.dragDropBlanksGoNext);
                 window.addEventListener('resize', this.handleResize, { passive: true });
+                window.addEventListener('load', this.handleResize, { passive: true });
                 window.addEventListener('scroll', this.handleScroll, { passive: true });
                 document.addEventListener('scroll', this.handleScroll, { passive: true, capture: true });
+            };
+
+            TicketBoothGame.prototype.scheduleVerticalLayoutSync = function() {
+                var self = this;
+
+                if (this.layoutSyncFrame) {
+                    cancelAnimationFrame(this.layoutSyncFrame);
+                }
+
+                this.layoutSyncFrame = requestAnimationFrame(function() {
+                    self.layoutSyncFrame = null;
+                    self.syncVerticalLayout();
+                });
+            };
+
+            TicketBoothGame.prototype.syncVerticalLayout = function() {
+                var content = this.pageContent;
+                var fitsViewport;
+
+                if (!content) return;
+
+                fitsViewport = content.scrollHeight <= content.clientHeight + 2;
+                content.classList.toggle('justify-center', fitsViewport);
+                content.classList.toggle('justify-start', !fitsViewport);
             };
 
             TicketBoothGame.prototype.getBlanks = function() {
@@ -611,6 +639,7 @@
                 this.ensureActiveTileCount();
                 this.renderActiveTiles();
                 this.schedulePoolStickyUpdate();
+                this.scheduleVerticalLayoutSync();
             };
 
             TicketBoothGame.prototype.handleScroll = function() {
@@ -1088,6 +1117,7 @@
                 this.updateActionButtons();
                 this.updatePoolSticky();
                 this.schedulePoolStickyUpdate();
+                this.scheduleVerticalLayoutSync();
             };
 
             document.addEventListener('DOMContentLoaded', function() {

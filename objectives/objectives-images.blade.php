@@ -124,7 +124,7 @@
 @endsection
 
 @section('content')
-    <div class="lo-page relative h-[100dvh] w-full overflow-hidden bg-[radial-gradient(980px_560px_at_8%_10%,rgba(103,63,231,.14),transparent_55%),radial-gradient(900px_560px_at_92%_14%,rgba(59,130,246,.12),transparent_56%),radial-gradient(880px_640px_at_50%_100%,rgba(16,185,129,.08),transparent_60%)]">
+    <div class="lo-page relative h-[100dvh] w-full overflow-hidden">
         <div id="slideViewport" class="slide-viewport">
             <div id="slideShell" class="slide-shell mx-auto w-full max-w-[1280px] px-4 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6">
                 <main class="w-full">

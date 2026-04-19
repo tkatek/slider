@@ -137,6 +137,7 @@
         $footerItems = is_array($content['footer_items'] ?? null) ? $content['footer_items'] : [];
         $footerBelowImage = (bool)($content['footer_below_image'] ?? false);
         $hideImage = (bool)($content['hide_image'] ?? false);
+        $imageAspectRatio = trim((string)($content['image_aspect_ratio'] ?? '1 / 1'));
         $itemsGridClass = trim((string)($content['items_grid_class'] ?? 'grid grid-cols-1 gap-3 sm:gap-4 text-left'));
 
         $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
@@ -189,7 +190,7 @@
                                         <div class="absolute inset-0 -translate-x-3.5 translate-y-3.5 rounded-[26px] border-2 {{ $frameBorderOne }} pointer-events-none"></div>
                                         <div class="absolute inset-0 translate-x-3.5 -translate-y-3.5 rounded-[26px] border border-dashed {{ $frameBorderTwo }} pointer-events-none"></div>
 
-                                        <div class="relative aspect-square w-full overflow-hidden rounded-[22px] shadow-2xl {{ $imageShellShadow }}">
+                                        <div class="relative w-full overflow-hidden rounded-[22px] shadow-2xl {{ $imageShellShadow }}" style="aspect-ratio: {{ $imageAspectRatio }};">
                                             <div class="absolute inset-0 {{ $imageBgClass }}"></div>
                                             <div class="absolute -left-10 -top-10 h-36 w-36 rounded-full {{ $glowOneClass }} blur-2xl"></div>
                                             <div class="absolute -right-10 -bottom-10 h-40 w-40 rounded-full {{ $glowTwoClass }} blur-2xl"></div>

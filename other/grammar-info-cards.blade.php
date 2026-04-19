@@ -102,11 +102,19 @@
                     @foreach(($content['cards'] ?? []) as $card)
                         <article class="{{ $card['card_class'] ?? '' }} rounded-[24px] border border-slate-200 bg-white p-4 shadow-xl sm:p-5 dark:border-slate-700 dark:bg-slate-900/95">
                             @if(!empty($card['title']))
-                                <div class="rounded-2xl bg-gradient-to-r {{ $card['tone'] ?? 'from-sky-400 to-blue-500' }} px-4 py-3 mb-4">
-                                    <p class="text-base sm:text-lg font-black tracking-[-0.02em] leading-tight text-white">
-                                        {!! $card['title'] !!}
-                                    </p>
-                                </div>
+                                @if(!empty($card['title_plain']))
+                                    <div class="mb-4">
+                                        <p class="text-base sm:text-lg font-black tracking-[-0.02em] leading-tight text-slate-900 dark:text-slate-50">
+                                            {!! $card['title'] !!}
+                                        </p>
+                                    </div>
+                                @else
+                                    <div class="rounded-2xl bg-gradient-to-r {{ $card['tone'] ?? 'from-sky-400 to-blue-500' }} px-4 py-3 mb-4">
+                                        <p class="text-base sm:text-lg font-black tracking-[-0.02em] leading-tight text-white">
+                                            {!! $card['title'] !!}
+                                        </p>
+                                    </div>
+                                @endif
                             @endif
 
                             @if(($card['type'] ?? '') === 'question')
