@@ -2,7 +2,7 @@
 $content = [
     'title'          => "Let's Watch This Video",
     'video'      => materialAsset('slider/A1/Advanced/chapter-7/video/signs-encrypted/signs.m3u8'),
-    'thumbnail'      => materialAsset('slider/A1/Advanced/chapter-7/video/thumbnail.webp'),
+    'thumbnail'      => materialAsset('slider/A1/Advanced/chapter-7/img/signs.webp'),
     'isQuiz'         => 0,
     'showTranscript' => 0,
 

@@ -86,12 +86,28 @@
             background: radial-gradient(circle, rgba(249, 115, 22, 0.16) 0%, rgba(249, 115, 22, 0) 72%);
         }
 
-        .objective-card.card-saffron::before {
-            background: radial-gradient(circle, rgba(253, 186, 116, 0.28) 0%, rgba(253, 186, 116, 0) 72%);
+        .objective-card.card-indigo::before {
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.24) 0%, rgba(79, 70, 229, 0) 72%);
         }
 
-        .objective-card.card-saffron::after {
-            background: radial-gradient(circle, rgba(251, 191, 36, 0.18) 0%, rgba(251, 191, 36, 0) 72%);
+        .objective-card.card-indigo::after {
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, rgba(59, 130, 246, 0) 72%);
+        }
+
+        .objective-card.card-sky::before {
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, rgba(37, 99, 235, 0) 72%);
+        }
+
+        .objective-card.card-sky::after {
+            background: radial-gradient(circle, rgba(96, 165, 250, 0.16) 0%, rgba(96, 165, 250, 0) 72%);
+        }
+
+        .objective-card.card-violet::before {
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.22) 0%, rgba(124, 58, 237, 0) 72%);
+        }
+
+        .objective-card.card-violet::after {
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.16) 0%, rgba(139, 92, 246, 0) 72%);
         }
 
         .objective-card.has-image .objective-image-box {
@@ -145,18 +161,10 @@
                             <div class="grid grid-cols-1 gap-3 sm:gap-4">
                                 @foreach($outcomes as $outcome)
                                     @php
-                                        $styles = ['card-orange', 'card-amber', 'card-tangerine', 'card-saffron'];
+                                        $styles = ($theme['name'] ?? null) === 'orange'
+                                            ? ['card-orange', 'card-amber', 'card-tangerine']
+                                            : ['card-indigo', 'card-sky', 'card-violet'];
                                         $style = $styles[($loop->iteration - 1) % count($styles)];
-
-                                        $badgeDefaults = [
-                                            'from-orange-500 to-orange-600',
-                                            'from-amber-400 to-orange-500',
-                                            'from-orange-700 to-red-500',
-                                            'from-yellow-400 to-orange-400',
-                                        ];
-                                        $badge = trim((string)($outcome['badge'] ?? '')) !== ''
-                                            ? trim((string)$outcome['badge'])
-                                            : $badgeDefaults[($loop->iteration - 1) % count($badgeDefaults)];
 
                                         $itemTitle = trim((string)($outcome['title'] ?? ''));
                                         $emoji = trim((string)($outcome['emoji'] ?? ''));

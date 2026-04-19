@@ -67,6 +67,16 @@
             transform: scale(.95);
         }
 
+        #checkAnswersBtn {
+            border-color: rgba(255,255,255,.12);
+            background: linear-gradient(135deg, #57534e, #3f3f46, #0f172a);
+            box-shadow: 0 12px 28px rgba(2,6,23,.24);
+        }
+
+        #checkAnswersBtn:hover {
+            box-shadow: 0 14px 30px rgba(2,6,23,.28);
+        }
+
         .verb-btn-reveal {
             color: rgb(154 52 18);
             border-color: rgb(253 186 116);

@@ -149,7 +149,7 @@
                                             <div class="shrink-0">
                                                 <button
                                                         type="button"
-                                                        class="audio-btn speak-btn play-hit inline-flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500/80 via-violet-500/80 to-blue-500/80 text-white backdrop-blur-md ring-1 ring-white/25 shadow-lg shadow-indigo-900/30 focus-visible:ring-4 focus-visible:ring-indigo-300/40"
+                                                        class="audio-btn speak-btn play-hit inline-flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#57534e,#3f3f46,#0f172a)] text-white backdrop-blur-md ring-1 ring-white/25 shadow-lg shadow-slate-950/30 focus-visible:ring-4 focus-visible:ring-slate-300/40"
                                                         aria-label="{{ $playLabel }}"
                                                         data-sound="{{ $item['sound'] }}"
                                                 >

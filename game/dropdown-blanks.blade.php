@@ -103,14 +103,14 @@
 
         .dropdown-btn-neutral {
             color: #fff;
-            border-color: rgba(15, 23, 42, .14);
-            background: linear-gradient(135deg, #0f172a, #111827, #1f2937);
-            box-shadow: 0 10px 24px rgba(2,6,23,.18);
+            border-color: rgba(255,255,255,.12);
+            background: linear-gradient(135deg, #57534e, #3f3f46, #0f172a);
+            box-shadow: 0 12px 28px rgba(2,6,23,.24);
         }
 
         .dropdown-btn-neutral:hover {
-            background: linear-gradient(135deg, #020617, #0f172a, #1e293b);
-            box-shadow: 0 12px 28px rgba(2,6,23,.22);
+            background: linear-gradient(135deg, #44403c, #27272a, #020617);
+            box-shadow: 0 14px 30px rgba(2,6,23,.28);
         }
 
         .dropdown-btn-reveal {
@@ -170,13 +170,13 @@
 
         .dark .dropdown-btn-neutral {
             color: rgb(248 250 252);
-            border-color: rgba(71, 85, 105, .7);
-            background: linear-gradient(135deg, rgba(15,23,42,.98), rgba(17,24,39,.96), rgba(30,41,59,.94));
+            border-color: rgba(255,255,255,.12);
+            background: linear-gradient(135deg, #57534e, #3f3f46, #0f172a);
             box-shadow: 0 12px 26px rgba(0,0,0,.35);
         }
 
         .dark .dropdown-btn-neutral:hover {
-            background: linear-gradient(135deg, rgba(2,6,23,1), rgba(15,23,42,.98), rgba(30,41,59,.96));
+            background: linear-gradient(135deg, #44403c, #27272a, #020617);
         }
 
         .dropdown-btn-warning {
@@ -283,7 +283,7 @@
 
                                     <button
                                         id="btnNext"
-                                        class="dropdown-btn-primary dropdown-btn-neutral py-3"
+                                        class="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-3 text-xs font-black text-white transition duration-200 ease-out hover:scale-105 active:scale-95 sm:px-4 sm:text-sm {{ $theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500' }}"
                                     >
                                         Next
                                     </button>

@@ -2,7 +2,7 @@
 $content = [
     'video'      => materialAsset('slider/A1/Advanced/chapter-3/video/checkout-encrypted/checkout.m3u8'),
     'thumbnail'  => materialAsset('slider/A1/Advanced/chapter-3/img/checkout.webp'),
-    'isQuiz'     => 0,
+    'isQuiz'     => 1,
 
     'questions' => [
         [

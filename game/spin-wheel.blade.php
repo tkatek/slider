@@ -119,7 +119,7 @@
                 </div>
 
                 <div class="flex flex-col gap-4 w-full max-w-sm mx-auto">
-                    <button id="spin-btn" class="spin-btn w-full rounded-2xl bg-gradient-to-br from-slate-900 to-slate-700 px-10 py-5 text-sm font-extrabold uppercase tracking-[0.05em] text-white shadow-[0_10px_20px_rgba(2,6,23,0.22)] transition-all hover:-translate-y-0.5 hover:shadow-[0_15px_30px_rgba(2,6,23,0.26)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50">
+                    <button id="spin-btn" class="spin-btn w-full rounded-2xl {{ $theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500' }} px-10 py-5 text-sm font-extrabold uppercase tracking-[0.05em] text-white shadow-[0_12px_28px_rgba(2,6,23,0.24)] transition-all hover:-translate-y-0.5 hover:shadow-[0_15px_30px_rgba(2,6,23,0.28)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50">
                         {{ $spinButtonText }}
                     </button>
 

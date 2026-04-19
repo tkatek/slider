@@ -946,7 +946,7 @@
                     <div class="bubble-row">
                         @foreach($bubbles as $bubble)
                             @php
-                                $variant = $bubble['variant'] ?? 'soft';
+                                $variant = $bubble['variant'] ?? 'soft'; 
                                 $bubbleClass = match($variant) {
                                     'outline' => 'bubble bubble-outline',
                                     'bold' => 'bubble bubble-bold',
@@ -978,13 +978,7 @@
                                     default => ($tone === '' ? '' : 'tone-neutral'),
                                 };
 
-                                $btnClass = match($tone) {
-                                    'play' => 'btn-play',
-                                    'violet' => 'btn-violet',
-                                    'go' => 'btn-go',
-                                    'do' => 'btn-do',
-                                    default => 'btn-neutral',
-                                };
+                                $btnClass = 'bg-gradient-to-br from-stone-600 via-zinc-700 to-slate-900 shadow-lg shadow-slate-950/30 ring-1 ring-white/10';
 
                                 $pillClass = match($tone) {
                                     'play' => 'pill-play',
@@ -1000,7 +994,7 @@
                                     @if($hasSentenceAudio)
                                         <button
                                                 type="button"
-                                                class="speak-btn sentence-btn {{ $btnClass }}"
+                                                class="speak-btn sentence-btn {{ $btnClass }} focus-visible:ring-4 focus-visible:ring-slate-300/40 dark:focus-visible:ring-slate-200/20"
                                                 data-audio="{{ $sentenceSound }}"
                                                 aria-label="Play sentence audio"
                                         >

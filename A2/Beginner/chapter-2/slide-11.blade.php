@@ -9,7 +9,7 @@ $content = [
         [
             'type' => 'sections',
             'title' => 'Comparatives',
-            'tone' => 'from-orange-500 to-red-500',
+            'tone' => 'from-slate-400 to-slate-600',
             'badge_class' => '',
             'sections' => [
                 [
@@ -30,7 +30,8 @@ $content = [
         [
             'type' => 'sections',
             'title' => 'Superlatives',
-            'tone' => 'from-yellow-400 to-amber-500',
+            'tone' => 'from-gray-400 to-zinc-600',
+
             'badge_class' => '',
             'sections' => [
                 [

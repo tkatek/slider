@@ -6,7 +6,7 @@ $content = [
     'shorts'     => [
         [
             'src' => materialAsset('slider/A1/Advanced/chapter-7/video/signs-shorts-encrypted/signs-shorts.m3u8'),
-            'thumbnail' => materialAsset('slider/A1/Advanced/chapter-7/video/thumbnail-short.webp'),
+            'thumbnail' => materialAsset('slider/A1/Advanced/chapter-7/img/short.webp'),
             'showCC' => false,
             'subtitles' => [
                 ['start' => 0,  'end' => 2,  'text' => 'What is this sign called?'],

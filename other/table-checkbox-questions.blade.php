@@ -64,8 +64,8 @@
             align-items: center;
             border-radius: 999px;
             padding: .34rem .78rem;
-            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
-            box-shadow: 0 10px 22px rgba(79,70,229,.16);
+            background: linear-gradient(135deg, #57534e, #3f3f46, #0f172a);
+            box-shadow: 0 12px 28px rgba(2,6,23,.24);
         }
 
         .question-table-wrap {

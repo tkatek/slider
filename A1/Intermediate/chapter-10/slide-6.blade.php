@@ -1,13 +1,13 @@
 <?php
 $content = [
-    'video'          => materialAsset(''),
-    'thumbnail'      => materialAsset(''),
+    'video'          => materialAsset('slider/A1/Intermediate/chapter-10/video/airport-encrypted/airport.m3u8'),
+    'thumbnail'      => materialAsset('slider/A1/Intermediate/chapter-10/video/thumbnail.webp'),
     'isQuiz'         => 1,
     'showTranscript' => 0,
 
     'questions'      => [
         [
-            'time' => 6000,
+            'time' => 8200,
             'type' => 'multiple_choice',
             'question' => '1️⃣ What does the check-in agent ask for first?',
             'options' => [
@@ -21,7 +21,7 @@ $content = [
         ],
 
         [
-            'time' => 14000,
+            'time' => 18200,
             'type' => 'multiple_choice',
             'question' => '2️⃣ How many suitcases does the traveler have?',
             'options' => [
@@ -35,7 +35,7 @@ $content = [
         ],
 
         [
-            'time' => 24000,
+            'time' => 33000,
             'type' => 'multiple_choice',
             'question' => '3️⃣ What kind of seat does the traveler want?',
             'options' => [
@@ -49,7 +49,7 @@ $content = [
         ],
 
         [
-            'time' => 34000,
+            'time' => 52100,
             'type' => 'multiple_choice',
             'question' => '4️⃣ What time does boarding begin?',
             'options' => [
@@ -64,21 +64,23 @@ $content = [
     ],
 
     'subtitles' => [
-        ['start' => 0,  'end' => 3,  'text' => "Traveler: Good morning. I'd like to check in for my flight."],
-        ['start' => 3,  'end' => 7,  'text' => "Check-in Agent: Good morning. Can I see your passport and ticket, please?"],
-        ['start' => 7,  'end' => 9,  'text' => "Traveler: Sure. Here you go."],
-        ['start' => 9,  'end' => 12, 'text' => "Check-in Agent: Thank you. Are you checking in any luggage?"],
-        ['start' => 12, 'end' => 15, 'text' => "Traveler: Yes, I have one suitcase."],
-        ['start' => 15, 'end' => 18, 'text' => "Check-in Agent: Please put it on the scale."],
-        ['start' => 18, 'end' => 20, 'text' => "Traveler: Okay, here it is."],
-        ['start' => 20, 'end' => 24, 'text' => "Check-in Agent: Great. Your bag is within the weight limit."],
-        ['start' => 24, 'end' => 27, 'text' => "Traveler: That's good. Can I have a window seat, please?"],
-        ['start' => 27, 'end' => 31, 'text' => "Check-in Agent: Let me check. Yes, I found one for you."],
-        ['start' => 31, 'end' => 33, 'text' => "Traveler: Perfect. Thank you."],
-        ['start' => 33, 'end' => 37, 'text' => "Check-in Agent: Here's your boarding pass. Your gate number is 12."],
-        ['start' => 37, 'end' => 40, 'text' => "Traveler: What time does boarding start?"],
-        ['start' => 40, 'end' => 44, 'text' => "Check-in Agent: Boarding begins at 10:30. Don't be late."],
-        ['start' => 44, 'end' => 47, 'text' => "Traveler: Got it. Thanks for your help."],
+        ['start' => 0,  'end' => 3,  'text' => "Good morning. I'd like to check in for my flight."],
+        ['start' => 3,  'end' => 6.5,  'text' => "Good morning. Can I see your passport and ticket, please?"],
+        ['start' => 6.8,  'end' => 8,  'text' => "Sure, Here you go."],
+        ['start' => 9,  'end' => 10, 'text' => "Thank you."],
+        ['start' => 13.8,  'end' => 16, 'text' => "Are you checking in any luggage?"],
+        ['start' => 16, 'end' => 18, 'text' => "Yes, I have one suitcase."],
+        ['start' => 18.5, 'end' => 19.5, 'text' => "Please put it on the scale."],
+        ['start' => 20, 'end' => 21.5, 'text' => "Okay, Here it is."],
+        ['start' => 26.5, 'end' => 29, 'text' => "Great. Your bag is within the weight limit."],
+        ['start' => 29, 'end' => 31, 'text' => "That's good. Can I have a window seat, please?"],
+        ['start' => 31.5, 'end' => 32.5, 'text' => "Let me check."],
+        ['start' => 34, 'end' => 36, 'text' => "Yes, I found one for you."],
+        ['start' => 36, 'end' => 37, 'text' => "Great. Thank you."],
+        ['start' => 37.5, 'end' => 41, 'text' => "You're welcome, Here's your boarding pass. Your gate number is 12."],
+        ['start' => 45.5, 'end' => 47, 'text' => "What time does boarding start?"],
+        ['start' => 47, 'end' => 50, 'text' => "Boarding begins at 10:30. Don't be late."],
+        ['start' => 50, 'end' => 52, 'text' => "Got it. Thanks for your help."],
     ],
 ];
 ?>

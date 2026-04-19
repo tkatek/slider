@@ -33,8 +33,8 @@
         }
 
         .word-span.active {
-            color: #4f46e5;
-            background: rgba(79, 70, 229, 0.4);
+            color: #f8fafc;
+            background: linear-gradient(135deg, #57534e, #3f3f46, #0f172a);
             opacity: 1;
             transform: scale(1.08);
             z-index: 10;
@@ -82,7 +82,7 @@
 
         professions.forEach(prof => {
             const card = document.createElement("div");
-            card.className = "prof-card group relative overflow-hidden rounded-[2rem] border border-white/70 bg-white/75 shadow-[0_15px_30px_-10px_rgba(0,0,0,0.05)] backdrop-blur-2xl transition-all duration-400 hover:-translate-y-2 hover:scale-[1.02] hover:border-indigo-500 hover:shadow-[0_30px_60px_-15px_rgba(79,70,229,0.4)] dark:border-white/10 dark:bg-slate-900/80 cursor-pointer";
+            card.className = "prof-card group relative overflow-hidden rounded-[2rem] border border-white/70 bg-white/75 shadow-[0_15px_30px_-10px_rgba(0,0,0,0.05)] backdrop-blur-2xl transition-all duration-400 hover:-translate-y-2 hover:scale-[1.02] hover:border-slate-700 hover:shadow-[0_30px_60px_-15px_rgba(2,6,23,0.28)] dark:border-white/10 dark:bg-slate-900/80 cursor-pointer";
             card.onclick = () => handleInteraction(prof, card);
 
             card.innerHTML = `
@@ -93,7 +93,7 @@
             <div class="prof-content flex items-center justify-between bg-white px-4 py-4 transition-colors duration-300 dark:bg-slate-900 sm:px-5 sm:py-5">
                 <span class="prof-label text-sm font-extrabold tracking-tight text-slate-900 dark:text-slate-100 sm:text-base">${prof.label}</span>
 
-                <div class="audio-btn flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-500 transition-all duration-300 group-hover:-rotate-6 group-hover:border-indigo-500 group-hover:bg-indigo-500 group-hover:text-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 sm:h-11 sm:w-11 sm:rounded-xl">
+                <div class="audio-btn flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-500 transition-all duration-300 group-hover:-rotate-6 group-hover:border-slate-700 group-hover:bg-slate-800 group-hover:text-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 sm:h-11 sm:w-11 sm:rounded-xl">
                     <svg class="static-icon w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
                     </svg>
@@ -106,7 +106,7 @@
                 </div>
             </div>
 
-            <div class="playing-indicator absolute bottom-0 left-0 h-1 w-0 bg-indigo-500 transition-[width] duration-100"></div>
+            <div class="playing-indicator absolute bottom-0 left-0 h-1 w-0 bg-[linear-gradient(135deg,#57534e,#3f3f46,#0f172a)] transition-[width] duration-100"></div>
         `;
 
             grid.appendChild(card);

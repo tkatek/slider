@@ -2,6 +2,16 @@
 
 @section('title', $content['title'] ?? 'Slide')
 
+@php
+    $audioBtnClass = ($theme['name'] ?? null) === 'orange'
+        ? 'bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 shadow-lg shadow-orange-500/20'
+        : 'bg-gradient-to-br from-indigo-500 via-blue-500 to-violet-500 shadow-lg shadow-indigo-500/20';
+
+    $audioBtnRingClass = ($theme['name'] ?? null) === 'orange'
+        ? 'focus-visible:ring-orange-300/40'
+        : 'focus-visible:ring-indigo-300/40';
+@endphp
+
 @section("style")
     <style>
         .slide-font {
@@ -36,70 +46,48 @@
             display:inline-flex;
             align-items:center;
             justify-content:center;
-            width:2.25rem;
-            height:2.25rem;
-            border-radius:8px;
-            border:1px solid rgb(226 232 240);
-            background:rgb(248 250 252);
-            color:rgb(71 85 105);
-            transition:background-color .18s ease, color .18s ease, transform .18s ease;
+            width:2.3rem;
+            height:2.3rem;
+            border-radius:999px;
+            color:#fff;
+            transition:transform .16s ease, box-shadow .16s ease, opacity .16s ease;
         }
 
         .grammar-audio-btn:hover{
             transform:scale(1.04);
-            background:rgb(239 246 255);
-            color:rgb(37 99 235);
         }
 
-        .dark .grammar-audio-btn{
-            border-color:rgb(51 65 85);
-            background:rgb(30 41 59);
-            color:rgb(203 213 225);
+        .grammar-audio-btn:active{
+            transform:scale(.96);
         }
 
-        .grammar-audio-btn .wave-wrap{
-            display:none;
-            align-items:center;
-            justify-content:center;
-            gap:2px;
+        .grammar-audio-btn:disabled{
+            opacity:.42;
+            cursor:default;
+            box-shadow:none !important;
         }
 
         .grammar-audio-btn .wave-bar{
-            width:3px;
-            height:8px;
+            display:none;
+            width:2.5px;
+            height:10px;
             border-radius:999px;
             background:currentColor;
+            margin:0 1px;
         }
 
         .grammar-audio-btn.speaking .static-icon{
             display:none;
         }
 
-        .grammar-audio-btn.speaking .wave-wrap{
-            display:inline-flex;
-        }
-
-        .grammar-audio-btn.speaking .wave-bar:nth-child(1){
-            animation:grammarWaveBounce .7s ease-in-out infinite;
-        }
-
-        .grammar-audio-btn.speaking .wave-bar:nth-child(2){
-            animation:grammarWaveBounce .7s ease-in-out .12s infinite;
-        }
-
-        .grammar-audio-btn.speaking .wave-bar:nth-child(3){
-            animation:grammarWaveBounce .7s ease-in-out .24s infinite;
+        .grammar-audio-btn.speaking .wave-bar{
+            display:block;
+            animation:grammarWaveBounce .6s infinite ease-in-out;
         }
 
         @keyframes grammarWaveBounce{
-            0%,100%{
-                height:7px;
-                opacity:.7;
-            }
-            50%{
-                height:16px;
-                opacity:1;
-            }
+            0%,100% { height:5px; }
+            50% { height:13px; }
         }
     </style>
 @endsection
@@ -165,7 +153,7 @@
 
                                                 <button
                                                         type="button"
-                                                        class="grammar-audio-btn"
+                                                        class="grammar-audio-btn {{ $audioBtnClass }} focus-visible:ring-4 {{ $audioBtnRingClass }}"
                                                         aria-label="Play audio"
                                                         @if($itemSound !== '') data-sound="{{ $itemSound }}" @endif
                                                         @if($itemSpeech !== '') data-speech="{{ $itemSpeech }}" @endif
@@ -173,11 +161,9 @@
                                                     <svg class="static-icon h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
                                                         <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
                                                     </svg>
-                                                    <span class="wave-wrap" aria-hidden="true">
-                                                        <span class="wave-bar"></span>
-                                                        <span class="wave-bar"></span>
-                                                        <span class="wave-bar"></span>
-                                                    </span>
+                                                    <span class="wave-bar" style="animation-delay:.1s" aria-hidden="true"></span>
+                                                    <span class="wave-bar" style="animation-delay:.2s" aria-hidden="true"></span>
+                                                    <span class="wave-bar" style="animation-delay:.3s" aria-hidden="true"></span>
                                                 </button>
                                             </div>
                                         </div>
@@ -255,7 +241,7 @@
                                                                             <span class="min-w-0 flex-1">{!! $cellText !!}</span>
                                                                             <button
                                                                                     type="button"
-                                                                                    class="grammar-audio-btn"
+                                                                                    class="grammar-audio-btn {{ $audioBtnClass }} focus-visible:ring-4 {{ $audioBtnRingClass }}"
                                                                                     aria-label="{{ $content['play_label'] ?? 'Play audio' }}"
                                                                                     @if($cellSound !== '') data-sound="{{ $cellSound }}" @endif
                                                                                     @if($cellSpeech !== '') data-speech="{{ $cellSpeech }}" @endif
@@ -263,11 +249,9 @@
                                                                                 <svg class="static-icon h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
                                                                                     <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
                                                                                 </svg>
-                                                                                <span class="wave-wrap" aria-hidden="true">
-                                                                                    <span class="wave-bar"></span>
-                                                                                    <span class="wave-bar"></span>
-                                                                                    <span class="wave-bar"></span>
-                                                                                </span>
+                                                                                <span class="wave-bar" style="animation-delay:.1s" aria-hidden="true"></span>
+                                                                                <span class="wave-bar" style="animation-delay:.2s" aria-hidden="true"></span>
+                                                                                <span class="wave-bar" style="animation-delay:.3s" aria-hidden="true"></span>
                                                                             </button>
                                                                         </div>
                                                                     @else
@@ -311,7 +295,7 @@
                                                                 <span class="min-w-0 flex-1">{!! $cellText !!}</span>
                                                                 <button
                                                                         type="button"
-                                                                        class="grammar-audio-btn"
+                                                                        class="grammar-audio-btn {{ $audioBtnClass }} focus-visible:ring-4 {{ $audioBtnRingClass }}"
                                                                         aria-label="{{ $content['play_label'] ?? 'Play audio' }}"
                                                                         @if($cellSound !== '') data-sound="{{ $cellSound }}" @endif
                                                                         @if($cellSpeech !== '') data-speech="{{ $cellSpeech }}" @endif
@@ -319,11 +303,9 @@
                                                                     <svg class="static-icon h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
                                                                         <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
                                                                     </svg>
-                                                                    <span class="wave-wrap" aria-hidden="true">
-                                                                        <span class="wave-bar"></span>
-                                                                        <span class="wave-bar"></span>
-                                                                        <span class="wave-bar"></span>
-                                                                    </span>
+                                                                    <span class="wave-bar" style="animation-delay:.1s" aria-hidden="true"></span>
+                                                                    <span class="wave-bar" style="animation-delay:.2s" aria-hidden="true"></span>
+                                                                    <span class="wave-bar" style="animation-delay:.3s" aria-hidden="true"></span>
                                                                 </button>
                                                             </div>
                                                         @else
