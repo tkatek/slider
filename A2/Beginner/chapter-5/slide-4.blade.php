@@ -2,8 +2,8 @@
 $content = [
     'type' => 'emoji',
 
-    'title'    => 'Practice 4',
-    'subtitle' => 'Choose the correct past form.',
+    'title'    => 'Practice 2: Let’s remember!',
+    'subtitle' => 'What’s the correct verb past form?',
 
     'questions' => [
         [

@@ -985,7 +985,10 @@
                                 </div>
                             </div>
                         </div>
-                        @include('slider.components.game-win-modal-correction')
+                        @include('slider.components.game-win-modal', [
+                            'modalExtraView' => 'slider.components.game-win-modal-correction',
+                            'modalExtraData' => ['section_only' => true],
+                        ])
 
                     </section>
                 </div>

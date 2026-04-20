@@ -7,9 +7,11 @@
     $modalEmojiClass = trim((string) ($modalEmojiClass ?? 'mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-3xl border border-indigo-200 bg-indigo-50 text-4xl shadow-sm dark:border-indigo-500/30 dark:bg-indigo-500/15'));
     $modalOverlayClass = trim((string) ($modalOverlayClass ?? 'absolute inset-0 bg-slate-900/40 backdrop-blur-sm dark:bg-black/60'));
     $modalWrapClass = trim((string) ($modalWrapClass ?? 'relative flex min-h-full w-full items-center justify-center p-5 sm:p-8'));
-    $modalPanelClass = trim((string) ($modalPanelClass ?? 'relative w-full max-w-2xl max-h-[88dvh] overflow-y-auto rounded-[2rem] border border-slate-200/70 bg-white/95 shadow-2xl dark:border-slate-700/70 dark:bg-slate-900/95'));
+    $modalPanelClass = trim((string) ($modalPanelClass ?? 'relative w-full max-w-2xl max-h-[88dvh] overflow-y-auto rounded-2xl border border-slate-200/70 bg-white/95 shadow-2xl dark:border-slate-700/70 dark:bg-slate-900/95'));
     $modalContentClass = trim((string) ($modalContentClass ?? 'p-8 text-center sm:p-10'));
     $modalTopBarClass = trim((string) ($modalTopBarClass ?? 'mb-3 flex items-center justify-between gap-3 text-left'));
+    $modalExtraView = trim((string) ($modalExtraView ?? ''));
+    $modalExtraData = is_array($modalExtraData ?? null) ? $modalExtraData : [];
     $modalStats = $modalStats ?? [
         ['label' => 'Correct', 'id' => 'finalCorrect'],
         ['label' => 'Time', 'id' => 'finalTime'],
@@ -24,7 +26,7 @@
         [
             'label' => 'Continue',
             'id' => 'continueBtnModal',
-            'class' => 'game-btn w-full border border-white/20 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-8 py-3 text-sm text-white shadow-[0_10px_24px_#4F46E51A]',
+            'class' => 'game-btn w-full border border-slate-300/70 bg-gradient-to-r from-slate-700 via-slate-800 to-zinc-900 px-8 py-3 text-sm text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)] hover:brightness-105 dark:border-slate-100/10 dark:bg-gradient-to-r dark:from-slate-100 dark:via-slate-200 dark:to-zinc-300 dark:text-slate-900 dark:hover:brightness-105',
         ],
     ];
     $closeButton = $closeButton ?? null;
@@ -66,7 +68,7 @@
 
                 @if($modalTitleAfterEmoji)
                     <h2 class="{{ $modalTitleClass }}">
-                        {{ $modalTitle }}
+                        {{ $modalTitle }} 
                     </h2>
                 @endif
 
@@ -79,6 +81,10 @@
                     @endforeach
                 </div>
 
+                @if($modalExtraView !== '')
+                    @include($modalExtraView, $modalExtraData)
+                @endif
+
                 <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
                     @foreach ($modalActions as $action)
                         <button
@@ -89,7 +95,7 @@
                         >
                             {{ $action['label'] ?? '' }}
                         </button>
-                    @endforeach
+                    @endforeach 
                 </div>
             </div>
         </div>

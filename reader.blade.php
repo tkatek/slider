@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta name="csrf_token" content="{{ csrf_token() }}" />
+    <meta name="chapter_id" content="{{ $chapter->id }}" />
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -145,22 +147,22 @@
         body.editor-theme-orange .cue-btn {
             background: var(--accent-gradient);
             box-shadow:
-                0 0 0 1px rgba(249, 115, 22, 0.4),
-                0 10px 20px -10px rgba(249, 115, 22, 0.5);
+                    0 0 0 1px rgba(249, 115, 22, 0.4),
+                    0 10px 20px -10px rgba(249, 115, 22, 0.5);
         }
 
         body.editor-theme-orange .cue-btn:hover {
             background: linear-gradient(to top right, #fb923c, #f97316, #c2410c);
             box-shadow:
-                0 0 0 2px rgba(249, 115, 22, 0.4),
-                0 8px 16px -4px rgba(249, 115, 22, 0.3);
+                    0 0 0 2px rgba(249, 115, 22, 0.4),
+                    0 8px 16px -4px rgba(249, 115, 22, 0.3);
         }
 
         body.editor-theme-orange .cue-tooltip {
             border-color: rgba(249, 115, 22, 0.16);
             box-shadow:
-                0 40px 80px -15px rgba(15, 23, 42, 0.15),
-                inset 0 0 0 1px rgba(249, 115, 22, 0.08);
+                    0 40px 80px -15px rgba(15, 23, 42, 0.15),
+                    inset 0 0 0 1px rgba(249, 115, 22, 0.08);
         }
 
         body.editor-theme-orange .cue-header {
@@ -388,8 +390,8 @@
             background: var(--bg-card);
             pointer-events: none;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             transform-origin: center center;
         }
 
@@ -442,8 +444,8 @@
             letter-spacing: 0.05em;
             text-transform: uppercase;
             box-shadow:
-                0 0 0 1px rgba(79, 70, 229, 0.4),
-                0 10px 20px -10px rgba(79, 70, 229, 0.5);
+                    0 0 0 1px rgba(79, 70, 229, 0.4),
+                    0 10px 20px -10px rgba(79, 70, 229, 0.5);
             transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
             cursor: pointer;
             border: none;
@@ -469,8 +471,8 @@
 
         .cue-btn:hover {
             box-shadow:
-                0 0 0 2px rgba(79, 70, 229, 0.4),
-                0 8px 16px -4px rgba(79, 70, 229, 0.3);
+                    0 0 0 2px rgba(79, 70, 229, 0.4),
+                    0 8px 16px -4px rgba(79, 70, 229, 0.3);
             background: #4338ca;
         }
 
@@ -515,8 +517,8 @@
             clip-path: polygon(0 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%);
             border: 1px solid rgba(79, 70, 229, 0.1);
             box-shadow:
-                0 40px 80px -15px rgba(15, 23, 42, 0.15),
-                inset 0 0 0 1px rgba(79, 70, 229, 0.05);
+                    0 40px 80px -15px rgba(15, 23, 42, 0.15),
+                    inset 0 0 0 1px rgba(79, 70, 229, 0.05);
             color: #475569;
             text-align: left;
             opacity: 0;
@@ -667,11 +669,11 @@
 
         #sidebar-drawer {
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .translate-x-full { transform: translateX(100%); }
@@ -1443,6 +1445,58 @@
     }
 
     document.addEventListener('DOMContentLoaded', init);
+</script>
+<script>
+    let inactiveTime = 60 * 5;
+
+    // Increase inactive time every 10 seconds
+    setInterval(() => {
+        inactiveTime += 10;
+    }, 1000 * 10);
+
+    // Reset the counter on any activity
+    function resetInactivity() {
+        inactiveTime = 0;
+    }
+
+    // Listen for user activity
+    ['mousemove', 'keydown', 'scroll', 'click'].forEach(event => {
+        window.addEventListener(event, resetInactivity);
+    });
+
+    // Track tab visibility
+    let windowsOpen = true;
+    document.addEventListener("visibilitychange", () => {
+        windowsOpen = !document.hidden;
+    });
+
+    // Get meta values (vanilla JS)
+    const csrfToken = document.querySelector('meta[name="csrf_token"]')?.getAttribute('content');
+    const chapterId = document.querySelector('meta[name="chapter_id"]')?.getAttribute('content');
+
+    if (chapterId) {
+        setInterval(() => {
+            if ((windowsOpen || inactiveTime <= 50) && inactiveTime < 60 * 5) {
+                fetch(`/completeMinute/${chapterId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        inactiveTime: inactiveTime
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        alert(error);
+                    });
+            }
+        }, 1000 * 60);
+    }
 </script>
 </body>
 </html>

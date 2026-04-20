@@ -971,6 +971,17 @@
             </button>
         </div>
 
+        <div class="p-4 pb-0">
+            <button id="edit-chapter-btn"
+                    type="button"
+                    class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-[var(--border-ui)] bg-[var(--bg-body)] hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-[var(--text-primary)] font-semibold">
+                <svg class="w-4 h-4 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 3.487a2.25 2.25 0 013.182 3.182L7.5 19.213 3 20.25l1.037-4.5L16.862 3.487z" />
+                </svg>
+                <span class="sidebar-add-slide">Edit Chapter Info</span>
+            </button>
+        </div>
+
         <div id="sidebar-list" class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3"></div>
 
         <div class="sidebar-footer p-4 pt-0">
@@ -983,6 +994,43 @@
             </button>
         </div>
     </aside>
+</div>
+
+<div id="edit-chapter-modal" class="fixed inset-0 z-[116] hidden items-center justify-center">
+    <div id="edit-chapter-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div class="relative bg-[var(--bg-card)] border border-[var(--border-ui)] rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-[var(--border-ui)]">
+            <div>
+                <h2 class="text-lg font-bold text-[var(--text-primary)]">Edit Chapter</h2>
+                <p class="text-sm text-[var(--text-secondary)] mt-1">Update chapter title and description</p>
+            </div>
+            <button id="edit-chapter-close" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-[var(--text-secondary)]">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="p-6 overflow-y-auto">
+            <form id="edit-chapter-form" method="POST" action="{{ route('tutor.chapter.updateChapterTitle', ['chapter' => $chapter->id]) }}">
+                @csrf
+                @method('PUT')
+                <div class="space-y-4">
+                    <div>
+                        <label for="edit-chapter-title" class="block text-sm font-semibold text-[var(--text-primary)] mb-2">Title</label>
+                        <input type="text" id="edit-chapter-title" name="title" value="{{ old('title', $chapter->title ?? '') }}" class="w-full px-4 py-3 rounded-xl border border-[var(--border-ui)] bg-[var(--bg-body)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all">
+                    </div>
+                    <div>
+                        <label for="edit-chapter-description" class="block text-sm font-semibold text-[var(--text-primary)] mb-2">Description</label>
+                        <textarea id="edit-chapter-description" name="description" rows="5" class="w-full px-4 py-3 rounded-xl border border-[var(--border-ui)] bg-[var(--bg-body)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all resize-none">{{ old('description', $chapter->description ?? '') }}</textarea>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-[var(--border-ui)] mt-4">
+                    <button type="button" id="edit-chapter-cancel" class="px-4 py-2 rounded-xl border border-[var(--border-ui)] text-[var(--text-primary)] font-semibold hover:bg-[var(--bg-body)] transition-colors">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-brand text-white font-semibold hover:bg-brand-glow transition-colors">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div id="delete-slide-modal" class="fixed inset-0 z-[110] hidden items-center justify-center">
@@ -1984,6 +2032,12 @@
     const deleteSlideTitle = document.getElementById('delete-slide-title');
     const deleteSlideForm = document.getElementById('delete-slide-form');
     const deleteRouteTemplate = @json(route('slider.delete', ['slide_id' => '__ID__']));
+    const editChapterBtn = document.getElementById('edit-chapter-btn');
+    const editChapterModal = document.getElementById('edit-chapter-modal');
+    const editChapterBackdrop = document.getElementById('edit-chapter-backdrop');
+    const editChapterClose = document.getElementById('edit-chapter-close');
+    const editChapterCancel = document.getElementById('edit-chapter-cancel');
+    const editChapterForm = document.getElementById('edit-chapter-form');
     const editSlideModal = document.getElementById('edit-slide-modal');
     const editSlideBackdrop = document.getElementById('edit-slide-backdrop');
     const editSlideClose = document.getElementById('edit-slide-close');
@@ -2189,6 +2243,36 @@
     if (deleteSlideBackdrop) deleteSlideBackdrop.addEventListener('click', closeDeleteSlideModal);
     if (deleteSlideClose) deleteSlideClose.addEventListener('click', closeDeleteSlideModal);
     if (deleteSlideCancel) deleteSlideCancel.addEventListener('click', closeDeleteSlideModal);
+
+    function openEditChapterModal() {
+        if (!editChapterModal) return;
+        editChapterModal.classList.remove('hidden');
+        editChapterModal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditChapterModal() {
+        if (!editChapterModal) return;
+        editChapterModal.classList.add('hidden');
+        editChapterModal.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+
+    if (editChapterBtn) editChapterBtn.addEventListener('click', openEditChapterModal);
+    if (editChapterBackdrop) editChapterBackdrop.addEventListener('click', closeEditChapterModal);
+    if (editChapterClose) editChapterClose.addEventListener('click', closeEditChapterModal);
+    if (editChapterCancel) editChapterCancel.addEventListener('click', closeEditChapterModal);
+
+    if (editChapterForm) {
+        editChapterForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            await submitSlideMutation(editChapterForm, {
+                loadingText: 'Saving...',
+                onSuccess: closeEditChapterModal,
+            });
+        });
+    }
 
     if (deleteSlideForm) {
         deleteSlideForm.addEventListener('submit', async (event) => {

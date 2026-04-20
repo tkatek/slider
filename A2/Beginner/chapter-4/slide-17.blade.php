@@ -4,7 +4,7 @@ $content = [
     'subtitle' => 'Listen again and answer the questions',
     'type'     => 'audio',
 
-    'audio' => materialAsset('slider/A2/Beginner/chapter-4/audios/slide17/dialogue.mp3'),
+    'audio' => materialAsset('slider/A2/Beginner/chapter-4/audios/slide17.mp3'),
 
     'image_panel_col_class'  => 'sm:col-span-0',
     'answer_panel_col_class' => 'sm:col-span-12',

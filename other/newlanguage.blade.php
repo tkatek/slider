@@ -130,6 +130,98 @@
     </style>
 @endsection
 
+@section('script')
+    <script>
+        (function () {
+            const KEY = "__BEC_GLOBAL_SLIDER_AUDIO__";
+
+            if (!window[KEY]) {
+                const audio = new Audio();
+                audio.preload = "auto";
+                audio.crossOrigin = "anonymous";
+
+                let activeButton = null;
+
+                function setSpeaking(button, isSpeaking) {
+                    if (!button) return;
+                    button.classList.toggle("speaking", isSpeaking);
+                }
+
+                function clearActive() {
+                    if (activeButton) {
+                        setSpeaking(activeButton, false);
+                        activeButton = null;
+                    }
+                }
+
+                function stop() {
+                    try {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    } catch (e) {}
+                    clearActive();
+                }
+
+                function play(src, button) {
+                    if (!src) return;
+
+                    const resolved = new URL(src, window.location.href).toString();
+
+                    if (activeButton === button && !audio.paused && audio.src === resolved) {
+                        stop();
+                        return;
+                    }
+
+                    stop();
+
+                    try {
+                        if (audio.src !== resolved) audio.src = resolved;
+                        audio.currentTime = 0;
+                        activeButton = button;
+                        setSpeaking(activeButton, true);
+
+                        const promise = audio.play();
+                        if (promise && typeof promise.catch === "function") {
+                            promise.catch(() => stop());
+                        }
+                    } catch (e) {
+                        stop();
+                    }
+                }
+
+                audio.addEventListener("ended", stop);
+                audio.addEventListener("pause", () => {
+                    if (audio.currentTime === 0 || audio.ended) {
+                        clearActive();
+                    }
+                });
+                audio.addEventListener("error", stop);
+
+                window[KEY] = { audio, play, stop };
+            }
+
+            window.stopSlideAudio = function () {
+                window[KEY].stop();
+            };
+
+            if (!window.__BEC_AUDIO_DELEGATE__) {
+                window.__BEC_AUDIO_DELEGATE__ = true;
+
+                document.addEventListener("click", (event) => {
+                    const button = event.target.closest(".audio-btn");
+                    if (!button) return;
+
+                    event.preventDefault();
+                    const src = button.dataset.sound || button.getAttribute("data-sound") || "";
+                    window[KEY].play(src, button);
+                });
+            }
+        })();
+
+        window.resetSlide = function () {};
+    </script>
+@endsection
+
 @section('content')
     @php
         $playLabel = trim((string)($content['play_label'] ?? 'Play audio'));
