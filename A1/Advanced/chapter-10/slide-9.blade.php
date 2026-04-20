@@ -1,28 +1,76 @@
 <?php
+$videoSrc = materialAsset('');
+$videoThumbnail = materialAsset('');
+$videoSubtitles = [
+
+];
+
 $content = [
     'page_title' => 'Grammar',
-    'title'      => 'Grammar',
-    'subtitle'   => 'How to form present continuous?',
-    'video_title'=> 'Let’s watch this video first',
-    'shorts'     => [
+    'title' => 'Grammar',
+    'subtitle' => '',
+    'title_class' => 'text-3xl sm:text-5xl md:text-6xl',
+    'video_title' => 'How to form present continuous?',
+    'video' => $videoSrc,
+    'thumbnail' => $videoThumbnail,
+    'subtitles' => $videoSubtitles,
+    'showCC' => true,
+    'grammar_title' => 'Present Continuous',
+    'grammar_label' => 'Grammar Rules',
+    'grammar_cards' => [
         [
-            'src'       => materialAsset('slider/A1/Beginner/chapter-4/video/encrypted/short1.m3u8'),
-            'thumbnail' => materialAsset('slider/A1/Beginner/chapter-4/video/thambnail-short1.webp'),
-            'showCC'    => false,
-            'subtitles' => [
-                ['start' => 0,  'end' => 1,  'text' => 'I'],
-                ['start' => 1,  'end' => 2,  'text' => 'You'],
-                ['start' => 2,  'end' => 2.5,  'text' => 'He'],
-                ['start' => 2.5,  'end' => 3,  'text' => 'She'],
-                ['start' => 3,  'end' => 4, 'text' => 'It'],
-                ['start' => 4,  'end' => 5.5, 'text' => 'We'],
-                ['start' => 5.5,  'end' => 6.5, 'text' => 'You'],
-                ['start' => 6.5,  'end' => 7, 'text' => 'They'],
+            'title' => 'Questions',
+            'tone' => 'sky',
+            'items' => [
+                'What <span>is he doing</span>?',
+                'What <span>is she doing</span>?',
+                'What <span>are they doing</span>?',
             ],
-        ]
+        ],
+        [
+            'title' => 'Affirmative',
+            'tone' => 'emerald',
+            'items' => [
+                'He <span>is working</span>.',
+                'She <span>is shopping</span>.',
+                'They <span>are talking</span>.',
+            ],
+        ],
+        [
+            'title' => 'Negative',
+            'tone' => 'rose',
+            'wide' => true,
+            'items' => [
+                'He <span>is not coming</span>.',
+                'She <span>is not sleeping</span>.',
+                'They <span>are not working</span>.',
+            ],
+        ],
+        [
+            'title' => 'Yes / No Questions',
+            'tone' => 'amber',
+            'items' => [
+                '<span>Are you</span> working?',
+                '<span>Is she</span> coming?',
+                '<span>Are they</span> helping you?',
+            ],
+        ],
+        [
+            'title' => 'Short Response',
+            'tone' => 'indigo',
+            'items' => [
+                'Yes, I am.',
+                'No, I am not.',
+                'Yes, he is.',
+                'No, he is not.',
+                'Yes, they are.',
+                'No, they are not.',
+            ],
+        ],
     ],
 ];
 ?>
+
 @extends('slider.simple-layout')
 
 @section('title', $content['page_title'])
@@ -99,178 +147,182 @@ $content = [
         .short-video-paused [data-short-overlay]:hover .short-play-btn-anim {
             transform: scale(1.08);
         }
+
+        .grammar-card[data-tone="sky"] {
+            --grammar-border: rgba(125, 211, 252, 0.8);
+            --grammar-bg: rgba(240, 249, 255, 0.72);
+            --grammar-heading: #0c4a6e;
+            --grammar-highlight: #0369a1;
+        }
+
+        .grammar-card[data-tone="emerald"] {
+            --grammar-border: rgba(110, 231, 183, 0.8);
+            --grammar-bg: rgba(236, 253, 245, 0.72);
+            --grammar-heading: #064e3b;
+            --grammar-highlight: #047857;
+        }
+
+        .grammar-card[data-tone="rose"] {
+            --grammar-border: rgba(254, 205, 211, 0.9);
+            --grammar-bg: rgba(255, 241, 242, 0.76);
+            --grammar-heading: #881337;
+            --grammar-highlight: #be123c;
+        }
+
+        .grammar-card[data-tone="amber"] {
+            --grammar-border: rgba(252, 211, 77, 0.78);
+            --grammar-bg: rgba(255, 251, 235, 0.76);
+            --grammar-heading: #78350f;
+            --grammar-highlight: #b45309;
+        }
+
+        .grammar-card[data-tone="indigo"] {
+            --grammar-border: rgba(199, 210, 254, 0.86);
+            --grammar-bg: rgba(238, 242, 255, 0.76);
+            --grammar-heading: #312e81;
+            --grammar-highlight: #4f46e5;
+        }
+
+        .dark .grammar-card {
+            --grammar-bg: rgba(15, 23, 42, 0.42);
+            --grammar-heading: #e2e8f0;
+        }
+
+        .grammar-card {
+            border-color: var(--grammar-border);
+            background: var(--grammar-bg);
+        }
+
+        .grammar-card h3 {
+            color: var(--grammar-heading);
+        }
+
+        .grammar-card span {
+            color: var(--grammar-highlight);
+            font-weight: 900;
+        }
+
+        .dark .grammar-card span {
+            color: #93c5fd;
+        }
     </style>
 @endsection
 
 @section('content')
     @php
-        $short = $content['shorts'][0] ?? [];
-        $src = (string)($short['src'] ?? '');
+        $src = (string) ($content['video'] ?? '');
+        $thumbnail = (string) ($content['thumbnail'] ?? '');
         $isHlsStream = str_contains(strtolower($src), '.m3u8');
         $videoMimeType = $isHlsStream ? 'application/x-mpegURL' : 'video/mp4';
-        $subtitles = array_values($short['subtitles'] ?? []);
-        $showCC = array_key_exists('showCC', $short) ? (bool)$short['showCC'] : false;
+        $subtitles = array_values($content['subtitles'] ?? []);
+        $showCC = array_key_exists('showCC', $content) ? (bool) $content['showCC'] : false;
     @endphp
 
-    <main class="w-full min-h-[100dvh]">
-        <div class="mx-auto flex min-h-[100dvh] w-full max-w-7xl flex-col justify-start px-4 py-6 sm:px-8 sm:py-8 lg:py-10">
-            <header class="w-full flex flex-col items-center justify-center mb-6 sm:mb-8 lg:mb-10 text-center">
-                <h1 class="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-indigo-600 drop-shadow-sm">
-                    {{ $content['title'] ?? 'Grammar' }}
-                </h1>
-                <h2 class="mt-1 sm:mt-2 text-base sm:text-xl md:text-2xl font-bold text-black dark:text-white">
-                    {{ $content['subtitle'] ?? 'Degrees of comparison' }}
-                </h2>
-            </header>
+    <main class="min-h-[100dvh] w-full">
+        <div class="mx-auto flex min-h-[100dvh] w-full max-w-7xl flex-col px-4 py-5 sm:px-8 sm:py-7 lg:py-8">
+            @include('slider.components.title-subtitle')
 
-            <section class="w-full">
-                <div class="grid place-items-center gap-4 text-center sm:gap-5">
-                    <div class="grid w-full items-start gap-5 lg:gap-8 lg:grid-cols-12">
-                        <div class="w-full lg:col-span-7">
-                            <div class="overflow-hidden flex flex-col rounded-[2rem] border border-slate-200/70 bg-white/60 shadow-xl backdrop-blur-xl dark:border-slate-700/30 dark:bg-slate-950/35" data-short-card>
-                                @if(!empty($content['video_title']))
-                                    <div class="w-full px-5 py-4 text-left border-b border-slate-300/60 dark:border-slate-700/60 bg-white/40 dark:bg-slate-900/40">
-                                        <p class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]">
-                                            {{ $content['video_title'] }}
-                                        </p>
-                                    </div>
-                                @endif
-                                <div class="shorts-player-shell short-video-paused relative aspect-video overflow-hidden bg-black" data-short-wrapper>
-                                    <video
-                                            id="short-video-0"
-                                            class="video-js absolute inset-0 z-0 h-full w-full select-none"
-                                            playsinline
-                                            webkit-playsinline="true"
-                                            preload="metadata"
-                                            poster="{{ $short['thumbnail'] ?? '' }}"
-                                            data-short-player
-                                            data-show-cc='@json($showCC)'
-                                            data-subtitles='@json($subtitles)'
-                                    >
-                                        <source src="{{ $src }}" type="{{ $videoMimeType }}">
-                                    </video>
+            <section class="grid w-full flex-1 items-center gap-5 lg:grid-cols-[minmax(260px,360px)_minmax(0,1fr)] lg:gap-8">
+                <div class="w-full justify-self-center lg:justify-self-start">
+                    <div class="w-full max-w-[330px] overflow-hidden rounded-[2rem] border border-slate-200/70 bg-white/60 shadow-xl backdrop-blur-xl dark:border-slate-700/30 dark:bg-slate-950/35" data-short-card>
+                        @if(!empty($content['video_title']))
+                            <div class="border-b border-slate-300/60 bg-white/55 px-5 py-4 text-left dark:border-slate-700/60 dark:bg-slate-900/45">
+                                <p class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
+                                    {{ $content['video_title'] }}
+                                </p>
+                            </div>
+                        @endif
 
-                                    @if(!empty($short['thumbnail']))
-                                        <img
-                                                src="{{ $short['thumbnail'] }}"
-                                                alt=""
-                                                class="absolute inset-0 z-10 h-full w-full object-cover transition-all duration-200 opacity-100 scale-100 pointer-events-none"
-                                                data-short-thumb
-                                        />
-                                    @endif
+                        <div class="shorts-player-shell short-video-paused relative aspect-[9/16] overflow-hidden bg-black" data-short-wrapper>
+                            <video
+                                id="short-video-0"
+                                class="video-js absolute inset-0 z-0 h-full w-full select-none"
+                                playsinline
+                                webkit-playsinline="true"
+                                preload="metadata"
+                                poster="{{ $thumbnail }}"
+                                data-short-player
+                                data-show-cc='@json($showCC)'
+                                data-subtitles='@json($subtitles)'
+                            >
+                                <source src="{{ $src }}" type="{{ $videoMimeType }}">
+                            </video>
 
-                                    <div data-short-overlay class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-[2px]">
-                                        <button
-                                                type="button"
-                                                class="short-play-btn-anim flex h-16 w-16 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-2xl backdrop-blur-sm sm:h-20 sm:w-20"
-                                                aria-label="Play / Pause"
-                                                data-short-overlay-btn
-                                        >
-                                            <svg data-main-play-icon class="ml-1 h-8 w-8 sm:h-10 sm:w-10" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                <path d="M8 5v14l11-7z"/>
-                                            </svg>
-                                        </button>
-                                        <p class="mt-4 text-sm font-medium tracking-wide text-white opacity-90 drop-shadow-md">Tap to Play</p>
-                                    </div>
+                            @if($thumbnail !== '')
+                                <img
+                                    src="{{ $thumbnail }}"
+                                    alt=""
+                                    class="pointer-events-none absolute inset-0 z-10 h-full w-full object-cover opacity-100 scale-100 transition-all duration-200"
+                                    data-short-thumb
+                                />
+                            @endif
 
-                                    <div class="pointer-events-none absolute bottom-3 left-1/2 z-30 w-[90%] -translate-x-1/2 text-center transition-all duration-300" data-subtitle-container>
-                                        <div
-                                                class="short-subtitle-text rounded-xl px-3 py-2 text-[0.88rem] leading-[1.35] sm:px-3.5 sm:py-2.5 sm:text-[0.93rem]"
-                                                data-subtitle-text
-                                        ></div>
-                                    </div>
-                                </div>
+                            <div data-short-overlay class="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 opacity-0 backdrop-blur-[2px] transition-opacity duration-300">
+                                <button
+                                    type="button"
+                                    class="short-play-btn-anim flex h-16 w-16 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-2xl backdrop-blur-sm sm:h-20 sm:w-20"
+                                    aria-label="Play / Pause"
+                                    data-short-overlay-btn
+                                >
+                                    <svg data-main-play-icon class="ml-1 h-8 w-8 sm:h-10 sm:w-10" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </button>
+                                <p class="mt-4 text-sm font-medium tracking-wide text-white opacity-90 drop-shadow-md">Tap to Play</p>
+                            </div>
 
-                                <div class="border-t border-white/10 bg-white/95 px-3 py-3 backdrop-blur-2xl transition-all duration-300 dark:border-white/5 dark:bg-slate-900/90">
-                                    <div class="flex items-center gap-3">
-                                        <button data-short-playpause class="text-slate-600 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">
-                                            <svg data-short-play-icon class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                <path d="M8 5v14l11-7z"/>
-                                            </svg>
-                                            <svg data-short-pause-icon class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                                            </svg>
-                                        </button>
-
-                                        <div class="relative h-1.5 flex-grow cursor-pointer rounded-full bg-slate-200 dark:bg-slate-800" data-timeline-container>
-                                            <div data-timeline-progress class="absolute h-full rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.4)] transition-all duration-100" style="width: 0%"></div>
-                                        </div>
-
-                                        <span data-time-display class="ml-auto text-[11px] font-bold tabular-nums text-slate-500 dark:text-slate-400">0:00 / 0:00</span>
-                                    </div>
-                                </div>
+                            <div class="pointer-events-none absolute bottom-3 left-1/2 z-30 w-[90%] -translate-x-1/2 text-center transition-all duration-300" data-subtitle-container>
+                                <div
+                                    class="short-subtitle-text rounded-xl px-3 py-2 text-[0.88rem] leading-[1.35] sm:px-3.5 sm:py-2.5 sm:text-[0.93rem]"
+                                    data-subtitle-text
+                                ></div>
                             </div>
                         </div>
 
-                            <div class="w-full lg:col-span-5 flex flex-col h-full justify-center rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200/70 bg-white/70 p-3 text-left shadow-[0_20px_50px_-28px_rgba(15,23,42,0.32)] backdrop-blur-xl dark:border-slate-700/35 dark:bg-slate-950/45 sm:p-5 lg:p-6">
-                                <div class="flex flex-col gap-1 sm:gap-2 shrink-0 mb-3 sm:mb-4">
-                                    <div>
-                                        <span class="inline-flex items-center rounded-full bg-indigo-50 px-2 sm:px-3 py-0.5 sm:py-1 text-[0.65rem] sm:text-[0.75rem] font-bold uppercase tracking-wider text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-200">
-                                            Grammar Rules
-                                        </span>
-                                        <h2 class="mt-1 sm:mt-2 text-xl font-black tracking-tight text-slate-900 dark:text-white sm:text-2xl xl:text-3xl">
-                                            Present Continuous
-                                        </h2>
-                                    </div>
+                        <div class="border-t border-white/10 bg-white/95 px-3 py-3 backdrop-blur-2xl transition-all duration-300 dark:border-white/5 dark:bg-slate-900/90">
+                            <div class="flex items-center gap-3">
+                                <button data-short-playpause class="text-slate-600 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400" aria-label="Play / Pause">
+                                    <svg data-short-play-icon class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                    <svg data-short-pause-icon class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                                    </svg>
+                                </button>
+
+                                <div class="relative h-1.5 flex-grow cursor-pointer rounded-full bg-slate-200 dark:bg-slate-800" data-timeline-container>
+                                    <div data-timeline-progress class="absolute h-full rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.4)] transition-all duration-100" style="width: 0%"></div>
                                 </div>
 
-                                <div class="flex flex-col gap-3 sm:gap-4">
-                                    <!-- Questions & Affirmative -->
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                                        <div class="rounded-2xl border border-sky-200/80 bg-sky-50/50 p-3 sm:p-4 dark:border-sky-800/50 dark:bg-sky-900/20">
-                                            <h3 class="mb-2 text-base font-black text-sky-900 dark:text-sky-200 uppercase tracking-wide">Questions</h3>
-                                            <ul class="space-y-1.5 sm:space-y-2 text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">
-                                                <li>What <span class="text-sky-700 dark:text-sky-300 font-black tracking-wide">is he doing</span>?</li>
-                                                <li>What <span class="text-sky-700 dark:text-sky-300 font-black tracking-wide">is she doing</span>?</li>
-                                                <li>What <span class="text-sky-700 dark:text-sky-300 font-black tracking-wide">are they doing</span>?</li>
-                                            </ul>
-                                        </div>
-
-                                        <div class="rounded-2xl border border-emerald-200/80 bg-emerald-50/50 p-3 sm:p-4 dark:border-emerald-800/50 dark:bg-emerald-900/20">
-                                            <h3 class="mb-2 text-base font-black text-emerald-900 dark:text-emerald-200 uppercase tracking-wide">Affirmative</h3>
-                                            <ul class="space-y-1.5 sm:space-y-2 text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">
-                                                <li>He <span class="text-emerald-700 dark:text-emerald-300 font-black tracking-wide">is working</span>.</li>
-                                                <li>She <span class="text-emerald-700 dark:text-emerald-300 font-black tracking-wide">is shopping</span>.</li>
-                                                <li>They <span class="text-emerald-700 dark:text-emerald-300 font-black tracking-wide">are talking</span>.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <!-- Negative -->
-                                    <div class="rounded-xl sm:rounded-2xl border border-rose-200/80 bg-rose-50/50 p-3 sm:p-4 dark:border-rose-800/50 dark:bg-rose-900/20">
-                                        <h3 class="mb-2 text-base font-black text-rose-900 dark:text-rose-200 uppercase tracking-wide">Negative</h3>
-                                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">
-                                            <div>He <span class="text-rose-700 dark:text-rose-300 font-black tracking-wide">is not coming</span>.</div>
-                                            <div>She <span class="text-rose-700 dark:text-rose-300 font-black tracking-wide">is not sleeping</span>.</div>
-                                            <div>They <span class="text-rose-700 dark:text-rose-300 font-black tracking-wide">are not working</span>.</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Yes/No Questions & Short Responses -->
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                                        <div class="rounded-2xl border border-amber-200/80 bg-amber-50/50 p-3 sm:p-4 dark:border-amber-800/50 dark:bg-amber-900/20">
-                                            <h3 class="mb-2 text-base font-black text-amber-900 dark:text-amber-200 uppercase tracking-wide">Yes / No Questions</h3>
-                                            <ul class="space-y-1.5 sm:space-y-2 text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">
-                                                <li><span class="text-amber-700 dark:text-amber-300 font-black tracking-wide">Are you</span> working?</li>
-                                                <li><span class="text-amber-700 dark:text-amber-300 font-black tracking-wide">Is she</span> coming?</li>
-                                                <li><span class="text-amber-700 dark:text-amber-300 font-black tracking-wide">Are they</span> helping you?</li>
-                                            </ul>
-                                        </div>
-
-                                        <div class="rounded-2xl border border-indigo-200/80 bg-indigo-50/50 p-3 sm:p-4 dark:border-indigo-800/50 dark:bg-indigo-900/20">
-                                            <h3 class="mb-2 text-base font-black text-indigo-900 dark:text-indigo-200 uppercase tracking-wide">Short Response</h3>
-                                            <div class="grid grid-cols-2 gap-x-2 gap-y-2 text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100 leading-tight">
-                                                <div>Yes, I am.</div>
-                                                <div>No, I am not.</div>
-                                                <div>Yes, he is.</div>
-                                                <div>No, he is not.</div>
-                                                <div>Yes, they are.</div>
-                                                <div>No, they are not.</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <span data-time-display class="ml-auto text-[11px] font-bold tabular-nums text-slate-500 dark:text-slate-400">0:00 / 0:00</span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full rounded-[1.5rem] border border-slate-200/70 bg-white/75 p-4 text-left shadow-[0_20px_50px_-28px_rgba(15,23,42,0.32)] backdrop-blur-xl dark:border-slate-700/35 dark:bg-slate-950/45 sm:p-5 lg:p-6">
+                    <div class="mb-4">
+                        <span class="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-[0.72rem] font-bold uppercase tracking-wider text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-200">
+                            {{ $content['grammar_label'] }}
+                        </span>
+                        <h2 class="mt-2 text-2xl font-black tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+                            {{ $content['grammar_title'] }}
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+                        @foreach($content['grammar_cards'] as $card)
+                            <article class="grammar-card {{ !empty($card['wide']) ? 'sm:col-span-2' : '' }} rounded-2xl border p-3 sm:p-4" data-tone="{{ $card['tone'] ?? 'sky' }}">
+                                <h3 class="mb-2 text-base font-black uppercase tracking-wide">
+                                    {{ $card['title'] }}
+                                </h3>
+                                <div class="{{ count($card['items'] ?? []) > 3 ? 'grid grid-cols-1 gap-2 sm:grid-cols-2' : 'space-y-2' }} text-sm font-bold leading-tight text-slate-800 dark:text-slate-100 sm:text-base">
+                                    @foreach(($card['items'] ?? []) as $item)
+                                        <p>{!! $item !!}</p>
+                                    @endforeach
+                                </div>
+                            </article>
+                        @endforeach
                     </div>
                 </div>
             </section>
@@ -464,22 +516,22 @@ $content = [
                     refreshPlayerUI();
                 });
 
-                refs.playPauseBtn?.addEventListener("click", (e) => {
-                    e.stopPropagation();
+                refs.playPauseBtn?.addEventListener("click", (event) => {
+                    event.stopPropagation();
                     togglePlay();
                 });
 
-                refs.overlay?.addEventListener("click", (e) => {
-                    e.stopPropagation();
+                refs.overlay?.addEventListener("click", (event) => {
+                    event.stopPropagation();
                     togglePlay();
                 });
 
-                refs.timelineContainer?.addEventListener("click", (e) => {
+                refs.timelineContainer?.addEventListener("click", (event) => {
                     const duration = getDuration();
                     if (!duration) return;
 
                     const rect = refs.timelineContainer.getBoundingClientRect();
-                    const pos = Math.max(0, Math.min((e.clientX - rect.left) / rect.width, 1));
+                    const pos = Math.max(0, Math.min((event.clientX - rect.left) / rect.width, 1));
                     player.currentTime(pos * duration);
                     refreshPlayerUI();
                 });
@@ -493,8 +545,8 @@ $content = [
                 player.on("pause", refreshPlayerUI);
                 player.on("ended", resetPlayer);
 
-                player.el()?.addEventListener("click", (e) => {
-                    if (e.target.closest("[data-short-overlay-btn], [data-short-playpause]")) return;
+                player.el()?.addEventListener("click", (event) => {
+                    if (event.target.closest("[data-short-overlay-btn], [data-short-playpause]")) return;
                     togglePlay();
                 });
 

@@ -183,7 +183,7 @@ foreach ($questions as $q) {
 @endsection
 
 @section('content')
-<div class="min-h-[100dvh] w-full flex flex-col items-center py-6 sm:py-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-50/40 via-white to-blue-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950">
+<div class="min-h-[100dvh] w-full flex flex-col items-center py-6 sm:py-10">
     <div class="w-full max-w-5xl px-4 sm:px-6">
 
         <!-- Header Section -->

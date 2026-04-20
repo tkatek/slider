@@ -594,9 +594,11 @@
                     sel.appendChild(placeholder);
 
                     const wrongOptions = Array.isArray(seg.wrong) ? seg.wrong : [seg.wrong];
-                    const opts = shuffle(
-                        [...new Set([seg.answer, ...wrongOptions].filter(v => v !== undefined && v !== null && v !== ""))]
-                    );
+                    const configuredOptions = Array.isArray(seg.options) ? seg.options : null;
+                    const opts = shuffle([...new Set(
+                        (configuredOptions ?? [seg.answer, ...wrongOptions])
+                            .filter(v => v !== undefined && v !== null && v !== "")
+                    )]);
 
                     opts.forEach(v => {
                         const o = document.createElement("option");
