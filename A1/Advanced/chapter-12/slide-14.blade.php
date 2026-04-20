@@ -1,69 +1,83 @@
 <?php
 $content = [
-    'uid' => 'practice_' . substr(md5(uniqid('', true)), 0, 10),
+    'title'    => "Practice 4",
+    'subtitle' => 'Listen again and answer the questions',
+    'type' => 'questions_only',
+    'image_panel_col_class'  => 'sm:col-span-0',
+    'answer_panel_col_class' => 'sm:col-span-12',
+    'audio'   => materialAsset("slider/A1/Advanced/chapter-12/audios/slide14.mp3"),
 
-    'questions'=> [
+    'script' => [
+        'Woman: Hello sir, is there anything I can help you with?',
+        'Man: Um, yeah, I was just looking at phones.',
+        'Woman: What kind of features were you looking for?',
+        'Man: I want a touchscreen smart phone, with a high-res screen.',
+        'Woman: What do you think of this one?',
+        'Man: Looks nice. How’s the battery life?',
+        'Woman: It depends how you use it. It lasts from one to three days.',
+        'Man: Hmmm, OK, I think I’ll take it.',
+        'Woman: Do you just want the handset, or do you want a contract with it? If you take out a contract, you only pay £50 for the phone.',
+        'Man: I don’t really want a contract, but I would like a pay-as-you-go SIM card. Do you have any?',
+        'Woman: Yes. The card’s free, but you have to buy £10 credit.',
+        'Man: OK, that’s fine.',
+        'Woman: Also, with this deal, if you top up every month, you get 50 free minutes and 100 texts.',
+        'Man: Sounds good. Where do I pay?',
+        'Woman: Right this way, please.',
+    ],
+
+    'questions' => [
         [
-            'img'     => '📷',
-            'prompt'  => '_____The part of the phone that takes photos.',
-            'correct' => 'camera',
-            'options' => ['processor', 'battery', 'camera', 'model'],
+            'prompt'  => 'What is the man looking for?',
+            'correct' => 'A phone',
+            'options' => [
+                'A laptop',
+                'A phone',
+                'A TV',
+                'A tablet',
+            ],
         ],
         [
-            'img'     => '💰',
-            'prompt'  => '_____How much money the phone costs.',
-            'correct' => 'price',
-            'options' => ['storage', 'model', 'feature', 'price'],
+            'prompt'  => 'What feature does the man want?',
+            'correct' => 'Touchscreen',
+            'options' => [
+                'Small screen',
+                'Touchscreen',
+                'No battery',
+                'No camera',
+            ],
         ],
         [
-            'img'     => '📶',
-            'prompt'  => '_____The strength of the wireless internet connection.',
-            'correct' => 'Wi-Fi signal',
-            'options' => ['durability', 'Wi-Fi signal', 'screen', 'storage'],
+            'prompt'  => 'How long does the battery last?',
+            'correct' => 'One to three days',
+            'options' => [
+                'One hour',
+                'One day',
+                'One to three days',
+                'One week',
+            ],
         ],
         [
-            'img'     => '🔋',
-            'prompt'  => '_____How long the phone can last without charging.',
-            'correct' => 'battery',
-            'options' => ['storage', 'model', 'feature', 'battery'],
+            'prompt'  => 'What does the man choose?',
+            'correct' => 'Pay-as-you-go SIM card',
+            'options' => [
+                'A contract',
+                'No phone',
+                'Pay-as-you-go SIM card',
+                'A tablet',
+            ],
         ],
         [
-            'img'     => '📱',
-            'prompt'  => '_____The physical glass surface you touch and look at.',
-            'correct' => 'screen',
-            'options' => ['screen', 'camera', 'storage', 'model'],
-        ],
-        [
-            'img'     => '📲',
-            'prompt'  => '_____A specific version or design of a phone.',
-            'correct' => 'model',
-            'options' => ['feature', 'price', 'camera', 'model'],
-        ],
-        [
-            'img'     => '🧠',
-            'prompt'  => '_____The brain of the phone, which runs apps and processes data.',
-            'correct' => 'processor',
-            'options' => ['processor', 'storage', 'battery', 'camera'],
-        ],
-        [
-            'img'     => '💾',
-            'prompt'  => '_____How much data (pics, apps, files) the phone can hold.',
-            'correct' => 'storage',
-            'options' => ['camera', 'storage', 'screen', 'processor'],
-        ],
-        [
-            'img'     => '🛡️',
-            'prompt'  => '_____How well the phone can withstand drops or scratches.',
-            'correct' => 'durability',
-            'options' => ['price', 'battery', 'model', 'durability'],
-        ],
-        [
-            'img'     => '⭐',
-            'prompt'  => '_____A special function or characteristic of the phone, like facial recognition or fast charging.',
-            'correct' => 'feature',
-            'options' => ['feature', 'camera', 'screen', 'battery'],
+            'prompt'  => 'What does the man need to buy with the SIM card?',
+            'correct' => '£10 credit',
+            'options' => [
+                'A charger',
+                '£10 credit',
+                'A case',
+                'Headphones',
+            ],
         ],
     ],
 ];
 ?>
+
 @include('slider.game.multi-choice-all-in-one', ['content' => $content])

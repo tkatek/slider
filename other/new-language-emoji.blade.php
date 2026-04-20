@@ -126,6 +126,9 @@
                         <section id="cards" class="w-full">
                             <div class="{{ $itemsGridClass }}">
                                 @foreach($content['items'] as $item)
+                                    @php
+                                        $itemSound = trim((string) ($item['sound'] ?? ''));
+                                    @endphp
                                     <article
                                             class="sentence-card rounded-[26px] border border-slate-200/70 bg-white/65 backdrop-blur-xl
                                                shadow-[0_14px_44px_-26px_rgba(15,23,42,0.45)]
@@ -146,23 +149,25 @@
                                                 </div>
                                             </div>
 
-                                            <div class="shrink-0">
-                                                <button
-                                                        type="button"
-                                                        class="audio-btn speak-btn play-hit inline-flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#57534e,#3f3f46,#0f172a)] text-white backdrop-blur-md ring-1 ring-white/25 shadow-lg shadow-slate-950/30 focus-visible:ring-4 focus-visible:ring-slate-300/40"
-                                                        aria-label="{{ $playLabel }}"
-                                                        data-sound="{{ $item['sound'] }}"
-                                                >
-                                                    <svg class="static-icon w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                                        <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-                                                    </svg>
-                                                    <span class="wave-wrap" aria-hidden="true">
-                                                        <span class="wave-bar"></span>
-                                                        <span class="wave-bar"></span>
-                                                        <span class="wave-bar"></span>
-                                                    </span>
-                                                </button>
-                                            </div>
+                                            @if($itemSound !== '')
+                                                <div class="shrink-0">
+                                                    <button
+                                                            type="button"
+                                                            class="audio-btn speak-btn play-hit inline-flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#57534e,#3f3f46,#0f172a)] text-white backdrop-blur-md ring-1 ring-white/25 shadow-lg shadow-slate-950/30 focus-visible:ring-4 focus-visible:ring-slate-300/40"
+                                                            aria-label="{{ $playLabel }}"
+                                                            data-sound="{{ $itemSound }}"
+                                                    >
+                                                        <svg class="static-icon w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                            <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                                        </svg>
+                                                        <span class="wave-wrap" aria-hidden="true">
+                                                            <span class="wave-bar"></span>
+                                                            <span class="wave-bar"></span>
+                                                            <span class="wave-bar"></span>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            @endif
                                         </div>
                                     </article>
                                 @endforeach

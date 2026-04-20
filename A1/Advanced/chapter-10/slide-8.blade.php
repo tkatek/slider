@@ -10,26 +10,27 @@ $content = [
     'reading_align'   => 'left',
     'reading_plain'   => true,
     'reading_compact' => true,
+    'reading_allow_html' => true,
 
-    'passage' => [
-        "Daniel: Hey, I'm really sorry I'm late. I came as fast as I could.",
-        "Hana: It's OK. Nobody has really come yet.",
-        "Daniel: Why? Where are they?",
-        "Hana: Well, John is shopping. He is getting some food.",
-        "Daniel: OK, what about Emma? Where is she?",
-        "Hana: Emma has an exam, so she is studying and she is going to come later.",
-        "Daniel: OK, how about Alex? I don't see him around.",
-        "Hana: Oh, Alex is over there. He is preparing for the BBQ.",
-        "Daniel: Oh, yeah, that's right. And how about Marcus and Emily?",
-        "Hana: They are over there. They are playing.",
-        "Daniel: Oh, so how many people are left? Who else is coming?",
-        "Hana: Uh, I don't know. No one has really contacted me yet.",
-        "Daniel: Oh, well, let's hope we can get around ten people maybe.",
-        "Hana: Yes, I hope so.",
-        "Daniel: Cool!"
-    ],
+    'passage' => <<<'HTML'
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Daniel:</strong> Hey, I'm really sorry I'm late. I came as fast as I could.</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Hana:</strong> It's OK. Nobody has really come yet.</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Daniel:</strong> Why? Where are they?</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Hana:</strong> Well, John is shopping. He is getting some food.</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Daniel:</strong> OK, what about Emma? Where is she?</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Hana:</strong> Emma has an exam, so she is studying and she is going to come later.</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Daniel:</strong> OK, how about Alex? I don't see him around.</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Hana:</strong> Oh, Alex is over there. He is preparing for the BBQ.</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Daniel:</strong> Oh, yeah, that's right. And how about Marcus and Emily?</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Hana:</strong> They are over there. They are playing.</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Daniel:</strong> Oh, so how many people are left? Who else is coming?</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Hana:</strong> Uh, I don't know. No one has really contacted me yet.</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Daniel:</strong> Oh, well, let's hope we can get around ten people maybe.</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Hana:</strong> Yes, I hope so.</div>
+<div style='margin:0;text-align:justify;font-size:.95rem;line-height:1.28;font-weight:600;'><strong>Daniel:</strong> Cool!</div>
+HTML,
 
-    'questions' => [
+    'questions' => [ 
         [
             'prompt'  => 'What is John doing?',
             'correct' => 'shopping',
@@ -70,3 +71,4 @@ $content = [
 ];
 ?>
 @include('slider.game.multi-choice-all-in-one', ['content' => $content])
+

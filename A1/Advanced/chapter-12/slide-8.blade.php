@@ -4,8 +4,8 @@ $content = [
     'title' => 'Watch Again & Do the Quiz',
     'subtitle' => '',
 
-    'video' => materialAsset('slider/A1/Beginner/chapter-2/video/encrypted/slide5.m3u8'),
-    'thumbnail' => materialAsset('slider/A1/Beginner/chapter-2/video/slide5.webp'),
+    'video' => materialAsset(''),
+    'thumbnail' => materialAsset(''),
 
     'isQuiz' => 1,
     'questions' => [

@@ -1,12 +1,12 @@
 <?php
 $content = [
     'title'    => 'Practice 6',
-    'subtitle' => '4️⃣ Places in a town: Odd one out',
+    'subtitle' => 'Choose the place that doesn’t belong',
     'type'     => 'audio',
 
     'questions' => [
         [
-            'prompt'  => 'Which place can you eat or drink?',
+            'prompt'  => 'Which place can you eat or drink',
             'correct' => 'Café',
             'options' => [
                 'Café',
@@ -16,7 +16,7 @@ $content = [
             ],
         ],
         [
-            'prompt'  => 'Which place do people normally stay in for less than an hour?',
+            'prompt'  => 'Which place do people normally stay in for less than an hour',
             'correct' => 'Bank',
             'options' => [
                 'Bank',
@@ -26,7 +26,7 @@ $content = [
             ],
         ],
         [
-            'prompt'  => 'Which place is for learning?',
+            'prompt'  => 'Which place is for learning',
             'correct' => 'School',
             'options' => [
                 'Library',
@@ -36,7 +36,7 @@ $content = [
             ],
         ],
         [
-            'prompt'  => 'Which place is open to the public?',
+            'prompt'  => 'Which place is open to the public',
             'correct' => 'Post office',
             'options' => [
                 'Bus stop',

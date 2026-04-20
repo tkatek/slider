@@ -1,8 +1,8 @@
 <?php
 $content = [
     'page_title' => 'Speaking Time',
-    'title'      => 'Speaking Time',
-    'subtitle'   => '',
+    'title'      => 'Practice 3',
+    'subtitle'   => 'Speaking Time',
 
     // --- Image Control ---
     'show_footer_image' => 0,

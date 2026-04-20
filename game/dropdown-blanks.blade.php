@@ -228,15 +228,15 @@
         $compactText = (bool)($content['compact_text'] ?? $compactLayout);
     @endphp
     <div class="font-sans relative isolate min-h-[100dvh] overflow-x-hidden overflow-y-auto dark:text-slate-100 {{ $compactText ? 'is-compact-text' : '' }}">
-        <main class="w-full max-w-7xl min-h-[100dvh] px-4 sm:px-8 mx-auto {{ $compactLayout ? 'py-4 sm:py-7' : 'py-6 sm:py-10' }} pb-28 flex flex-col">
-            <section class="{{ $compactLayout ? 'p-1 sm:p-3' : 'p-2 sm:p-6' }} flex-1 flex flex-col">
-                <div class="grid place-items-center text-center {{ $compactLayout ? 'gap-4 sm:gap-6' : 'gap-5 sm:gap-8' }} flex-1 auto-rows-max">
+        <main class="mx-auto flex min-h-[100dvh] w-full max-w-7xl items-center justify-center px-4 sm:px-8 {{ $compactLayout ? 'py-4 sm:py-7' : 'py-6 sm:py-10' }}">
+            <section class="{{ $compactLayout ? 'p-1 sm:p-3' : 'p-2 sm:p-6' }} flex w-full justify-center">
+                <div class="flex w-full flex-col items-center justify-center text-center {{ $compactLayout ? 'gap-4 sm:gap-6' : 'gap-5 sm:gap-8' }}">
 
                     @include('slider.components.title-subtitle')
 
                     @include('slider.components.game-status')
 
-                    <section id="gameCard" class="relative w-full max-w-5xl {{ $compactLayout ? 'p-2.5 sm:p-4 min-h-[360px]' : 'p-3 sm:p-6 min-h-[420px]' }} flex-1">
+                    <section id="gameCard" class="relative w-full max-w-5xl {{ $compactLayout ? 'p-2.5 sm:p-4 min-h-[360px]' : 'p-3 sm:p-6 min-h-[420px]' }}">
                         <div id="questionPanel" class="h-full overflow-hidden rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl">
                             <div class="h-full {{ $compactLayout ? 'p-4 sm:p-5' : 'p-5 sm:p-6' }} text-left">
                                 <div class="flex items-center justify-between gap-2 sm:gap-3">

@@ -1,56 +1,36 @@
 <?php
-
-
 $content = [
     'page_title' => 'Reading',
-    'title' => 'Reading',
-    'subtitle' => 'Steps to Fill Up Fuel',
-    'grid_class' => 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3',
+    'title' => 'Steps to Fill Up Fuel',
+    'subtitle' => 'Read the steps below carefully.',
+    'image' => materialAsset('slider/A1/Advanced/chapter-11/img/slide12.webp'),
+
     'items' => [
         [
-            'text' => 'Step 1',
-            'subtitle' => 'Pull up to the pump and park safely.',
-            'emoji' => '🚘',
-            'image' => materialAsset('slider/A1/Advanced/chapter-11/img/slide12/step1.webp'),
-            'sound' => '',
+            'emoji' => '1',
+            'text' => 'Pull up to the pump and park safely.',
         ],
         [
-            'text' => 'Step 2',
-            'subtitle' => 'Turn off the engine before starting the refueling process.',
-            'emoji' => '🛑',
-            'image' => materialAsset('slider/A1/Advanced/chapter-11/img/slide12/step2.webp'),
-            'sound' => '',
+            'emoji' => '2',
+            'text' => 'Turn off the engine before starting the refueling process.',
         ],
         [
-            'text' => 'Step 3',
-            'subtitle' => 'Select the correct fuel type for your vehicle\'s needs.',
-            'emoji' => '⛽',
-            'image' => materialAsset('slider/A1/Advanced/chapter-11/img/slide12/step3.webp'),
-            'sound' => '',
+            'emoji' => '3',
+            'text' => 'Select the correct fuel type for your vehicle\'s needs.',
         ],
         [
-            'text' => 'Step 4',
-            'subtitle' => 'Insert the nozzle into the tank and begin fueling.',
-            'emoji' => '🔧',
-            'image' => materialAsset('slider/A1/Advanced/chapter-11/img/slide12/step4.webp'),
-            'sound' => '',
+            'emoji' => '4',
+            'text' => 'Insert the nozzle into the tank and begin fueling.',
         ],
         [
-            'text' => 'Step 5',
-            'subtitle' => 'Stop fueling when the tank is full or desired amount is reached.',
-            'emoji' => '✅',
-            'image' => materialAsset('slider/A1/Advanced/chapter-11/img/slide12/step5.webp'),
-            'sound' => '',
+            'emoji' => '5',
+            'text' => 'Stop fueling when the tank is full or the desired amount is reached.',
         ],
         [
-            'text' => 'Step 6',
-            'subtitle' => 'Pay for the fuel and collect the receipt for your records.',
-            'emoji' => '🧾',
-            'image' => materialAsset('slider/A1/Advanced/chapter-11/img/slide12/step6.webp'),
-            'sound' => '',
+            'emoji' => '6',
+            'text' => 'Pay for the fuel and collect the receipt for your records.',
         ],
     ],
 ];
 ?>
-
-@include("slider.vocab.image-card", ['content' => $content])
+@include('slider.other.new-language-emoji', ['content' => $content])

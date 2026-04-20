@@ -2,7 +2,7 @@
 $content = [
     'page_title'            => 'Practice 3: New Vocabulary',
     'title'                 => 'Practice 3: New Vocabulary',
-    'subtitle'              => '1️⃣ Places in a town',
+    'subtitle'              => '1️⃣Places in a town<br>Match the word and pictures',
     'type'                  => 'image',
     'items_per_line'        => 4,
     'items_per_line_mobile' => 2,
