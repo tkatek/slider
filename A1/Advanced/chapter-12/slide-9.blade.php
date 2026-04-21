@@ -11,17 +11,6 @@
 
 @section('style')
 <style>
-    .grammar-shell {
-        background: radial-gradient(80rem 40rem at 10% -10%, rgba(79, 70, 229, 0.14), transparent 55%),
-                    radial-gradient(70rem 35rem at 100% 5%, rgba(14, 165, 233, 0.12), transparent 50%),
-                    linear-gradient(180deg, #f8fbff 0%, #eef2ff 100%);
-    }
-    .dark .grammar-shell {
-        background: radial-gradient(90rem 45rem at 12% -10%, rgba(99, 102, 241, 0.16), transparent 58%),
-                    radial-gradient(70rem 35rem at 90% 14%, rgba(56, 189, 248, 0.15), transparent 58%),
-                    linear-gradient(165deg, #020617 0%, #0b1329 48%, #111a35 100%);
-    }
-
     .glass-card {
         background: white;
         border: 1px solid rgba(226, 232, 240, 0.8);

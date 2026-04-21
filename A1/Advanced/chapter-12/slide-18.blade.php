@@ -22,7 +22,7 @@ if (!function_exists('materialAsset')) {
         .option-card:hover { transform: translateY(-2px); }
     </style>
 
-    <section class="bg-[#f8fafc] dark:bg-[#0f172a] min-h-[100dvh] flex flex-col font-sans relative overflow-hidden">
+    <section class="min-h-[100dvh] flex flex-col font-sans relative overflow-hidden">
         <div class="mx-auto flex w-full max-w-[1280px] flex-1 flex-col px-4 sm:px-6 lg:px-8 py-6 lg:py-10 relative z-10">
 
             <!-- Title Section -->

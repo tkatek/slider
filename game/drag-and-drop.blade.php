@@ -451,18 +451,12 @@
                 continue;
             }
 
-            $defaultEmoji = $cat === 'In the morning'
-                ? '🌅'
-                : ($cat === 'In the afternoon'
-                    ? '☀️'
-                    : ($cat === 'In the evening' ? '🌙' : '🧩'));
-
-            $emoji = $defaultEmoji;
+            $emoji = null;
             $items = [];
 
             if (is_array($categoryData) && array_key_exists('items', $categoryData)) {
                 $items = is_array($categoryData['items']) ? $categoryData['items'] : [];
-                if (!empty($categoryData['emoji'])) {
+                if (array_key_exists('emoji', $categoryData)) {
                     $emoji = $categoryData['emoji'];
                 }
             } else {
@@ -671,7 +665,7 @@
                         <div class="mt-1 w-full {{ $categoryMaxWidth }} grid {{ $categoryGridClass }} gap-3 sm:gap-4" id="categoriesContainer">
                             @foreach($normalizedCategories as $cat => $categoryConfig)
                                 @php
-                                    $emoji = $categoryConfig['emoji'] ?? '🧩';
+                                    $emoji = $categoryConfig['emoji'] ?? null;
                                     $slotCount = is_array($categoryConfig['items'] ?? null) ? count($categoryConfig['items']) : 0;
                                     $isSingleSlot = $slotCount === 1;
                                 @endphp
@@ -686,9 +680,11 @@
 
                                     <div class="relative px-4 py-4">
                                         <div class="flex items-center justify-center gap-2">
-                                            <div class="grid h-10 w-10 place-items-center text-indigo-700 dark:text-indigo-200">
-                                                <span class="text-xl leading-none">{{ $emoji }}</span>
-                                            </div>
+                                            @if($emoji !== null && $emoji !== '')
+                                                <div class="grid h-10 w-10 place-items-center text-indigo-700 dark:text-indigo-200">
+                                                    <span class="text-xl leading-none">{{ $emoji }}</span>
+                                                </div>
+                                            @endif
                                             <div class="text-sm sm:text-base font-black tracking-[-0.02em] text-slate-900 dark:text-slate-50">
                                                 {{ $cat }}
                                             </div>

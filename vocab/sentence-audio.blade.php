@@ -1,6 +1,7 @@
 @extends('slider.simple-layout')
 
 @php
+    $groups = is_array($content['groups'] ?? null) ? array_values($content['groups']) : [];
     $items = array_values(array_filter(
         is_array($content['items'] ?? null) ? $content['items'] : [],
         static function ($item) {
@@ -18,6 +19,66 @@
     $audioBtnRingClass = ($theme['name'] ?? null) === 'orange'
         ? 'focus-visible:ring-orange-300/40'
         : 'focus-visible:ring-indigo-300/40';
+
+    $normalizeCols = static fn ($cols) => max(1, min(6, (int) $cols));
+
+    $extractCols = static function (?string $breakpoint, string $classString, int $fallback) use ($normalizeCols) {
+        $pattern = $breakpoint
+            ? '/(?:^|\s)' . preg_quote($breakpoint, '/') . ':grid-cols-(\d+)/'
+            : '/(?:^|\s)grid-cols-(\d+)/';
+
+        if (preg_match($pattern, $classString, $match)) {
+            return $normalizeCols($match[1]);
+        }
+
+        return $fallback;
+    };
+
+    $buildGroupConfig = static function (array $group, int $index) use ($extractCols, $gridClass) {
+        $groupItems = array_values(array_filter(
+            is_array($group['items'] ?? null) ? $group['items'] : [],
+            static fn ($item) => is_array($item)
+        ));
+        $groupGridClass = trim((string) ($group['grid_class'] ?? $gridClass));
+        $baseCols = $extractCols(null, $groupGridClass, 1);
+        $smCols = $extractCols('sm', $groupGridClass, $baseCols);
+        $lgCols = $extractCols('lg', $groupGridClass, $smCols);
+        $xlCols = $extractCols('xl', $groupGridClass, $lgCols);
+
+        return [
+            'key' => (string) ($group['key'] ?? ('group-' . $index)),
+            'title' => trim((string) ($group['title'] ?? '')),
+            'items' => $groupItems,
+            'base_cols' => $baseCols,
+            'sm_cols' => $smCols,
+            'lg_cols' => $lgCols,
+            'xl_cols' => $xlCols,
+        ];
+    };
+
+    $groupSections = [];
+
+    foreach ($groups as $index => $group) {
+        if (!is_array($group)) {
+            continue;
+        }
+
+        $section = $buildGroupConfig($group, $index);
+        if ($section['items'] === []) {
+            continue;
+        }
+
+        $groupSections[] = $section;
+    }
+
+    if ($groupSections === [] && $items !== []) {
+        $groupSections[] = $buildGroupConfig([
+            'key' => 'group-0',
+            'title' => '',
+            'items' => $items,
+            'grid_class' => $gridClass,
+        ], 0);
+    }
 @endphp
 
 @section('title', $content['page_title'])
@@ -78,11 +139,41 @@
             width: 100%;
         }
 
+        .polite-groups {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1.15rem, 2vw, 1.8rem);
+        }
+
+        .polite-group {
+            width: 100%;
+        }
+
+        .polite-group-title {
+            margin: 0 0 .8rem;
+            font-size: clamp(1rem, .94rem + .35vw, 1.24rem);
+            line-height: 1.2;
+            font-weight: 900;
+            letter-spacing: -.03em;
+            color: #0f172a;
+        }
+
+        .dark .polite-group-title {
+            color: #f8fafc;
+        }
+
         .polite-grid {
             width: 100%;
             gap: clamp(.75rem, 1vw, 1rem);
             align-items: stretch;
+            grid-template-columns: repeat(1, minmax(0, 1fr));
         }
+
+        .polite-grid[data-base-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .polite-grid[data-base-cols="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .polite-grid[data-base-cols="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .polite-grid[data-base-cols="5"] { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+        .polite-grid[data-base-cols="6"] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 
         .polite-card {
             position: relative;
@@ -261,10 +352,37 @@
             }
         }
 
+        @media (min-width: 640px) {
+            .polite-grid[data-sm-cols="1"] { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+            .polite-grid[data-sm-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .polite-grid[data-sm-cols="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .polite-grid[data-sm-cols="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .polite-grid[data-sm-cols="5"] { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+            .polite-grid[data-sm-cols="6"] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+        }
+
+        @media (min-width: 1024px) {
+            .polite-grid[data-lg-cols="1"] { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+            .polite-grid[data-lg-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .polite-grid[data-lg-cols="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .polite-grid[data-lg-cols="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .polite-grid[data-lg-cols="5"] { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+            .polite-grid[data-lg-cols="6"] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+        }
+
         @media (min-width: 1200px) and (max-width: 1359px) {
             .card-inner {
                 padding: 1rem;
             }
+        }
+
+        @media (min-width: 1280px) {
+            .polite-grid[data-xl-cols="1"] { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+            .polite-grid[data-xl-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .polite-grid[data-xl-cols="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .polite-grid[data-xl-cols="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .polite-grid[data-xl-cols="5"] { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+            .polite-grid[data-xl-cols="6"] { grid-template-columns: repeat(6, minmax(0, 1fr)); }
         }
 
         @media (min-width: 1360px) {
@@ -290,6 +408,74 @@
             @include('slider.components.title-subtitle')
 
             <section class="polite-grid-wrap">
+                <div class="polite-groups">
+                    @foreach($groupSections as $group)
+                        <section class="polite-group" data-group-key="{{ $group['key'] }}">
+                            @if($group['title'] !== '')
+                                <h2 class="polite-group-title">{{ $group['title'] }}</h2>
+                            @endif
+
+                            <div
+                                class="polite-grid grid {{ $gridClass }}"
+                                data-base-cols="{{ $group['base_cols'] }}"
+                                data-sm-cols="{{ $group['sm_cols'] }}"
+                                data-lg-cols="{{ $group['lg_cols'] }}"
+                                data-xl-cols="{{ $group['xl_cols'] }}"
+                            >
+                                @foreach($group['items'] as $item)
+                                    @php
+                                        $hasAudio = !empty($item['sound']);
+                                        $description = trim((string) ($item['description'] ?? $item['subtitle'] ?? ''));
+                                    @endphp
+
+                                    <article class="polite-card">
+                                        <div class="card-inner">
+                                            <div class="card-top">
+                                                <span class="emoji-badge" aria-hidden="true">
+                                                    {{ $item['emoji'] ?? 'âœ¨' }}
+                                                </span>
+
+                                                <div class="audio-wrap">
+                                                    <button
+                                                            type="button"
+                                                            class="play-hit speak-btn {{ $audioBtnClass }} focus-visible:ring-4 {{ $audioBtnRingClass }}"
+                                                            aria-label="Play Audio"
+                                                            aria-pressed="false"
+                                                            data-audio="{{ $item['sound'] ?? '' }}"
+                                                            @unless($hasAudio) disabled aria-disabled="true" @endunless
+                                                    >
+                                                        <svg class="static-icon" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24" aria-hidden="true">
+                                                            <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                                        </svg>
+                                                        <span class="wave-bar" style="animation-delay:.1s"></span>
+                                                        <span class="wave-bar" style="animation-delay:.2s"></span>
+                                                        <span class="wave-bar" style="animation-delay:.3s"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="card-copy">
+                                                <h2 class="card-title">
+                                                    @if(!empty($item['text_html']))
+                                                        {!! $item['text_html'] !!}
+                                                    @else
+                                                        {{ $item['text'] ?? '' }}
+                                                    @endif
+                                                </h2>
+
+                                                @if($description !== '')
+                                                    <p class="card-subtitle">{{ $description }}</p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </article>
+                                @endforeach
+                            </div>
+                        </section>
+                    @endforeach
+                </div>
+
+                @if(false)
                 <div class="polite-grid grid {{ $gridClass }}">
                     @foreach($items as $item)
                         @php
@@ -339,6 +525,7 @@
                         </article>
                     @endforeach
                 </div>
+                @endif
             </section>
         </div>
     </main>

@@ -9,6 +9,7 @@
     $hasSubtitle = trim((string) $subtitle) !== '';
     $gridClass = (string) ($content['grid_class'] ?? 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-4');
     $items = is_array($content['items'] ?? null) ? $content['items'] : [];
+    $groups = is_array($content['groups'] ?? null) ? array_values($content['groups']) : [];
     $allowHtmlSubtitles = (bool) ($content['allow_html_subtitles'] ?? false);
 
     $normalizeCols = static fn ($cols) => max(1, min(6, (int) $cols));
@@ -25,10 +26,48 @@
         return $fallback;
     };
 
-    $baseCols = $extractCols(null, $gridClass, 2);
-    $smCols = $extractCols('sm', $gridClass, $baseCols);
-    $lgCols = $extractCols('lg', $gridClass, $smCols); 
-    $xlCols = $extractCols('xl', $gridClass, $lgCols);
+    $buildGroupConfig = static function (array $group, int $index) use ($extractCols, $gridClass) {
+        $groupItems = is_array($group['items'] ?? null) ? array_values($group['items']) : [];
+        $groupGridClass = (string) ($group['grid_class'] ?? $gridClass);
+        $baseCols = $extractCols(null, $groupGridClass, 2);
+        $smCols = $extractCols('sm', $groupGridClass, $baseCols);
+        $lgCols = $extractCols('lg', $groupGridClass, $smCols);
+        $xlCols = $extractCols('xl', $groupGridClass, $lgCols);
+
+        return [
+            'key' => (string) ($group['key'] ?? ('group-' . $index)),
+            'title' => trim((string) ($group['title'] ?? '')),
+            'items' => $groupItems,
+            'base_cols' => $baseCols,
+            'sm_cols' => $smCols,
+            'lg_cols' => $lgCols,
+            'xl_cols' => $xlCols,
+        ];
+    };
+
+    $groupSections = [];
+
+    foreach ($groups as $index => $group) {
+        if (!is_array($group)) {
+            continue;
+        }
+
+        $section = $buildGroupConfig($group, $index);
+        if ($section['items'] === []) {
+            continue;
+        }
+
+        $groupSections[] = $section;
+    }
+
+    if ($groupSections === [] && $items !== []) {
+        $groupSections[] = $buildGroupConfig([
+            'key' => 'group-0',
+            'title' => '',
+            'items' => $items,
+            'grid_class' => $gridClass,
+        ], 0);
+    }
 @endphp
 
 @section('title', $pageTitle)
@@ -121,6 +160,32 @@
         .image-card-grid[data-base-cols="4"]{grid-template-columns:repeat(4, minmax(0, 1fr));}
         .image-card-grid[data-base-cols="5"]{grid-template-columns:repeat(5, minmax(0, 1fr));}
         .image-card-grid[data-base-cols="6"]{grid-template-columns:repeat(6, minmax(0, 1fr));}
+
+        .image-card-groups{
+            display:flex;
+            flex-direction:column;
+            gap:28px;
+        }
+
+        .image-card-group{
+            width:100%;
+        }
+
+        .image-card-group-title{
+            margin:0 auto 12px;
+            width:100%;
+            max-width:1180px;
+            text-align:left;
+            font-size:1.2rem;
+            line-height:1.2;
+            font-weight:900;
+            letter-spacing:-0.03em;
+            color:#0f172a;
+        }
+
+        .dark .image-card-group-title{
+            color:#f8fafc;
+        }
 
         .image-vocab-card{
             position:relative;
@@ -311,6 +376,10 @@
                 gap:16px;
             }
 
+            .image-card-groups{
+                gap:32px;
+            }
+
             .image-card-main[data-has-subtitle="0"] > #gameTitle{
                 margin-bottom:32px !important;
             }
@@ -338,6 +407,10 @@
 
             .image-card-grid{
                 gap:18px;
+            }
+
+            .image-card-groups{
+                gap:36px;
             }
 
             .image-card-main[data-has-subtitle="0"] > #gameTitle{
@@ -407,64 +480,74 @@
             <main class="image-card-main" data-has-subtitle="{{ $hasSubtitle ? '1' : '0' }}">
                 @include('slider.components.title-subtitle')
 
-                <section
-                    class="image-card-grid"
-                    data-base-cols="{{ $baseCols }}"
-                    data-sm-cols="{{ $smCols }}"
-                    data-lg-cols="{{ $lgCols }}"
-                    data-xl-cols="{{ $xlCols }}"
-                >
-                    @foreach($items as $item)
-                        <article class="image-vocab-card vocab-card">
-                            <div class="card-media-box">
-                                <img
-                                    src="{{ $item['image'] }}"
-                                    alt="{{ $item['text'] }}"
-                                    loading="lazy"
-                                    class="card-image"
-                                />
-                                <div class="card-image-overlay"></div>
+                <div class="image-card-groups">
+                    @foreach($groupSections as $group)
+                        <section class="image-card-group" data-group-key="{{ $group['key'] }}">
+                            @if($group['title'] !== '')
+                                <h2 class="image-card-group-title">{{ $group['title'] }}</h2>
+                            @endif
 
-                                <div class="card-audio">
-                                    <button
-                                        type="button"
-                                        class="speak-btn"
-                                        aria-label="Play Audio"
-                                        data-audio="{{ $item['sound'] }}"
-                                    >
-                                        <span class="speak-btn-shell">
-                                            <svg class="static-icon h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                                <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-                                            </svg>
-                                            <span class="wave-bar" style="animation-delay:.1s"></span>
-                                            <span class="wave-bar" style="animation-delay:.2s"></span>
-                                            <span class="wave-bar" style="animation-delay:.3s"></span>
-                                        </span>
-                                    </button>
-                                </div>
+                            <div
+                                class="image-card-grid"
+                                data-base-cols="{{ $group['base_cols'] }}"
+                                data-sm-cols="{{ $group['sm_cols'] }}"
+                                data-lg-cols="{{ $group['lg_cols'] }}"
+                                data-xl-cols="{{ $group['xl_cols'] }}"
+                            >
+                                @foreach($group['items'] as $item)
+                                    <article class="image-vocab-card vocab-card">
+                                        <div class="card-media-box">
+                                            <img
+                                                src="{{ $item['image'] }}"
+                                                alt="{{ $item['text'] }}"
+                                                loading="lazy"
+                                                class="card-image"
+                                            />
+                                            <div class="card-image-overlay"></div>
+
+                                            <div class="card-audio">
+                                                <button
+                                                    type="button"
+                                                    class="speak-btn"
+                                                    aria-label="Play Audio"
+                                                    data-audio="{{ $item['sound'] }}"
+                                                >
+                                                    <span class="speak-btn-shell">
+                                                        <svg class="static-icon h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                            <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                                        </svg>
+                                                        <span class="wave-bar" style="animation-delay:.1s"></span>
+                                                        <span class="wave-bar" style="animation-delay:.2s"></span>
+                                                        <span class="wave-bar" style="animation-delay:.3s"></span>
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-body">
+                                            <div class="card-body-title">
+                                                <span>{{ $item['text'] }}</span>
+                                                @if(!empty($item['emoji']))
+                                                    <span class="card-body-emoji" aria-hidden="true">{{ $item['emoji'] }}</span>
+                                                @endif
+                                            </div>
+
+                                            @if(!empty($item['subtitle']))
+                                                <div class="card-subtitle">
+                                                    @if($allowHtmlSubtitles)
+                                                        {!! $item['subtitle'] !!}
+                                                    @else
+                                                        {{ $item['subtitle'] }}
+                                                    @endif
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </article>
+                                @endforeach
                             </div>
-
-                            <div class="card-body">
-                                <div class="card-body-title">
-                                    <span>{{ $item['text'] }}</span>
-                                    @if(!empty($item['emoji']))
-                                        <span class="card-body-emoji" aria-hidden="true">{{ $item['emoji'] }}</span>
-                                    @endif
-                                </div>
-
-                                @if(!empty($item['subtitle']))
-                                    <div class="card-subtitle">
-                                        @if($allowHtmlSubtitles)
-                                            {!! $item['subtitle'] !!}
-                                        @else
-                                            {{ $item['subtitle'] }}
-                                        @endif
-                                    </div>
-                                @endif
-                            </div>
-                        </article>
+                        </section>
                     @endforeach
-                </section>
+                </div>
             </main>
         </div>
     </div>

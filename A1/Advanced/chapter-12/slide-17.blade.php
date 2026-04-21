@@ -34,7 +34,7 @@ if (!function_exists('materialAsset')) {
 @section('title', $content['page_title'])
 
 @section('content')
-    <section class="bg-[#f8fafc] dark:bg-[#0f172a] min-h-[100dvh] flex flex-col font-sans">
+    <section class="min-h-[100dvh] flex flex-col font-sans">
         <div class="mx-auto flex w-full max-w-[1280px] flex-1 flex-col px-4 sm:px-6 lg:px-8 py-6 lg:py-10">
 
             <!-- Title Section -->
