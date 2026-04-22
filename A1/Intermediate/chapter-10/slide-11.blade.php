@@ -1,8 +1,5 @@
-{{-- resources/views/slider/slide-sickness-mcq.blade.php --}}
 <?php
 $content = [
-    'uid'        => 'listen_' . substr(md5(uniqid('', true)), 0, 10),
-
     'page_title' => 'Listen again and answer these questions',
     'title'      => 'Listen again and answer these questions',
     'subtitle'   => '',

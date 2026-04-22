@@ -3,7 +3,7 @@
 $content = [
     'title' => 'Listening',
     'subtitle' => ' Listen to these two  conversations  and answer the questions',
-    'audio' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide11.mp3'),
+    'audio' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide11.mp3'), 
     'tabs' => [
         ['id' => 'empty', 'label' => 'Listen'],
         ['id' => 'script', 'label' => 'Script'],

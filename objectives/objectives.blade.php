@@ -142,17 +142,13 @@
 @section('content')
     <div class="lo-page relative h-[100dvh] w-full overflow-hidden">
         <div id="slideViewport" class="slide-viewport">
-            <div id="slideShell" class="slide-shell mx-auto w-full max-w-[1280px] px-4 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6">
+            <div id="slideShell" class="slide-shell mx-auto w-full max-w-[1330px] px-4 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6">
                 <main class="w-full">
-                    <section class="grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] gap-8 lg:gap-12 items-center">
+                    <section class="grid grid-cols-1 lg:grid-cols-[minmax(0,30%)_minmax(0,70%)] gap-8 lg:gap-12 items-center">
 
                         {{-- Left column: title & subtitle --}}
                         <div class="text-left flex flex-col gap-4">
-                            @php
-                                $titleWrapClass = 'header-spacing my-0 space-y-5 px-0 text-left xl:mb-[160px]';
-                                $titleHeadingClass = 'mb-3 text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl';
-                                $subtitleClass = 'max-w-xl text-lg font-bold leading-[1.45] text-stone-800 dark:text-orange-100 sm:text-xl lg:text-2xl';
-                            @endphp
+
                             @include('slider.components.title-subtitle')
                         </div>
 

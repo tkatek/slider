@@ -1,7 +1,7 @@
 @extends('slider.simple-layout')
 
 @php
-    $contentUid = trim((string) ($content['uid'] ?? ('listen_' . substr(md5(uniqid('', true)), 0, 10))));
+    $inputIdPrefix = trim((string) ($content['input_id_prefix'] ?? 'listening_type_answer'));
     $playerAudio = !empty($content['audio']) ? $content['audio'] : (!empty($content['audio_src']) ? $content['audio_src'] : null);
     $rawTranscript = $content['transcript'] ?? [];
     $scriptLines = is_array($rawTranscript)
@@ -101,9 +101,9 @@
         .primary-btn {
             border-radius: 16px;
             color: white;
-            border: 1px solid rgba(255,255,255,.18);
-            background: linear-gradient(135deg, #673fe7, #4f46e5, #3b82f6);
-            box-shadow: 0 16px 40px rgba(79,70,229,.22);
+            border: 1px solid rgba(255,255,255,.14);
+            background: linear-gradient(135deg, #71717a, #3f3f46, #18181b);
+            box-shadow: 0 14px 30px rgba(24,24,27,.20);
             transition: transform .18s ease, box-shadow .18s ease;
         }
 
@@ -139,10 +139,48 @@
             color: #9f1239;
         }
 
+        .answer-input.is-correct {
+            border-color: #16a34a;
+            background: rgba(220,252,231,.9);
+            color: #166534;
+        }
+
+        .answer-input.is-wrong {
+            border-color: #dc2626;
+            background: rgba(254,226,226,.95);
+            color: #991b1b;
+        }
+
         .dark .answer-input.is-revealed-answer {
             border-color: rgba(251,113,133,.35);
             background: rgba(159,18,57,.16);
             color: #fecdd3;
+        }
+
+        .dark .answer-input.is-correct {
+            background: rgba(20,83,45,.34);
+            color: #bbf7d0;
+        }
+
+        .dark .answer-input.is-wrong {
+            background: rgba(127,29,29,.34);
+            color: #fecaca;
+        }
+
+        .answer-result {
+            min-width: 1.5rem;
+            font-size: 1.35rem;
+            font-weight: 900;
+            line-height: 1;
+            text-align: center;
+        }
+
+        .answer-result.is-correct {
+            color: #16a34a;
+        }
+
+        .answer-result.is-wrong {
+            color: #dc2626;
         }
 
         .fill-answer-line {
@@ -206,7 +244,7 @@
             <section class="anim-panel lesson-card w-full p-4 sm:p-5">
                 <div class="flex items-center justify-between mb-3 gap-2 flex-wrap">
                     <h2 class="font-black text-sm sm:text-base text-slate-900 dark:text-slate-50">
-                        Answer the questions
+                        {{ $content['section_title'] ?? 'Answer the questions' }}
                     </h2>
 
                     @if($hasRevealAnswers)
@@ -217,6 +255,14 @@
                                     class="reveal-btn"
                             >
                                 Reveal answers
+                            </button>
+
+                            <button
+                                    id="checkAnswersBtn"
+                                    type="button"
+                                    class="primary-btn inline-flex items-center justify-center rounded-lg px-3 py-1.5 text-xs font-black"
+                            >
+                                Check Answers
                             </button>
 
                             <button
@@ -247,7 +293,7 @@
                                         {{ $q['number'] ?? ($i + 1) }}
                                     </div>
 
-                                    <label for="q_{{ $contentUid }}_{{ $i }}"
+                                    <label for="{{ $inputIdPrefix }}_{{ $i }}"
                                            class="min-w-0 flex-1 pt-px text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.4] text-slate-900 dark:text-slate-100">
                                         {{ $q['prompt'] }}
                                     </label>
@@ -255,55 +301,62 @@
 
                                 <div class="min-w-0">
                                     @if($questionType === 'missing_words' && $sentenceTemplate !== '' && !empty($questionBlanks))
-                                        <div class="fill-answer-line">
-                                            @foreach($sentenceParts as $partIndex => $part)
-                                                @if(preg_match('/^\{\{(\d+)\}\}$/', $part, $matches))
-                                                    @php
-                                                        $blankIndex = (int) $matches[1] - 1;
-                                                        $blank = $questionBlanks[$blankIndex] ?? [];
-                                                        $blankAnswer = trim((string) ($blank['answer'] ?? $blank['sample_answer'] ?? $blank['revealed_answer'] ?? ''));
-                                                        $blankPlaceholder = trim((string) ($blank['placeholder'] ?? 'Missing word'));
-                                                        $blankWidth = max(
-                                                            9,
-                                                            min(
-                                                                20,
-                                                                strlen($blankAnswer !== '' ? $blankAnswer : $blankPlaceholder) + 2
-                                                            )
-                                                        );
-                                                    @endphp
-                                                    <input
-                                                            id="q_{{ $contentUid }}_{{ $i }}_{{ $blankIndex }}"
-                                                            type="text"
-                                                            data-answer="{{ $blankAnswer }}"
-                                                            class="answer-input answer-input-inline rounded-2xl border border-slate-200 bg-white
-                                                               dark:border-slate-700 dark:bg-slate-950/25
-                                                               px-3 py-3 text-base font-semibold text-slate-800 dark:text-slate-100
-                                                               placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                                                            placeholder="{{ $blankPlaceholder }}"
-                                                            style="--blank-width: {{ $blankWidth }}ch;"
-                                                            aria-label="{{ $blank['label'] ?? ('Missing word ' . ($blankIndex + 1)) }}"
-                                                    >
-                                                @else
-                                                    @php
-                                                        $displayPart = trim(preg_replace('/\s+/', ' ', $part));
-                                                    @endphp
-                                                    @if($displayPart !== '')
-                                                        <span class="fill-answer-text">{{ $displayPart }}</span>
+                                        <div class="flex items-center gap-2">
+                                            <div class="fill-answer-line min-w-0 flex-1">
+                                                @foreach($sentenceParts as $partIndex => $part)
+                                                    @if(preg_match('/^\{\{(\d+)\}\}$/', $part, $matches))
+                                                        @php
+                                                            $blankIndex = (int) $matches[1] - 1;
+                                                            $blank = $questionBlanks[$blankIndex] ?? [];
+                                                            $blankAnswer = trim((string) ($blank['answer'] ?? $blank['sample_answer'] ?? $blank['revealed_answer'] ?? ''));
+                                                            $blankPlaceholder = trim((string) ($blank['placeholder'] ?? 'Missing word'));
+                                                            $blankWidth = max(
+                                                                9,
+                                                                min(
+                                                                    20,
+                                                                    strlen($blankAnswer !== '' ? $blankAnswer : $blankPlaceholder) + 2
+                                                                )
+                                                            );
+                                                        @endphp
+                                                        <input
+                                                                id="{{ $inputIdPrefix }}_{{ $i }}_{{ $blankIndex }}"
+                                                                type="text"
+                                                                data-answer="{{ $blankAnswer }}"
+                                                                class="answer-input answer-input-inline rounded-2xl border border-slate-200 bg-white
+                                                                   dark:border-slate-700 dark:bg-slate-950/25
+                                                                   px-3 py-3 text-base font-semibold text-slate-800 dark:text-slate-100
+                                                                   placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                                                                placeholder="{{ $blankPlaceholder }}"
+                                                                style="--blank-width: {{ $blankWidth }}ch;"
+                                                                aria-label="{{ $blank['label'] ?? ('Missing word ' . ($blankIndex + 1)) }}"
+                                                        >
+                                                    @else
+                                                        @php
+                                                            $displayPart = trim(preg_replace('/\s+/', ' ', $part));
+                                                        @endphp
+                                                        @if($displayPart !== '')
+                                                            <span class="fill-answer-text">{{ $displayPart }}</span>
+                                                        @endif
                                                     @endif
-                                                @endif
-                                            @endforeach
+                                                @endforeach
+                                            </div>
+                                            <span class="answer-result" aria-live="polite"></span>
                                         </div>
                                     @else
-                                        <input
-                                                id="q_{{ $contentUid }}_{{ $i }}"
+                                        <div class="flex items-center gap-2">
+                                            <input
+                                                id="{{ $inputIdPrefix }}_{{ $i }}"
                                                 type="text"
                                                 data-answer="{{ $q['answer'] ?? $q['sample_answer'] ?? $q['revealed_answer'] ?? '' }}"
-                                                class="answer-input w-full rounded-2xl border border-slate-200 bg-white
+                                                value="{{ $q['default_value'] ?? '' }}"
+                                                class="answer-input min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white
                                                    dark:border-slate-700 dark:bg-slate-950/25
-                                                   px-3 py-3 text-base font-semibold text-slate-800 dark:text-slate-100
-                                                   placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                                                placeholder="{{ $q['placeholder'] ?? 'Write your answer...' }}"
-                                        >
+                                                       px-3 py-3 text-base font-semibold text-slate-800 dark:text-slate-100
+                                                       placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                                                    placeholder="{{ $q['placeholder'] ?? 'Write your answer...' }}"
+                                            >
+                                            <span class="answer-result" aria-live="polite"></span>
+                                        </div>
                                     @endif
                                 </div>
                             </div>
@@ -334,14 +387,82 @@
 
             const answerInputs = Array.from(document.querySelectorAll(".answer-input"));
             const revealAnswersBtn = document.getElementById("revealAnswersBtn");
+            const checkAnswersBtn = document.getElementById("checkAnswersBtn");
             const retakeTestBtn = document.getElementById("retakeTestBtn");
             const scriptModal = document.querySelector("[data-audio-player-modal]");
             let revealedAnswers = false;
+
+            function normalizeAnswer(value) {
+                return String(value || "")
+                    .trim()
+                    .toLowerCase()
+                    .replace(/[’‘]/g, "'")
+                    .replace(/[“”]/g, '"')
+                    .replace(/[.,!?;:]+$/g, "")
+                    .replace(/\s+/g, " ");
+            }
+
+            function acceptedAnswers(input) {
+                return String(input.dataset.answer || "")
+                    .split("|")
+                    .map(normalizeAnswer)
+                    .filter(Boolean);
+            }
+
+            function isInputCorrect(input) {
+                const userAnswer = normalizeAnswer(input.value);
+                const answers = acceptedAnswers(input);
+
+                return userAnswer !== "" && answers.includes(userAnswer);
+            }
+
+            function inputGroup(input) {
+                return input.closest(".flex.items-center.gap-2");
+            }
+
+            function resultForInput(input) {
+                return inputGroup(input)?.querySelector(".answer-result") || null;
+            }
+
+            function clearInputFeedback(input) {
+                input.classList.remove("is-correct", "is-wrong", "is-revealed-answer");
+
+                const result = resultForInput(input);
+                if (!result) return;
+
+                result.textContent = "";
+                result.classList.remove("is-correct", "is-wrong");
+            }
+
+            function markInput(input, correct) {
+                input.classList.remove("is-correct", "is-wrong", "is-revealed-answer");
+                input.classList.add(correct ? "is-correct" : "is-wrong");
+
+                const result = resultForInput(input);
+                if (!result) return;
+
+                result.textContent = correct ? "\u2713" : "\u2715";
+                result.classList.remove("is-correct", "is-wrong");
+                result.classList.add(correct ? "is-correct" : "is-wrong");
+            }
 
             function updateRevealButtons() {
                 if (revealAnswersBtn) revealAnswersBtn.classList.toggle("hidden", revealedAnswers);
                 if (retakeTestBtn) retakeTestBtn.classList.toggle("hidden", !revealedAnswers);
             }
+
+            answerInputs.forEach((input) => {
+                input.addEventListener("input", () => {
+                    clearInputFeedback(input);
+                }, { signal: ac.signal });
+            });
+
+            checkAnswersBtn?.addEventListener("click", () => {
+                answerInputs.forEach((input) => {
+                    if (!input.dataset.answer) return;
+                    markInput(input, isInputCorrect(input));
+                });
+            }, { signal: ac.signal });
 
             if (revealAnswersBtn) {
                 revealAnswersBtn.addEventListener("click", () => {
@@ -349,9 +470,17 @@
                     answerInputs.forEach((input) => {
                         const answer = (input.dataset.answer || "").trim();
                         if (!answer) return;
-                        input.value = answer;
+                        input.value = answer.split("|")[0].trim();
                         input.disabled = true;
-                        input.classList.add("is-revealed-answer");
+                        input.classList.remove("is-wrong");
+                        input.classList.add("is-revealed-answer", "is-correct");
+
+                        const result = resultForInput(input);
+                        if (result) {
+                            result.textContent = "\u2713";
+                            result.classList.remove("is-wrong");
+                            result.classList.add("is-correct");
+                        }
                     });
                     updateRevealButtons();
                 }, { signal: ac.signal });
@@ -363,7 +492,7 @@
                     answerInputs.forEach((input) => {
                         input.value = "";
                         input.disabled = false;
-                        input.classList.remove("is-revealed-answer");
+                        clearInputFeedback(input);
                     });
                     updateRevealButtons();
                 }, { signal: ac.signal });

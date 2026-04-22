@@ -408,6 +408,25 @@
             }
         @endif
 
+        @if($type !== 'image' && $poolItemType === 'image')
+            @media (max-width: 640px) {
+                #poolContent{
+                    display: grid !important;
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    justify-items: center;
+                    align-items: start;
+                    gap: .45rem !important;
+                }
+
+                #poolContent .draggable-item{
+                    width: 100% !important;
+                    max-width: 108px;
+                }
+            }
+        @endif
+
         @media (prefers-reduced-motion: reduce){
             .returning{ transition: none; }
             .shake{ animation: none; }
@@ -559,7 +578,7 @@
 
                                         <div class="absolute inset-x-0 bottom-0 p-1.5 sm:p-2 category-content w-full" data-dropzone="1">
                                             @if(count($config['items']) > 0)
-                                                <div class="slot {{ $isImagePoolType ? 'mx-auto aspect-square w-[84px] sm:w-[92px] lg:w-[90px]' : 'w-full min-h-[38px] sm:min-h-[46px]' }} rounded-xl sm:rounded-2xl border-2 border-dashed border-white/45 bg-slate-950/15 backdrop-blur dark:border-slate-200/20 dark:bg-slate-900/18"
+                                                <div class="slot {{ $isImagePoolType ? 'mx-auto aspect-square w-[108px] sm:w-[120px] lg:w-[118px]' : 'w-full min-h-[38px] sm:min-h-[46px]' }} rounded-xl sm:rounded-2xl border-2 border-dashed border-white/45 bg-slate-950/15 backdrop-blur dark:border-slate-200/20 dark:bg-slate-900/18"
                                                      data-slot="1"></div>
                                             @endif
                                         </div>
@@ -579,7 +598,7 @@
 
                         <template id="tileTpl">
                             @if($poolItemType === 'image')
-                                <div class="draggable-item select-none touch-none cursor-grab rounded-xl overflow-hidden w-[84px] sm:w-[92px] lg:w-[90px] aspect-square border border-white/40 bg-white/80 shadow-[0_12px_22px_rgba(2,6,23,0.16)] transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0"
+                                <div class="draggable-item select-none touch-none cursor-grab rounded-xl overflow-hidden w-[108px] sm:w-[120px] lg:w-[118px] aspect-square border border-white/40 bg-white/80 shadow-[0_12px_22px_rgba(2,6,23,0.16)] transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0"
                                      style="touch-action:none;" role="img" aria-label="">
                                     <img class="h-full w-full object-cover pointer-events-none" src="" alt="" draggable="false">
                                 </div>
@@ -696,7 +715,7 @@
                                             @if($slotCount > 0)
                                                 <div
                                                         class="slot grid place-items-center rounded-2xl border border-dashed border-slate-200/80 bg-white/40
-                                                           {{ $isImagePoolType ? 'mx-auto aspect-square w-[84px] sm:w-[92px] lg:w-[90px]' : 'min-h-[34px] sm:min-h-[40px]' }}
+                                                           {{ $isImagePoolType ? 'mx-auto aspect-square w-[108px] sm:w-[120px] lg:w-[118px]' : 'min-h-[34px] sm:min-h-[40px]' }}
                                                            dark:border-slate-700/60 dark:bg-slate-900/20"
                                                         data-slot="1"
                                                 ></div>
@@ -726,7 +745,7 @@
                         <template id="tileTpl">
                             @if($poolItemType === 'image')
                                 <div
-                                        class="draggable-item select-none touch-none cursor-grab rounded-xl overflow-hidden w-[84px] sm:w-[92px] lg:w-[90px] aspect-square border border-white/40 bg-white/80 shadow-[0_12px_22px_rgba(2,6,23,0.16)] transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0"
+                                        class="draggable-item select-none touch-none cursor-grab rounded-xl overflow-hidden w-[108px] sm:w-[120px] lg:w-[118px] aspect-square border border-white/40 bg-white/80 shadow-[0_12px_22px_rgba(2,6,23,0.16)] transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0"
                                         style="touch-action:none;"
                                         role="img"
                                         aria-label=""
@@ -1189,14 +1208,14 @@
 
                 if (this.isImageType) {
                     slot.className = this.isImagePoolType
-                        ? 'slot mx-auto aspect-square w-[84px] sm:w-[92px] lg:w-[90px] rounded-xl sm:rounded-2xl border-2 border-dashed border-white/45 bg-slate-950/15 backdrop-blur dark:border-slate-200/20 dark:bg-slate-900/18'
+                        ? 'slot mx-auto aspect-square w-[108px] sm:w-[120px] lg:w-[118px] rounded-xl sm:rounded-2xl border-2 border-dashed border-white/45 bg-slate-950/15 backdrop-blur dark:border-slate-200/20 dark:bg-slate-900/18'
                         : 'slot w-full min-h-[38px] sm:min-h-[46px] rounded-xl sm:rounded-2xl border-2 border-dashed border-white/45 bg-slate-950/15 backdrop-blur dark:border-slate-200/20 dark:bg-slate-900/18';
                     slot.dataset.slot = '1';
                     return slot;
                 }
 
                 slot.className = this.isImagePoolType
-                    ? 'slot grid place-items-center rounded-2xl border border-dashed border-slate-200/80 bg-white/40 mx-auto aspect-square w-[84px] sm:w-[92px] lg:w-[90px] dark:border-slate-700/60 dark:bg-slate-900/20'
+                    ? 'slot grid place-items-center rounded-2xl border border-dashed border-slate-200/80 bg-white/40 mx-auto aspect-square w-[108px] sm:w-[120px] lg:w-[118px] dark:border-slate-700/60 dark:bg-slate-900/20'
                     : 'slot grid place-items-center rounded-2xl border border-dashed border-slate-200/80 bg-white/40 min-h-[34px] sm:min-h-[40px] dark:border-slate-700/60 dark:bg-slate-900/20';
                 slot.dataset.slot = '1';
                 this.resetTextSlotState(slot);
