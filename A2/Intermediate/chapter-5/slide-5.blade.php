@@ -1,0 +1,92 @@
+<?php
+$content = [
+    'video'      => materialAsset('slider/A2/Intermediate/chapter-5/videos/'),
+    'thumbnail'  => materialAsset('slider/A2/Intermediate/chapter-5/videos/slide5.webp'),
+    'isQuiz'     => 0,
+    'questions' => [
+        [
+            'time' => 5000,
+            'type' => 'multiple_choice',
+            'question' => 'What happened in Centerville last night?',
+            'options' => [
+                'There was a party',
+                'There was a blackout',
+                'There was a fire',
+                'There was a storm',
+            ],
+            'correct_answer' => 1,
+            'points' => 10,
+        ],
+        [
+            'time' => 16000,
+            'type' => 'multiple_choice',
+            'question' => 'What was the man doing when the lights went out?',
+            'options' => [
+                'He was sleeping',
+                'He was watching TV',
+                'He was washing the dishes',
+                'He was driving',
+            ],
+            'correct_answer' => 2,
+            'points' => 10,
+        ],
+        [
+            'time' => 30000,
+            'type' => 'multiple_choice',
+            'question' => 'What were the children doing?',
+            'options' => [
+                'Playing outside',
+                'Sleeping',
+                'Doing homework',
+                'Eating',
+            ],
+            'correct_answer' => 2,
+            'points' => 10,
+        ],
+        [
+            'time' => 47000,
+            'type' => 'multiple_choice',
+            'question' => 'Why did the lights go out?',
+            'options' => [
+                'Because of a party',
+                'Because of burglars',
+                'They are not sure, maybe rain',
+                'Because of a fire',
+            ],
+            'correct_answer' => 2,
+            'points' => 10,
+        ],
+        [
+            'time' => 70000,
+            'type' => 'multiple_choice',
+            'question' => 'What happened on River Street?',
+            'options' => [
+                'A party',
+                'A blackout',
+                'A robbery',
+                'A concert',
+            ],
+            'correct_answer' => 2,
+            'points' => 10,
+        ],
+    ],
+    'subtitles'  => [
+        ['start' => 0,  'end' => 6,  'text' => 'Good morning. Last night, there was a blackout in Centerville. The lights went out all over town.'],
+        ['start' => 6,  'end' => 10, 'text' => 'Let’s ask people what they were doing.'],
+        ['start' => 10, 'end' => 14, 'text' => 'What were you doing when the lights went out?'],
+        ['start' => 14, 'end' => 20, 'text' => 'I was washing the dishes, and my wife was giving the baby a bath.'],
+        ['start' => 20, 'end' => 25, 'text' => 'I was washing my clothes, and suddenly everything got dark.'],
+        ['start' => 25, 'end' => 32, 'text' => 'We were watching TV, and our children were doing homework.'],
+        ['start' => 32, 'end' => 36, 'text' => 'I didn’t know! I was listening to music all night.'],
+        ['start' => 36, 'end' => 41, 'text' => 'Why did the lights go out?'],
+        ['start' => 41, 'end' => 49, 'text' => 'We aren’t sure. It was raining very hard, so maybe that caused the problem.'],
+        ['start' => 49, 'end' => 54, 'text' => 'What were you doing last night?'],
+        ['start' => 54, 'end' => 60, 'text' => 'I was working in the building. They were riding in the elevator.'],
+        ['start' => 60, 'end' => 68, 'text' => 'Yesterday, there was also a robbery on River Street. Burglars broke into apartments while people were away.'],
+        ['start' => 68, 'end' => 72, 'text' => 'What were you doing yesterday afternoon?'],
+        ['start' => 72, 'end' => 79, 'text' => 'I was visiting a friend. I was playing tennis. We were having a picnic.'],
+        ['start' => 79, 'end' => 84, 'text' => 'It was a bad day for many people. Thank you for watching.'],
+    ],
+];
+?>
+@include("slider.video.interactive", ['content' => $content])

@@ -22,7 +22,7 @@ $content = [
     'rows' => [
         [
             'number' => 1,
-            'item' => 'Beijing', 
+            'item' => 'Beijing',
             'correct' => ['cold', 'windy'],
             'options' => ['cold', 'windy', 'snowy', 'cool'],
         ],
