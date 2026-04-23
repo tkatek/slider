@@ -7,6 +7,18 @@
         ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $content['transcript']), static fn ($line) => $line !== ''))
         : [];
     $hasScript = $scriptLines !== [];
+    $choiceRows = is_array($content['rows'] ?? null) ? $content['rows'] : [];
+    $choiceUsesRowOptions = false;
+    $maxChoiceColumns = 0;
+    foreach ($choiceRows as $choiceRow) {
+        if (is_array($choiceRow['options'] ?? null) && ($choiceRow['options'] ?? []) !== []) {
+            $choiceUsesRowOptions = true;
+        }
+        $maxChoiceColumns = max($maxChoiceColumns, count($choiceRow['options'] ?? []));
+    }
+    if (!$choiceUsesRowOptions) {
+        $maxChoiceColumns = count($content['options'] ?? []);
+    }
 @endphp
 
 @section('style')
@@ -393,6 +405,96 @@
             color: #f8fafc;
         }
 
+        .lt-choice-stack {
+            display: grid;
+            gap: .55rem;
+        }
+
+        .lt-choice-line {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+            gap: .85rem;
+            border-radius: 16px;
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .72);
+            padding: .72rem .85rem;
+            font-size: .92rem;
+            font-weight: 900;
+            color: #0f172a;
+        }
+
+        .dark .lt-choice-line {
+            border-color: rgba(51, 65, 85, .85);
+            background: rgba(15, 23, 42, .62);
+            color: #f8fafc;
+        }
+
+        .lt-choice-inline {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: .55rem;
+            min-height: 24px;
+            width: 100%;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+            border-radius: 0;
+            padding: 0;
+            color: #334155;
+        }
+
+        .lt-choice-inline:hover {
+            transform: none;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .lt-choice-inline .lt-box {
+            height: 18px;
+            width: 18px;
+            border-radius: 4px;
+        }
+
+        .lt-choice-inline .lt-choice-text {
+            font-size: .92rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .lt-choice-inline.is-correct,
+        .lt-choice-inline.is-wrong {
+            background: transparent;
+            border: 0;
+        }
+
+        .lt-choice-inline.is-correct .lt-choice-text {
+            color: #166534;
+        }
+
+        .lt-choice-inline.is-wrong .lt-choice-text {
+            color: #991b1b;
+        }
+
+        .dark .lt-choice-inline {
+            color: #e2e8f0;
+        }
+
+        .dark .lt-choice-inline .lt-choice-text {
+            color: #e2e8f0;
+        }
+
+        .dark .lt-choice-inline.is-correct .lt-choice-text {
+            color: #bbf7d0;
+        }
+
+        .dark .lt-choice-inline.is-wrong .lt-choice-text {
+            color: #fecaca;
+        }
+
         @media (max-width: 640px) {
             .lt-table-wrap {
                 display: none;
@@ -458,9 +560,13 @@
                             <thead>
                                 <tr>
                                     <th style="width: 26%;">{{ $content['row_heading'] ?? 'Number' }}</th>
-                                    @foreach(($content['options'] ?? []) as $label)
-                                        <th>{{ $label }}</th>
-                                    @endforeach
+                                    @if($choiceUsesRowOptions)
+                                        <th colspan="{{ max(1, $maxChoiceColumns) }}">{{ $content['option_heading'] ?? 'Options' }}</th>
+                                    @else
+                                        @foreach(($content['options'] ?? []) as $label)
+                                            <th>{{ $label }}</th>
+                                        @endforeach
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -479,14 +585,35 @@
                                                 @endif
                                             </span>
                                         </td>
-                                        @foreach(($content['options'] ?? []) as $key => $label)
-                                            <td>
-                                                <label class="lt-choice">
-                                                    <input type="{{ $choiceInputType }}" name="desktop_choice_{{ $row['number'] ?? $loop->parent->index }}{{ $isMultiChoiceRow ? '[]' : '' }}" value="{{ is_int($key) ? $label : $key }}">
-                                                    <span class="lt-box" aria-hidden="true"></span>
-                                                </label>
-                                            </td>
-                                        @endforeach
+                                        @if($choiceUsesRowOptions)
+                                            @php
+                                                $rowOptions = array_values($row['options'] ?? []);
+                                            @endphp
+                                            @for($optionIndex = 0; $optionIndex < max(1, $maxChoiceColumns); $optionIndex++)
+                                                <td>
+                                                    @if(array_key_exists($optionIndex, $rowOptions))
+                                                        @php
+                                                            $optionLabel = $rowOptions[$optionIndex];
+                                                            $optionValue = is_string($optionLabel) ? $optionLabel : (string) $optionIndex;
+                                                        @endphp
+                                                        <label class="lt-choice lt-choice-inline">
+                                                            <input type="{{ $choiceInputType }}" name="desktop_choice_{{ $row['number'] ?? $loop->parent->index }}{{ $isMultiChoiceRow ? '[]' : '' }}" value="{{ $optionValue }}">
+                                                            <span class="lt-box" aria-hidden="true"></span>
+                                                            <span class="lt-choice-text">{{ $optionLabel }}</span>
+                                                        </label>
+                                                    @endif
+                                                </td>
+                                            @endfor
+                                        @else
+                                            @foreach(($content['options'] ?? []) as $key => $label)
+                                                <td>
+                                                    <label class="lt-choice">
+                                                        <input type="{{ $choiceInputType }}" name="desktop_choice_{{ $row['number'] ?? $loop->parent->index }}{{ $isMultiChoiceRow ? '[]' : '' }}" value="{{ is_int($key) ? $label : $key }}">
+                                                        <span class="lt-box" aria-hidden="true"></span>
+                                                    </label>
+                                                </td>
+                                            @endforeach
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -508,7 +635,7 @@
                                 </div>
 
                                 <div class="grid grid-cols-1 gap-2">
-                                    @foreach(($content['options'] ?? []) as $key => $label)
+                                    @foreach(($choiceUsesRowOptions ? ($row['options'] ?? []) : ($content['options'] ?? [])) as $key => $label)
                                         <label class="lt-choice lt-mobile-option">
                                             <span>{{ $label }}</span>
                                             <input type="{{ $choiceInputType }}" name="mobile_choice_{{ $row['number'] ?? $loop->parent->index }}{{ $isMultiChoiceRow ? '[]' : '' }}" value="{{ is_int($key) ? $label : $key }}">
