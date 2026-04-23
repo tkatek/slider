@@ -20,11 +20,13 @@
 @endsection
 
 @section("content")
-    @include('slider.components.title-subtitle')
+    <div class="min-h-[100dvh] flex flex-col items-center justify-center">
+        @include('slider.components.title-subtitle')
 
-    <main class="max-w-[1600px] mx-auto px-4 md:px-8 pb-12">
-        <div id="cardsContainer" class="flex flex-wrap justify-center gap-6 items-start"></div>
-    </main>
+        <main class="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-12">
+            <div id="cardsContainer" class="flex flex-wrap justify-center gap-6 items-start"></div>
+        </main>
+    </div>
 
     <div id="toastContainer" class="fixed bottom-8 right-8 flex flex-col gap-3 z-[2000]"></div>
 @endsection

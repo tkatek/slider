@@ -4,7 +4,7 @@ $content = [
     'title'      => 'New Language',
     'subtitle'   => '',
 
-    'image'      => materialAsset('slider/A2/Intermediate/chapter-3/img/slideX.webp'),
+    'image'      => materialAsset('slider/A2/Intermediate/chapter-5/img/slide7.webp'),
     'image_alt'  => 'What were you doing when the lights went out?',
 
 
