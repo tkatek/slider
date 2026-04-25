@@ -498,6 +498,16 @@
                 font-size: 1rem;
             }
         }
+
+        .audio-player-has-floating #ddbLayoutShell {
+            padding-bottom: calc(6.25rem + env(safe-area-inset-bottom, 0px));
+        }
+
+        @media (max-width: 640px) {
+            .audio-player-has-floating #ddbLayoutShell {
+                padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+            }
+        }
     </style>
 @endsection
 
@@ -972,6 +982,12 @@
                 return 8;
             };
 
+            DragDropBlanksGame.prototype.syncAudioPlayerFloating = function(isPoolFixed){
+                if (typeof window.setAudioPlayerFloatingVisible === 'function') {
+                    window.setAudioPlayerFloatingVisible(!!isPoolFixed);
+                }
+            };
+
             DragDropBlanksGame.prototype.updatePoolSticky = function(){
                 var top;
                 var railRect;
@@ -989,6 +1005,7 @@
                     this.poolRail.style.removeProperty('--ddb-pool-top');
                     this.poolRail.style.removeProperty('--ddb-pool-left');
                     this.poolRail.style.removeProperty('--ddb-pool-width');
+                    this.syncAudioPlayerFloating(false);
                     return;
                 }
 
@@ -997,6 +1014,7 @@
                 this.poolRail.style.setProperty('--ddb-pool-left', Math.round(railRect.left) + 'px');
                 this.poolRail.style.setProperty('--ddb-pool-width', Math.round(railRect.width) + 'px');
                 this.poolRail.classList.add('ddb-pool-fixed');
+                this.syncAudioPlayerFloating(true);
             };
 
             DragDropBlanksGame.prototype.getVisibleWordLimit = function(){

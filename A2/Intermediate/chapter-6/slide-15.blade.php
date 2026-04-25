@@ -56,16 +56,16 @@ $content = [
             overflow-x: hidden;
             font-family: "Plus Jakarta Sans", sans-serif;
             background:
-                    radial-gradient(900px 480px at 0% 0%, rgba(99,102,241,.10), transparent 58%),
-                    radial-gradient(760px 420px at 100% 0%, rgba(245,158,11,.12), transparent 58%),
-                    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+                radial-gradient(700px 280px at 0% 0%, rgba(59,130,246,.08), transparent 58%),
+                radial-gradient(700px 280px at 100% 0%, rgba(249,115,22,.08), transparent 58%),
+                #f8fafc;
         }
 
         .dark .pwl-page {
             background:
-                    radial-gradient(900px 480px at 0% 0%, rgba(99,102,241,.18), transparent 58%),
-                    radial-gradient(760px 420px at 100% 0%, rgba(245,158,11,.14), transparent 58%),
-                    linear-gradient(180deg, #020617 0%, #0f172a 100%);
+                radial-gradient(700px 280px at 0% 0%, rgba(59,130,246,.12), transparent 58%),
+                radial-gradient(700px 280px at 100% 0%, rgba(249,115,22,.10), transparent 58%),
+                #020617;
         }
 
         .pwl-shell {
@@ -76,47 +76,25 @@ $content = [
         }
 
         .pwl-stage {
-            position: relative;
             max-width: 1120px;
             margin: 0 auto;
-            border-radius: 32px;
+            border-radius: 20px;
             border: 1px solid rgba(226,232,240,.95);
-            background: rgba(255,255,255,.78);
-            box-shadow:
-                    0 28px 80px -42px rgba(15,23,42,.24),
-                    0 14px 34px -28px rgba(15,23,42,.12);
-            backdrop-filter: blur(14px);
+            background: #ffffff;
             overflow: hidden;
+            box-shadow: 0 18px 40px -34px rgba(15,23,42,.18);
         }
 
         .dark .pwl-stage {
             border-color: rgba(71,85,105,.78);
-            background: rgba(15,23,42,.72);
-            box-shadow:
-                    0 28px 80px -42px rgba(2,6,23,.70),
-                    inset 0 1px 0 rgba(255,255,255,.03);
-        }
-
-        .pwl-stage::before {
-            content: "";
-            position: absolute;
-            inset: 0 auto auto 0;
-            width: 100%;
-            height: 140px;
-            background: linear-gradient(135deg, rgba(99,102,241,.10), rgba(245,158,11,.08), transparent 72%);
-            pointer-events: none;
-        }
-
-        .dark .pwl-stage::before {
-            background: linear-gradient(135deg, rgba(99,102,241,.18), rgba(245,158,11,.10), transparent 72%);
+            background: #0f172a;
         }
 
         .pwl-grid {
-            position: relative;
             display: grid;
             grid-template-columns: 1fr;
-            gap: 18px;
-            padding: 18px;
+            gap: 16px;
+            padding: 16px;
         }
 
         .pwl-visual-column,
@@ -128,81 +106,30 @@ $content = [
         }
 
         .pwl-card {
-            position: relative;
-            border-radius: 24px;
+            border-radius: 16px;
             border: 1px solid rgba(226,232,240,.95);
-            background: rgba(255,255,255,.88);
-            box-shadow: 0 14px 34px -28px rgba(15,23,42,.20);
+            background: rgba(255,255,255,.96);
         }
 
         .dark .pwl-card {
             border-color: rgba(71,85,105,.72);
-            background: rgba(15,23,42,.82);
-            box-shadow: 0 14px 34px -28px rgba(2,6,23,.65);
+            background: #0f172a;
         }
 
         .pwl-card-pad {
-            padding: 16px;
-        }
-
-        .pwl-eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: .45rem;
-            width: fit-content;
-            border-radius: 999px;
-            padding: .45rem .75rem;
-            font-size: .72rem;
-            font-weight: 900;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            color: #4338ca;
-            background: rgba(79,70,229,.10);
-        }
-
-        .dark .pwl-eyebrow {
-            color: #c7d2fe;
-            background: rgba(99,102,241,.18);
-        }
-
-        .pwl-section-title {
-            margin: 12px 0 6px;
-            font-size: 1.28rem;
-            line-height: 1.15;
-            font-weight: 900;
-            letter-spacing: -.03em;
-            color: #0f172a;
-        }
-
-        .dark .pwl-section-title {
-            color: #f8fafc;
-        }
-
-        .pwl-section-text {
-            margin: 0;
-            font-size: .95rem;
-            line-height: 1.6;
-            font-weight: 700;
-            color: #475569;
-        }
-
-        .dark .pwl-section-text {
-            color: #cbd5e1;
+            padding: 14px;
         }
 
         .pwl-image-frame {
-            position: relative;
             overflow: hidden;
-            border-radius: 22px;
-            border: 1px solid rgba(99,102,241,.14);
-            background:
-                    linear-gradient(180deg, rgba(255,255,255,.85), rgba(248,250,252,.95));
+            border-radius: 12px;
+            border: 1px solid rgba(191,219,254,.95);
+            background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
         }
 
         .dark .pwl-image-frame {
-            border-color: rgba(99,102,241,.18);
-            background:
-                    linear-gradient(180deg, rgba(30,41,59,.92), rgba(15,23,42,.98));
+            border-color: rgba(59,130,246,.28);
+            background: #020617;
         }
 
         .pwl-image {
@@ -214,52 +141,37 @@ $content = [
 
         .pwl-image-empty {
             aspect-ratio: var(--pwl-image-ratio, 1 / 1);
-            background:
-                    linear-gradient(135deg, rgba(226,232,240,.9), rgba(248,250,252,1));
+            background: #f1f5f9;
         }
 
         .dark .pwl-image-empty {
-            background:
-                    linear-gradient(135deg, rgba(30,41,59,.95), rgba(15,23,42,1));
+            background: #020617;
         }
 
         .pwl-word-bank-head {
             display: flex;
-            flex-wrap: wrap;
             align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 12px;
+            justify-content: flex-start;
+            margin-bottom: 10px;
         }
 
         .pwl-mini-label {
-            font-size: .78rem;
+            font-size: .8rem;
             line-height: 1;
             font-weight: 900;
-            letter-spacing: .08em;
+            letter-spacing: .04em;
             text-transform: uppercase;
-            color: #b45309;
+            color: #2563eb;
         }
 
         .dark .pwl-mini-label {
-            color: #fdba74;
-        }
-
-        .pwl-tip {
-            font-size: .82rem;
-            line-height: 1.45;
-            font-weight: 800;
-            color: #64748b;
-        }
-
-        .dark .pwl-tip {
-            color: #94a3b8;
+            color: #93c5fd;
         }
 
         .pwl-bank {
             display: flex;
             flex-wrap: wrap;
-            gap: .6rem;
+            gap: .5rem;
         }
 
         .pwl-chip {
@@ -269,142 +181,65 @@ $content = [
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 38px;
+            min-height: 34px;
             border-radius: 999px;
-            padding: .58rem .95rem;
-            font-size: .84rem;
+            padding: .45rem .8rem;
+            font-size: .8rem;
             line-height: 1;
             font-weight: 900;
-            color: #9a3412;
-            background:
-                    linear-gradient(180deg, rgba(255,247,237,1), rgba(255,237,213,.95));
-            border: 1px solid rgba(251,146,60,.28);
-            box-shadow: 0 8px 18px -16px rgba(194,65,12,.55);
-            transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+            color: #1e3a8a;
+            background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
+            border: 1px solid rgba(147,197,253,.9);
+            transition: border-color .18s ease, background-color .18s ease;
         }
 
         .pwl-chip:hover,
         .pwl-chip:focus-visible {
-            transform: translateY(-1px);
-            border-color: rgba(249,115,22,.45);
-            box-shadow: 0 12px 22px -18px rgba(194,65,12,.6);
+            border-color: rgba(96,165,250,.95);
+            background: #dbeafe;
             outline: none;
         }
 
         .dark .pwl-chip {
-            color: #fed7aa;
-            background:
-                    linear-gradient(180deg, rgba(154,52,18,.24), rgba(124,45,18,.20));
-            border-color: rgba(251,146,60,.20);
-            box-shadow: none;
-        }
-
-        .pwl-work-header {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 14px;
-        }
-
-        .pwl-work-title {
-            margin: 0;
-            font-size: 1.2rem;
-            line-height: 1.15;
-            font-weight: 900;
-            letter-spacing: -.03em;
-            color: #0f172a;
-        }
-
-        .dark .pwl-work-title {
             color: #f8fafc;
-        }
-
-        .pwl-grammar-note {
-            display: inline-flex;
-            align-items: center;
-            gap: .45rem;
-            border-radius: 999px;
-            padding: .5rem .8rem;
-            font-size: .78rem;
-            line-height: 1;
-            font-weight: 900;
-            color: #1d4ed8;
-            background: rgba(219,234,254,.72);
-            white-space: nowrap;
-        }
-
-        .dark .pwl-grammar-note {
-            color: #bfdbfe;
             background: rgba(30,64,175,.22);
+            border-color: rgba(59,130,246,.35);
         }
 
         .pwl-rows {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .pwl-row {
-            border-radius: 18px;
-            border: 1px solid rgba(226,232,240,.95);
-            background: rgba(248,250,252,.86);
-            padding: 12px 14px;
-            transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease, background .18s ease;
+            padding: 8px 0;
         }
 
         .dark .pwl-row {
-            border-color: rgba(51,65,85,.95);
-            background: rgba(15,23,42,.76);
+            background: transparent;
         }
 
         .pwl-row.is-active {
-            border-color: rgba(99,102,241,.42);
-            box-shadow: 0 12px 24px -22px rgba(79,70,229,.55);
-            background: rgba(255,255,255,.98);
-            transform: translateY(-1px);
+            background: transparent;
         }
 
         .dark .pwl-row.is-active {
-            border-color: rgba(129,140,248,.45);
-            background: rgba(15,23,42,.94);
-            box-shadow: 0 12px 24px -22px rgba(99,102,241,.38);
+            background: transparent;
         }
 
         .pwl-row-top {
             display: flex;
             align-items: center;
-            gap: .7rem;
-            margin-bottom: 9px;
-        }
-
-        .pwl-row-index {
-            flex: 0 0 auto;
-            width: 28px;
-            height: 28px;
-            border-radius: 999px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: .78rem;
-            line-height: 1;
-            font-weight: 900;
-            color: #4338ca;
-            background: rgba(79,70,229,.10);
-        }
-
-        .dark .pwl-row-index {
-            color: #c7d2fe;
-            background: rgba(99,102,241,.18);
+            margin-bottom: 6px;
         }
 
         .pwl-label {
             margin: 0;
-            font-size: 1rem;
+            font-size: .98rem;
             line-height: 1.35;
             font-weight: 900;
-            color: #111827;
+            color: #0f172a;
         }
 
         .dark .pwl-label {
@@ -412,24 +247,23 @@ $content = [
         }
 
         .pwl-answer-wrap {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 8px;
+            display: block;
         }
 
         .pwl-input-shell {
             display: flex;
             align-items: center;
-            min-height: 52px;
-            border-radius: 14px;
-            border: 1px solid rgba(203,213,225,.9);
-            background: rgba(255,255,255,.96);
-            padding: 0 14px;
+            min-height: 40px;
+            border: none;
+            border-bottom: 1.5px solid rgba(251,146,60,.55);
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
         }
 
         .dark .pwl-input-shell {
-            border-color: rgba(71,85,105,.9);
-            background: rgba(2,6,23,.42);
+            border-bottom-color: rgba(251,146,60,.55);
+            background: transparent;
         }
 
         .pwl-input {
@@ -438,42 +272,21 @@ $content = [
             outline: none;
             background: transparent;
             padding: 0;
-            font-size: .98rem;
+            font-size: .96rem;
             line-height: 1.5;
             font-weight: 800;
             color: #0f172a;
-        }
-
-        .pwl-input::placeholder {
-            color: #94a3b8;
-            font-weight: 700;
         }
 
         .dark .pwl-input {
             color: #f8fafc;
         }
 
-        .dark .pwl-input::placeholder {
-            color: #64748b;
-        }
-
-        .pwl-hint {
-            margin: 0;
-            font-size: .78rem;
-            line-height: 1.45;
-            font-weight: 700;
-            color: #64748b;
-        }
-
-        .dark .pwl-hint {
-            color: #94a3b8;
-        }
-
         @media (min-width: 960px) {
             .pwl-grid {
                 grid-template-columns: minmax(340px, 410px) minmax(0, 1fr);
-                gap: 20px;
-                padding: 20px;
+                gap: 16px;
+                padding: 16px;
             }
 
             .pwl-visual-column {
@@ -489,51 +302,28 @@ $content = [
             }
 
             .pwl-stage {
-                border-radius: 24px;
+                border-radius: 18px;
             }
 
             .pwl-grid {
-                padding: 14px;
+                padding: 12px;
                 gap: 14px;
             }
 
             .pwl-card-pad {
-                padding: 14px;
-            }
-
-            .pwl-section-title {
-                font-size: 1.16rem;
-            }
-
-            .pwl-work-title {
-                font-size: 1.08rem;
+                padding: 12px;
             }
 
             .pwl-row {
-                padding: 11px 12px;
+                padding: 7px 0;
             }
 
             .pwl-input-shell {
-                min-height: 48px;
-                padding: 0 12px;
+                min-height: 36px;
             }
 
             .pwl-input {
                 font-size: .94rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .pwl-word-bank-head,
-            .pwl-work-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .pwl-section-text,
-            .pwl-tip,
-            .pwl-hint {
-                font-size: .8rem;
             }
         }
     </style>
@@ -548,14 +338,8 @@ $content = [
                 <div class="pwl-grid">
                     <aside class="pwl-visual-column">
                         <div class="pwl-card pwl-card-pad">
-                            <span class="pwl-eyebrow">Scene Study</span>
-                            <h2 class="pwl-section-title">Look carefully at the picture</h2>
-                            <p class="pwl-section-text">
-                                Observe each action, then complete the sentences using past continuous.
-                            </p>
-
                             <div
-                                    class="pwl-image-frame mt-4"
+                                    class="pwl-image-frame"
                                     style="--pwl-image-ratio: {{ $imageRatio }}; --pwl-image-fit: {{ $imageFit }};"
                             >
                                 @if($image !== '')
@@ -569,13 +353,7 @@ $content = [
                         @if(!empty($wordBank))
                             <div class="pwl-card pwl-card-pad">
                                 <div class="pwl-word-bank-head">
-                                    <div>
-                                        <div class="pwl-mini-label">Word Bank</div>
-                                        <p class="pwl-section-text" style="margin-top: 6px;">
-                                            Click a word to add it to the active answer.
-                                        </p>
-                                    </div>
-                                    <span class="pwl-tip">Use: was/were + verb-ing</span>
+                                    <div class="pwl-mini-label">Word Bank</div>
                                 </div>
 
                                 <div class="pwl-bank">
@@ -595,16 +373,6 @@ $content = [
 
                     <div class="pwl-work-column">
                         <div class="pwl-card pwl-card-pad">
-                            <div class="pwl-work-header">
-                                <div>
-                                    <h3 class="pwl-work-title">Complete the sentences</h3>
-                                    <p class="pwl-section-text" style="margin-top: 6px;">
-                                        Write a full past continuous action for each person or thing.
-                                    </p>
-                                </div>
-                                <span class="pwl-grammar-note">Grammar cue: was / were + verb-ing</span>
-                            </div>
-
                             <div class="pwl-rows">
                                 @foreach($rows as $index => $row)
                                     @php
@@ -614,7 +382,6 @@ $content = [
 
                                     <div class="pwl-row js-pwl-row">
                                         <div class="pwl-row-top">
-                                            <span class="pwl-row-index">{{ $index + 1 }}</span>
                                             <p class="pwl-label">{{ $label }}</p>
                                         </div>
 
@@ -626,13 +393,11 @@ $content = [
                                                         type="text"
                                                         class="pwl-input js-pwl-input"
                                                         data-index="{{ $index }}"
-                                                        placeholder="was / were + verb-ing..."
                                                         autocomplete="off"
                                                         spellcheck="false"
                                                         aria-label="{{ $label }}"
                                                 >
                                             </div>
-                                            <p class="pwl-hint">Example structure: was barking / were playing</p>
                                         </div>
                                     </div>
                                 @endforeach
@@ -733,7 +498,7 @@ $content = [
 
                 if (inputs.length) {
                     inputs[0].focus();
-                    setActiveInput(inputs[0]);
+                    setActiveInput(inputs[0]); 
                 }
             };
         })();

@@ -1,6 +1,6 @@
 <?php
 $content = [
-    'video'          => materialAsset('slider/A2/Beginner/chapter-1/video/weather-conversations-encrypted/weather-conversations.m3u8'),
+    'video'          => materialAsset('slider/A2/Beginner/chapter-1/video/describing-the-weather-encrypted/describing-the-weather.m3u8'),
     'thumbnail'      => materialAsset('slider/A2/Beginner/chapter-2/img/slide5.webp'),
     'isQuiz'         => 0,
     'showTranscript' => 0,

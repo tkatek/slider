@@ -2,6 +2,7 @@
 $content = [
     'page_title' => 'Speaking Cards',
     'title'      => 'Speaking Cards',
+    'card_label' => 'Possessive Adjectives',
     'example'    => 'My sister is thin.',
     'cards'      => [
         ['answer' => 'tall',  'image' => materialAsset('slider/A1/Beginner/chapter-4/img/slide12/old.webp'), 'sentence' => 'grandpa / tall'],

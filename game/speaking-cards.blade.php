@@ -292,7 +292,7 @@
 @section("script")
     <script>
         (() => {
-            const LABEL = @json($content['label'] ?? 'Possessive Adjectives');
+            const LABEL = @json($content['card_label'] ?? $content['label'] ?? ($content['title'] ?? 'Speaking Cards'));
             const RAW   = @json($content['cards'] ?? []);
 
 

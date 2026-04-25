@@ -360,8 +360,11 @@
             flex-wrap:wrap;
             font-size:1.04rem;
             line-height:1.4;
-            font-weight:900;
+            font-weight:700;
             color:#0f172a;
+            min-width:0;
+            overflow-wrap:anywhere;
+            word-break:normal;
         }
 
         .dark .word-answer{
@@ -370,9 +373,12 @@
 
         .word-prefix,
         .word-suffix{
-            flex:0 0 auto;
+            flex:0 1 auto;
             letter-spacing:.01em;
-            white-space:pre;
+            min-width:0;
+            max-width:100%;
+            white-space:pre-wrap;
+            overflow-wrap:anywhere;
         }
 
         .word-input{
@@ -388,7 +394,7 @@
             padding:6px 8px;
             font-size:.95rem;
             line-height:1;
-            font-weight:900;
+            font-weight:700;
             text-align:center;
             text-transform:uppercase;
             outline:none;
@@ -567,41 +573,69 @@
                                     $parts[] = ['text' => $item['suffix']];
                                 }
                             }
+
+                            $normalizedParts = [];
+                            $pendingHint = null;
+
+                            foreach ($parts as $part) {
+                                if (!is_array($part)) {
+                                    continue;
+                                }
+
+                                if (array_key_exists('hint', $part) && !array_key_exists('answer', $part) && !array_key_exists('text', $part)) {
+                                    $lastPartIndex = count($normalizedParts) - 1;
+
+                                    if ($lastPartIndex >= 0 && array_key_exists('answer', $normalizedParts[$lastPartIndex])) {
+                                        $normalizedParts[$lastPartIndex]['placeholder'] = $normalizedParts[$lastPartIndex]['placeholder'] ?? $part['hint'];
+                                    } else {
+                                        $pendingHint = $part['hint'];
+                                    }
+
+                                    continue;
+                                }
+
+                                if (array_key_exists('answer', $part) && $pendingHint !== null) {
+                                    $part['placeholder'] = $part['placeholder'] ?? $part['hint'] ?? $pendingHint;
+                                    $pendingHint = null;
+                                }
+
+                                $normalizedParts[] = $part;
+                            }
+
+                            $parts = $normalizedParts;
                         @endphp
 
                         <article class="word-card">
-                            <div class="word-image-frame">
-                                @if(!empty($item['image']))
+                            @if(!empty($item['image']))
+                                <div class="word-image-frame">
                                     <img
                                             src="{{ $item['image'] }}"
                                             alt="{{ $item['name'] ?? ('Item ' . ($item['number'] ?? ($index + 1))) }}"
                                             loading="lazy"
                                             class="word-image"
                                     />
-                                @else
-                                    <div class="word-image-empty">Image not available</div>
-                                @endif
 
-                                @if(!empty($item['sound']))
-                                    <div class="card-audio">
-                                        <button
-                                                type="button"
-                                                class="speak-btn"
-                                                aria-label="Play Audio"
-                                                data-audio="{{ $item['sound'] }}"
-                                        >
-                                            <span class="speak-btn-shell">
-                                                <svg class="static-icon h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                                    <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-                                                </svg>
-                                                <span class="wave-bar" style="animation-delay:.1s"></span>
-                                                <span class="wave-bar" style="animation-delay:.2s"></span>
-                                                <span class="wave-bar" style="animation-delay:.3s"></span>
-                                            </span>
-                                        </button>
-                                    </div>
-                                @endif
-                            </div>
+                                    @if(!empty($item['sound']))
+                                        <div class="card-audio">
+                                            <button
+                                                    type="button"
+                                                    class="speak-btn"
+                                                    aria-label="Play Audio"
+                                                    data-audio="{{ $item['sound'] }}"
+                                            >
+                                                <span class="speak-btn-shell">
+                                                    <svg class="static-icon h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                        <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                                    </svg>
+                                                    <span class="wave-bar" style="animation-delay:.1s"></span>
+                                                    <span class="wave-bar" style="animation-delay:.2s"></span>
+                                                    <span class="wave-bar" style="animation-delay:.3s"></span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
 
                             <div class="word-answer">
                                 @php $inputCounter = 0; @endphp
@@ -616,6 +650,7 @@
                                             $fieldId = 'missing-word-' . $index . '-' . $inputCounter;
                                             $answerValue = strtoupper((string) $part['answer']);
                                             $maxLength = max(1, mb_strlen((string) $part['answer']));
+                                            $placeholder = (string) ($part['placeholder'] ?? $part['hint'] ?? $item['placeholder'] ?? $item['hint'] ?? '');
                                         @endphp
 
                                         <input
@@ -624,7 +659,7 @@
                                                 class="word-input js-word-input"
                                                 style="--answer-length: {{ $maxLength }}; --answer-text-width: {{ $maxLength }}ch"
                                                 maxlength="{{ $maxLength }}"
-                                                placeholder="{{ $part['placeholder'] ?? '' }}"
+                                                placeholder="{{ $placeholder }}"
                                                 data-key="{{ $index }}-{{ $inputCounter }}"
                                                 data-group="{{ $index }}"
                                                 data-answer="{{ $answerValue }}"
