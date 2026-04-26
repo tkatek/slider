@@ -42,10 +42,10 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 12px 14px;
+            gap: 8px 10px;
             min-width: 0;
             font-weight: 700;
-            line-height: 1.85;
+            line-height: 1.65;
             letter-spacing: -0.01em;
         }
 
@@ -53,14 +53,20 @@
             color: #0f172a;
         }
 
+        .sentence-break {
+            flex-basis: 100%;
+            width: 100%;
+            height: 0;
+        }
+
         .dark .sentence-text {
             color: #f8fafc;
         }
 
         .is-compact-text .sentence-flow {
-            gap: 10px 12px;
+            gap: 7px 9px;
             font-weight: 600;
-            line-height: 1.72;
+            line-height: 1.58;
             letter-spacing: -0.005em;
         }
 
@@ -215,8 +221,8 @@
         @media (max-width: 640px) {
             .sentence-flow {
                 justify-content: center;
-                gap: 10px 12px;
-                line-height: 1.7;
+                gap: 7px 9px;
+                line-height: 1.58;
             }
         }
     </style>
@@ -228,17 +234,17 @@
         $compactText = (bool)($content['compact_text'] ?? $compactLayout);
     @endphp
     <div class="font-sans relative isolate min-h-[100dvh] overflow-x-hidden overflow-y-auto dark:text-slate-100 {{ $compactText ? 'is-compact-text' : '' }}">
-        <main class="mx-auto flex min-h-[100dvh] w-full max-w-7xl items-center justify-center px-4 sm:px-8 {{ $compactLayout ? 'py-4 sm:py-7' : 'py-6 sm:py-10' }}">
-            <section class="{{ $compactLayout ? 'p-1 sm:p-3' : 'p-2 sm:p-6' }} flex w-full justify-center">
-                <div class="flex w-full flex-col items-center justify-center text-center {{ $compactLayout ? 'gap-4 sm:gap-6' : 'gap-5 sm:gap-8' }}">
+            <main class="mx-auto flex min-h-[100dvh] w-full max-w-7xl items-center justify-center px-4 sm:px-8 {{ $compactLayout ? 'py-4 sm:py-7' : 'py-5 sm:py-8' }}">
+            <section class="{{ $compactLayout ? 'p-1 sm:p-3' : 'p-2 sm:p-4' }} flex w-full justify-center">
+                <div class="flex w-full flex-col items-center justify-center text-center {{ $compactLayout ? 'gap-4 sm:gap-5' : 'gap-4 sm:gap-6' }}">
 
                     @include('slider.components.title-subtitle')
 
                     @include('slider.components.game-status')
 
-                    <section id="gameCard" class="relative w-full max-w-5xl {{ $compactLayout ? 'p-2.5 sm:p-4 min-h-[360px]' : 'p-3 sm:p-6 min-h-[420px]' }}">
+                    <section id="gameCard" class="relative w-full max-w-5xl {{ $compactLayout ? 'p-2.5 sm:p-4 min-h-[360px]' : 'p-2.5 sm:p-4 min-h-[390px]' }}">
                         <div id="questionPanel" class="h-full overflow-hidden rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl">
-                            <div class="h-full {{ $compactLayout ? 'p-4 sm:p-5' : 'p-5 sm:p-6' }} text-left">
+                            <div class="h-full {{ $compactLayout ? 'p-4 sm:p-5' : 'p-4 sm:p-5' }} text-left">
                                 <div class="flex items-center justify-between gap-2 sm:gap-3">
                                     <div class="min-w-0 text-[11px] sm:text-base font-extrabold text-slate-500 dark:text-slate-400">
                                         Complete the sentence:
@@ -251,7 +257,7 @@
                                         Reveal correction
                                     </button>
                                 </div>
-                                <div id="qPrompt" class="my-4">
+                                <div id="qPrompt" class="my-3 sm:my-4">
                                     ...
                                 </div>
                                 <div class="helper-note {{ $compactLayout ? 'mt-4' : 'mt-5' }} flex items-center gap-2 px-3 py-2.5 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
@@ -259,7 +265,7 @@
                                     <span>Choose the correct answer in each box.</span>
                                 </div>
 
-                                <div class="{{ $compactLayout ? 'mt-4' : 'mt-5' }} grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <div class="{{ $compactLayout ? 'mt-4' : 'mt-4' }} grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
                                     <button
                                         id="btnResetInline"
                                         class="dropdown-btn-secondary py-3"
@@ -501,7 +507,7 @@
             }
 
             const clsBaseSelect =
-                "quiz-select appearance-none min-w-[10rem] sm:min-w-[11.5rem] lg:min-w-[13rem] w-auto max-w-full rounded-2xl px-4 py-3 sm:py-4 pr-11 " +
+                "quiz-select appearance-none min-w-[9rem] sm:min-w-[10.5rem] lg:min-w-[11.5rem] w-auto max-w-full rounded-xl px-3 py-2.5 sm:py-3 pr-10 " +
                 "font-black text-sm sm:text-base " +
                 "bg-white/95 text-slate-900 border border-slate-200/80 ring-1 ring-slate-200/60 " +
                 "shadow-md shadow-slate-900/10 " +
@@ -570,12 +576,29 @@
                     ? "sentence-flow text-base sm:text-lg lg:text-xl justify-center sm:justify-start"
                     : "sentence-flow text-lg sm:text-xl lg:text-2xl justify-center sm:justify-start";
 
-                (q.segments || []).forEach(seg => {
-                    if (typeof seg === "string") {
+                function appendTextSegment(text) {
+                    const pieces = String(text).split(/<br\s*\/?>|\r?\n/gi);
+
+                    pieces.forEach((piece, pieceIndex) => {
+                        if (pieceIndex > 0) {
+                            const lineBreak = document.createElement("span");
+                            lineBreak.className = "sentence-break";
+                            lineBreak.setAttribute("aria-hidden", "true");
+                            flow.appendChild(lineBreak);
+                        }
+
+                        if (piece === "") return;
+
                         const s = document.createElement("span");
                         s.className = "sentence-text";
-                        s.textContent = seg;
+                        s.textContent = piece;
                         flow.appendChild(s);
+                    });
+                }
+
+                (q.segments || []).forEach(seg => {
+                    if (typeof seg === "string") {
+                        appendTextSegment(seg);
                         return;
                     }
 

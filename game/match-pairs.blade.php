@@ -20,19 +20,19 @@
             position: absolute;
             height: 4px;
             border-radius: 999px;
-            background: linear-gradient(90deg, #4f46e5, #10b981);
+            background: linear-gradient(90deg, #8b5cf6, #f97316);
             transform-origin: left center;
             pointer-events: none;
         }
 
         .mp-line.is-drawing {
-            background: linear-gradient(90deg, #6366f1, #38bdf8);
+            background: linear-gradient(90deg, #a78bfa, #fb923c);
             opacity: .86;
         }
 
         .mp-card {
             min-height: 92px;
-            border: 2px solid rgba(226, 232, 240, .9);
+            border: 2px solid rgba(226, 232, 240, .9); 
             background: rgba(255, 255, 255, .92);
             transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background-color .18s ease;
             cursor: default;
@@ -40,22 +40,22 @@
 
         .mp-card:hover {
             transform: translateY(-2px);
-            border-color: rgba(99, 102, 241, .55);
+            border-color: rgba(168, 85, 247, .55);
             box-shadow: 0 16px 36px rgba(15, 23, 42, .10);
         }
 
         .mp-card.is-selected,
         .mp-card.is-target {
             transform: translateY(-2px);
-            border-color: rgb(99 102 241);
-            background: rgb(238 242 255);
-            box-shadow: 0 18px 42px rgba(79, 70, 229, .18);
+            border-color: rgb(139 92 246);
+            background: rgb(245 243 255);
+            box-shadow: 0 18px 42px rgba(124, 58, 237, .16);
         }
 
         .mp-card.is-correct {
-            border-color: rgb(34 197 94);
-            background: rgb(240 253 244);
-            box-shadow: 0 14px 32px rgba(34, 197, 94, .14);
+            border-color: rgb(249 115 22);
+            background: rgb(255 247 237);
+            box-shadow: 0 14px 32px rgba(249, 115, 22, .14);
         }
 
         .mp-card.is-wrong {
@@ -149,13 +149,13 @@
 
         .dark .mp-card.is-selected,
         .dark .mp-card.is-target {
-            border-color: rgb(129 140 248);
-            background: rgba(49, 46, 129, .65);
+            border-color: rgb(196 181 253);
+            background: rgba(76, 29, 149, .58);
         }
 
         .dark .mp-card.is-correct {
-            border-color: rgb(74 222 128);
-            background: rgba(20, 83, 45, .45);
+            border-color: rgb(251 146 60);
+            background: rgba(124, 45, 18, .50);
         }
 
         .dark .mp-card.is-wrong {
@@ -278,7 +278,7 @@
             @endif
 
             <div class="relative overflow-hidden rounded-[1.5rem] border border-slate-200/70 bg-white/85 p-4 shadow-[0_18px_45px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/55 sm:p-6">
-                <div class="pointer-events-none absolute inset-0 opacity-80 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(99,102,241,0.12)_0%,transparent_55%),radial-gradient(120%_120%_at_100%_0%,rgba(34,197,94,0.10)_0%,transparent_55%)]"></div>
+                <div class="pointer-events-none absolute inset-0 opacity-80 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(168,85,247,0.12)_0%,transparent_55%),radial-gradient(120%_120%_at_100%_0%,rgba(249,115,22,0.12)_0%,transparent_55%)]"></div>
 
                 <div class="relative">
                     <h2 class="mb-5 text-left text-base font-black text-slate-900 dark:text-white sm:mb-6 sm:text-2xl">

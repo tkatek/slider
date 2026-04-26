@@ -242,15 +242,21 @@
                         @elseif(count($images))
                             <div class="flex flex-wrap justify-center gap-4">
                                 @foreach($images as $index => $img)
-                                    <div class="aspect-square w-24 overflow-hidden sm:w-28 lg:w-32">
-                                        <div class="h-full w-full overflow-hidden {{ $index === 0 ? 'blob-shape-1' : ($index === 1 ? 'blob-shape-2' : 'blob-shape-3') }}">
-                                            <img
-                                                    src="{{ $img['src'] }}"
-                                                    alt="{{ $img['alt'] }}"
-                                                    class="h-full w-full object-cover"
-                                            >
+                                    @if(!empty($img['html']))
+                                        <div class="{{ $img['class'] ?? 'w-full max-w-xl' }}">
+                                            {!! $img['html'] !!}
                                         </div>
-                                    </div>
+                                    @elseif(!empty($img['src']))
+                                        <div class="aspect-square w-24 overflow-hidden sm:w-28 lg:w-32">
+                                            <div class="h-full w-full overflow-hidden {{ $index === 0 ? 'blob-shape-1' : ($index === 1 ? 'blob-shape-2' : 'blob-shape-3') }}">
+                                                <img
+                                                        src="{{ $img['src'] }}"
+                                                        alt="{{ $img['alt'] ?? '' }}"
+                                                        class="h-full w-full object-cover"
+                                                >
+                                            </div>
+                                        </div>
+                                    @endif
                                 @endforeach
                             </div>
                         @endif

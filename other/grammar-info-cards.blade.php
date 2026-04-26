@@ -178,9 +178,14 @@
                                     @endforeach
                                 </div>
                             @elseif(($card['type'] ?? '') === 'sections')
+                                @php
+                                    $plainSections = !empty($card['plain_sections']);
+                                    $rawItems = !empty($card['raw_items']);
+                                @endphp
+
                                 <div class="space-y-4">
                                     @foreach(($card['sections'] ?? []) as $section)
-                                        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950/40">
+                                        <div class="{{ $plainSections ? '' : 'rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950/40' }}">
                                             @if(!empty($section['heading']))
                                                 <p class="text-xl sm:text-2xl font-black tracking-[-0.02em] text-slate-800 dark:text-slate-50">
                                                     {!! $section['heading'] !!}
@@ -189,11 +194,15 @@
 
                                             <div class="{{ !empty($section['heading']) ? 'mt-4' : '' }} space-y-3">
                                                 @foreach(($section['items'] ?? []) as $item)
-                                                    <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900/70">
-                                                        <p class="text-sm sm:text-base font-bold leading-[1.45] text-slate-700 dark:text-slate-200">
-                                                            {!! $item !!}
-                                                        </p>
-                                                    </div>
+                                                    @if($rawItems)
+                                                        {!! $item !!}
+                                                    @else
+                                                        <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900/70">
+                                                            <p class="text-sm sm:text-base font-bold leading-[1.45] text-slate-700 dark:text-slate-200">
+                                                                {!! $item !!}
+                                                            </p>
+                                                        </div>
+                                                    @endif
                                                 @endforeach
                                             </div>
                                         </div>

@@ -10,6 +10,8 @@ $content = [
             'type' => 'sections',
             'title' => '',
             'tone' => 'from-blue-500 to-indigo-600',
+            'plain_sections' => true,
+            'raw_items' => true,
             'sections' => [
                 [
                     'heading' => '',

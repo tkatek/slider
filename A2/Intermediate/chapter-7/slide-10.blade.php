@@ -6,7 +6,7 @@ $content = [
     'subtitle' => 'Are you going to do any of these things next year?',
     'instruction' => 'Listen. What are the people going to do? Check the boxes below.',
     'instruction_note' => '',
-    'audio' => materialAsset('slider/A2/Intermediate/chapter-7/audios/slideX.mp3'),
+    'audio' => materialAsset('slider/A2/Intermediate/chapter-7/audios/slide10.mp3'),
 
     'transcript' => [
         "1. Christy Lewis: Well, I'm graduating from college next June so I guess I'll look for a job. I know it won't be easy to find one so I may go on for a master's degree. We'll see.",

@@ -4,6 +4,7 @@
     $content = is_array($content ?? null) ? $content : [];
     $questions = is_array($content['questions'] ?? null) ? $content['questions'] : [];
     $storageKey = 'type-correct-format-game-' . md5(request()->path());
+    $stackedFullInput = !empty($content['stacked_full_input']);
 @endphp
 
 @section('style')
@@ -204,6 +205,52 @@
             color: #fed7aa;
         }
 
+        .verb-game-main.is-stacked-full-input .verb-grid {
+            max-width: 980px;
+            grid-template-columns: 1fr;
+        }
+
+        .verb-game-main.is-stacked-full-input .verb-card {
+            padding: 14px;
+        }
+
+        .verb-game-main.is-stacked-full-input .verb-answer {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .verb-game-main.is-stacked-full-input .verb-hint {
+            display: block;
+            width: 100%;
+            min-height: 0;
+            border-radius: 16px;
+            padding: .65rem .85rem;
+            text-align: left;
+            font-size: .95rem;
+            line-height: 1.45;
+            color: #0f172a;
+            border-color: rgba(226,232,240,.9);
+            background: rgba(248,250,252,.92);
+        }
+
+        .dark .verb-game-main.is-stacked-full-input .verb-hint {
+            color: #f8fafc;
+            border-color: rgba(71,85,105,.75);
+            background: rgba(15,23,42,.72);
+        }
+
+        .verb-game-main.is-stacked-full-input .verb-input {
+            box-sizing: border-box;
+            width: 100%;
+            max-width: none;
+            min-width: 0;
+            height: 42px;
+            text-align: left;
+            padding: 6px 12px;
+            font-size: .95rem;
+        }
+
         .verb-input {
             box-sizing: content-box;
             flex: 0 1 auto;
@@ -317,6 +364,18 @@
                 padding: 5px 8px;
                 font-size: .9rem;
             }
+
+            .verb-game-main.is-stacked-full-input .verb-card {
+                padding: 16px;
+            }
+
+            .verb-game-main.is-stacked-full-input .verb-input {
+                width: 100%;
+                max-width: none;
+                min-width: 0;
+                height: 46px;
+                font-size: 1rem;
+            }
         }
     </style>
 @endsection
@@ -324,7 +383,7 @@
 @section('content')
     <div class="verb-game-shell">
         <div class="verb-game-inner">
-            <main class="verb-game-main">
+            <main class="verb-game-main{{ $stackedFullInput ? ' is-stacked-full-input' : '' }}">
                 @include('slider.components.title-subtitle')
 
                 @include('slider.components.game-status')
@@ -344,7 +403,13 @@
 
                         <article class="verb-card">
                             <div class="verb-answer">
-                                <span class="verb-prefix">{{ $item['prefix'] ?? '' }}</span>
+                                @if($stackedFullInput && ($item['hint'] ?? '') !== '')
+                                    <span class="verb-hint">{{ $item['hint'] }}</span>
+                                @endif
+
+                                @if(!$stackedFullInput || ($item['prefix'] ?? '') !== '')
+                                    <span class="verb-prefix">{{ $item['prefix'] ?? '' }}</span>
+                                @endif
 
                                 <input
                                     type="text"
@@ -357,8 +422,13 @@
                                     spellcheck="false"
                                 />
 
-                                <span class="verb-suffix">{{ $item['suffix'] ?? '' }}</span>
-                                <span class="verb-hint">({{ $item['hint'] ?? '' }})</span>
+                                @if(!$stackedFullInput || ($item['suffix'] ?? '') !== '')
+                                    <span class="verb-suffix">{{ $item['suffix'] ?? '' }}</span>
+                                @endif
+
+                                @if(!$stackedFullInput)
+                                    <span class="verb-hint">({{ $item['hint'] ?? '' }})</span>
+                                @endif
                                 <span class="verb-result js-verb-result" aria-live="polite"></span>
                             </div>
                         </article>
