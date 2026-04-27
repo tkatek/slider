@@ -1,7 +1,7 @@
 <?php
 $content = [
-    'page_title'    => 'Sentence Order',
-    'title'         => 'Sentence Order',
+    'page_title'    => 'Practice 2',
+    'title'         => 'Practice 2',
     'subtitle'      => 'Drag the words to make the correct sentence.',
     'type'          => 'sentence',
     'sentences'     => [

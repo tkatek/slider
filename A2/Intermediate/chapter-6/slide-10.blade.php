@@ -1,7 +1,7 @@
 <?php
 $content = [
     'video'      => materialAsset('slider/A2/Intermediate/chapter-6/videos/'),
-    'thumbnail'  => materialAsset('slider/A2/Intermediate/chapter-6/videos/slide10.webp'),
+    'thumbnail'  => materialAsset('slider/A2/Intermediate/chapter-6/img/slide10.webp'),
     'isQuiz'     => 0,
     'subtitles'  => [
         ['start' => 0,  'end' => 5,  'text' => 'The Past Continuous.'],

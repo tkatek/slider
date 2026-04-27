@@ -1,7 +1,7 @@
 <?php
 $content = [
     'page_title' => 'Listening',
-    'title'      => 'Practice 3',
+    'title'      => 'Listening',
     'subtitle'   => 'People are talking about meals in different countries.<br>Listen and number the pictures.',
     'audio'      => materialAsset('slider/A2/Intermediate/chapter-2/audios/slide14.mp3'),
 

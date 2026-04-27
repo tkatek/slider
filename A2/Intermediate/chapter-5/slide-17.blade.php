@@ -2,8 +2,8 @@
 $content = [
     'page_title' => 'Practice 6',
     'title' => 'Practice 6',
-    'subtitle' => 'Read & Match the sentences',
-    'activity_title' => '',
+    'subtitle' => '',
+    'activity_title' => 'Read & Match the sentences',
 
     'pairs' => [
         [

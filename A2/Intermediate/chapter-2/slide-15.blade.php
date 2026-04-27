@@ -1,10 +1,10 @@
 <?php
 $content = [
     'page_title' => 'Listening',
-    'title' => 'Listening',
-    'subtitle' => 'Listen again and match the custom with the country.',
+    'title' => 'Listen again',
+    'subtitle' => '',
     'audio' => materialAsset('slider/A2/Intermediate/chapter-2/audios/slide14.mp3'),
-    'activity_title' => 'Listen again and match the custom with the country:',
+    'activity_title' => 'Listen again and match the custom with the country',
 
     'script' => [
         'One',

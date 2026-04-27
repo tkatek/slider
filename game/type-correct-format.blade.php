@@ -276,6 +276,10 @@
             box-shadow: 0 0 0 4px rgba(99,102,241,.12);
         }
 
+        .verb-input[readonly] {
+            cursor: default;
+        }
+
         .dark .verb-input {
             border-color: #334155;
             background: rgba(15,23,42,.98);
@@ -398,6 +402,8 @@
                     @foreach($questions as $index => $item)
                         @php
                             $primaryAnswer = (string) ($item['answers'][0] ?? '');
+                            $defaultAnswer = (string) ($item['default_answer'] ?? '');
+                            $isLocked = !empty($item['locked']);
                             $maxLength = max(1, mb_strlen($primaryAnswer));
                         @endphp
 
@@ -412,14 +418,18 @@
                                 @endif
 
                                 <input
-                                    type="text"
-                                    class="verb-input js-verb-input"
-                                    style="--answer-length: {{ $maxLength }}; --answer-text-width: {{ max(5, $maxLength) }}ch"
-                                    maxlength="{{ max(18, $maxLength) }}"
-                                    data-key="{{ $index }}"
-                                    data-answers="{{ json_encode($item['answers'] ?? [], JSON_HEX_APOS) }}"
-                                    autocomplete="off"
-                                    spellcheck="false"
+                                        type="text"
+                                        class="verb-input js-verb-input{{ $isLocked && $defaultAnswer !== '' ? ' is-correct' : '' }}"
+                                        style="--answer-length: {{ $maxLength }}; --answer-text-width: {{ max(5, $maxLength) }}ch"
+                                        maxlength="{{ max(18, $maxLength) }}"
+                                        value="{{ $defaultAnswer }}"
+                                        data-key="{{ $index }}"
+                                        data-default="{{ $defaultAnswer }}"
+                                        data-locked="{{ $isLocked ? '1' : '0' }}"
+                                        data-answers="{{ json_encode($item['answers'] ?? [], JSON_HEX_APOS) }}"
+                                        autocomplete="off"
+                                        spellcheck="false"
+                                        @if($isLocked) readonly aria-readonly="true" @endif
                                 />
 
                                 @if(!$stackedFullInput || ($item['suffix'] ?? '') !== '')
@@ -429,7 +439,12 @@
                                 @if(!$stackedFullInput)
                                     <span class="verb-hint">({{ $item['hint'] ?? '' }})</span>
                                 @endif
-                                <span class="verb-result js-verb-result" aria-live="polite"></span>
+
+                                <span class="verb-result js-verb-result" aria-live="polite">
+                                    @if($isLocked && $defaultAnswer !== '')
+                                        ✓
+                                    @endif
+                                </span>
                             </div>
                         </article>
                     @endforeach
@@ -522,21 +537,36 @@
 
             const saveAll = () => {
                 const payload = {};
+
                 inputs.forEach((input) => {
                     payload[input.dataset.key] = input.value || '';
                 });
+
                 localStorage.setItem(storageKey, JSON.stringify(payload));
             };
 
             const clearCardFeedback = (card) => {
                 const input = card.querySelector('.js-verb-input');
                 const result = card.querySelector('.js-verb-result');
+                const defaultValue = input ? input.dataset.default || '' : '';
+                const isLocked = input ? input.dataset.locked === '1' : false;
 
-                if (input) input.classList.remove('is-correct', 'is-wrong');
+                if (input) {
+                    input.classList.remove('is-correct', 'is-wrong');
+
+                    if (isLocked && defaultValue !== '') {
+                        input.classList.add('is-correct');
+                    }
+                }
 
                 if (result) {
                     result.textContent = '';
                     result.classList.remove('is-correct', 'is-wrong');
+
+                    if (isLocked && defaultValue !== '') {
+                        result.textContent = '\u2713';
+                        result.classList.add('is-correct');
+                    }
                 }
             };
 
@@ -547,12 +577,23 @@
 
             inputs.forEach((input) => {
                 const key = input.dataset.key;
+                const defaultValue = input.dataset.default || '';
+                const isLocked = input.dataset.locked === '1';
 
                 if (typeof savedData[key] === 'string') {
                     input.value = savedData[key];
+                } else if (defaultValue !== '') {
+                    input.value = defaultValue;
+                }
+
+                if (isLocked) {
+                    input.readOnly = true;
+                    input.classList.add('is-correct');
                 }
 
                 input.addEventListener('input', () => {
+                    if (input.dataset.locked === '1') return;
+
                     const card = input.closest('.verb-card');
                     if (card) clearCardFeedback(card);
 
@@ -631,8 +672,15 @@
 
             window.resetSlide = () => {
                 inputs.forEach((input) => {
-                    input.value = '';
+                    const defaultValue = input.dataset.default || '';
+                    const isLocked = input.dataset.locked === '1';
+
+                    input.value = defaultValue;
                     input.classList.remove('is-correct', 'is-wrong');
+
+                    if (isLocked && defaultValue !== '') {
+                        input.classList.add('is-correct');
+                    }
                 });
 
                 cards.forEach((card) => clearCardFeedback(card));

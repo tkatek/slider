@@ -9,7 +9,7 @@ $content = [
         [
             'type' => 'sections',
             'title' => 'Reflexive Pronouns (myself, yourself, etc.)',
-            'tone' => 'from-violet-500 to-purple-700',
+            'tone' => 'from-zinc-500 to-zinc-700',
             'plain_sections' => true,
             'raw_items' => true,
             'sections' => [

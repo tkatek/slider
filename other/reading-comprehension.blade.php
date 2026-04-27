@@ -2,6 +2,28 @@
 
 @section('title', $content['page_title'])
 
+@php
+    $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+    $readingCardLightGlowOne = $isOrangeTheme ? 'rgba(254, 215, 170, .42)' : 'rgba(191,219,254,.42)';
+    $readingCardLightGlowTwo = $isOrangeTheme ? 'rgba(253, 186, 116, .30)' : 'rgba(199,210,254,.34)';
+    $readingCardDarkGlowOne = $isOrangeTheme ? 'rgba(249, 115, 22, .18)' : 'rgba(59,130,246,.18)';
+    $readingCardDarkGlowTwo = $isOrangeTheme ? 'rgba(251, 146, 60, .14)' : 'rgba(129,140,248,.14)';
+    $readingAccentGradient = $isOrangeTheme
+        ? 'linear-gradient(180deg, #fb923c 0%, #f97316 52%, #ea580c 100%)'
+        : 'linear-gradient(180deg, #38bdf8 0%, #4f46e5 52%, #8b5cf6 100%)';
+    $readingBadgeBorder = $isOrangeTheme ? 'rgba(251, 146, 60, .24)' : 'rgba(148,163,184,.22)';
+    $readingBadgeBg = $isOrangeTheme ? 'rgba(255, 247, 237, .82)' : 'rgba(255,255,255,.72)';
+    $readingBadgeDarkBorder = $isOrangeTheme ? 'rgba(251, 146, 60, .24)' : 'rgba(148,163,184,.18)';
+    $readingBadgeDarkBg = $isOrangeTheme ? 'rgba(124, 45, 18, .34)' : 'rgba(15,23,42,.64)';
+    $readingBadgeText = $isOrangeTheme ? '#c2410c' : '#475569';
+    $readingBadgeDarkText = $isOrangeTheme ? '#fdba74' : '#cbd5e1';
+    $readingDotGradient = $isOrangeTheme
+        ? 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)'
+        : 'linear-gradient(135deg, #38bdf8 0%, #6366f1 100%)';
+    $readingDropCapLight = $isOrangeTheme ? '#c2410c' : '#4338ca';
+    $readingDropCapDark = $isOrangeTheme ? '#fdba74' : '#93c5fd';
+@endphp
+
 @section('style')
     <style type="text/tailwindcss">
         .blob-shape-1 {
@@ -27,10 +49,8 @@
             border-radius:1.65rem;
             border:1px solid rgba(226,232,240,.8);
             background:
-                radial-gradient(120% 120% at 0% 0%, rgba(59,130,246,.12) 0%, transparent 44%),
-                radial-gradient(120% 120% at 100% 0%, rgba(168,85,247,.11) 0%, transparent 42%),
-                radial-gradient(90% 90% at 0% 100%, rgba(34,197,94,.10) 0%, transparent 38%),
-                radial-gradient(90% 90% at 100% 100%, rgba(249,115,22,.12) 0%, transparent 40%),
+                radial-gradient(120% 120% at 0% 0%, {{ $readingCardLightGlowOne }} 0%, transparent 44%),
+                radial-gradient(120% 120% at 100% 0%, {{ $readingCardLightGlowTwo }} 0%, transparent 42%),
                 rgba(255,255,255,.82);
             padding:1.3rem 1.35rem;
             box-shadow:0 24px 55px -42px rgba(15,23,42,.22);
@@ -40,10 +60,8 @@
         .dark .reading-card{
             border-color:rgba(71,85,105,.88);
             background:
-                radial-gradient(120% 120% at 0% 0%, rgba(59,130,246,.18) 0%, transparent 44%),
-                radial-gradient(120% 120% at 100% 0%, rgba(168,85,247,.16) 0%, transparent 42%),
-                radial-gradient(90% 90% at 0% 100%, rgba(34,197,94,.14) 0%, transparent 38%),
-                radial-gradient(90% 90% at 100% 100%, rgba(249,115,22,.16) 0%, transparent 40%),
+                radial-gradient(120% 120% at 0% 0%, {{ $readingCardDarkGlowOne }} 0%, transparent 44%),
+                radial-gradient(120% 120% at 100% 0%, {{ $readingCardDarkGlowTwo }} 0%, transparent 42%),
                 rgba(15,23,42,.84);
         }
 
@@ -53,7 +71,7 @@
             inset:0 auto 0 0;
             width:6px;
             border-radius:inherit;
-            background:linear-gradient(180deg, #3b82f6 0%, #8b5cf6 25%, #22c55e 50%, #f97316 75%, #ef4444 100%);
+            background:{{ $readingAccentGradient }};
             opacity:.9;
         }
 
@@ -76,28 +94,28 @@
             align-items:center;
             gap:.45rem;
             border-radius:999px;
-            border:1px solid rgba(148,163,184,.22);
-            background:rgba(255,255,255,.72);
+            border:1px solid {{ $readingBadgeBorder }};
+            background:{{ $readingBadgeBg }};
             padding:.45rem .78rem;
             font-size:.7rem;
             font-weight:900;
             letter-spacing:.18em;
             text-transform:uppercase;
-            color:#475569;
+            color:{{ $readingBadgeText }};
             box-shadow:0 10px 24px rgba(15,23,42,.06);
         }
 
         .dark .reading-badge{
-            border-color:rgba(148,163,184,.18);
-            background:rgba(15,23,42,.64);
-            color:#cbd5e1;
+            border-color:{{ $readingBadgeDarkBorder }};
+            background:{{ $readingBadgeDarkBg }};
+            color:{{ $readingBadgeDarkText }};
         }
 
         .reading-badge-dot{
             height:.5rem;
             width:.5rem;
             border-radius:999px;
-            background:linear-gradient(135deg, #3b82f6 0%, #8b5cf6 28%, #22c55e 52%, #f97316 76%, #ef4444 100%);
+            background:{{ $readingDotGradient }};
         }
 
         .reading-title{
@@ -141,11 +159,11 @@
             font-size:2.35rem;
             line-height:.86;
             font-weight:900;
-            color:#7c3aed;
+            color:{{ $readingDropCapLight }};
         }
 
         .dark .reading-copy p:first-child::first-letter{
-            color:#c4b5fd;
+            color:{{ $readingDropCapDark }};
         }
 
         .reading-question-card{

@@ -1,7 +1,7 @@
 <?php
 $content = [
     'video'     => materialAsset('slider/A2/Intermediate/chapter-3/videos/superstitions.mp4'),
-    'thumbnail' => materialAsset('slider/A2/Intermediate/chapter-3/videos/superstitions-thumbnail.webp'),
+    'thumbnail' => materialAsset('slider/A2/Intermediate/chapter-3/img/slide5.webp'),
     'isQuiz'    => 1,
 
     'questions' => [

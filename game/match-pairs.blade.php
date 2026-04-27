@@ -1,10 +1,16 @@
 @extends('slider.simple-layout')
 
+@php
+    $matchPrimaryBtnClass = ($theme['name'] ?? null) === 'orange'
+        ? 'bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 shadow-orange-500/20'
+        : 'bg-gradient-to-br from-indigo-500 via-blue-500 to-violet-500 shadow-indigo-500/20';
+@endphp
+
 @section('style')
     <style>
         .mp-board {
             position: relative;
-            max-width: 980px;
+            max-width: 1040px;
             margin-inline: auto;
             touch-action: none;
         }
@@ -17,45 +23,52 @@
         }
 
         .mp-line {
-            position: absolute;
-            height: 4px;
+            position: absolute; 
+            height: 4px; 
             border-radius: 999px;
-            background: linear-gradient(90deg, #8b5cf6, #f97316);
-            transform-origin: left center;
+            background: linear-gradient(90deg, #475569, #18181b);  
+            box-shadow: 0 8px 18px rgba(15, 23, 42, .10);
+            transform-origin: left center; 
             pointer-events: none;
         }
 
         .mp-line.is-drawing {
-            background: linear-gradient(90deg, #a78bfa, #fb923c);
+            background: linear-gradient(90deg, #64748b, #27272a); 
             opacity: .86;
         }
 
         .mp-card {
-            min-height: 92px;
-            border: 2px solid rgba(226, 232, 240, .9); 
-            background: rgba(255, 255, 255, .92);
+            min-height: 84px;
+            border: 2px solid rgba(226, 232, 240, .86);
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, .98), rgba(248, 250, 252, .92));
+            box-shadow: 0 8px 22px rgba(15, 23, 42, .05);
             transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background-color .18s ease;
             cursor: default;
         }
 
         .mp-card:hover {
             transform: translateY(-2px);
-            border-color: rgba(168, 85, 247, .55);
-            box-shadow: 0 16px 36px rgba(15, 23, 42, .10);
+            border-color: rgba(100, 116, 139, .50);
+            box-shadow: 0 12px 28px rgba(15, 23, 42, .08);
         }
 
         .mp-card.is-selected,
         .mp-card.is-target {
             transform: translateY(-2px);
-            border-color: rgb(139 92 246);
-            background: rgb(245 243 255);
-            box-shadow: 0 18px 42px rgba(124, 58, 237, .16);
+            border-color: rgb(100 116 139);
+            background:
+                radial-gradient(90% 90% at 0% 0%, rgba(100, 116, 139, .12) 0%, transparent 56%),
+                rgb(248 250 252);
+            box-shadow: 0 14px 32px rgba(15, 23, 42, .10);
         }
 
         .mp-card.is-correct {
-            border-color: rgb(249 115 22);
-            background: rgb(255 247 237);
-            box-shadow: 0 14px 32px rgba(249, 115, 22, .14);
+            border-color: rgb(63 63 70);
+            background:
+                radial-gradient(90% 90% at 100% 0%, rgba(63, 63, 70, .10) 0%, transparent 58%),
+                rgb(244 244 245);
+            box-shadow: 0 12px 28px rgba(39, 39, 42, .10);
         }
 
         .mp-card.is-wrong {
@@ -74,7 +87,7 @@
             place-items: center;
             border: 2px solid rgba(63, 63, 70, .42);
             background: linear-gradient(135deg, #71717a, #3f3f46, #18181b);
-            box-shadow: 0 8px 18px rgba(24, 24, 27, .20);
+            box-shadow: 0 8px 18px rgba(24, 24, 27, .18);
             transform: translateY(-50%);
             transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease, border-color .18s ease;
             touch-action: none;
@@ -86,6 +99,7 @@
             height: 5px;
             border-radius: 999px;
             background: #ffffff;
+            box-shadow: none;
         }
 
         .mp-connector-start {
@@ -108,9 +122,9 @@
         .mp-card.is-selected .mp-connector-start,
         .mp-card.is-target .mp-connector-target,
         .mp-connector:hover {
-            border-color: rgba(39, 39, 42, .72);
+            border-color: rgba(39, 39, 42, .68);
             transform: translateY(-50%) scale(1.06);
-            box-shadow: 0 10px 22px rgba(24, 24, 27, .28);
+            box-shadow: 0 10px 22px rgba(24, 24, 27, .24);
         }
 
         .mp-card:disabled .mp-connector {
@@ -136,26 +150,60 @@
         }
 
         .mp-word {
-            font-size: clamp(.82rem, 1.35vw, 1.08rem);
-            font-weight: 900;
+            font-size: clamp(.72rem, 1vw, .92rem);
+            font-weight: 800;
             line-height: 1.25;
             color: #0f172a;
         }
 
+        .mp-btn {
+            border-radius: 14px;
+            padding: .62rem .95rem;
+            font-size: .8rem;
+            font-weight: 900;
+            transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease;
+        }
+
+        .mp-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .mp-btn-primary {
+            border: 1px solid rgba(255, 255, 255, .14);
+            color: #fff;
+            box-shadow: 0 10px 22px var(--mp-btn-shadow, rgba(24, 24, 27, .14));
+        }
+
+        .mp-btn-soft {
+            border: 1px solid rgba(226, 232, 240, 1);
+            background: #fff;
+            color: #334155;
+            box-shadow: 0 8px 22px rgba(2, 6, 23, .05);
+        }
+
+        .mp-btn-neutral {
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: linear-gradient(135deg, #71717a, #3f3f46, #18181b);
+            color: #fff;
+            box-shadow: 0 10px 22px rgba(24, 24, 27, .14);
+        }
+
         .dark .mp-card {
             border-color: rgba(51, 65, 85, .85);
-            background: rgba(15, 23, 42, .88);
+            background:
+                linear-gradient(180deg, rgba(30, 41, 59, .92), rgba(15, 23, 42, .90));
+            box-shadow: 0 12px 30px rgba(2, 6, 23, .24);
         }
 
         .dark .mp-card.is-selected,
         .dark .mp-card.is-target {
-            border-color: rgb(196 181 253);
-            background: rgba(76, 29, 149, .58);
+            border-color: rgb(148 163 184);
+            background: rgba(51, 65, 85, .68);
         }
 
         .dark .mp-card.is-correct {
-            border-color: rgb(251 146 60);
-            background: rgba(124, 45, 18, .50);
+            border-color: rgb(161 161 170);
+            background: rgba(39, 39, 42, .68);
         }
 
         .dark .mp-card.is-wrong {
@@ -180,6 +228,12 @@
             color: #f8fafc;
         }
 
+        .dark .mp-btn-soft {
+            border-color: rgba(51, 65, 85, 1);
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
         @keyframes mpShake {
             0%,100% { transform: translateX(0); }
             25% { transform: translateX(-6px); }
@@ -202,8 +256,8 @@
             }
 
             .mp-connector {
-                width: 16px;
-                height: 28px;
+                width: 17px;
+                height: 30px;
             }
 
             .mp-connector-start {
@@ -212,6 +266,11 @@
 
             .mp-connector-target {
                 left: -16px;
+            }
+
+            .mp-btn {
+                flex: 1 1 100%;
+                padding: .7rem .85rem;
             }
         }
     </style>
@@ -270,22 +329,38 @@
     <main class="flex min-h-[100dvh] w-full flex-col justify-center">
         @include('slider.components.title-subtitle')
 
-        <section class="mx-auto w-full max-w-5xl px-4 py-5 sm:px-8">
+        <section class="mx-auto w-full max-w-6xl px-4 py-5 sm:px-8">
             @if($playerAudio)
                 <div class="mx-auto mb-5 max-w-3xl">
                     @include('slider.components.audio-player')
                 </div>
             @endif
 
-            <div class="relative overflow-hidden rounded-[1.5rem] border border-slate-200/70 bg-white/85 p-4 shadow-[0_18px_45px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/55 sm:p-6">
-                <div class="pointer-events-none absolute inset-0 opacity-80 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(168,85,247,0.12)_0%,transparent_55%),radial-gradient(120%_120%_at_100%_0%,rgba(249,115,22,0.12)_0%,transparent_55%)]"></div>
+            <div class="relative overflow-hidden rounded-[1.25rem] border border-slate-200/70 bg-white/88 p-4 shadow-[0_16px_38px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/65 sm:p-5">
+                <div class="pointer-events-none absolute inset-0 opacity-75 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(100,116,139,0.10)_0%,transparent_54%),radial-gradient(120%_120%_at_100%_0%,rgba(63,63,70,0.08)_0%,transparent_54%)]"></div>
 
                 <div class="relative">
-                    <h2 class="mb-5 text-left text-base font-black text-slate-900 dark:text-white sm:mb-6 sm:text-2xl">
-                        {{ $activityTitle }}
-                    </h2>
+                    <div class="mb-4 flex flex-wrap items-center justify-between gap-3 sm:mb-5">
+                        <div class="min-w-0 flex-1 rounded-2xl border border-slate-200/80 bg-slate-50/75 px-4 py-3 dark:border-slate-700/70 dark:bg-slate-900/55">
+                            <h2 class="text-left text-sm font-black leading-snug text-slate-900 dark:text-white sm:text-lg">
+                                {{ $activityTitle }}
+                            </h2>
+                        </div>
 
-                    <div id="matchBoard" class="mp-board grid grid-cols-2 items-center gap-x-14 gap-y-2 sm:gap-x-28 sm:gap-y-3 lg:gap-x-40">
+                        <div class="flex flex-wrap items-center justify-end gap-2">
+                            <button id="checkMatchAnswers" type="button" class="mp-btn mp-btn-neutral">
+                                Check Answers
+                            </button>
+                            <button id="revealMatchAnswers" type="button" class="mp-btn mp-btn-primary {{ $matchPrimaryBtnClass }}">
+                                Reveal answers
+                            </button>
+                            <button id="retakeMatchGame" type="button" class="mp-btn mp-btn-soft">
+                                Retake
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="matchBoard" class="mp-board grid grid-cols-2 items-center gap-x-12 gap-y-2 sm:gap-x-24 sm:gap-y-2.5 lg:gap-x-36 xl:gap-x-44">
                         <div id="lineLayer" class="mp-line-layer"></div>
 
                         @foreach($leftItems as $index => $item)
@@ -310,16 +385,6 @@
                             </button>
                         @endforeach
                     </div>
-
-                    <div class="mt-5 flex items-center justify-center gap-3">
-                        <button
-                                id="resetMatchGame"
-                                type="button"
-                                class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-black text-slate-700 shadow-sm transition hover:scale-105 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-                        >
-                            Reset
-                        </button>
-                    </div>
                 </div>
             </div>
         </section>
@@ -332,6 +397,18 @@
                 ['label' => 'Total', 'id' => 'finalTotal'],
                 ['label' => 'Mistakes', 'id' => 'finalMistakes'],
             ],
+            'modalActions' => [
+                [
+                    'label' => 'Retake',
+                    'id' => 'restartBtnModal',
+                    'class' => 'mp-btn mp-btn-soft w-full',
+                ],
+                [
+                    'label' => 'Continue',
+                    'id' => 'continueBtnModal',
+                    'class' => 'mp-btn mp-btn-primary w-full ' . $matchPrimaryBtnClass,
+                ],
+            ],
         ])
     </main>
 @endsection
@@ -341,7 +418,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             const board = document.getElementById('matchBoard');
             const lineLayer = document.getElementById('lineLayer');
-            const resetBtn = document.getElementById('resetMatchGame');
+            const checkBtn = document.getElementById('checkMatchAnswers');
+            const revealBtn = document.getElementById('revealMatchAnswers');
+            const retakeBtn = document.getElementById('retakeMatchGame');
             const cards = Array.from(document.querySelectorAll('.match-card'));
             const totalPairs = Number(@json($pairs->count()));
 
@@ -435,6 +514,11 @@
                 lines.push(line);
             }
 
+            function removeLines() {
+                lines.forEach(line => line.remove());
+                lines = [];
+            }
+
             function createActiveLine(leftCard, event) {
                 activeLine = document.createElement('div');
                 activeLine.className = 'mp-line is-drawing';
@@ -483,6 +567,59 @@
                     leftCard.classList.remove('is-wrong');
                     rightCard?.classList.remove('is-wrong');
                 }, 450);
+            }
+
+            function flashUnmatchedCards() {
+                const unmatchedCards = cards.filter(card => !card.disabled);
+
+                unmatchedCards.forEach(card => card.classList.add('is-wrong'));
+
+                setTimeout(() => {
+                    unmatchedCards.forEach(card => card.classList.remove('is-wrong'));
+                }, 520);
+            }
+
+            function resetGame() {
+                completed.clear();
+                mistakes = 0;
+                selectedLeft = null;
+                activeLeft = null;
+                activePointerId = null;
+                activeLine?.remove();
+                activeLine = null;
+
+                cards.forEach(card => {
+                    card.disabled = false;
+                    card.classList.remove('is-selected', 'is-target', 'is-correct', 'is-wrong');
+                });
+
+                removeLines();
+                hideWinModal();
+                updateStats();
+            }
+
+            function revealAnswers() {
+                resetGame();
+
+                cards.forEach(card => {
+                    card.classList.remove('is-selected', 'is-target', 'is-wrong');
+                });
+
+                document.querySelectorAll('.match-card[data-side="left"]').forEach(leftCard => {
+                    const id = leftCard.dataset.id;
+                    const rightCard = document.querySelector(`.match-card[data-side="right"][data-id="${CSS.escape(id)}"]`);
+
+                    if (!rightCard) return;
+
+                    leftCard.classList.add('is-correct');
+                    rightCard.classList.add('is-correct');
+                    leftCard.disabled = true;
+                    rightCard.disabled = true;
+                    completed.add(id);
+                    drawLine(leftCard, rightCard);
+                });
+
+                updateStats();
             }
 
             function endConnection(event) {
@@ -586,29 +723,22 @@
                 });
             });
 
-            resetBtn?.addEventListener('click', () => {
-                completed.clear();
-                mistakes = 0;
-                selectedLeft = null;
-                activeLeft = null;
-                activePointerId = null;
-                activeLine?.remove();
-                activeLine = null;
+            checkBtn?.addEventListener('click', () => {
+                clearSelection();
 
-                cards.forEach(card => {
-                    card.disabled = false;
-                    card.classList.remove('is-selected', 'is-target', 'is-correct', 'is-wrong');
-                });
+                if (completed.size === totalPairs) {
+                    showWinModal();
+                    return;
+                }
 
-                lines.forEach(line => line.remove());
-                lines = [];
-
-                hideWinModal();
-                updateStats();
+                flashUnmatchedCards();
             });
 
+            revealBtn?.addEventListener('click', revealAnswers);
+            retakeBtn?.addEventListener('click', resetGame);
+
             document.getElementById('restartBtnModal')?.addEventListener('click', () => {
-                resetBtn?.click();
+                retakeBtn?.click();
             });
 
             document.getElementById('continueBtnModal')?.addEventListener('click', () => {
@@ -620,8 +750,7 @@
             }
 
             window.addEventListener('resize', () => {
-                lines.forEach(line => line.remove());
-                lines = [];
+                removeLines();
 
                 completed.forEach(id => {
                     const left = document.querySelector(`.match-card[data-side="left"][data-id="${CSS.escape(id)}"]`);
@@ -633,7 +762,7 @@
 
             window.resetSlide = () => {
                 stopSlideMedia();
-                resetBtn?.click();
+                retakeBtn?.click();
             };
 
             window.stopSlideAudio = () => {

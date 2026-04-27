@@ -10,7 +10,7 @@ $content = [
             'type' => 'table',
             'title' => '',
             'title_plain' => true,
-            'tone' => 'from-rose-400 to-red-500',
+            'tone' => 'from-zinc-500 to-zinc-700',
             'table_headers' => ['Base Verb', 'Past Simple', 'Past Participle'],
             'table_rows' => [
                 ['go', 'went', 'gone'],

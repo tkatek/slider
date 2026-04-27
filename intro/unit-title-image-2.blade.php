@@ -14,6 +14,7 @@
     $imageSizeClass = trim((string)($content['image_size']  ?? 'max-w-[300px] sm:max-w-[420px] lg:max-w-[460px]'));
     $imageClass     = trim((string)($content['image_class'] ?? 'block w-full h-full object-contain select-none'));
     $imageStyle     = trim((string)($content['image_style'] ?? ''));
+    $lessonClass    = trim((string)($content['lesson_class'] ?? 'text-4xl sm:text-5xl lg:text-6xl xl:text-[5rem]'));
 @endphp
 
 @extends('slider.simple-layout')
@@ -96,7 +97,7 @@
 
                         {{-- Lesson headline --}}
                         @if($lesson !== '')
-                            <h2 class="text-4xl sm:text-5xl lg:text-6xl xl:text-[5rem] font-black leading-[.9] tracking-tight">
+                            <h2 class="{{ $lessonClass }} font-black leading-[.9] tracking-tight">
                             <span class="bg-gradient-to-br from-orange-600 via-orange-500 to-amber-500 bg-clip-text text-transparent dark:from-orange-400 dark:via-orange-300 dark:to-amber-300">
                                 {{ $lesson }}
                             </span>

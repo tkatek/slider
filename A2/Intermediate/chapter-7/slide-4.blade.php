@@ -1,7 +1,7 @@
 <?php
 $content = [
     'video'      => materialAsset('slider/A2/Intermediate/chapter-7/videos/'),
-    'thumbnail'  => materialAsset('slider/A2/Intermediate/chapter-7/img/slide6.webp'),
+    'thumbnail'  => materialAsset('slider/A2/Intermediate/chapter-7/img/slide4.webp'),
     'isQuiz'     => 0,
     'questions' => [
         [
