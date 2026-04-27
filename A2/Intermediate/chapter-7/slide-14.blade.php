@@ -4,7 +4,6 @@ $content = [
     'page_title'      => 'Reading passage',
     'title'           => 'Reading Passage',
     'subtitle'        => 'Read the passage and answer the questions',
-    'audio'           => materialAsset("slider/A2/Intermediate/chapter-7/audios/slide14.mp3"),
     'reading_title'   => 'Jill’s Trip to Japan',
     'reading_align'   => 'left',
     'reading_plain'   => true,

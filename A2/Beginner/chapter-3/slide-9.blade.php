@@ -1,8 +1,9 @@
 <?php
 $content = [
-    'page_title' => 'New Language',
-    'title'      => 'New Language',
-    'subtitle'   => 'Sample Weather Report Phrases',
+    'page_title' => 'New Vocabulary: Time Expressions and Seasons',
+    'title'      => 'New Vocabulary: Time Expressions and Seasons',
+    'title_class'=> 'text-2xl sm:text-3xl lg:text-4xl',
+    'subtitle'   => 'Listen and Practice The Words',
     'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6',
 
     'items' => [

@@ -4,7 +4,6 @@ $content = [
 
     'title'           => 'Reading and writing',
     'subtitle'        => 'Read the two scripts about these 2 people and answer the questions',
-    'audio'           => materialAsset('slider/A2/Beginner/chapter-1/audios/slide18.mp3'),
     'reading_title'   => '',
     'reading_align'   => 'left',
     'reading_plain'   => true,

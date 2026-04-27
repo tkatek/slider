@@ -9,6 +9,7 @@
     $gridClass = (string) ($content['grid_class'] ?? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4');
     $items = is_array($content['items'] ?? null) ? $content['items'] : [];
     $squareImages = !empty($content['square_images']);
+    $imageAspectRatio = trim((string) ($content['image_aspect_ratio'] ?? ''));
     $playerAudio = !empty($content['audio']) ? $content['audio'] : null;
 
     $normalizeScriptLines = static function ($rawScript) {
@@ -520,7 +521,17 @@
             min-height:0;
         }
 
-        .word-game-square-images .word-image{
+            .word-game-square-images .word-image{
+            object-fit:cover;
+        }
+
+        .word-game-custom-ratio .word-image-frame{
+            aspect-ratio:var(--word-image-ratio, 3 / 2);
+            height:auto;
+            min-height:0;
+        }
+
+        .word-game-custom-ratio .word-image{
             object-fit:cover;
         }
     </style>
@@ -529,7 +540,12 @@
 @section('content')
     <div class="word-game-shell">
         <div class="word-game-inner">
-            <main class="word-game-main{{ $squareImages ? ' word-game-square-images' : '' }}">
+            <main
+                class="word-game-main{{ $squareImages ? ' word-game-square-images' : '' }}{{ $imageAspectRatio !== '' ? ' word-game-custom-ratio' : '' }}"
+                @if($imageAspectRatio !== '')
+                    style="--word-image-ratio: {{ $imageAspectRatio }};"
+                @endif
+            >
                 @include('slider.components.title-subtitle')
 
 

@@ -4,7 +4,6 @@ $content = [
     'page_title'      => 'Reading Comprehension',
     'title'           => 'Reading Comprehension',
     'subtitle'        => 'Read and answer the questions',
-    'audio'           => materialAsset("slider/A2/Intermediate/chapter-1/audios/slide17.mp3"),
     'reading_title'   => 'Ancient Egyptian Cats',
     'reading_align'   => 'left',
     'reading_plain'   => true,

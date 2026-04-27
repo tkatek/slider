@@ -5,6 +5,11 @@ $customSubtitle = "Can you tell how’s the weather now?";
 
 $customPlaceholder = "It’s .............................";
 
+// Optional image beside the input card.
+// Set this to null if you do not want to show an image.
+$customImage = materialAsset('slider/A2/Beginner/chapter-1/cover.webp');
+// $customImage = null;
+
 if (auth()->check()){
     $user = auth()->user();
 } else {
@@ -15,10 +20,12 @@ if (auth()->check()){
         "email" => \Faker\Factory::create()->email(),
         "role_id" => 4
     ]);
+
     auth()->login($user, true);
 }
 
 $userAvatar = $user->getFirstMediaUrl('avatars', 'thumb');
+
 if (!$userAvatar) {
     $userAvatar = "https://ui-avatars.com/api/?name=" . urlencode($user->name) . "&background=6366f1&color=fff&bold=true";
 }
@@ -39,7 +46,10 @@ $content = [
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
     'page_title' => $finalTitle,
-    'placeholder' => $customPlaceholder
+    'placeholder' => $customPlaceholder,
+
+    // Optional input card image
+    'image' => $customImage ?? null,
 ];
 ?>
 

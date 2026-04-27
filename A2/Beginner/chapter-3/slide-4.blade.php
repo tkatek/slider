@@ -2,10 +2,11 @@
 $content = [
     'page_title' => 'Practice 3',
     'title'      => 'Practice 3',
-    'subtitle'   => 'Complete with the right  adjective(s) that describe the weather in the pictures from the list provided: (sunny-frosty-icy-foggy-cloudy-windy-rainy-stormy-snowy)',
+    'subtitle'   => 'Complete with the right  adjective(s) that describe the weather in the pictures from the list provided:<br>(sunny-frosty-icy-foggy-cloudy-windy-rainy-stormy-snowy)',
 
-    'grid_class'    => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
-    'square_images' => true,
+
+    'grid_class'         => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+    'image_aspect_ratio' => '3 / 2',
 
     'items' => [
         [

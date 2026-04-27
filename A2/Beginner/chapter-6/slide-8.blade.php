@@ -4,7 +4,6 @@ $content = [
     'page_title'      => 'Reading Comprehension',
     'title'           => 'Reading Comprehension',
     'subtitle'        => 'Read and answer the questions',
-    'audio'           => materialAsset("slider/A2/Beginner/chapter-6/audios/slide8.mp3"),
     'reading_title'   => 'My First Day at School',
     'reading_align'   => 'left',
     'reading_plain'   => true,

@@ -3,8 +3,7 @@ $content = [
     'page_title' => 'New Language',
     'title'      => 'New Language',
     'subtitle'   => 'Sample Weather Report Phrases',
-    'play_label' => 'Play example',
-    'cards_grid_class' => 'mt-7 grid grid-cols-1 gap-4 xl:grid-cols-2',
+    'cards_grid_class' => 'mt-7 grid grid-cols-1 gap-4 md:grid-cols-2',
 
     'cards' => [
         [
