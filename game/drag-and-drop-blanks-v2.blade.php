@@ -25,7 +25,7 @@
         ? 'ddb-blank-slot inline-flex min-h-[42px] min-w-[96px] w-auto flex-none items-center justify-center rounded-xl border border-dashed border-slate-300/90 bg-white/80 px-3 py-1.5 text-slate-700 transition-colors duration-200 dark:border-slate-600/70 dark:bg-slate-900/30 dark:text-slate-200 sm:min-w-[118px]'
         : 'ddb-blank-slot inline-flex min-h-[44px] min-w-[110px] w-auto max-w-full flex-none items-center justify-center rounded-xl border border-dashed border-slate-300/90 bg-white/70 px-3 py-2 text-slate-700 transition-colors duration-200 dark:border-slate-600/70 dark:bg-slate-900/25 dark:text-slate-200 sm:flex sm:min-h-[50px] sm:w-full sm:flex-1';
     $blankWidthMode = $isReadingType ? 'compact' : 'full';
-    $textTokenClass = 'inline min-w-0 break-words whitespace-normal';
+    $textTokenClass = 'inline min-w-0 break-words whitespace-normal';  
 
     $sentenceItems = [];
     $answersForJs = [];
@@ -239,6 +239,7 @@
                 sound.play().catch(function(){});
             }
 
+            function playCorrect() { play(audio.correct); }
             function playWrong() { play(audio.wrong); }
             function playWin() { play(audio.success); }
 
@@ -797,6 +798,7 @@
 
             TicketBoothGame.prototype.handlePointerUp = function(event) {
                 var blank;
+                var sourceBlank;
 
                 if (!this.draggedItem) return;
 
@@ -810,8 +812,12 @@
                 }
 
                 blank = this.getBlankTarget(event.clientX, event.clientY);
+                sourceBlank = this.originalParent && this.originalParent.classList.contains('ddb-blank-slot')
+                    ? this.originalParent
+                    : null;
 
                 if (blank) this.handlePlaceDrop(blank);
+                else if (sourceBlank) this.returnDraggedItemToPool();
                 else this.returnDraggedItem();
 
                 this.draggedItem = null;
@@ -916,6 +922,7 @@
                     blank.innerHTML = '';
                     this.lockTileIntoBlank(existingItem, sourceBlank);
                     this.lockTileIntoBlank(item, blank);
+                    playCorrect();
                     this.updatePoolCount();
                     this.updateStats();
                     this.updateActionButtons();
@@ -925,6 +932,7 @@
                 if (existingItem && !sourceBlank) {
                     this.addTileBackToPool(existingItem);
                     this.lockTileIntoBlank(item, blank);
+                    playCorrect();
                     this.removeActiveTileById(tileId);
                     this.ensureActiveTileCount();
                     this.renderActiveTiles();
@@ -939,6 +947,7 @@
                 }
 
                 this.lockTileIntoBlank(item, blank);
+                playCorrect();
 
                 if (!sourceBlank) {
                     this.removeActiveTileById(tileId);
@@ -983,6 +992,35 @@
                 }
 
                 this.placeholder = null;
+                this.getBlanks().forEach(this.resetBlankState.bind(this));
+            };
+
+            TicketBoothGame.prototype.returnDraggedItemToPool = function() {
+                var item = this.draggedItem;
+                var sourceBlank = this.originalParent && this.originalParent.classList.contains('ddb-blank-slot')
+                    ? this.originalParent
+                    : null;
+
+                if (!item) return;
+
+                item.remove();
+
+                if (sourceBlank) {
+                    sourceBlank.innerHTML = '';
+                    sourceBlank.style.width = '';
+                }
+
+                if (this.placeholder && this.placeholder.parentNode) {
+                    this.placeholder.remove();
+                }
+
+                this.placeholder = null;
+
+                this.addTileBackToPool(item);
+                this.ensureActiveTileCount();
+                this.renderActiveTiles();
+                this.updateStats();
+                this.updateActionButtons();
                 this.getBlanks().forEach(this.resetBlankState.bind(this));
             };
 

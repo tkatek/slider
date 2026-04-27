@@ -94,6 +94,30 @@
                 opacity: 1;
             }
         }
+
+        .footer-callout {
+            border: 1px solid rgba(99, 102, 241, 0.22);
+            background:
+                linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(14, 165, 233, 0.08)),
+                rgba(255, 255, 255, 0.88);
+            box-shadow: 0 18px 40px -28px rgba(79, 70, 229, 0.35);
+        }
+
+        .dark .footer-callout {
+            border-color: rgba(129, 140, 248, 0.28);
+            background:
+                linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(14, 165, 233, 0.14)),
+                rgba(15, 23, 42, 0.82);
+            box-shadow: 0 18px 42px -30px rgba(14, 165, 233, 0.3);
+        }
+
+        .footer-callout-text {
+            color: #312e81;
+        }
+
+        .dark .footer-callout-text {
+            color: #e0e7ff;
+        }
     </style>
 @endsection
 
@@ -103,7 +127,6 @@
         $playLabel = trim((string)($content['play_label'] ?? 'Play audio'));
         $footerText = trim((string)($content['footer_text'] ?? ''));
         $footerItems = is_array($content['footer_items'] ?? null) ? $content['footer_items'] : [];
-        $footerBelowImage = (bool)($content['footer_below_image'] ?? false);
         $hideImage = (bool)($content['hide_image'] ?? false);
         $contentGridClass = trim((string)($content['content_grid_class'] ?? 'grid lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_460px] gap-8 lg:gap-12 items-center'));
         $itemsGridClass = trim((string)($content['items_grid_class'] ?? 'grid grid-cols-1 gap-4 text-left'));
@@ -122,6 +145,24 @@
                     <div class="space-y-6">
 
                         @include('slider.components.title-subtitle')
+
+                        @if($footerText || count($footerItems))
+                            <div class="footer-callout rounded-[24px] p-4 sm:p-5">
+                                @if($footerText)
+                                    <p class="footer-callout-text text-base font-black leading-[1.5] sm:text-lg">
+                                        {!! $footerText !!}
+                                    </p>
+                                @endif
+
+                                @if(count($footerItems))
+                                    <ul class="footer-callout-text mt-2 space-y-1 text-sm font-bold leading-[1.55] sm:text-base">
+                                        @foreach($footerItems as $footerItem)
+                                            <li>{!! $footerItem !!}</li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>
+                        @endif
 
                         <section id="cards" class="w-full">
                             <div class="{{ $itemsGridClass }}">
@@ -174,23 +215,6 @@
                             </div>
                         </section>
 
-                        @if(($footerText || count($footerItems)) && !$footerBelowImage)
-                            <div class="mt-3 rounded-2xl border border-slate-200/70 bg-white/60 backdrop-blur-xl dark:border-slate-700/35 dark:bg-slate-950/30 p-4 sm:p-5">
-                                @if($footerText)
-                                    <p class="text-sm font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-base">
-                                        {!! $footerText !!}
-                                    </p>
-                                @endif
-
-                                @if(count($footerItems))
-                                    <ul class="mt-2 space-y-1 text-sm font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-base">
-                                        @foreach($footerItems as $footerItem)
-                                            <li>{!! $footerItem !!}</li>
-                                        @endforeach
-                                    </ul>
-                                @endif
-                            </div>
-                        @endif
                     </div>
 
                     @unless($hideImage)
@@ -203,23 +227,6 @@
                                     draggable="false"
                             />
 
-                            @if(($footerText || count($footerItems)) && $footerBelowImage)
-                                <div class="mt-4 rounded-2xl border border-slate-200/70 bg-white/60 backdrop-blur-xl dark:border-slate-700/35 dark:bg-slate-950/30 p-4 sm:p-5">
-                                    @if($footerText)
-                                        <p class="text-sm font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-base">
-                                            {!! $footerText !!}
-                                        </p>
-                                    @endif
-
-                                    @if(count($footerItems))
-                                        <ul class="mt-2 space-y-1 text-sm font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-base">
-                                            @foreach($footerItems as $footerItem)
-                                                <li>{!! $footerItem !!}</li>
-                                            @endforeach
-                                        </ul>
-                                    @endif
-                                </div>
-                            @endif
                         </div>
                     @endunless
 
