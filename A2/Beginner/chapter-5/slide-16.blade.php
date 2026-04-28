@@ -1,8 +1,8 @@
 <?php
 $content = [
-    'page_title' => 'Practice 7',
-    'title' => 'Practice 7: Reading',
-    'subtitle' => 'Read the paragraph and fill in with the correct word from the list:',
+    'page_title' => '',
+    'title' => 'Reading',
+    'subtitle' => 'Read the passage and choose correct verb form the list',
     'type' => 'reading',
     'sentences' => [
         "Hi! I’m Annie! I live in Michigan, USA. On my last vacation, my family and I {{1}} (travel) to California. We {{2}} (stay) in a beautiful hotel. We {{3}} (go) to the beach every day and {{4}} (swim) in the ocean. My mom {{5}} (take) a lot of photos and sunbathed! My dad and I {{6}} (play) soccer on the beach. On Tuesday, we went fishing. We also {{7}} some museums. I {{8}} (love) them! One day, we went to a restaurant. I {{9}} (eat) pasta, but my dad didn’t; he ate meat. I {{10}} (drink) a soda.",

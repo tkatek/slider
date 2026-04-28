@@ -2,6 +2,30 @@
 
 @section('title', $content['page_title'])
 
+@php
+    $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+
+    $noteCardLightGlowOne = $isOrangeTheme ? 'rgba(254, 215, 170, .42)' : 'rgba(191,219,254,.42)';
+    $noteCardLightGlowTwo = $isOrangeTheme ? 'rgba(253, 186, 116, .30)' : 'rgba(199,210,254,.34)';
+    $noteCardDarkGlowOne = $isOrangeTheme ? 'rgba(249, 115, 22, .18)' : 'rgba(59,130,246,.18)';
+    $noteCardDarkGlowTwo = $isOrangeTheme ? 'rgba(251, 146, 60, .14)' : 'rgba(129,140,248,.14)';
+
+    $noteAccentGradient = $isOrangeTheme
+        ? 'linear-gradient(180deg, #fb923c 0%, #f97316 52%, #ea580c 100%)'
+        : 'linear-gradient(180deg, #38bdf8 0%, #4f46e5 52%, #8b5cf6 100%)';
+
+    $noteBadgeBorder = $isOrangeTheme ? 'rgba(251, 146, 60, .24)' : 'rgba(148,163,184,.22)';
+    $noteBadgeBg = $isOrangeTheme ? 'rgba(255, 247, 237, .82)' : 'rgba(255,255,255,.72)';
+    $noteBadgeDarkBorder = $isOrangeTheme ? 'rgba(251, 146, 60, .24)' : 'rgba(148,163,184,.18)';
+    $noteBadgeDarkBg = $isOrangeTheme ? 'rgba(124, 45, 18, .34)' : 'rgba(15,23,42,.64)';
+    $noteBadgeText = $isOrangeTheme ? '#c2410c' : '#475569';
+    $noteBadgeDarkText = $isOrangeTheme ? '#fdba74' : '#cbd5e1';
+
+    $noteDotGradient = $isOrangeTheme
+        ? 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)'
+        : 'linear-gradient(135deg, #38bdf8 0%, #6366f1 100%)';
+@endphp
+
 @section('style')
     <style>
         .organic-shape {
@@ -95,28 +119,71 @@
             }
         }
 
-        .footer-callout {
-            border: 1px solid rgba(99, 102, 241, 0.22);
+        .content-note-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1.65rem;
+            border: 1px solid rgba(226, 232, 240, .78);
             background:
-                linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(14, 165, 233, 0.08)),
-                rgba(255, 255, 255, 0.88);
-            box-shadow: 0 18px 40px -28px rgba(79, 70, 229, 0.35);
+                    radial-gradient(120% 120% at 0% 0%, {{ $noteCardLightGlowOne }} 0%, transparent 46%),
+                    radial-gradient(120% 120% at 100% 0%, {{ $noteCardLightGlowTwo }} 0%, transparent 44%),
+                    rgba(255, 255, 255, .82);
+            box-shadow: 0 22px 52px -40px rgba(15, 23, 42, .28);
+            backdrop-filter: blur(12px);
         }
 
-        .dark .footer-callout {
-            border-color: rgba(129, 140, 248, 0.28);
+        .dark .content-note-card {
+            border-color: rgba(71, 85, 105, .72);
             background:
-                linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(14, 165, 233, 0.14)),
-                rgba(15, 23, 42, 0.82);
-            box-shadow: 0 18px 42px -30px rgba(14, 165, 233, 0.3);
+                    radial-gradient(120% 120% at 0% 0%, {{ $noteCardDarkGlowOne }} 0%, transparent 46%),
+                    radial-gradient(120% 120% at 100% 0%, {{ $noteCardDarkGlowTwo }} 0%, transparent 44%),
+                    rgba(15, 23, 42, .82);
         }
 
-        .footer-callout-text {
-            color: #312e81;
+        .content-note-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 6px;
+            border-radius: inherit;
+            background: {{ $noteAccentGradient }};
+            opacity: .95;
         }
 
-        .dark .footer-callout-text {
-            color: #e0e7ff;
+        .note-label-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            border-radius: 999px;
+            border: 1px solid {{ $noteBadgeBorder }};
+            background: {{ $noteBadgeBg }};
+            padding: .45rem .78rem;
+            font-size: .68rem;
+            font-weight: 900;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: {{ $noteBadgeText }};
+            box-shadow: 0 10px 24px rgba(15, 23, 42, .06);
+        }
+
+        .dark .note-label-badge {
+            border-color: {{ $noteBadgeDarkBorder }};
+            background: {{ $noteBadgeDarkBg }};
+            color: {{ $noteBadgeDarkText }};
+        }
+
+        .note-label-dot {
+            display: inline-block;
+            height: .55rem;
+            width: .55rem;
+            flex-shrink: 0;
+            border-radius: 999px;
+            background: {{ $noteDotGradient }};
+            box-shadow: 0 0 0 3px rgba(251, 146, 60, .14);
+        }
+
+        .content-note-copy p {
+            margin: 0;
         }
     </style>
 @endsection
@@ -125,8 +192,48 @@
     @php
         $imageAlt = trim((string)($content['image_alt'] ?? 'Slide image'));
         $playLabel = trim((string)($content['play_label'] ?? 'Play audio'));
+
         $footerText = trim((string)($content['footer_text'] ?? ''));
         $footerItems = is_array($content['footer_items'] ?? null) ? $content['footer_items'] : [];
+
+        /*
+            Reusable note card fields.
+
+            The label is disabled by default.
+            Add this only when you want the label to show:
+
+            'note_label' => 'Useful Language',
+
+            Example:
+            'note_title' => 'Remember',
+            'note_content' => ['First line...', 'Second line...']
+        */
+        $noteLabel = trim((string)($content['note_label'] ?? ''));
+        $noteTitle = trim((string)($content['note_title'] ?? ''));
+
+        $rawNoteContent = $content['note_content'] ?? [];
+
+        if (empty($rawNoteContent) && ($footerText || count($footerItems))) {
+            $rawNoteContent = [];
+
+            if ($footerText) {
+                $rawNoteContent[] = $footerText;
+            }
+
+            foreach ($footerItems as $footerItem) {
+                $rawNoteContent[] = $footerItem;
+            }
+        }
+
+        $noteParagraphs = is_array($rawNoteContent)
+            ? array_values(array_filter(array_map(static fn ($item) => trim((string) $item), $rawNoteContent), static fn ($item) => $item !== ''))
+            : array_values(array_filter(
+                array_map('trim', preg_split('/\R{2,}/', trim((string) $rawNoteContent)) ?: []),
+                static fn ($item) => $item !== ''
+            ));
+
+        $hasNoteCard = $noteTitle !== '' || count($noteParagraphs);
+
         $hideImage = (bool)($content['hide_image'] ?? false);
         $contentGridClass = trim((string)($content['content_grid_class'] ?? 'grid lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_460px] gap-8 lg:gap-12 items-center'));
         $itemsGridClass = trim((string)($content['items_grid_class'] ?? 'grid grid-cols-1 gap-4 text-left'));
@@ -146,21 +253,32 @@
 
                         @include('slider.components.title-subtitle')
 
-                        @if($footerText || count($footerItems))
-                            <div class="footer-callout rounded-[24px] p-4 sm:p-5">
-                                @if($footerText)
-                                    <p class="footer-callout-text text-base font-black leading-[1.5] sm:text-lg">
-                                        {!! $footerText !!}
-                                    </p>
-                                @endif
+                        @if($hasNoteCard)
+                            <div class="content-note-card p-4 pl-5 sm:p-5 sm:pl-6">
+                                <div class="relative">
+                                    @if($noteLabel !== '')
+                                        <div class="note-label-badge">
+                                            <span class="note-label-dot"></span>
+                                            <span>{{ $noteLabel }}</span>
+                                        </div>
+                                    @endif
 
-                                @if(count($footerItems))
-                                    <ul class="footer-callout-text mt-2 space-y-1 text-sm font-bold leading-[1.55] sm:text-base">
-                                        @foreach($footerItems as $footerItem)
-                                            <li>{!! $footerItem !!}</li>
-                                        @endforeach
-                                    </ul>
-                                @endif
+                                    @if($noteTitle !== '')
+                                        <h2 class="{{ $noteLabel !== '' ? 'mt-3' : '' }} max-w-2xl text-xl font-black leading-[1.08] tracking-[-0.04em] text-slate-950 dark:text-slate-50 sm:text-2xl">
+                                            {!! $noteTitle !!}
+                                        </h2>
+                                    @endif
+
+                                    @if(count($noteParagraphs))
+                                        <div class="content-note-copy mt-3 grid gap-2.5">
+                                            @foreach($noteParagraphs as $paragraph)
+                                                <p class="text-base font-black leading-[1.5] tracking-[-0.015em] text-slate-700 dark:text-slate-200 sm:text-lg lg:text-xl">
+                                                    {!! $paragraph !!}
+                                                </p>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         @endif
 
@@ -226,7 +344,6 @@
                                     loading="lazy"
                                     draggable="false"
                             />
-
                         </div>
                     @endunless
 

@@ -17,7 +17,7 @@
     $defaultInstructions = [
         'letters' => 'Unscramble the letters to make the correct word.',
         'words' => 'Unscramble the words to make the correct answer.',
-        'sentence' => 'Put the words in order to make the correct sentence.',
+        'sentence' => 'Put the words in order to make correct sentences',
     ];
 
     $instructionText = trim((string) ($content['instruction'] ?? $defaultInstructions[$gameType] ?? 'Drag the tiles to make the correct answer.'));

@@ -5,6 +5,7 @@ $content = [
 
     'image'      => materialAsset('slider/A2/Beginner/chapter-4/img/slide16.webp'),
     'image_aspect_ratio' => '6 / 7',
+    'items_grid_class' => 'grid sm:grid-cols-2 gap-3 sm:gap-4 text-left',
 
     'items'      => [
         [

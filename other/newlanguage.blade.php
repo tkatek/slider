@@ -272,6 +272,51 @@
             <div id="slideShell" class="slide-shell mx-auto w-full max-w-[1280px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-6">
                 <main class="w-full">
                     <section class="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(320px,42%)_minmax(0,58%)] lg:gap-12 xl:gap-16 items-center">
+                        <div class="w-full text-center lg:text-left">
+
+                            @include('slider.components.title-subtitle')
+
+                            @unless($hideImage)
+                                <div class="w-full mx-auto max-w-[300px] sm:max-w-[420px] lg:max-w-[460px]">
+                                    <div class="relative p-4">
+                                        <div class="absolute inset-0 -translate-x-3.5 translate-y-3.5 rounded-[26px] border-2 {{ $frameBorderOne }} pointer-events-none"></div>
+                                        <div class="absolute inset-0 translate-x-3.5 -translate-y-3.5 rounded-[26px] border border-dashed {{ $frameBorderTwo }} pointer-events-none"></div>
+
+                                        <div class="relative w-full overflow-hidden rounded-[22px] shadow-2xl {{ $imageShellShadow }}" style="aspect-ratio: {{ $imageAspectRatio }};">
+                                            <div class="absolute inset-0 {{ $imageBgClass }}"></div>
+                                            <div class="absolute -left-10 -top-10 h-36 w-36 rounded-full {{ $glowOneClass }} blur-2xl"></div>
+                                            <div class="absolute -right-10 -bottom-10 h-40 w-40 rounded-full {{ $glowTwoClass }} blur-2xl"></div>
+
+                                            <img
+                                                    src="{{ $content['image'] }}"
+                                                    alt=""
+                                                    class="relative z-10 block h-full w-full object-cover select-none"
+                                                    loading="lazy"
+                                                    draggable="false"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if(($footerText || count($footerItems)) && $footerBelowImage)
+                                    <div class="mt-4 rounded-2xl border border-white/70 bg-white/70 p-4 text-left shadow-[0_16px_34px_-24px_rgba(15,23,42,0.18)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:p-5">
+                                        @if($footerText)
+                                            <p class="text-sm font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-base">
+                                                {!! $footerText !!}
+                                            </p>
+                                        @endif
+
+                                        @if(count($footerItems))
+                                            <ul class="mt-2 space-y-1 text-sm font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-base">
+                                                @foreach($footerItems as $footerItem)
+                                                    <li>{!! $footerItem !!}</li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </div>
+                                @endif
+                            @endunless
+                        </div>
 
                         <div class="w-full">
                             <section id="cards" class="w-full">
@@ -329,51 +374,6 @@
                                     @endif
                                 </div>
                             @endif
-                        </div>
-                        <div class="w-full text-center lg:text-left">
-
-                            @include('slider.components.title-subtitle')
-
-                            @unless($hideImage)
-                                <div class="w-full mx-auto max-w-[300px] sm:max-w-[420px] lg:max-w-[460px]">
-                                    <div class="relative p-4">
-                                        <div class="absolute inset-0 -translate-x-3.5 translate-y-3.5 rounded-[26px] border-2 {{ $frameBorderOne }} pointer-events-none"></div>
-                                        <div class="absolute inset-0 translate-x-3.5 -translate-y-3.5 rounded-[26px] border border-dashed {{ $frameBorderTwo }} pointer-events-none"></div>
-
-                                        <div class="relative w-full overflow-hidden rounded-[22px] shadow-2xl {{ $imageShellShadow }}" style="aspect-ratio: {{ $imageAspectRatio }};">
-                                            <div class="absolute inset-0 {{ $imageBgClass }}"></div>
-                                            <div class="absolute -left-10 -top-10 h-36 w-36 rounded-full {{ $glowOneClass }} blur-2xl"></div>
-                                            <div class="absolute -right-10 -bottom-10 h-40 w-40 rounded-full {{ $glowTwoClass }} blur-2xl"></div>
-
-                                            <img
-                                                    src="{{ $content['image'] }}"
-                                                    alt=""
-                                                    class="relative z-10 block h-full w-full object-cover select-none"
-                                                    loading="lazy"
-                                                    draggable="false"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                @if(($footerText || count($footerItems)) && $footerBelowImage)
-                                    <div class="mt-4 rounded-2xl border border-white/70 bg-white/70 p-4 text-left shadow-[0_16px_34px_-24px_rgba(15,23,42,0.18)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:p-5">
-                                        @if($footerText)
-                                            <p class="text-sm font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-base">
-                                                {!! $footerText !!}
-                                            </p>
-                                        @endif
-
-                                        @if(count($footerItems))
-                                            <ul class="mt-2 space-y-1 text-sm font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-base">
-                                                @foreach($footerItems as $footerItem)
-                                                    <li>{!! $footerItem !!}</li>
-                                                @endforeach
-                                            </ul>
-                                        @endif
-                                    </div>
-                                @endif
-                            @endunless
                         </div>
                     </section>
                 </main>

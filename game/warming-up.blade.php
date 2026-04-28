@@ -53,7 +53,6 @@
     <style>
         [data-warmup-game] {
             --wu-ink: #1f1a36;
-            background: transparent;
         }
 
         @keyframes wuCardIn {
@@ -240,10 +239,6 @@
 
         [data-warmup-game] .wu-modal-card {
             animation: wuPop .24s cubic-bezier(.2,.8,.2,1) both;
-        }
-
-        .dark [data-warmup-game] {
-            background: transparent;
         }
 
         .dark [data-warmup-game] .wu-board,

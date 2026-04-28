@@ -2,7 +2,7 @@
 $content = [
     'page_title'    => 'Listen & choose the correct answer',
     'title'         => 'Listen & choose the correct answer',
-    'subtitle'      => 'Study the map. Then, listen to each sentence and choose TRUE or FALSE.',
+    'subtitle'      => '<span class="text-lg leading-snug sm:text-xl lg:text-2xl">Study the map. Then, listen to each sentence and choose TRUE or FALSE.</span>',
     'question_prompt_label' => 'Choose TRUE or FALSE:',
     'image' => materialAsset('slider/A1/Beginner/chapter-7/img/map.webp'),
     'type'=>'image',

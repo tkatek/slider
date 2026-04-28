@@ -25,7 +25,7 @@
         ? 'ddb-blank-slot inline-flex min-h-[42px] min-w-[96px] w-auto flex-none items-center justify-center rounded-xl border border-dashed border-slate-300/90 bg-white/80 px-3 py-1.5 text-slate-700 transition-colors duration-200 dark:border-slate-600/70 dark:bg-slate-900/30 dark:text-slate-200 sm:min-w-[118px]'
         : 'ddb-blank-slot inline-flex min-h-[44px] min-w-[110px] w-auto max-w-full flex-none items-center justify-center rounded-xl border border-dashed border-slate-300/90 bg-white/70 px-3 py-2 text-slate-700 transition-colors duration-200 dark:border-slate-600/70 dark:bg-slate-900/25 dark:text-slate-200 sm:flex sm:min-h-[50px] sm:w-full sm:flex-1';
     $blankWidthMode = $isReadingType ? 'compact' : 'full';
-    $textTokenClass = 'inline min-w-0 break-words whitespace-normal';  
+    $textTokenClass = 'inline min-w-0 break-words whitespace-normal';
 
     $sentenceItems = [];
     $answersForJs = [];

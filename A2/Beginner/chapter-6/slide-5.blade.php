@@ -2,7 +2,8 @@
 $content = [
     'page_title' => 'Practice 2',
     'title' => 'Practice 2',
-    'subtitle' => 'Drag & drop the pictures with the right definition<br>Do you remember any of your important occasions?<br>Can you name some of them?',
+    'subtitle' => '• Do you remember any of your important occasions?<br>• Can you name some of them?',
+    'practice_note' => 'Drag & drop the pictures with the right definition',
     'pool_item_type' => 'image',
     'items_per_line' => 4,
     'items_per_line_mobile' => 2,

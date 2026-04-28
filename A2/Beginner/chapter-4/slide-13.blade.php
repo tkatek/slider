@@ -3,7 +3,7 @@ $content = [
     'type' => 'emoji',
 
     'title'    => 'Practice 4',
-    'subtitle' => 'Read & choose the right answer',
+    'subtitle' => 'What did you do yesterday?',
 
     'questions' => [
         [

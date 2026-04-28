@@ -1058,7 +1058,7 @@
             const characterAudios = Array.from(document.querySelectorAll('.character-audio'));
             const imageViewport = document.getElementById('imageViewport');
             const questionImage = document.getElementById('questionImage');
-            const IMAGE_HOVER_ZOOM = 2.4;
+            const IMAGE_HOVER_ZOOM = 1.4;
 
             const sharedAudioPlayerWrap = document.getElementById('sharedAudioPlayerWrap');
             const sharedAudioPlayerRoot = document.querySelector('[data-audio-player]');

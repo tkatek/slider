@@ -1,6 +1,20 @@
 @extends("slider.simple-layout")
 
 @section("style")
+    @php
+        $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+        $calloutBorderColor = $isOrangeTheme ? 'rgba(251, 146, 60, 0.26)' : 'rgba(99, 102, 241, 0.22)';
+        $calloutBgStart = $isOrangeTheme ? 'rgba(251, 191, 36, 0.14)' : 'rgba(99, 102, 241, 0.12)';
+        $calloutBgEnd = $isOrangeTheme ? 'rgba(249, 115, 22, 0.10)' : 'rgba(14, 165, 233, 0.08)';
+        $calloutShadowColor = $isOrangeTheme ? 'rgba(249, 115, 22, 0.30)' : 'rgba(79, 70, 229, 0.35)';
+        $calloutDarkBorderColor = $isOrangeTheme ? 'rgba(251, 191, 36, 0.30)' : 'rgba(129, 140, 248, 0.28)';
+        $calloutDarkBgStart = $isOrangeTheme ? 'rgba(251, 146, 60, 0.24)' : 'rgba(99, 102, 241, 0.22)';
+        $calloutDarkBgEnd = $isOrangeTheme ? 'rgba(245, 158, 11, 0.16)' : 'rgba(14, 165, 233, 0.14)';
+        $calloutDarkShadowColor = $isOrangeTheme ? 'rgba(251, 146, 60, 0.28)' : 'rgba(14, 165, 233, 0.3)';
+        $calloutTextColor = $isOrangeTheme ? '#9a3412' : '#312e81';
+        $calloutDarkTextColor = $isOrangeTheme ? '#ffedd5' : '#e0e7ff';
+    @endphp
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 
@@ -8,6 +22,39 @@
         #mainTitle,
         #mainSubtitle {
             opacity: 0;
+        }
+
+        .live-subtitle-callout {
+            display: inline-block;
+            width: fit-content;
+            max-width: min(100%, 46rem);
+            border: 1px solid {{ $calloutBorderColor }};
+            background:
+                linear-gradient(135deg, {{ $calloutBgStart }}, {{ $calloutBgEnd }}),
+                rgba(255, 255, 255, 0.88);
+            box-shadow: 0 18px 40px -28px {{ $calloutShadowColor }};
+        }
+
+        .dark .live-subtitle-callout {
+            border-color: {{ $calloutDarkBorderColor }};
+            background:
+                linear-gradient(135deg, {{ $calloutDarkBgStart }}, {{ $calloutDarkBgEnd }}),
+                rgba(15, 23, 42, 0.82);
+            box-shadow: 0 18px 42px -30px {{ $calloutDarkShadowColor }};
+        }
+
+        .live-subtitle-callout-text {
+            color: {{ $calloutTextColor }};
+        }
+
+        .dark .live-subtitle-callout-text {
+            color: {{ $calloutDarkTextColor }};
+        }
+
+        .live-subtitle-callout-text br {
+            display: block;
+            content: "";
+            margin-top: .55rem;
         }
 
         /* Hide scrollbar for cleaner look but allow scrolling */
@@ -19,8 +66,24 @@
 @endsection
 
 @section("content")
+    @php
+        $chatCallout = trim((string) ($content['callout_text'] ?? ''));
+    @endphp
+
     <div class="min-h-[100dvh] flex flex-col items-center justify-center">
         @include('slider.components.title-subtitle')
+
+        @if($chatCallout !== '')
+            <div class="w-full px-4 sm:px-6 lg:px-8">
+                <div class="mx-auto mt-1 w-full text-center">
+                    <div class="live-subtitle-callout rounded-[24px] p-4 text-left sm:p-5">
+                    <div class="live-subtitle-callout-text text-sm font-bold leading-[1.5] sm:text-[0.95rem]">
+                        {!! $chatCallout !!}
+                    </div>
+                    </div>
+                </div>
+            </div>
+        @endif
 
         <main class="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-12">
             <div id="cardsContainer" class="flex flex-wrap justify-center gap-6 items-start">
@@ -308,7 +371,7 @@
             });
         }
 
-        function handleIncomingReply(data) {
+        function handleIncomingReply(data) { 
             appendReplyToDOM(data.targetCardId, data);
         }
 

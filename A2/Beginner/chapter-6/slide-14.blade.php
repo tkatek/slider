@@ -1,10 +1,12 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Writing";
-$customSubtitle = "Write 5 sentences using “used to” or “didn’t use to do”";
+$customSubtitle = "Look at the pictures ,and write 5 sentences using “used to” or “didn’t use to do”";
+
 
 // Use \n for line breaks in the placeholder
 $customPlaceholder = "In the past, I used to................\nI didn’t use to....................";
+$customImage = materialAsset('slider/A2/Beginner/chapter-6/img/writing.webp');
 
 if (auth()->check()){
     $user = auth()->user();
@@ -40,7 +42,10 @@ $content = [
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
     'page_title' => $finalTitle,
-    'placeholder' => $customPlaceholder
+    'placeholder' => $customPlaceholder,
+
+    // Optional input card image
+    'image' => $customImage ?? null,
 ];
 ?>
 

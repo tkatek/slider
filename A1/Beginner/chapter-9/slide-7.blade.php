@@ -5,10 +5,9 @@ $content = [
     'subtitle'   => 'Spot the words you can count and the ones you can’t.',
 
     'image'      => materialAsset('slider/A1/Beginner/chapter-9/img/food-quantities.webp'),
-    'image_alt'  => 'Food quantities image',
 
-    'footer_text' => 'Can you describe other items in the picture?',
-    'play_label'  => 'Play sentence',
+    'note_title' => 'Can you describe other items in the picture?',
+
 
     'items'      => [
         [

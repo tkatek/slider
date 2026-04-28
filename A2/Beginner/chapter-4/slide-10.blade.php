@@ -31,7 +31,7 @@ $content = [
                 [
                     'heading' => '',
                     'items' => [
-                        'Go → <span class="hl-red">Wend</span>',
+                        'Go → <span class="hl-red">Went</span>',
                         'Have → <span class="hl-red">Had</span>',
                         'See → <span class="hl-red">Saw</span>',
                     ],
