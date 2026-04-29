@@ -575,11 +575,13 @@
                                         $rowCorrect = $row['correct'] ?? '';
                                         $isMultiChoiceRow = is_array($rowCorrect);
                                         $choiceInputType = $isMultiChoiceRow ? 'checkbox' : 'radio';
+                                        $rowKey = $row['key'] ?? $row['number'] ?? $loop->index;
+                                        $rowLabel = $row['label'] ?? $row['number'] ?? '';
                                     @endphp
                                     <tr class="lt-choice-row" data-choice-row data-correct='@json($rowCorrect)' data-multi="{{ $isMultiChoiceRow ? '1' : '0' }}">
                                         <td>
                                             <span class="lt-label-pill">
-                                                {{ $row['number'] ?? '' }}
+                                                {{ $rowLabel }}
                                                 @if(!empty($row['item']))
                                                     <small>{{ $row['item'] }}</small>
                                                 @endif
@@ -597,7 +599,7 @@
                                                             $optionValue = is_string($optionLabel) ? $optionLabel : (string) $optionIndex;
                                                         @endphp
                                                         <label class="lt-choice lt-choice-inline">
-                                                            <input type="{{ $choiceInputType }}" name="desktop_choice_{{ $row['number'] ?? $loop->parent->index }}{{ $isMultiChoiceRow ? '[]' : '' }}" value="{{ $optionValue }}">
+                                                            <input type="{{ $choiceInputType }}" name="desktop_choice_{{ $rowKey }}{{ $isMultiChoiceRow ? '[]' : '' }}" value="{{ $optionValue }}">
                                                             <span class="lt-box" aria-hidden="true"></span>
                                                             <span class="lt-choice-text">{{ $optionLabel }}</span>
                                                         </label>
@@ -608,7 +610,7 @@
                                             @foreach(($content['options'] ?? []) as $key => $label)
                                                 <td>
                                                     <label class="lt-choice">
-                                                        <input type="{{ $choiceInputType }}" name="desktop_choice_{{ $row['number'] ?? $loop->parent->index }}{{ $isMultiChoiceRow ? '[]' : '' }}" value="{{ is_int($key) ? $label : $key }}">
+                                                        <input type="{{ $choiceInputType }}" name="desktop_choice_{{ $rowKey }}{{ $isMultiChoiceRow ? '[]' : '' }}" value="{{ is_int($key) ? $label : $key }}">
                                                         <span class="lt-box" aria-hidden="true"></span>
                                                     </label>
                                                 </td>
@@ -626,11 +628,13 @@
                                 $rowCorrect = $row['correct'] ?? '';
                                 $isMultiChoiceRow = is_array($rowCorrect);
                                 $choiceInputType = $isMultiChoiceRow ? 'checkbox' : 'radio';
+                                $rowKey = $row['key'] ?? $row['number'] ?? $loop->index;
+                                $rowLabel = $row['label'] ?? $row['number'] ?? '';
                             @endphp
                             <article class="lt-mobile-card" data-choice-row data-correct='@json($rowCorrect)' data-multi="{{ $isMultiChoiceRow ? '1' : '0' }}">
                                 <div class="mb-3">
                                     <span class="lt-mobile-title">
-                                        {{ $row['number'] ?? '' }}@if(!empty($row['item'])) - {{ $row['item'] }} @endif
+                                        {{ $rowLabel }}@if(!empty($row['item'])) - {{ $row['item'] }} @endif
                                     </span>
                                 </div>
 
@@ -638,7 +642,7 @@
                                     @foreach(($choiceUsesRowOptions ? ($row['options'] ?? []) : ($content['options'] ?? [])) as $key => $label)
                                         <label class="lt-choice lt-mobile-option">
                                             <span>{{ $label }}</span>
-                                            <input type="{{ $choiceInputType }}" name="mobile_choice_{{ $row['number'] ?? $loop->parent->index }}{{ $isMultiChoiceRow ? '[]' : '' }}" value="{{ is_int($key) ? $label : $key }}">
+                                            <input type="{{ $choiceInputType }}" name="mobile_choice_{{ $rowKey }}{{ $isMultiChoiceRow ? '[]' : '' }}" value="{{ is_int($key) ? $label : $key }}">
                                             <span class="lt-box" aria-hidden="true"></span>
                                         </label>
                                     @endforeach

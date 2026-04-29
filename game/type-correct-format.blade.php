@@ -5,6 +5,8 @@
     $questions = is_array($content['questions'] ?? null) ? $content['questions'] : [];
     $storageKey = 'type-correct-format-game-' . md5(request()->path());
     $stackedFullInput = !empty($content['stacked_full_input']);
+    $hideHints = !empty($content['hide_hints']);
+    $isSingleQuestion = count($questions) === 1;
 @endphp
 
 @section('style')
@@ -251,6 +253,37 @@
             font-size: .95rem;
         }
 
+        .verb-game-main.is-single-question .verb-grid {
+            max-width: 920px;
+            min-height: clamp(220px, 38vh, 360px);
+            align-items: center;
+            justify-items: center;
+            grid-template-columns: 1fr;
+        }
+
+        .verb-game-main.is-single-question .verb-card {
+            width: min(100%, 860px);
+            padding: 22px 18px;
+        }
+
+        .verb-game-main.is-single-question .verb-answer {
+            justify-content: center;
+            text-align: center;
+            gap: 10px;
+            font-size: 1.18rem;
+            line-height: 1.5;
+        }
+
+        .verb-game-main.is-single-question .verb-input {
+            box-sizing: border-box;
+            width: min(100%, 16rem);
+            max-width: 16rem;
+            min-width: min(100%, 11rem);
+            height: 46px;
+            padding: 7px 12px;
+            font-size: 1.1rem;
+        }
+
         .verb-input {
             box-sizing: content-box;
             flex: 0 1 auto;
@@ -380,6 +413,25 @@
                 height: 46px;
                 font-size: 1rem;
             }
+
+            .verb-game-main.is-single-question .verb-card {
+                padding: 34px 30px;
+            }
+
+            .verb-game-main.is-single-question .verb-answer {
+                gap: 14px;
+                font-size: 1.45rem;
+            }
+
+            .verb-game-main.is-single-question .verb-input {
+                width: min(100%, 22rem);
+                max-width: 22rem;
+                min-width: 14rem;
+                height: 56px;
+                border-radius: 16px;
+                padding: 8px 16px;
+                font-size: 1.3rem;
+            }
         }
     </style>
 @endsection
@@ -387,7 +439,7 @@
 @section('content')
     <div class="verb-game-shell">
         <div class="verb-game-inner">
-            <main class="verb-game-main{{ $stackedFullInput ? ' is-stacked-full-input' : '' }}">
+            <main class="verb-game-main{{ $stackedFullInput ? ' is-stacked-full-input' : '' }}{{ $isSingleQuestion ? ' is-single-question' : '' }}">
                 @include('slider.components.title-subtitle')
 
                 @include('slider.components.game-status')
@@ -409,7 +461,7 @@
 
                         <article class="verb-card">
                             <div class="verb-answer">
-                                @if($stackedFullInput && ($item['hint'] ?? '') !== '')
+                                @if(!$hideHints && $stackedFullInput && ($item['hint'] ?? '') !== '')
                                     <span class="verb-hint">{{ $item['hint'] }}</span>
                                 @endif
 
@@ -436,7 +488,7 @@
                                     <span class="verb-suffix">{{ $item['suffix'] ?? '' }}</span>
                                 @endif
 
-                                @if(!$stackedFullInput)
+                                @if(!$hideHints && !$stackedFullInput)
                                     <span class="verb-hint">({{ $item['hint'] ?? '' }})</span>
                                 @endif
 
@@ -506,7 +558,10 @@
                 return input ? isInputCorrect(input) : false;
             };
 
-            const getCorrectTotal = () => cards.filter((card) => isCardCorrect(card)).length;
+            const getCorrectTotal = () => cards.filter((card) => {
+                const input = card.querySelector('.js-verb-input');
+                return input ? input.classList.contains('is-correct') : false;
+            }).length;
 
             const formatTime = (seconds) => {
                 if (!isFinite(seconds) || seconds < 0) seconds = 0;

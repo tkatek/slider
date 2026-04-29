@@ -224,13 +224,14 @@
         function updateBtnState(inputId, btnId) {
             const val = document.getElementById(inputId).value.trim();
             const btn = document.getElementById(btnId);
+            const activeClasses = ['bg-gradient-to-r', 'from-slate-700', 'via-zinc-700', 'to-stone-700', 'hover:from-slate-800', 'hover:via-zinc-800', 'hover:to-stone-800', 'shadow-lg', 'cursor-pointer'];
 
             if (val.length > 0) {
                 btn.classList.remove('bg-slate-300', 'cursor-not-allowed');
-                btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700', 'shadow-lg', 'cursor-pointer');
+                btn.classList.add(...activeClasses);
             } else {
                 btn.classList.add('bg-slate-300', 'cursor-not-allowed');
-                btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700', 'shadow-lg', 'cursor-pointer');
+                btn.classList.remove(...activeClasses);
             }
         }
 

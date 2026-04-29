@@ -237,6 +237,7 @@
         $hideImage = (bool)($content['hide_image'] ?? false);
         $contentGridClass = trim((string)($content['content_grid_class'] ?? 'grid lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_460px] gap-8 lg:gap-12 items-center'));
         $itemsGridClass = trim((string)($content['items_grid_class'] ?? 'grid grid-cols-1 gap-4 text-left'));
+        $itemTextClass = trim((string)($content['item_text_class'] ?? 'text-xl sm:text-2xl'));
     @endphp
 
     <body class="font-display bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 min-h-screen relative">
@@ -302,7 +303,7 @@
                                             </div>
 
                                             <div class="min-w-0 flex-1">
-                                                <div class="text-xl sm:text-2xl font-black tracking-[-0.03em]
+                                                <div class="{{ $itemTextClass }} font-black tracking-[-0.03em]
                                                             text-slate-900 dark:text-slate-50 leading-tight break-words">
                                                     {!! $item['text'] !!}
                                                 </div>

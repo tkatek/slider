@@ -4,7 +4,7 @@ $content = [
     'title'      => 'Practice 4: Celebrities',
     'subtitle'   => 'Listen. Two friends are watching an awards ceremony on TV, and they are talking about the celebrities. Who are they talking about? Number the pictures 1 to 4',
 
-    'audio'      => materialAsset('slider/A2/Beginner/chapter-9/audios/slide10/dialogue-one.mpeg'),
+    'audio'      => materialAsset('slider/A2/Beginner/chapter-9/audios/slide10.mp3'),
 
     'script' => [
         'One',

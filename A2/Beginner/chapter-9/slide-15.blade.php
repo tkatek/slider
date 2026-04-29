@@ -1,325 +1,274 @@
-﻿<?php
-$content = [
-    'page_title' => "It's Your Turn",
-    'title' => "Writing",
-    'subtitle'             => 'Describe yourself in writing. You can write about your physical appearance, personality, or both!',
-    'cards' => [
-        [
-            'id' => 'look',
-            'question' => 'What do you look like?',
-            'placeholder' => "I am ...\nI have ...\nI wear ...",
-        ],
-        [
-            'id' => 'like',
-            'question' => 'What are you like?',
-            'placeholder' => "I am ...\nMy personality is ...\nPeople say I am ...",
-        ],
-    ],
-];
-?>
+﻿@extends('slider.simple-layout')
 
-@extends('slider.simple-layout')
+@php
+    $content = [
+        'page_title'  => "It's Your Turn",
+        'title'       => "It's your turn",
+        'subtitle'    => 'Write about yourself!',
+        'left_title'  => 'What do you look like?',
+        'right_title' => 'What are you like?',
+    ];
+@endphp
 
-@section('title', $content['page_title'])
+@section('title', $content['page_title'] ?? 'Writing')
 
 @section('style')
     <style>
-        .turn-shell {
-            max-width: 900px;
-        }
-
-        .turn-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
+        .write-about-yourself-page {
+            min-height: 100dvh;
+            width: 100%;
+            overflow-x: hidden;
+            font-family: "Plus Jakarta Sans", sans-serif;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            justify-items: center;
         }
 
-        @media (min-width: 860px) {
-            .turn-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: .9rem;
+        .write-about-yourself-shell {
+            width: 100%;
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 24px 14px;
+        }
+
+        .write-about-yourself-header {
+            text-align: center;
+            margin-bottom: 26px;
+        }
+
+        .write-about-yourself-board {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1fr);
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+        }
+
+        .writing-card {
+            min-height: 390px;
+            border: 5px solid #111827;
+            border-radius: 30px;
+            background: #ffffff;
+            padding: 24px 22px;
+            box-shadow: 0 14px 28px -24px rgba(15, 23, 42, 0.35);
+        }
+
+        .writing-card-title {
+            margin-bottom: 16px;
+            font-size: 1.08rem;
+            line-height: 1.2;
+            font-weight: 900;
+            color: #1f2937;
+            font-style: italic;
+        }
+
+        .writing-area-wrap {
+            min-height: 290px;
+            border-radius: 18px;
+            background-image: repeating-linear-gradient(
+                    to bottom,
+                    transparent 0,
+                    transparent 34px,
+                    rgba(100, 116, 139, 0.55) 34px,
+                    rgba(100, 116, 139, 0.55) 35px
+            );
+        }
+
+        .writing-area {
+            width: 100%;
+            min-height: 290px;
+            resize: none;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: #0f172a;
+            font-size: 1rem;
+            line-height: 35px;
+            font-weight: 700;
+            padding: 0;
+        }
+
+        .writing-area::placeholder {
+            color: transparent;
+        }
+
+        .question-mark-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .question-mark {
+            font-size: clamp(4.5rem, 8vw, 6.5rem);
+            line-height: 1;
+            font-weight: 900;
+            color: #6b7280;
+            user-select: none;
+        }
+
+        .dark .writing-card {
+            background: #0f172a;
+            border-color: #f8fafc;
+        }
+
+        .dark .writing-card-title {
+            color: #f8fafc;
+        }
+
+        .dark .writing-area {
+            color: #f8fafc;
+        }
+
+        .dark .writing-area-wrap {
+            background-image: repeating-linear-gradient(
+                    to bottom,
+                    transparent 0,
+                    transparent 34px,
+                    rgba(148, 163, 184, 0.55) 34px,
+                    rgba(148, 163, 184, 0.55) 35px
+            );
+        }
+
+        .dark .question-mark {
+            color: #94a3b8;
+        }
+
+        @media (max-width: 1024px) {
+            .write-about-yourself-page {
+                align-items: flex-start;
+            }
+
+            .write-about-yourself-shell {
+                max-width: 760px;
+                padding: 24px 14px 32px;
+            }
+
+            .write-about-yourself-board {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .question-mark-wrap {
+                order: 2;
+            }
+
+            .writing-card:first-child {
+                order: 1;
+            }
+
+            .writing-card:last-child {
+                order: 3;
+            }
+
+            .writing-card {
+                min-height: 330px;
+            }
+
+            .writing-area-wrap,
+            .writing-area {
+                min-height: 230px;
             }
         }
 
-        .turn-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 2rem;
-            background: #ffffff;
-            box-shadow: 0 12px 28px -20px rgba(15, 23, 42, .25);
-            width: 100%;
-            max-width: 390px;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: .75rem;
-            min-height: 350px;
-        }
+        @media (max-width: 640px) {
+            .write-about-yourself-shell {
+                padding: 18px 12px 26px;
+            }
 
-        .dark .turn-card {
-            border-color: #334155;
-            background: #0f172a;
-            box-shadow: none;
-        }
+            .write-about-yourself-header {
+                margin-bottom: 18px;
+            }
 
-        .turn-head {
-            display: flex;
-            align-items: center;
-            gap: .7rem;
-        }
+            .writing-card {
+                min-height: 310px;
+                padding: 20px 16px;
+                border-width: 4px;
+                border-radius: 24px;
+            }
 
-        .turn-avatar {
-            width: 46px;
-            height: 46px;
-            border-radius: 999px;
-            border: 2px solid #ffffff;
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            color: #334155;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: .82rem;
-            letter-spacing: .04em;
-            flex-shrink: 0;
-            box-shadow: 0 3px 10px rgba(15, 23, 42, .08);
-        }
+            .writing-card-title {
+                font-size: 1rem;
+                margin-bottom: 14px;
+            }
 
-        .dark .turn-avatar {
-            border-color: #1e293b;
-            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
-            color: #f8fafc;
-        }
+            .writing-area-wrap {
+                min-height: 220px;
+                background-image: repeating-linear-gradient(
+                        to bottom,
+                        transparent 0,
+                        transparent 31px,
+                        rgba(100, 116, 139, 0.55) 31px,
+                        rgba(100, 116, 139, 0.55) 32px
+                );
+            }
 
-        .turn-name {
-            margin: 0;
-            font-size: 1.5rem;
-            line-height: .95;
-            letter-spacing: -0.02em;
-            font-weight: 900;
-            color: #0f172a;
-        }
+            .writing-area {
+                min-height: 220px;
+                font-size: 0.95rem;
+                line-height: 32px;
+            }
 
-        .dark .turn-name {
-            color: #f8fafc;
-        }
-
-        .turn-role {
-            margin-top: .12rem;
-            font-size: .72rem;
-            font-weight: 900;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            color: #94a3b8;
-        }
-
-        .turn-question {
-            margin: .1rem 0 0;
-            font-size: .92rem;
-            font-weight: 900;
-            color: #334155;
-            padding: .5rem .75rem;
-            border-radius: 999px;
-            border: 1px solid #e2e8f0;
-            background: #f8fafc;
-        }
-
-        .dark .turn-question {
-            color: #e2e8f0;
-            border-color: #334155;
-            background: rgba(15, 23, 42, .75);
-        }
-
-        .turn-answer {
-            width: 100%;
-            min-height: 148px;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            background: #f8fafc;
-            padding: .9rem;
-            resize: vertical;
-            outline: none;
-            font-size: .95rem;
-            font-weight: 700;
-            line-height: 1.5;
-            color: #1f2937;
-            transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
-        }
-
-        .turn-answer:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, .13);
-            background: #ffffff;
-        }
-
-        .turn-answer::placeholder {
-            color: #94a3b8;
-            font-weight: 600;
-        }
-
-        .dark .turn-answer {
-            border-color: #334155;
-            background: #1e293b;
-            color: #f8fafc;
-        }
-
-        .dark .turn-answer:focus {
-            border-color: #818cf8;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, .22);
-            background: #1e293b;
-        }
-
-        .dark .turn-answer::placeholder {
-            color: #cbd5e1;
-        }
-
-        .submit-btn {
-            margin-top: auto;
-            width: 100%;
-            border: 1px solid transparent;
-            border-radius: 999px;
-            padding: .72rem .95rem;
-            font-size: .95rem;
-            font-weight: 900;
-            color: #ffffff;
-            background: #cbd5e1;
-            cursor: not-allowed;
-            transition: transform .15s ease, background-color .15s ease, box-shadow .15s ease;
-        }
-
-        .submit-btn.is-ready {
-            cursor: pointer;
-            background: #4f46e5;
-            box-shadow: 0 12px 24px -16px rgba(79, 70, 229, .7);
-        }
-
-        .submit-btn.is-ready:hover {
-            transform: translateY(-1px);
-            background: #4338ca;
-        }
-
-        .submit-btn.is-done {
-            background: #22c55e;
-            cursor: pointer;
-            box-shadow: 0 12px 24px -16px rgba(34, 197, 94, .75);
-        }
-
-        .dark .submit-btn {
-            color: #e2e8f0;
-            background: #334155;
-        }
-
-        .dark .submit-btn.is-ready {
-            background: #6366f1;
-        }
-
-        .dark .submit-btn.is-ready:hover {
-            background: #4f46e5;
-        }
-
-        .dark .submit-btn.is-done {
-            background: #16a34a;
-            color: #f0fdf4;
+            .question-mark {
+                font-size: 4rem;
+            }
         }
     </style>
 @endsection
 
 @section('content')
-    <main class="w-full min-h-[100dvh] px-3 sm:px-6 py-5 sm:py-6">
-        <section class="turn-shell mx-auto">
-            <header class="mb-4 sm:mb-5 text-center">
+    <main class="write-about-yourself-page">
+        <div class="write-about-yourself-shell">
+            <header class="write-about-yourself-header">
                 @include('slider.components.title-subtitle')
             </header>
 
-            <div class="turn-grid">
-                @foreach($content['cards'] as $card)
-                    <article class="turn-card">
-                        <header class="turn-head">
-                            <span class="turn-avatar" aria-hidden="true">YOU</span>
-                            <div>
-                                <p class="turn-name">You</p>
-                                <div class="turn-role">Student</div>
-                            </div>
-                        </header>
+            <section class="write-about-yourself-board">
+                <article class="writing-card">
+                    <h2 class="writing-card-title">{{ $content['left_title'] }}</h2>
 
-                        <p class="turn-question">{{ $card['question'] }}</p>
-
+                    <div class="writing-area-wrap">
                         <textarea
-                            id="answer_{{ $card['id'] }}"
-                            class="turn-answer js-turn-answer"
-                            placeholder="{{ $card['placeholder'] }}"
-                            aria-label="{{ $card['question'] }}"
+                                class="writing-area js-writing-area"
+                                aria-label="{{ $content['left_title'] }}"
+                                spellcheck="true"
                         ></textarea>
+                    </div>
+                </article>
 
-                        <button
-                            type="button"
-                            class="submit-btn js-submit-btn"
-                            data-target="answer_{{ $card['id'] }}"
-                        >
-                            Submit Answer
-                        </button>
-                    </article>
-                @endforeach
-            </div>
-        </section>
+                <div class="question-mark-wrap" aria-hidden="true">
+                    <div class="question-mark">?</div>
+                </div>
+
+                <article class="writing-card">
+                    <h2 class="writing-card-title">{{ $content['right_title'] }}</h2>
+
+                    <div class="writing-area-wrap">
+                        <textarea
+                                class="writing-area js-writing-area"
+                                aria-label="{{ $content['right_title'] }}"
+                                spellcheck="true"
+                        ></textarea>
+                    </div>
+                </article>
+            </section>
+        </div>
     </main>
 @endsection
 
 @section('script')
     <script>
-        function onReady(fn) {
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', fn, { once: true });
-            } else {
-                fn();
-            }
-        }
+        (() => {
+            const areas = Array.from(document.querySelectorAll('.js-writing-area'));
 
-        onReady(() => {
-            const buttons = Array.from(document.querySelectorAll('.js-submit-btn'));
-            const textareas = Array.from(document.querySelectorAll('.js-turn-answer'));
-
-            function syncButtonState(button) {
-                const targetId = button.getAttribute('data-target');
-                const textarea = targetId ? document.getElementById(targetId) : null;
-                const value = (textarea?.value || '').trim();
-
-                if (value.length > 0) {
-                    button.classList.add('is-ready');
-                } else {
-                    button.classList.remove('is-ready');
-                    button.classList.remove('is-done');
-                    button.textContent = 'Submit Answer';
-                }
-            }
-
-            textareas.forEach((textarea) => {
-                textarea.addEventListener('input', () => {
-                    const button = buttons.find((btn) => btn.getAttribute('data-target') === textarea.id);
-                    if (button) syncButtonState(button);
-                });
+            areas.forEach((area) => {
+                area.value = '';
             });
 
-            buttons.forEach((button) => {
-                button.addEventListener('click', () => {
-                    const targetId = button.getAttribute('data-target');
-                    const textarea = targetId ? document.getElementById(targetId) : null;
-                    const value = (textarea?.value || '').trim();
-
-                    if (!value) {
-                        textarea?.focus();
-                        return;
-                    }
-
-                    button.classList.add('is-done');
-                    button.classList.remove('is-ready');
-                    button.textContent = 'Submitted';
+            window.resetSlide = () => {
+                areas.forEach((area) => {
+                    area.value = '';
                 });
-
-                syncButtonState(button);
-            });
-        });
+            };
+        })();
     </script>
 @endsection
-

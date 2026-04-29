@@ -16,7 +16,7 @@
 <div class="header-spacing my-4 space-y-3 px-4 text-center sm:my-5 sm:px-6 lg:px-8">
     <h1 class="mb-2 {{ $gameTitleClass }} font-black tracking-tight">
         <span class="bg-clip-text text-transparent {{ $primaryGradient }}">
-            {{ $gameTitle }}
+            {!! strip_tags($gameTitle, '<br>') !!}
         </span>
     </h1>
 

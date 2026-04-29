@@ -10,9 +10,9 @@
     <style>
         .mp-board {
             position: relative;
-            max-width: 1040px;
+            max-width: 980px;
             margin-inline: auto;
-            touch-action: none;
+            touch-action: none; 
         }
 
         .mp-line-layer {
@@ -26,7 +26,7 @@
             position: absolute; 
             height: 4px; 
             border-radius: 999px;
-            background: linear-gradient(90deg, #475569, #18181b);  
+            background: linear-gradient(90deg, #475569, #18181b);
             box-shadow: 0 8px 18px rgba(15, 23, 42, .10);
             transform-origin: left center; 
             pointer-events: none;
@@ -38,7 +38,7 @@
         }
 
         .mp-card {
-            min-height: 84px;
+            min-height: 66px;
             border: 2px solid rgba(226, 232, 240, .86);
             background:
                 linear-gradient(180deg, rgba(255, 255, 255, .98), rgba(248, 250, 252, .92));
@@ -75,6 +75,22 @@
             border-color: rgb(244 63 94);
             background: rgb(255 241 242);
             animation: mpShake .32s ease-in-out;
+        }
+
+        .mp-card[data-row-tone="0"] {
+            background: linear-gradient(180deg, rgba(255, 247, 237, .94), rgba(255, 255, 255, .9));
+        }
+
+        .mp-card[data-row-tone="1"] {
+            background: linear-gradient(180deg, rgba(240, 249, 255, .94), rgba(255, 255, 255, .9));
+        }
+
+        .mp-card[data-row-tone="2"] {
+            background: linear-gradient(180deg, rgba(245, 243, 255, .94), rgba(255, 255, 255, .9));
+        }
+
+        .mp-card[data-row-tone="3"] {
+            background: linear-gradient(180deg, rgba(240, 253, 244, .94), rgba(255, 255, 255, .9));
         }
 
         .mp-connector {
@@ -134,7 +150,7 @@
 
         .mp-picture-frame {
             aspect-ratio: 5 / 4;
-            width: min(100%, 108px);
+            width: min(100%, 82px);
             display: grid;
             place-items: center;
             overflow: hidden;
@@ -150,16 +166,16 @@
         }
 
         .mp-word {
-            font-size: clamp(.72rem, 1vw, .92rem);
+            font-size: clamp(.68rem, .9vw, .82rem);
             font-weight: 800;
-            line-height: 1.25;
+            line-height: 1.18;
             color: #0f172a;
         }
 
         .mp-btn {
-            border-radius: 14px;
-            padding: .62rem .95rem;
-            font-size: .8rem;
+            border-radius: 12px;
+            padding: .52rem .82rem;
+            font-size: .76rem;
             font-weight: 900;
             transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease;
         }
@@ -211,6 +227,22 @@
             background: rgba(136, 19, 55, .42);
         }
 
+        .dark .mp-card[data-row-tone="0"] {
+            background: linear-gradient(180deg, rgba(67, 20, 7, .28), rgba(15, 23, 42, .86));
+        }
+
+        .dark .mp-card[data-row-tone="1"] {
+            background: linear-gradient(180deg, rgba(12, 74, 110, .24), rgba(15, 23, 42, .86));
+        }
+
+        .dark .mp-card[data-row-tone="2"] {
+            background: linear-gradient(180deg, rgba(76, 29, 149, .24), rgba(15, 23, 42, .86));
+        }
+
+        .dark .mp-card[data-row-tone="3"] {
+            background: linear-gradient(180deg, rgba(20, 83, 45, .24), rgba(15, 23, 42, .86));
+        }
+
         .dark .mp-connector {
             border-color: rgba(161, 161, 170, .38);
             background: linear-gradient(135deg, #71717a, #3f3f46, #18181b);
@@ -242,13 +274,13 @@
 
         @media (max-width: 640px) {
             .mp-card {
-                min-height: 78px;
-                padding: .5rem !important;
+                min-height: 64px;
+                padding: .38rem !important;
                 border-radius: .9rem !important;
             }
 
             .mp-picture-frame {
-                width: min(100%, 76px);
+                width: min(100%, 64px);
             }
 
             .mp-line {
@@ -270,7 +302,7 @@
 
             .mp-btn {
                 flex: 1 1 100%;
-                padding: .7rem .85rem;
+                padding: .62rem .75rem;
             }
         }
     </style>
@@ -285,6 +317,13 @@
             ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $content['script']), static fn ($line) => $line !== ''))
             : [];
         $hasScript = $scriptLines !== [];
+        $showCheckButton = filter_var($content['show_check_button'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $matchSounds = array_replace([
+            'tap' => materialAsset('slider/sounds/tap.wav'),
+            'correct' => materialAsset('slider/sounds/correct.wav'),
+            'wrong' => materialAsset('slider/sounds/wrong.wav'),
+            'success' => materialAsset('slider/sounds/success.wav'),
+        ], is_array($content['sounds'] ?? null) ? $content['sounds'] : []);
 
         $leftItems = $pairs->map(function ($pair, $index) {
             return [
@@ -329,28 +368,30 @@
     <main class="flex min-h-[100dvh] w-full flex-col justify-center">
         @include('slider.components.title-subtitle')
 
-        <section class="mx-auto w-full max-w-6xl px-4 py-5 sm:px-8">
+        <section class="mx-auto w-full max-w-6xl px-3 py-3 sm:px-6 sm:py-4">
             @if($playerAudio)
                 <div class="mx-auto mb-5 max-w-3xl">
                     @include('slider.components.audio-player')
                 </div>
             @endif
 
-            <div class="relative overflow-hidden rounded-[1.25rem] border border-slate-200/70 bg-white/88 p-4 shadow-[0_16px_38px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/65 sm:p-5">
+            <div class="relative overflow-hidden rounded-[1.1rem] border border-slate-200/70 bg-white/88 p-3 shadow-[0_14px_30px_rgba(2,6,23,0.07)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/65 sm:p-4">
                 <div class="pointer-events-none absolute inset-0 opacity-75 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(100,116,139,0.10)_0%,transparent_54%),radial-gradient(120%_120%_at_100%_0%,rgba(63,63,70,0.08)_0%,transparent_54%)]"></div>
 
                 <div class="relative">
-                    <div class="mb-4 flex flex-wrap items-center justify-between gap-3 sm:mb-5">
-                        <div class="min-w-0 flex-1 rounded-2xl border border-slate-200/80 bg-slate-50/75 px-4 py-3 dark:border-slate-700/70 dark:bg-slate-900/55">
+                    <div class="mb-3 flex flex-wrap items-center justify-between gap-2 sm:mb-3.5">
+                        <div class="min-w-0 flex-1 rounded-xl border border-slate-200/80 bg-slate-50/75 px-3 py-2 dark:border-slate-700/70 dark:bg-slate-900/55">
                             <h2 class="text-left text-sm font-black leading-snug text-slate-900 dark:text-white sm:text-lg">
                                 {{ $activityTitle }}
                             </h2>
                         </div>
 
                         <div class="flex flex-wrap items-center justify-end gap-2">
-                            <button id="checkMatchAnswers" type="button" class="mp-btn mp-btn-neutral">
-                                Check Answers
-                            </button>
+                            @if($showCheckButton)
+                                <button id="checkMatchAnswers" type="button" class="mp-btn mp-btn-neutral">
+                                    Check Answers
+                                </button>
+                            @endif
                             <button id="revealMatchAnswers" type="button" class="mp-btn mp-btn-primary {{ $matchPrimaryBtnClass }}">
                                 Reveal answers
                             </button>
@@ -360,15 +401,16 @@
                         </div>
                     </div>
 
-                    <div id="matchBoard" class="mp-board grid grid-cols-2 items-center gap-x-12 gap-y-2 sm:gap-x-24 sm:gap-y-2.5 lg:gap-x-36 xl:gap-x-44">
+                    <div id="matchBoard" class="mp-board grid grid-cols-2 items-center gap-x-8 gap-y-1.5 sm:gap-x-16 sm:gap-y-2 lg:gap-x-24 xl:gap-x-32">
                         <div id="lineLayer" class="mp-line-layer"></div>
 
                         @foreach($leftItems as $index => $item)
                             <button
                                     type="button"
-                                    class="match-card mp-card relative z-10 flex w-full items-center justify-center rounded-2xl p-2 text-center"
+                                    class="match-card mp-card relative z-10 flex w-full items-center justify-center rounded-xl p-1.5 text-center"
                                     data-side="left"
                                     data-id="{{ $item['id'] }}"
+                                    data-row-tone="{{ $index % 4 }}"
                             >
                                 {!! $renderMatchItem($item['content']) !!}
                                 <span class="mp-connector mp-connector-start" data-connector="start" aria-hidden="true"></span>
@@ -376,9 +418,10 @@
 
                             <button
                                     type="button"
-                                    class="match-card mp-card relative z-10 flex w-full items-center justify-center rounded-2xl p-3 text-center"
+                                    class="match-card mp-card relative z-10 flex w-full items-center justify-center rounded-xl p-1.5 text-center"
                                     data-side="right"
                                     data-id="{{ $rightItems[$index]['id'] }}"
+                                    data-row-tone="{{ $index % 4 }}"
                             >
                                 {!! $renderMatchItem($rightItems[$index]['content']) !!}
                                 <span class="mp-connector mp-connector-target" data-connector="target" aria-hidden="true"></span>
@@ -423,6 +466,13 @@
             const retakeBtn = document.getElementById('retakeMatchGame');
             const cards = Array.from(document.querySelectorAll('.match-card'));
             const totalPairs = Number(@json($pairs->count()));
+            const sounds = @json($matchSounds);
+            const sfx = {
+                tap: new Audio(sounds.tap || '/slider/sounds/tap.wav'),
+                correct: new Audio(sounds.correct || '/slider/sounds/correct.wav'),
+                wrong: new Audio(sounds.wrong || '/slider/sounds/wrong.wav'),
+                success: new Audio(sounds.success || '/slider/sounds/success.wav'),
+            };
 
             let selectedLeft = null;
             let activeLeft = null;
@@ -431,6 +481,15 @@
             let completed = new Set();
             let mistakes = 0;
             let lines = [];
+
+            function playSfx(type) {
+                const sound = sfx[type];
+                if (!sound) return;
+
+                sound.pause();
+                sound.currentTime = 0;
+                sound.play().catch(() => {});
+            }
 
             function updateStats() {
                 const scoreEl = document.getElementById('score');
@@ -552,13 +611,17 @@
                 updateStats();
 
                 if (completed.size === totalPairs) {
+                    playSfx('success');
                     setTimeout(showWinModal, 250);
+                } else {
+                    playSfx('correct');
                 }
             }
 
             function finishWrong(leftCard, rightCard) {
                 mistakes++;
                 updateStats();
+                playSfx('wrong');
 
                 leftCard.classList.add('is-wrong');
                 rightCard?.classList.add('is-wrong');
@@ -620,6 +683,7 @@
                 });
 
                 updateStats();
+                playSfx('success');
             }
 
             function endConnection(event) {
@@ -660,6 +724,7 @@
                     activePointerId = event.pointerId;
 
                     leftCard.classList.add('is-selected');
+                    playSfx('tap');
                     cards
                         .filter(item => item.dataset.side === 'right' && !item.disabled)
                         .forEach(item => item.classList.add('is-target'));
@@ -704,6 +769,7 @@
                         clearSelection();
                         selectedLeft = card;
                         card.classList.add('is-selected');
+                        playSfx('tap');
 
                         cards
                             .filter(item => item.dataset.side === 'right' && !item.disabled)

@@ -1,8 +1,7 @@
 ﻿<?php
 $content = [
-    'page_title' => 'Read and Write',
-    'title' => 'Read and Write',
-    'subtitle' => 'Read the conversation between David and Jessica. Then write the names under the picture.<br>Practice the dialogue',
+    'title' => 'Reading comprehension',
+    'subtitle' => 'Read the conversation between David and Jessica. Then type the names under the picture.<br>Practice the dialogue',
 
     'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide11/slide11.webp'),
 
@@ -10,6 +9,7 @@ $content = [
         ['text' => '', 'x' => 18.0, 'y' => 86.5, 'answer' => 'Diana'],
         ['text' => '', 'x' => 84.0, 'y' => 86.0, 'answer' => 'Brian'],
     ],
+
 ];
 
 $dialogue = [
@@ -42,7 +42,7 @@ $dialogue = [
 
 @extends('slider.simple-layout')
 
-@section('title', $content['page_title'])
+@section('title', $content['title'])
 
 @section('style')
     <style>
@@ -51,21 +51,24 @@ $dialogue = [
         }
 
         .lesson-card {
-            border: 2px solid #0f172a;
-            border-radius: 26px;
-            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 10px 10px 0 rgba(15, 23, 42, 0.10);
+            display: flex;
+            min-height: 0;
+            flex-direction: column;
+            border: 1px solid rgba(226, 232, 240, .9);
+            border-radius: 24px;
+            background: rgba(255, 255, 255, .92);
+            box-shadow: 0 18px 45px rgba(2, 6, 23, .08);
         }
 
         .dark .lesson-card {
-            border-color: #e2e8f0;
-            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-            box-shadow: none;
+            border-color: rgba(51, 65, 85, .75);
+            background: rgba(15, 23, 42, .86);
         }
 
         .dialogue-wrap {
-            max-height: min(62vh, 620px);
-            overflow: auto;
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow: visible;
             padding-right: .25rem;
         }
 
@@ -79,11 +82,11 @@ $dialogue = [
         }
 
         .dialogue-row {
-            border: 1px solid #cbd5e1;
+            border: 1px solid rgba(226, 232, 240, .9);
             border-radius: 16px;
-            padding: .78rem .9rem;
-            background: #ffffff;
-            margin-bottom: .65rem;
+            padding: .58rem .72rem;
+            background: rgba(248, 250, 252, .74);
+            margin-bottom: .45rem;
         }
 
         .dark .dialogue-row {
@@ -93,18 +96,26 @@ $dialogue = [
 
         .speaker-name {
             display: inline-block;
-            margin-bottom: .26rem;
-            font-size: .8rem;
+            margin-bottom: .16rem;
+            font-size: .76rem;
             text-transform: uppercase;
             letter-spacing: .06em;
-            color: #f97316;
+            font-weight: 1000;
+        }
+
+        .speaker-name.speaker-jessica {
+            color: #db2777;
+        }
+
+        .speaker-name.speaker-david {
+            color: #2563eb;
         }
 
         .dialogue-row p {
             margin: 0;
             color: #0f172a;
-            font-size: 1rem;
-            line-height: 1.5;
+            font-size: .92rem;
+            line-height: 1.42;
             font-weight: 800;
         }
 
@@ -115,14 +126,14 @@ $dialogue = [
         .image-stage {
             position: relative;
             overflow: hidden;
-            border: 2px solid #0f172a;
+            border: 1px solid rgba(226, 232, 240, .9);
             border-radius: 22px;
-            background: #e2e8f0;
+            background: rgba(248, 250, 252, .72);
         }
 
         .dark .image-stage {
-            border-color: #e2e8f0;
-            background: #1e293b;
+            border-color: rgba(51, 65, 85, .85);
+            background: rgba(2, 6, 23, .28);
         }
 
         .image-stage img {
@@ -196,7 +207,7 @@ $dialogue = [
             flex-wrap: wrap;
             gap: .6rem;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-end;
             margin-bottom: .75rem;
         }
 
@@ -208,52 +219,47 @@ $dialogue = [
         }
 
         .image-btn {
-            border: 2px solid #0f172a;
-            border-radius: 12px;
-            padding: .52rem .95rem;
+            border-radius: 14px;
+            padding: .65rem 1rem;
             font-size: .82rem;
             font-weight: 900;
-            letter-spacing: .04em;
-            text-transform: uppercase;
-            color: #ffffff;
-            background: #f97316;
-            transition: background-color .15s ease, transform .15s ease;
+            transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease;
         }
 
         .image-btn:hover {
-            background: #ea580c;
             transform: translateY(-1px);
         }
 
-        .image-btn.reset {
-            background: #fdba74;
-            color: #7c2d12;
+        .image-btn-primary {
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: linear-gradient(135deg, #fdba74, #f97316);
+            color: #fff;
+            box-shadow: 0 10px 22px rgba(234, 88, 12, .16);
         }
 
-        .image-btn.reset:hover {
-            background: #fb923c;
+        .image-btn-neutral {
+            border: 1px solid rgba(71, 85, 105, .25);
+            background: linear-gradient(135deg, #475569, #18181b);
+            color: #fff;
+            box-shadow: 0 10px 22px rgba(15, 23, 42, .14);
         }
 
-        .dark .image-btn {
-            border-color: #e2e8f0;
-            background: #f97316;
-            color: #ffffff;
+        .image-btn-soft {
+            border: 1px solid rgba(226, 232, 240, 1);
+            background: #fff;
+            color: #334155;
+            box-shadow: 0 8px 22px rgba(2, 6, 23, .05);
         }
 
-        .dark .image-btn.reset {
-            background: #f97316;
-            color: #ffffff;
+        .dark .image-btn-soft {
+            border-color: rgba(51, 65, 85, 1);
+            background: #0f172a;
+            color: #e2e8f0;
         }
 
-        .dark .image-btn:hover,
-        .dark .image-btn.reset:hover {
-            background: #ea580c;
-        }
-
-        @media (max-width: 1024px) {
-            .dialogue-wrap {
-                max-height: none;
-            }
+        .dark .image-btn-neutral {
+            border-color: rgba(226, 232, 240, .16);
+            background: linear-gradient(135deg, #64748b, #334155);
         }
 
         @media (max-width: 768px) {
@@ -286,13 +292,13 @@ $dialogue = [
                 @include('slider.components.title-subtitle')
             </header>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
+            <div class="grid grid-cols-1 items-stretch lg:grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
                 <section class="lesson-card lg:col-span-6 p-4 sm:p-5">
                     <h3 class="text-slate-900 dark:text-slate-100 font-black text-lg sm:text-xl mb-3">Conversation</h3>
                     <div class="dialogue-wrap">
                         @foreach($dialogue as $line)
                             <article class="dialogue-row">
-                                <span class="speaker-name">{{ $line['speaker'] }}</span>
+                                <span class="speaker-name speaker-{{ strtolower($line['speaker']) }}">{{ $line['speaker'] }}</span>
                                 <p>{{ $line['text'] }}</p>
                             </article>
                         @endforeach
@@ -301,11 +307,10 @@ $dialogue = [
 
                 <section class="lesson-card lg:col-span-6 p-4 sm:p-5">
                     <div class="image-header">
-                        <h3 class="text-slate-900 dark:text-slate-100 font-black text-lg sm:text-xl">Write The Names</h3>
-
                         <div class="image-actions">
-                            <button id="checkAnswersBtn" type="button" class="image-btn">Check Answers</button>
-                            <button id="resetAnswersBtn" type="button" class="image-btn reset">Reset</button>
+                            <button id="checkAnswersBtn" type="button" class="image-btn image-btn-primary">Check Answers</button>
+                            <button id="revealAnswersBtn" type="button" class="image-btn image-btn-neutral">Reveal answers</button>
+                            <button id="retakeAnswersBtn" type="button" class="image-btn image-btn-soft">Retake</button>
                         </div>
                     </div>
 
@@ -322,6 +327,7 @@ $dialogue = [
                                     id="label_input_{{ $index }}"
                                     class="label-input js-name-input"
                                     data-answer="{{ strtolower($label['answer']) }}"
+                                    data-display-answer="{{ $label['answer'] }}"
                                     type="text"
                                     value="{{ $label['text'] }}"
                                     placeholder="Write the answer"
@@ -349,9 +355,26 @@ $dialogue = [
         onReady(() => {
             const inputs = Array.from(document.querySelectorAll('.js-name-input'));
             const checkBtn = document.getElementById('checkAnswersBtn');
-            const resetBtn = document.getElementById('resetAnswersBtn');
+            const revealBtn = document.getElementById('revealAnswersBtn');
+            const retakeBtn = document.getElementById('retakeAnswersBtn');
+            const sounds = @json($content['sounds'] ?? []);
+            const sfx = {
+                tap: new Audio(sounds.tap || '/slider/sounds/tap.wav'),
+                correct: new Audio(sounds.correct || '/slider/sounds/correct.wav'),
+                wrong: new Audio(sounds.wrong || '/slider/sounds/wrong.wav'),
+                success: new Audio(sounds.success || '/slider/sounds/success.wav'),
+            };
 
             const normalize = (value) => value.trim().toLowerCase().replace(/\s+/g, ' ');
+
+            function playSfx(type) {
+                const sound = sfx[type];
+                if (!sound) return;
+
+                sound.pause();
+                sound.currentTime = 0;
+                sound.play().catch(() => {});
+            }
 
             const clearState = () => {
                 inputs.forEach((input) => {
@@ -382,11 +405,24 @@ $dialogue = [
                 });
 
                 if (filled < inputs.length) {
+                    playSfx('wrong');
                     return;
                 }
+
+                playSfx(correct === inputs.length ? 'correct' : 'wrong');
             });
 
-            resetBtn?.addEventListener('click', () => {
+            revealBtn?.addEventListener('click', () => {
+                inputs.forEach((input) => {
+                    input.value = input.dataset.displayAnswer || input.dataset.answer || '';
+                    input.classList.remove('is-wrong');
+                    input.classList.add('is-correct');
+                });
+
+                playSfx('success');
+            });
+
+            retakeBtn?.addEventListener('click', () => {
                 inputs.forEach((input) => {
                     input.value = '';
                 });
@@ -394,6 +430,10 @@ $dialogue = [
             });
 
             inputs.forEach((input) => {
+                input.addEventListener('focus', () => {
+                    playSfx('tap');
+                });
+
                 input.addEventListener('input', () => {
                     input.classList.remove('is-correct', 'is-wrong');
                 });

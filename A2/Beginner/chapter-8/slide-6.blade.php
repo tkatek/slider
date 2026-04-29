@@ -45,7 +45,7 @@ $content = [
             'text'     => 'Braces',
             'subtitle' => '',
             'emoji'    => '',
-            'sound'    => materialAsset('slider/A2/Beginner/chapter-8/audios/slide6/Braces.mpeg'),
+            'sound'    => materialAsset('slider/A2/Beginner/chapter-8/audios/slide6/braces.mp3.mpeg'),
             'image'    => materialAsset('slider/A2/Beginner/chapter-8/img/slide6/Baces.webp'),
         ],
         [
