@@ -1,9 +1,9 @@
 <?php
 $content = [
     'type'          => 'image',
-    'page_title'    => 'Practice 1',
-    'title'         => 'What\'s the matter?',
-    'subtitle'      => 'Practice 1',
+    'page_title'    => 'Practice 5',
+    'title'         => 'Practice 5',
+    'subtitle'      => '',
     'enable_image_zoom' => false,
     'image_plain'       => true,
     'image_scale'       => 0.56,

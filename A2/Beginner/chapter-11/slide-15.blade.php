@@ -3,7 +3,7 @@ $content = [
     'page_title' => 'Grammar',
     'title'      => 'Grammar',
     'subtitle'   => 'Giving advice (Should vs Shouldn’t)',
-    'image'         => materialAsset('slider/A2/Beginner/chapter11/img/slide1/introduction.webp'),
+    'image'         => materialAsset('slider/A2/Beginner/chapter11/img/slide15.webp'),
     'item_text_class' => 'text-base sm:text-lg',
 
     'items'      => [

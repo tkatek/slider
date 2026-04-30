@@ -9,6 +9,10 @@
     $desktopGameWidthForLayout = isset($content['desktop_game_width']) ? (float) $content['desktop_game_width'] : 70;
     $desktopPoolWidthForLayout = isset($content['desktop_pool_width']) ? (float) $content['desktop_pool_width'] : 30;
     $stackDesktopLayout = ($desktopGameWidthForLayout + $desktopPoolWidthForLayout) > 100;
+    $tabletPoolColumns = max(0, min(6, (int) ($content['tablet_pool_columns'] ?? 0)));
+    $tabletPoolTileMaxWidth = $content['tablet_pool_tile_max_width'] ?? '112px';
+    $midScreenStackLayout = !empty($content['mid_screen_stack_layout']);
+    $midScreenStackMaxWidth = $content['mid_screen_stack_max_width'] ?? '1399px';
 ?>
 @extends('slider.simple-layout')
 @section('style') 
@@ -409,6 +413,25 @@
         @endif
 
         @if($type !== 'image' && $poolItemType === 'image')
+            @if($tabletPoolColumns > 0)
+                @media (min-width: 641px) and (max-width: 1023px) {
+                    #poolContent{
+                        display: grid !important;
+                        grid-template-columns: repeat({{ $tabletPoolColumns }}, minmax(0, 1fr));
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        justify-items: center;
+                        align-items: start;
+                        gap: .55rem !important;
+                    }
+
+                    #poolContent .draggable-item{
+                        width: 100% !important;
+                        max-width: {{ $tabletPoolTileMaxWidth }};
+                    }
+                }
+            @endif
+
             @media (max-width: 640px) {
                 #poolContent{
                     display: grid !important;
@@ -423,6 +446,41 @@
                 #poolContent .draggable-item{
                     width: 100% !important;
                     max-width: 108px;
+                }
+            }
+        @endif
+
+        @if($midScreenStackLayout)
+            @media (min-width: 1024px) and (max-width: {{ $midScreenStackMaxWidth }}) {
+                #ddShell{
+                    flex-direction: column !important;
+                    align-items: center !important;
+                    gap: 1.25rem !important;
+                    padding-bottom: 1.5rem !important;
+                }
+
+                #ddGameColumn{
+                    width: 100% !important;
+                    flex: none !important;
+                }
+
+                #poolBar{
+                    position: static !important;
+                    inset: auto !important;
+                    width: 100% !important;
+                    align-self: auto !important;
+                    order: -1 !important;
+                    padding: 0 !important;
+                }
+
+                #poolBar > div{
+                    max-width: min(100%, 1180px) !important;
+                    padding: 0 !important;
+                }
+
+                #poolContent{
+                    width: 100% !important;
+                    justify-content: center !important;
                 }
             }
         @endif
@@ -451,6 +509,7 @@
         $categoryMaxWidthOverride = $content['category_max_width'] ?? null;
         $desktopGridMaxWidthOverride = $content['desktop_grid_max_width'] ?? null;
         $categoryContentGridClass = $content['category_content_grid_class'] ?? null;
+        $initialVisibleSlots = max(1, (int) ($content['initial_visible_slots'] ?? 1));
         $gridColMap = [
             1 => 'grid-cols-1',
             2 => 'grid-cols-2',
@@ -494,10 +553,12 @@
             $desktopCols = max(1, min(6, $itemsPerLineDesktop));
             $wideCols = $itemsPerLineWide > 0 ? max(1, min(6, $itemsPerLineWide)) : $desktopCols;
             $mobileCols = $itemsPerLineMobile > 0 ? max(1, min(6, $itemsPerLineMobile)) : min($desktopCols, 2);
+            $tabletCols = isset($content['items_per_line_tablet']) ? max(1, min(6, (int) $content['items_per_line_tablet'])) : 0;
             $mobileGridClass = $gridColMap[$mobileCols] ?? 'grid-cols-1';
+            $tabletGridClass = $tabletCols > 0 ? ' sm:' . ($gridColMap[$tabletCols] ?? 'grid-cols-2') : '';
             $desktopGridClass = 'lg:' . ($gridColMap[$desktopCols] ?? 'grid-cols-4');
             $wideGridClass = $itemsPerLineWide > 0 ? ' 2xl:' . ($gridColMap[$wideCols] ?? 'grid-cols-4') : '';
-            $categoryGridClass = $mobileGridClass . ' ' . $desktopGridClass . $wideGridClass;
+            $categoryGridClass = $mobileGridClass . $tabletGridClass . ' ' . $desktopGridClass . $wideGridClass;
             $categoryMaxWidth = $wideCols <= 1
                 ? 'max-w-2xl'
                 : ($wideCols === 2
@@ -578,8 +639,10 @@
 
                                         <div class="absolute inset-x-0 bottom-0 p-1.5 sm:p-2 category-content w-full" data-dropzone="1">
                                             @if(count($config['items']) > 0)
-                                                <div class="slot {{ $isImagePoolType ? 'mx-auto aspect-square w-[108px] sm:w-[120px] lg:w-[118px]' : 'w-full min-h-[38px] sm:min-h-[46px]' }} rounded-xl sm:rounded-2xl border-2 border-dashed border-white/45 bg-slate-950/15 backdrop-blur dark:border-slate-200/20 dark:bg-slate-900/18"
-                                                     data-slot="1"></div>
+                                                @for($slotIndex = 0; $slotIndex < min(count($config['items']), $initialVisibleSlots); $slotIndex++)
+                                                    <div class="slot {{ $isImagePoolType ? 'mx-auto aspect-square w-[108px] sm:w-[120px] lg:w-[118px]' : 'w-full min-h-[38px] sm:min-h-[46px]' }} rounded-xl sm:rounded-2xl border-2 border-dashed border-white/45 bg-slate-950/15 backdrop-blur dark:border-slate-200/20 dark:bg-slate-900/18"
+                                                         data-slot="1"></div>
+                                                @endfor
                                             @endif
                                         </div>
                                     </div>
@@ -713,12 +776,14 @@
 
                                         <div class="category-content mt-3 {{ $isImagePoolType ? ('grid ' . ($categoryContentGridClass ?? ($isSingleSlot ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-3'))) : 'text-slot-flow gap-2' }}" data-dropzone="1">
                                             @if($slotCount > 0)
-                                                <div
-                                                        class="slot grid place-items-center rounded-2xl border border-dashed border-slate-200/80 bg-white/40
-                                                           {{ $isImagePoolType ? 'mx-auto aspect-square w-[108px] sm:w-[120px] lg:w-[118px]' : 'min-h-[34px] sm:min-h-[40px]' }}
-                                                           dark:border-slate-700/60 dark:bg-slate-900/20"
-                                                        data-slot="1"
-                                                ></div>
+                                                @for($slotIndex = 0; $slotIndex < min($slotCount, $initialVisibleSlots); $slotIndex++)
+                                                    <div
+                                                            class="slot grid place-items-center rounded-2xl border border-dashed border-slate-200/80 bg-white/40
+                                                               {{ $isImagePoolType ? 'mx-auto aspect-square w-[108px] sm:w-[120px] lg:w-[118px]' : 'min-h-[34px] sm:min-h-[40px]' }}
+                                                               dark:border-slate-700/60 dark:bg-slate-900/20"
+                                                            data-slot="1"
+                                                    ></div>
+                                                @endfor
                                             @endif
                                         </div>
                                     </div>
@@ -836,6 +901,7 @@
         const POOL_ITEM_TYPE = @json($poolItemType);
         const categoriesData = @json($normalizedCategories);
         const STICKY_POOL_VISIBLE_CAP = Number(@json($content['sticky_pool_visible_cap'] ?? 0));
+        const INITIAL_VISIBLE_SLOTS = Math.max(1, Number(@json($initialVisibleSlots)));
 
         const SFX = {
             enabled: true,
@@ -1231,7 +1297,11 @@
 
                 dropzone.innerHTML = '';
                 if (totalSlots > 0) {
-                    dropzone.appendChild(this.createSlotElement());
+                    const visibleSlots = Math.min(totalSlots, INITIAL_VISIBLE_SLOTS);
+
+                    for (let i = 0; i < visibleSlots; i++) {
+                        dropzone.appendChild(this.createSlotElement());
+                    }
                 }
 
                 this.syncCategorySlotLayout(targetBox);

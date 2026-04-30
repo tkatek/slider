@@ -21,7 +21,7 @@
     </h1>
 
     @if($gameSubtitle !== '')
-        <p class="mx-auto max-w-4xl text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]">
+        <p class="mx-auto max-w-5xl text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]">
             {!! $gameSubtitle !!}
         </p>
     @endif

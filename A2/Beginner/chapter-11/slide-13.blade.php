@@ -4,7 +4,7 @@ $content = [
     'subtitle' => 'How do you like to eat different kinds of food?',
     'table_title' => 'Fill in with the suitable word with each adjective',
 
-    'image' => materialAsset('slider/A2/Beginner/chapter11/img/slide12/barbecued-beef.webp'),
+    'image' => materialAsset('slider/A2/Beginner/chapter11/img/slide13.webp'),
 
     'items' => [
         ['adjective' => 'Fried', 'inputs' => 4],
