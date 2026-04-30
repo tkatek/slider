@@ -1,7 +1,7 @@
 <?php
 $content = [
     'video'     => materialAsset('slider/A1/Advanced/chapter-11/video/comparatives-superlatives-encrypted/comparatives-superlatives.m3u8'),
-    'thumbnail' => materialAsset('slider/A1/Advanced/chapter-11/img/comparatives-superlatives.webp'),
+    'thumbnail' => materialAsset('slider/A1/Advanced/chapter-11/video/adjectives.webp'),
 
     'isQuiz' => 0,
 

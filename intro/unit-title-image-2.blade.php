@@ -14,7 +14,7 @@
     $imageSizeClass = trim((string)($content['image_size']  ?? 'max-w-[300px] sm:max-w-[420px] lg:max-w-[460px]'));
     $imageClass     = trim((string)($content['image_class'] ?? 'block w-full h-full object-contain select-none'));
     $imageStyle     = trim((string)($content['image_style'] ?? ''));
-    $lessonClass    = trim((string)($content['lesson_class'] ?? 'text-4xl sm:text-5xl lg:text-6xl xl:text-[5rem]'));
+    $lessonClass    = trim((string)($content['lesson_class'] ?? 'text-[2.1rem] sm:text-[2.6rem] lg:text-[3.5rem] xl:text-[4.25rem]'));
 @endphp
 
 @extends('slider.simple-layout')
@@ -23,7 +23,7 @@
 
     <div id="introUnitTitleImageAlt" class="min-h-[100dvh] overflow-x-hidden overflow-y-auto">
 
-        <main class="relative z-10 w-full max-w-6xl px-4 sm:px-8 mx-auto py-8 sm:py-12">
+        <main class="relative z-10 w-full max-w-7xl px-4 sm:px-8 mx-auto py-8 sm:py-12">
             <section class="grid items-center gap-8 sm:grid-cols-[minmax(220px,42%)_minmax(0,1fr)] sm:gap-10 lg:gap-16 lg:grid-cols-[minmax(320px,460px)_minmax(0,1fr)] min-h-[calc(100dvh-6rem)]">
 
                 {{-- ── LEFT: Image column ── --}}
@@ -97,7 +97,7 @@
 
                         {{-- Lesson headline --}}
                         @if($lesson !== '')
-                            <h2 class="{{ $lessonClass }} font-black leading-[.9] tracking-tight">
+                            <h2 class="{{ $lessonClass }} font-black leading-[1.02] tracking-tight">
                             <span class="bg-gradient-to-br from-orange-600 via-orange-500 to-amber-500 bg-clip-text text-transparent dark:from-orange-400 dark:via-orange-300 dark:to-amber-300">
                                 {{ $lesson }}
                             </span>

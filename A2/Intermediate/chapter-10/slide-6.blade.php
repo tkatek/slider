@@ -1,0 +1,116 @@
+<?php
+$content = [
+    'video'          => materialAsset('slider/A2/Intermediate/chapter-10/video/encrypted/'),
+    'thumbnail'      => materialAsset('slider/A2/Intermediate/chapter-10/img/slide6.webp'),
+    'isQuiz'         => 1,
+
+    'questions' => [
+        [
+            'time' => 8000,
+            'type' => 'multiple_choice',
+            'question' => 'What does communication mean?',
+            'options' => [
+                'Writing only',
+                'Sending and receiving messages',
+                'Talking on the phone',
+                'Using the internet',
+            ],
+            'correct_answer' => 1,
+            'points' => 10,
+        ],
+        [
+            'time' => 18000,
+            'type' => 'multiple_choice',
+            'question' => 'How did people send messages in the past?',
+            'options' => [
+                'By email',
+                'By mobile phones',
+                'By walking or using animals',
+                'By satellites',
+            ],
+            'correct_answer' => 2,
+            'points' => 10,
+        ],
+        [
+            'time' => 32000,
+            'type' => 'multiple_choice',
+            'question' => 'What do we use to send letters and parcels?',
+            'options' => [
+                'Telephone',
+                'Postal system',
+                'Internet',
+                'Smartphone',
+            ],
+            'correct_answer' => 1,
+            'points' => 10,
+        ],
+        [
+            'time' => 56000,
+            'type' => 'multiple_choice',
+            'question' => 'Which is an example of mass communication?',
+            'options' => [
+                'SMS',
+                'Telephone',
+                'Television',
+                'Mobile phone',
+            ],
+            'correct_answer' => 2,
+            'points' => 10,
+        ],
+        [
+            'time' => 72000,
+            'type' => 'multiple_choice',
+            'question' => 'What do satellites help us do?',
+            'options' => [
+                'Write emails',
+                'Send signals around the world',
+                'Walk faster',
+                'Send letters',
+            ],
+            'correct_answer' => 1,
+            'points' => 10,
+        ],
+        [
+            'time' => 90000,
+            'type' => 'multiple_choice',
+            'question' => 'Why is the internet important?',
+            'options' => [
+                'It is slow',
+                'It helps animals move',
+                'It makes communication fast',
+                'It replaces phones only',
+            ],
+            'correct_answer' => 2,
+            'points' => 10,
+        ],
+    ],
+
+    'subtitles' => [
+        ['start' => 0,    'end' => 4,    'text' => 'Communication means sending and receiving messages.'],
+        ['start' => 4.5,  'end' => 11,   'text' => 'In the past, sending messages was slow. People walked or used animals.'],
+        ['start' => 11.5, 'end' => 16,   'text' => 'Now, we have many fast ways to communicate.'],
+        ['start' => 16.5, 'end' => 19,   'text' => "Let's look at some important ways:"],
+        ['start' => 19.5, 'end' => 27,   'text' => 'Postal System: We send letters and parcels through the postal system.'],
+        ['start' => 27.5, 'end' => 32,   'text' => 'This is a common way to send messages.'],
+        ['start' => 32.5, 'end' => 38,   'text' => 'Telephone: The telephone is a very fast way to talk to friends and family.'],
+        ['start' => 38.5, 'end' => 45,   'text' => 'Mobile Phones: With mobile phones, we can send instant messages, like SMS.'],
+        ['start' => 45.5, 'end' => 53,   'text' => 'Mass Communication: For telling many people at once, we use mass communication.'],
+        ['start' => 53.5, 'end' => 61,   'text' => 'Newspapers, radio, and television are examples. They give us news and programs.'],
+        ['start' => 61.5, 'end' => 69,   'text' => 'Satellites: Satellites in space help us. They send TV and phone signals around the world.'],
+        ['start' => 69.5, 'end' => 74,   'text' => 'We can watch live events because of satellites.'],
+        ['start' => 74.5, 'end' => 82,   'text' => 'Internet and Email: The internet and email make communication very fast.'],
+        ['start' => 82.5, 'end' => 88,   'text' => 'We can send electronic messages, emails, and find information easily.'],
+        ['start' => 88.5, 'end' => 96,   'text' => 'Smartphones: These are like small computers and phones.'],
+        ['start' => 96.5, 'end' => 102,  'text' => 'They help us call, send emails, and take photos.'],
+        ['start' => 102.5,'end' => 107,  'text' => 'All these tools help us connect with people everywhere.'],
+        ['start' => 107.5,'end' => 111,  'text' => 'Teacher: Remember these important words:'],
+        ['start' => 111.5,'end' => 115,  'text' => 'Communication: Sending and receiving messages.'],
+        ['start' => 115.5,'end' => 119,  'text' => 'Postal System: For letters and parcels.'],
+        ['start' => 119.5,'end' => 124,  'text' => 'Mass Communication: For many people, TV, radio, and newspapers.'],
+        ['start' => 124.5,'end' => 128,  'text' => 'Satellites: Help send signals around the world.'],
+        ['start' => 128.5,'end' => 133,  'text' => 'Internet and Email: Fast computer communication.'],
+    ],
+];
+?>
+
+@include("slider.video.interactive", ['content' => $content])
