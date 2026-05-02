@@ -12,7 +12,7 @@ $content = [
                 [
                     'text'     => 'Signal',
                     'subtitle' => 'The connection for phone communication',
-                    'sound'    => materialAsset('slider/A2/Intermediate/chapter-10/audios/slide10/signal.mp3'),
+                    'sound'    => materialAsset('slider/A2/Intermediate/chapter-10/audios/slide10/siignal.mp3'),
                     'image'    => materialAsset('slider/A2/Intermediate/chapter-10/img/slide10/signal.webp'),
                 ],
                 [

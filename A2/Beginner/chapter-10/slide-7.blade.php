@@ -1,19 +1,18 @@
 <?php
 $content = [
-    'page_title' => 'Practice 3',
-    'title'      => 'Practice 3',
-    'subtitle'   => 'Watch Again & Do the Quiz',
+    'page_title' => 'Practice 2',
+    'title' => "Watch again & do the quiz",
+    'subtitle' => "Healthy Habits",
 
-    'video'     => materialAsset('slider/A2/Beginner/chapter-10/video/encrypted/slide-5.m3u8'),
-    'thumbnail' => materialAsset('slider/A2/Beginner/chapter-10/img/slide-5.webp'),
+    'video' => materialAsset('slider/A2/Beginner/chapter-10/video/bodies-encrypted/bodies.m3u8'),
+    'thumbnail' => materialAsset('slider/A2/Beginner/chapter-10/img/slide7.webp'),
 
-    'isQuiz'         => 1,
-    'showCC'         => false,
-    'showTranscript' => false,
+
+    'isQuiz' => 1,
 
     'questions' => [
         [
-            'time' => 4000,
+            'time' => 9700,
             'type' => 'multiple_choice',
             'question' => '1. Why is exercise important?',
             'options' => [
@@ -23,10 +22,10 @@ $content = [
                 'It helps us watch TV',
             ],
             'correct_answer' => 1,
-            'points' => 10,
+            'points' => 1,
         ],
         [
-            'time' => 8000,
+            'time' => 17500,
             'type' => 'multiple_choice',
             'question' => '2. Which of the following is a healthy food?',
             'options' => [
@@ -36,10 +35,10 @@ $content = [
                 'Soda',
             ],
             'correct_answer' => 2,
-            'points' => 10,
+            'points' => 1,
         ],
         [
-            'time' => 12000,
+            'time' => 20600,
             'type' => 'multiple_choice',
             'question' => '3. Why do we need to drink water?',
             'options' => [
@@ -49,10 +48,10 @@ $content = [
                 'To sleep more',
             ],
             'correct_answer' => 1,
-            'points' => 10,
+            'points' => 1,
         ],
         [
-            'time' => 16000,
+            'time' => 25200,
             'type' => 'multiple_choice',
             'question' => '4. What does sleep help our bodies do?',
             'options' => [
@@ -62,10 +61,10 @@ $content = [
                 'Watch TV',
             ],
             'correct_answer' => 2,
-            'points' => 10,
+            'points' => 1,
         ],
         [
-            'time' => 20000,
+            'time' => 31700,
             'type' => 'multiple_choice',
             'question' => '5. Which of these is an example of good personal hygiene?',
             'options' => [
@@ -75,12 +74,19 @@ $content = [
                 'Eating candy',
             ],
             'correct_answer' => 2,
-            'points' => 10,
+            'points' => 1,
         ],
     ],
 
-    'subtitles'  => [],
-    'transcript' => [],
+    'subtitles' => [
+        ['start' => 0, 'end' => 4.5, 'text' => 'Our bodies need care every day to stay strong and healthy.'],
+        ['start' => 4.5, 'end' => 9.7, 'text' => 'Exercise helps us build muscles, keep our hearts strong, and gives us energy.'],
+        ['start' => 9.7, 'end' => 17.5, 'text' => 'Eating healthy foods like fruits, vegetables, proteins, and whole grains gives our bodies the nutrients they need.'],
+        ['start' => 17.5, 'end' => 20.5, 'text' => 'Drinking water is important to keep us hydrated.'],
+        ['start' => 20.7, 'end' => 25, 'text' => 'Getting enough sleep helps our brains and bodies rest and grow.'],
+        ['start' => 25.5, 'end' => 31.5, 'text' => 'Personal hygiene, like washing hands, brushing teeth, and keeping clean, protects us from germs.'],
+        ['start' => 32, 'end' => 37, 'text' => 'Healthy habits make us feel good, think better, and live longer.'],
+    ],
 ];
 ?>
 

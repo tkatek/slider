@@ -6,7 +6,7 @@ $content = [
 
     'questions' => [
         [
-            'time' => 6100,
+            'time' => 4200,
             'type' => 'multiple_choice',
             'question' => "1) How was the visitor’s stay?",
             'options' => [
@@ -19,7 +19,7 @@ $content = [
             'points' => 10
         ],
         [
-            'time' => 21200,
+            'time' => 10200,
             'type' => 'multiple_choice',
             'question' => '2) What service did the visitor ask about?',
             'options' => [
@@ -32,7 +32,7 @@ $content = [
             'points' => 10
         ],
         [
-            'time' => 31200,
+            'time' => 20200,
             'type' => 'multiple_choice',
             'question' => '3) What does the help desk ask the visitor to do?',
             'options' => [
@@ -47,20 +47,20 @@ $content = [
     ],
 
     'subtitles'  => [
-        ['start' => 0,    'end' => 3.5,  'text' => 'How was your stay, sir?'],
-        ['start' => 3.5,  'end' => 6,    'text' => 'Oh, it was great!'],
-        ['start' => 6,    'end' => 10,   'text' => 'Is there anything you would want us to improve?'],
-        ['start' => 10,   'end' => 13.5, 'text' => 'No, no. Everything is good.'],
-        ['start' => 13.5, 'end' => 17.5, 'text' => 'Have you booked my airport drop service?'],
-        ['start' => 17.5, 'end' => 21,   'text' => 'Yes, sir. It will be here soon.'],
-        ['start' => 21,   'end' => 26,   'text' => 'Okay, I am here in the lobby. Let me know when it has arrived.'],
-        ['start' => 26,   'end' => 31,   'text' => 'Sure, sir! Meanwhile, could you please sign our guestbook?'],
-        ['start' => 31,   'end' => 33.5, 'text' => 'Yeah, definitely.'],
-        ['start' => 33.5, 'end' => 38,   'text' => 'Thanks, sir! And the cab has arrived too.'],
-        ['start' => 38,   'end' => 43.5, 'text' => 'Oh, that’s great. Can you just arrange someone who would keep my bag in the car?'],
-        ['start' => 43.5, 'end' => 47.5, 'text' => 'Oh yes, he will help you there.'],
-        ['start' => 47.5, 'end' => 49.5, 'text' => 'Thank you!'],
-        ['start' => 49.5, 'end' => 53.5, 'text' => 'Thank you, sir. Hope to see you again.'],
+        ['start' => 0,    'end' => 2.5,  'text' => 'How was your stay, sir?'],
+        ['start' => 2.5,  'end' => 4,    'text' => 'Oh, it was great!'],
+        ['start' => 4.5,  'end' => 6.5,  'text' => 'Is there anything you would want us to improve?'],
+        ['start' => 7,    'end' => 8.5,  'text' => 'No, no. Everything is good.'],
+        ['start' => 8.5,  'end' => 10,   'text' => 'Have you booked my airport drop service?'],
+        ['start' => 10.5, 'end' => 12,   'text' => 'Yes, sir. It will be here soon.'],
+        ['start' => 12.5, 'end' => 15,   'text' => 'Okay, I am here in the lobby. Let me know when it has arrived.'],
+        ['start' => 15.8, 'end' => 18.8, 'text' => 'Sure, sir! Meanwhile, could you please sign our guestbook?'],
+        ['start' => 18.8, 'end' => 20,   'text' => 'Yeah, definitely.'],
+        ['start' => 20.7, 'end' => 23,   'text' => 'Thanks, sir! And the cab has arrived too.'],
+        ['start' => 23,   'end' => 27,   'text' => 'Oh, that’s great. Can you just arrange someone who would keep my bag in the car?'],
+        ['start' => 27.5, 'end' => 28.5, 'text' => 'Oh yes, he will help you there.'],
+        ['start' => 28.5, 'end' => 29.7, 'text' => 'Thank you!'],
+        ['start' => 29.7, 'end' => 31,   'text' => 'Thank you, sir. Hope to see you again.'],
     ],
 ];
 ?>

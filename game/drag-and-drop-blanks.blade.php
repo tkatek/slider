@@ -53,7 +53,10 @@
                 }
 
                 $answerIndex = (int) $part;
-                $answerText = isset($answers[$answerIndex - 1]) ? (string) $answers[$answerIndex - 1] : '';
+                $answerSource = $answers[$answerIndex - 1] ?? '';
+                $answerText = is_array($answerSource)
+                    ? (string) ($answerSource['answer'] ?? $answerSource['text'] ?? '')
+                    : (string) $answerSource;
 
                 $tokens[] = [
                     'type' => 'blank',
@@ -69,10 +72,13 @@
         }
 
         foreach ($answers as $answerIndex => $answer) {
-            $answerText = (string) $answer;
+            $answerText = is_array($answer)
+                ? (string) ($answer['answer'] ?? $answer['text'] ?? '')
+                : (string) $answer;
             $answersForJs[] = [
                 'id' => 'answer_' . ($answerIndex + 1),
                 'text' => $answerText,
+                'audio' => is_array($answer) ? (string) ($answer['audio'] ?? $answer['sound'] ?? '') : '',
                 'answerIndex' => $answerIndex + 1,
             ];
             $answerTexts[] = $answerText;
@@ -94,6 +100,7 @@
             $answersForJs[] = [
                 'id' => 'answer_' . $answerIndex,
                 'text' => $answerText,
+                'audio' => is_array($bankItem) ? (string) ($bankItem['audio'] ?? $bankItem['sound'] ?? '') : '',
                 'answerIndex' => $answerIndex,
             ];
 
@@ -210,11 +217,18 @@
         return $px . 'px';
     };
 
+    $answerTileType = trim((string) ($content['answer_tile_type'] ?? 'text'));
     $globalBlankWidth = $estimateBlankWidth($answerTexts);
     $baseBlankWidth = max(68, (int) round(((int) rtrim($globalBlankWidth, 'px')) * 0.78));
     $mobileBlankWidth = max(34, (int) round($baseBlankWidth * 0.5));
     $tabletBlankWidth = max(46, (int) round($baseBlankWidth * 0.68));
     $desktopBlankWidth = max(58, (int) round($baseBlankWidth * 0.82));
+
+    if ($answerTileType === 'audio') {
+        $mobileBlankWidth = 72;
+        $tabletBlankWidth = 82;
+        $desktopBlankWidth = 92;
+    }
 
     $playerAudio = !empty($content['audio']) ? $content['audio'] : (!empty($content['audio_src']) ? $content['audio_src'] : null);
     $rawScript = $content['script'] ?? [];
@@ -380,6 +394,39 @@
 
         .ddb-shake { animation: shake .35s ease-in-out; }
         .ddb-locked { animation: popIn .35s cubic-bezier(.175,.885,.32,1.275); pointer-events: none; }
+        .ddb-locked.ddb-audio-tile { pointer-events: auto; cursor: default; }
+
+        .ddb-audio-tile-btn {
+            display: inline-flex;
+            width: 2.35rem;
+            height: 2.35rem;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            background: rgba(255,255,255,.2);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,.28);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
+            cursor: pointer;
+        }
+
+        .ddb-audio-tile-btn:hover {
+            background: rgba(255,255,255,.3);
+        }
+
+        .ddb-audio-tile-btn:focus-visible {
+            outline: 2px solid rgba(255,255,255,.72);
+            outline-offset: 2px;
+        }
+
+        .ddb-audio-tile-grip {
+            display: inline-flex;
+            width: .8rem;
+            height: 2rem;
+            align-items: center;
+            justify-content: center;
+            opacity: .75;
+        }
 
         .ddb-emoji-burst {
             position: absolute;
@@ -691,6 +738,7 @@
             var ANSWERS = @json($answersForJs);
             var IS_SPEAKER_MATCHING_MODE = @json($isSpeakerMatchingMode);
             var DESKTOP_LAYOUT_BREAKPOINT = Number(@json($desktopLayoutBreakpoint));
+            var ANSWER_TILE_TYPE = @json($answerTileType);
 
             var SFX = {
                 enabled: true,
@@ -705,7 +753,8 @@
             var audio = {
                 correct: new Audio(SFX.sources.correct),
                 wrong: new Audio(SFX.sources.wrong),
-                success: new Audio(SFX.sources.success)
+                success: new Audio(SFX.sources.success),
+                tile: new Audio()
             };
 
             function clamp01(v){
@@ -731,6 +780,18 @@
             function playCorrect(){ play(audio.correct); }
             function playWrong(){ play(audio.wrong); }
             function playWin(){ play(audio.success); }
+            function playTileAudio(src){
+                if (!src) return;
+
+                try {
+                    if (audio.tile.src !== src) {
+                        audio.tile.src = src;
+                    }
+                    audio.tile.pause();
+                    audio.tile.currentTime = 0;
+                    audio.tile.play().catch(function(){});
+                } catch (e) {}
+            }
 
             function isEmbedded(){
                 try { return window.top !== window.self; }
@@ -892,6 +953,7 @@
                         return {
                             id: answer.id,
                             text: answer.text,
+                            audio: answer.audio || '',
                             answerIndex: answer.answerIndex
                         };
                     })),
@@ -1028,10 +1090,43 @@
                 var self = this;
                 var node = this.tileTpl.content.firstElementChild.cloneNode(true);
 
-                node.textContent = itemData.text;
                 node.dataset.id = itemData.id;
                 node.dataset.answerIndex = itemData.answerIndex;
                 node.dataset.accept = itemData.text;
+                node.dataset.audio = itemData.audio || '';
+
+                if (ANSWER_TILE_TYPE === 'audio') {
+                    node.classList.add('ddb-audio-tile', 'gap-2', 'min-w-[72px]');
+                    node.setAttribute('aria-label', 'Audio for answer ' + itemData.answerIndex);
+                    node.innerHTML = [
+                        '<button type="button" class="ddb-audio-tile-btn" data-ddb-audio-button="1" aria-label="Play audio">',
+                            '<svg class="h-5 w-5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24" aria-hidden="true">',
+                                '<path stroke-linecap="round" stroke-linejoin="round" d="M5 9v6h4l5 4V5L9 9H5z"></path>',
+                                '<path stroke-linecap="round" stroke-linejoin="round" d="M17 9.5a4 4 0 010 5"></path>',
+                                '<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 7a7 7 0 010 10"></path>',
+                            '</svg>',
+                        '</button>',
+                        '<span class="ddb-audio-tile-grip" aria-hidden="true">',
+                            '<svg class="h-5 w-3 pointer-events-none" viewBox="0 0 12 20" fill="currentColor">',
+                                '<circle cx="3" cy="4" r="1.2"></circle><circle cx="9" cy="4" r="1.2"></circle>',
+                                '<circle cx="3" cy="10" r="1.2"></circle><circle cx="9" cy="10" r="1.2"></circle>',
+                                '<circle cx="3" cy="16" r="1.2"></circle><circle cx="9" cy="16" r="1.2"></circle>',
+                            '</svg>',
+                        '</span>'
+                    ].join('');
+
+                    node.querySelector('[data-ddb-audio-button]').addEventListener('pointerdown', function(e){
+                        e.stopPropagation();
+                    });
+                    node.querySelector('[data-ddb-audio-button]').addEventListener('click', function(e){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        playTileAudio(itemData.audio || '');
+                    });
+                } else {
+                    node.textContent = itemData.text;
+                }
+
                 node.addEventListener('pointerdown', function(e){
                     self.handlePointerDown(e, node);
                 });
@@ -1619,6 +1714,7 @@
                     item = self.createTileNode({
                         id: answerData.id,
                         text: answerData.text,
+                        audio: answerData.audio || '',
                         answerIndex: answerData.answerIndex
                     }, self.correctCount + self.mistakeCount);
 

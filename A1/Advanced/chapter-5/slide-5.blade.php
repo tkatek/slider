@@ -2,7 +2,7 @@
 $content = [
     'video'      => materialAsset('slider/A1/Advanced/chapter-5/video/bus-encrypted/bus.m3u8'),
     'thumbnail'  => materialAsset('slider/A1/Advanced/chapter-5/img/slide5.webp'),
-    'isQuiz'     => 1,
+    'isQuiz'     => 0,
     'questions' => [
         [
             'time' => 1500,

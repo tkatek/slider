@@ -1,8 +1,8 @@
 <?php
 $content = [
     'video'      => materialAsset('slider/A1/Advanced/chapter-6/video/train-encrypted/train.m3u8'),
-    'thumbnail'  => materialAsset('slider/A1/Advanced/chapter-6/img/slide5.webp'),
-    'isQuiz'     => 0,
+    'thumbnail'  => materialAsset('slider/A1/Advanced/chapter-6/img/slide6.webp'),
+    'isQuiz'     => 1,
     'questions' => [
         [
             'time' => 17600,

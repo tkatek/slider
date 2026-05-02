@@ -149,7 +149,7 @@
                                         @php
                                             $itemLabel = (string) ($item['label'] ?? '');
                                             $itemHtml = $item['label_html'] ?? e($itemLabel);
-                                            $itemSound = trim((string) ($item['sound'] ?? ''));
+                                            $itemSound = trim((string) ($item['sound'] ?? $item['audio'] ?? ''));
                                             $itemSpeech = trim((string) ($item['speech'] ?? $itemLabel));
                                         @endphp
 
@@ -212,6 +212,27 @@
                                 @php
                                     $useMobileCards = !empty($card['mobile_cards']);
                                     $tableHeaders = $card['table_headers'] ?? [];
+                                    $tableRows = $card['table_rows'] ?? [];
+
+                                    $rowColumnCount = 0;
+                                    foreach ($tableRows as $tableRow) {
+                                        if (is_array($tableRow)) {
+                                            $rowColumnCount = max($rowColumnCount, count($tableRow));
+                                        }
+                                    }
+
+                                    $headerCount = is_array($tableHeaders) ? count($tableHeaders) : 0;
+
+                                    $visibleHeaderCount = 0;
+                                    foreach ($tableHeaders as $header) {
+                                        if (trim((string) $header) !== '') {
+                                            $visibleHeaderCount++;
+                                        }
+                                    }
+
+                                    $isSingleColumnTable = max($headerCount, $rowColumnCount) <= 1;
+                                    $useStackedMobileCards = $useMobileCards && !$isSingleColumnTable;
+                                    $showTableHead = $visibleHeaderCount > 0;
                                 @endphp
 
                                 @if(!empty($card['intro']))
@@ -220,9 +241,9 @@
                                     </p>
                                 @endif
 
-                                @if($useMobileCards)
+                                @if($useStackedMobileCards)
                                     <div class="space-y-3 md:hidden">
-                                        @foreach(($card['table_rows'] ?? []) as $row)
+                                        @foreach($tableRows as $row)
                                             @php
                                                 $titleCell = $row[0] ?? '';
                                                 $isTitleAudioCell = is_array($titleCell);
@@ -240,7 +261,7 @@
                                                             @php
                                                                 $isAudioCell = is_array($cell);
                                                                 $cellText = $isAudioCell ? (string) ($cell['text'] ?? '') : e((string) $cell);
-                                                                $cellSound = $isAudioCell ? trim((string) ($cell['sound'] ?? '')) : '';
+                                                                $cellSound = $isAudioCell ? trim((string) ($cell['sound'] ?? $cell['audio'] ?? '')) : '';
                                                                 $cellSpeech = $isAudioCell ? trim((string) ($cell['speech'] ?? '')) : '';
                                                                 $cellHeader = (string) ($tableHeaders[$cellIndex] ?? '');
                                                             @endphp
@@ -284,26 +305,28 @@
                                     </div>
                                 @endif
 
-                                <div class="{{ $useMobileCards ? 'hidden md:block' : '' }} overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
+                                <div class="{{ $useStackedMobileCards ? 'hidden md:block' : '' }} overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
                                     <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-                                        <thead class="bg-gradient-to-r {{ $card['tone'] ?? 'from-sky-400 to-blue-500' }}">
-                                        <tr>
-                                            @foreach($tableHeaders as $header)
-                                                <th class="px-4 py-3 text-left text-sm sm:text-base font-black tracking-[-0.02em] text-white">
-                                                    {{ $header }}
-                                                </th>
-                                            @endforeach
-                                        </tr>
-                                        </thead>
+                                        @if($showTableHead)
+                                            <thead class="bg-gradient-to-r {{ $card['tone'] ?? 'from-sky-400 to-blue-500' }}">
+                                            <tr>
+                                                @foreach($tableHeaders as $header)
+                                                    <th class="px-4 py-3 text-left text-sm sm:text-base font-black tracking-[-0.02em] text-white">
+                                                        {{ $header }}
+                                                    </th>
+                                                @endforeach
+                                            </tr>
+                                            </thead>
+                                        @endif
 
                                         <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-900/70">
-                                        @foreach(($card['table_rows'] ?? []) as $row)
+                                        @foreach($tableRows as $row)
                                             <tr class="odd:bg-white even:bg-sky-50/55 dark:odd:bg-slate-900/70 dark:even:bg-slate-800/50">
                                                 @foreach($row as $cell)
                                                     @php
                                                         $isAudioCell = is_array($cell);
                                                         $cellText = $isAudioCell ? (string) ($cell['text'] ?? '') : e((string) $cell);
-                                                        $cellSound = $isAudioCell ? trim((string) ($cell['sound'] ?? '')) : '';
+                                                        $cellSound = $isAudioCell ? trim((string) ($cell['sound'] ?? $cell['audio'] ?? '')) : '';
                                                         $cellSpeech = $isAudioCell ? trim((string) ($cell['speech'] ?? '')) : '';
                                                     @endphp
                                                     <td class="px-4 py-3 text-sm sm:text-base font-bold leading-[1.45] text-slate-700 dark:text-slate-200">

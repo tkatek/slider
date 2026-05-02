@@ -8,7 +8,7 @@ $content = [
             'time' => 18100,
             'type' => 'input',
             'question' => 'The guest needs a ________ call because they have a plane to catch tomorrow morning.',
-            'accepted_answers' => 'wake-up,wake up',
+            'accepted_answers' => ['wake-up', 'wake up'],
             'points' => 10
         ],
         [

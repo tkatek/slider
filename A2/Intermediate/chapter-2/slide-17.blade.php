@@ -1,9 +1,15 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Writing";
-$customSubtitle = "Write 4–5 sentences about a traditional breakfast in your country or another country<br>- Use at least 2 passive sentences<br>
-- Use food vocabulary<br>
-- Include country’s name";
+
+$customSubtitle = "Write 4–5 sentences about a traditional breakfast in your country or another country.";
+
+$customCalloutText = "
+
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Use:</span><br>
+&bull; At least 2 passive sentences<br>
+&bull; Food vocabulary<br>
+&bull; Include country’s name";
 
 // Use \n for line breaks in the placeholder
 $customPlaceholder = "Koshari is eaten in Egypt.
@@ -45,6 +51,7 @@ $content = [
     'user_avatar' => $userAvatar,
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
+    'callout_text' => $customCalloutText,
     'page_title' => $finalTitle,
     'placeholder' => $customPlaceholder
 ];

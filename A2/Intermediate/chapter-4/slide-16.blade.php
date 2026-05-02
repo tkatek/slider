@@ -1,7 +1,17 @@
 <?php
 
 $customTitle = "Writing: “My Bad Day”";
-$customSubtitle = "Write a short paragraph (5–7 sentences):<br>♦ Write about a day when something went wrong<br>Guiding Questions:<br>♦ Where were you?<br>♦ What were you doing?<br>♦ What happened?<br>♦ Did you hurt yourself?<br>♦ What did you do after?";
+
+$customSubtitle = "Write a short paragraph (5–7 sentences) about a day when something went wrong.";
+
+$customCalloutText = "
+
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Guiding Questions:</span><br>
+&bull; Where were you?<br>
+&bull; What were you doing?<br>
+&bull; What happened?<br>
+&bull; Did you hurt yourself?<br>
+&bull; What did you do after?";
 
 // Use \n for line breaks in the placeholder
 $customPlaceholder = "Yesterday, I was…\nI was ______ when…\nSuddenly, I…\nI hurt myself / I didn’t hurt myself.\nAfter that, I…";
@@ -39,6 +49,7 @@ $content = [
     'user_avatar' => $userAvatar,
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
+    'callout_text' => $customCalloutText,
     'page_title' => $finalTitle,
     'placeholder' => $customPlaceholder
 ];

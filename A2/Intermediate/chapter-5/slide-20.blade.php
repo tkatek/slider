@@ -1,7 +1,17 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Write a short paragraph (5–7 sentences)";
-$customSubtitle = "Write about a time when something happened suddenly<br>Guiding Questions:<br>♦ Where were you?<br>♦ What were you doing?<br>♦ What happened?<br>♦ What happened next?<br>♦ How did you feel?";
+
+$customSubtitle = "Write about a time when something happened suddenly.";
+
+$customCalloutText = "
+
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Guiding Questions:</span><br>
+&bull; Where were you?<br>
+&bull; What were you doing?<br>
+&bull; What happened?<br>
+&bull; What happened next?<br>
+&bull; How did you feel?";
 
 // Use \n for line breaks in the placeholder
 $customPlaceholder = "Sentence Starters:\nYesterday, I was…\nI was ______ when ______ happened.\nWhile I was ______, ______.";
@@ -39,6 +49,7 @@ $content = [
     'user_avatar' => $userAvatar,
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
+    'callout_text' => $customCalloutText,
     'page_title' => $finalTitle,
     'placeholder' => $customPlaceholder
 ];

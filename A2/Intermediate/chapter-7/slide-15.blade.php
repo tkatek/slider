@@ -1,10 +1,25 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Writing";
-$customSubtitle = "Write 5–7 sentences about what you are going to do in the future.<br>Make sure you use 4 different future forms:<br>♦ will + inf.<br>♦ be + going to + inf.<br>♦ present continuous<br>♦ present simple<br>Guiding Questions:<br>♦ What are you going to do after work tomorrow?<br>♦ What do you think you will do in the next 2 years?<br>♦ What are you doing this week or next week?<br>♦ What time does your English course start and finish?";
+
+$customSubtitle = "Write 5–7 sentences about what you are going to do in the future.";
+
+$customCalloutText = "
+
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Make sure you use 4 different future forms:</span><br>
+&bull; will + inf.<br>
+&bull; be + going to + inf.<br>
+&bull; present continuous<br>
+&bull; present simple<br><br>
+
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Guiding Questions:</span><br>
+&bull; What are you going to do after work tomorrow?<br>
+&bull; What do you think you will do in the next 2 years?<br>
+&bull; What are you doing this week or next week?<br>
+&bull; What time does your English course start and finish?";
 
 // Use \n for line breaks in the placeholder
-$customPlaceholder = "After work, I think .......\n\nIn the next 2 years, maybe I ...............\n\nNext week, I ..............\n\nMy English course .............";
+$customPlaceholder = "After work, I think .......\nIn the next 2 years, maybe I ...............\nNext week, I ..............\nMy English course .............";
 
 if (auth()->check()){
     $user = auth()->user();
@@ -39,6 +54,7 @@ $content = [
     'user_avatar' => $userAvatar,
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
+    'callout_text' => $customCalloutText,
     'page_title' => $finalTitle,
     'placeholder' => $customPlaceholder
 ];

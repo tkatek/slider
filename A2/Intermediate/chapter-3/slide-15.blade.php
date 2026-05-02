@@ -1,7 +1,17 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Writing";
-$customSubtitle = "Write a short paragraph (5–7 sentences) about superstitions in your culture.<br><br>Guiding Questions:<br>What is a common superstition in your country?<br>Is it about something lucky or unlucky?<br>Do people really believe it?<br>Do you believe it? Why or why not?<br>Are there any lucky numbers or symbols?";
+
+$customSubtitle = "Write a short paragraph (5–7 sentences) about superstitions in your culture.";
+
+$customCalloutText = "
+
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Guiding Questions:</span><br>
+&bull; What is a common superstition in your country?<br>
+&bull; Is it about something lucky or unlucky?<br>
+&bull; Do people really believe it?<br>
+&bull; Do you believe it? Why or why not?<br>
+&bull; Are there any lucky numbers or symbols?";
 
 // Use \n for line breaks in the placeholder
 $customPlaceholder = "In my country, there is a superstition about ________. People believe that it is ________. For example, ________. Some people believe this, but I think ________.";
@@ -39,6 +49,7 @@ $content = [
     'user_avatar' => $userAvatar,
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
+    'callout_text' => $customCalloutText,
     'page_title' => $finalTitle,
     'placeholder' => $customPlaceholder
 ];

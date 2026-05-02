@@ -1,10 +1,23 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Writing";
-$customSubtitle = "Write 5–6 sentences about what you will do this weekend.<br>Use:<br>♦ First conditional (If + present → will)<br>♦ At least 3 “if” sentences<br>Guiding Questions:<br>♦ What will you do if the weather is nice?<br>♦ What will you do if it rains?<br>♦ Who will you meet if you have time?<br>♦ What will you do if you feel tired?";
+
+$customSubtitle = "Write 5–6 sentences about what you will do this weekend.";
+
+$customCalloutText = "
+
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Use:</span><br>
+&bull; First conditional: <span class='font-black'>If + present → will</span><br>
+&bull; At least 3 “if” sentences<br><br>
+
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Guiding Questions:</span><br>
+&bull; What will you do if the weather is nice?<br>
+&bull; What will you do if it rains?<br>
+&bull; Who will you meet if you have time?<br>
+&bull; What will you do if you feel tired?";
 
 // Use \n for line breaks in the placeholder
-$customPlaceholder = "If the weather is nice, I will…\n\nIf it rains, I will…\n\nIf I have time, I will…\n\nIf I feel tired, I will…";
+$customPlaceholder = "If the weather is nice, I will…\nIf it rains, I will…\nIf I have time, I will…\nIf I feel tired, I will…";
 
 if (auth()->check()){
     $user = auth()->user();
@@ -39,6 +52,7 @@ $content = [
     'user_avatar' => $userAvatar,
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
+    'callout_text' => $customCalloutText,
     'page_title' => $finalTitle,
     'placeholder' => $customPlaceholder
 ];

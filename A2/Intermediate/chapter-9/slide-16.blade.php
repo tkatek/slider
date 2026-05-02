@@ -1,8 +1,23 @@
 <?php
-// 1. MODIFY THESE TO CHANGE THE TEXT
+
 $customTitle = "Writing";
 
-$customSubtitle = "Write 5–7 sentences about your arrangements for next week.<br>Use:<br>♦ Present continuous (am / is / are + verb-ing)<br>♦ At least 4 different activities<br>♦ Time expressions (e.g., tomorrow, at 5 p.m., this weekend)<br>Guiding Questions:<br>♦ What are you doing on Saturday morning?<br>♦ Who are you meeting this weekend?<br>♦ Where are you going?<br>♦ What are you doing in the evening?<br>♦ What are you doing on Sunday?";
+$customSubtitle = "Write 5–7 sentences about your arrangements for next week.";
+
+$customCalloutText = "
+
+
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Use:</span><br>
+&bull; Present continuous: <span class='font-black'>am / is / are + verb-ing</span><br>
+&bull; At least 4 different activities<br>
+&bull; Time expressions, such as: <span class='font-black'>tomorrow, at 5 p.m., this weekend</span><br><br>
+
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Guiding Questions:</span><br>
+&bull; What are you doing on Saturday morning?<br>
+&bull; Who are you meeting this weekend?<br>
+&bull; Where are you going?<br>
+&bull; What are you doing in the evening?<br>
+&bull; What are you doing on Sunday?";
 
 // Use \n for line breaks in the placeholder
 $customPlaceholder = "This weekend, I’m…\nOn Saturday, I’m…\nIn the afternoon, I’m…\nIn the evening, I’m…\nOn Sunday, I’m…";
@@ -40,6 +55,7 @@ $content = [
     'user_avatar' => $userAvatar,
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
+    'callout_text' => $customCalloutText,
     'page_title' => $finalTitle,
     'placeholder' => $customPlaceholder
 ];

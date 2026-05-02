@@ -47,7 +47,7 @@
 
                 @if($subtitle !== '')
                     <p class="mt-5 max-w-2xl text-lg font-bold leading-relaxed text-stone-800 dark:text-orange-100 sm:text-xl lg:text-2xl">
-                        {{ $subtitle }}
+                        {!! nl2br(e($subtitle)) !!}
                     </p>
                 @endif
 

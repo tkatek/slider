@@ -7,11 +7,50 @@ $content = [
     'video' => materialAsset('slider/A2/Beginner/chapter-9/video/shakira-descripton-encrypted/shakira-descripton.m3u8'),
     'thumbnail' => materialAsset('slider/A2/Beginner/chapter-9/img/shakira.webp'),
 
-    'maxPlaybackSeconds' => 92,
-    'showCC' => false,
-    'showTranscript' => false,
     'isQuiz' => 0,
-    'questions' => [],
+
+    'questions' => [
+        [
+            'time' => 16200,
+            'type' => 'multiple_choice',
+            'question' => 'What does Shakira look like?',
+            'options' => [
+                'Short and thin',
+                'Tall and athletic',
+                'Short and overweight',
+                'Tall and old',
+            ],
+            'correct_answer' => 1,
+            'points' => 1,
+        ],
+        [
+            'time' => 33200,
+            'type' => 'multiple_choice',
+            'question' => 'What is Shakira like?',
+            'options' => [
+                'Rude and lazy',
+                'Supportive and helpful',
+                'Shy and quiet',
+                'Angry and unfriendly',
+            ],
+            'correct_answer' => 1,
+            'points' => 1,
+        ],
+        [
+            'time' => 21800,
+            'type' => 'true_false',
+            'question' => 'She has got short black hair.',
+            'correct_answer' => false,
+            'points' => 1,
+        ],
+        [
+            'time' => 35200,
+            'type' => 'true_false',
+            'question' => 'She likes to wear comfortable clothes.',
+            'correct_answer' => true,
+            'points' => 1,
+        ],
+    ],
 
     'subtitles' => [
         ['start' => 0, 'end' => 4, 'text' => 'Hello, this is a description of Shakira.'],
