@@ -20,7 +20,7 @@
             ],
         ],
 
-        'image' => 'https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=900&h=900&auto=format&fit=crop',
+        'image' => materialAsset('slider/activities/silent-letters/slide3.webp'),
         'image_alt' => 'Notebook and writing',
 
         'decorations' => [
@@ -111,6 +111,21 @@
                                     </div>
                                 </article>
                             @endforeach
+                        </div>
+
+                        <div class="mx-auto mt-5 w-full max-w-[260px] overflow-hidden rounded-[1.55rem] border border-white/70 bg-white/70 p-2 shadow-[0_18px_45px_-32px_rgba(15,23,42,0.28)] backdrop-blur-md dark:border-white/10 dark:bg-white/10 sm:mt-6 sm:max-w-[320px] lg:hidden">
+                            <div class="relative overflow-hidden rounded-[1.25rem] border border-white/70 bg-white/70 dark:border-white/10 dark:bg-white/10">
+                                <img
+                                        src="{{ $content['image'] }}"
+                                        alt="{{ $content['image_alt'] }}"
+                                        class="aspect-[4/3] w-full object-cover"
+                                        loading="lazy"
+                                        draggable="false"
+                                />
+
+                                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-white/10 dark:from-slate-950/55"></div>
+                                <div class="pointer-events-none absolute inset-2 rounded-[1rem] border border-white/45 dark:border-white/10"></div>
+                            </div>
                         </div>
 
                         <div class="mx-auto mt-5 flex max-w-sm items-center justify-center gap-3 rounded-full border border-white/70 bg-white/45 px-4 py-2.5 text-xl shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:hidden">

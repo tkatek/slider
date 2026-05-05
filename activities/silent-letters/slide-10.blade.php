@@ -12,22 +12,22 @@
         'items' => [
             [
                 'label' => 'Ca<b class="text-orange-500 dark:text-orange-400">l</b>f',
-                'image' => 'https://unsplash.com/photos/Xg_PBo-6rsE/download?force=true&w=1000',
+                'image' => materialAsset('slider/activities/silent-letters/img/calf.webp'),
                 'alt'   => 'Calf',
             ],
             [
                 'label' => 'Sa<b class="text-orange-500 dark:text-orange-400">l</b>mon',
-                'image' => 'https://unsplash.com/photos/3Px-izUjASw/download?force=true&w=1000',
+                'image' => materialAsset('slider/activities/silent-letters/img/salmon.webp'),
                 'alt'   => 'Salmon',
             ],
             [
                 'label' => 'Cha<b class="text-orange-500 dark:text-orange-400">l</b>k',
-                'image' => 'https://unsplash.com/photos/rAOBMlo68bo/download?force=true&w=1000',
+                'image' => materialAsset('slider/activities/silent-letters/img/chalk.webp'),
                 'alt'   => 'Chalk',
             ],
             [
                 'label' => 'Yo<b class="text-orange-500 dark:text-orange-400">l</b>k',
-                'image' => 'https://unsplash.com/photos/vWtfT-o-UOA/download?force=true&w=1000',
+                'image' => materialAsset('slider/activities/silent-letters/img/yolk.webp'),
                 'alt'   => 'Yolk',
             ],
         ],

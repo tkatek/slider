@@ -11,22 +11,22 @@
         'items' => [
             [
                 'label' => '<b class="text-orange-500 dark:text-orange-400">G</b>nome',
-                'image' => 'https://unsplash.com/photos/7FQIxZDwWhE/download?force=true&w=1000',
+                'image' => materialAsset('slider/activities/silent-letters/img/gnome.webp'),
                 'alt'   => 'Gnome',
             ],
             [
                 'label' => '<b class="text-orange-500 dark:text-orange-400">G</b>nat',
-                'image' => 'https://unsplash.com/photos/YfG19i6WPXA/download?force=true&w=1000',
+                'image' => materialAsset('slider/activities/silent-letters/img/gnat.webp'),
                 'alt'   => 'Gnat',
             ],
             [
                 'label' => '<b class="text-orange-500 dark:text-orange-400">K</b>nee',
-                'image' => 'https://unsplash.com/photos/DA8YF9xqdKU/download?force=true&w=1000',
+                'image' => materialAsset('slider/activities/silent-letters/img/knee.webp'),
                 'alt'   => 'Knee',
             ],
             [
                 'label' => '<b class="text-orange-500 dark:text-orange-400">K</b>nife',
-                'image' => 'https://unsplash.com/photos/Ih0GG8HhwJ8/download?force=true&w=1000',
+                'image' => materialAsset('slider/activities/silent-letters/img/knife.webp'),
                 'alt'   => 'Knife',
             ],
         ],

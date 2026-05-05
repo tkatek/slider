@@ -12,22 +12,22 @@
         'items' => [
             [
                 'label' => '<b class="text-orange-500 dark:text-orange-400">W</b>rapper',
-                'image' => 'https://unsplash.com/photos/3KvYQTS_7Tk/download?force=true&w=1000',
+                'image' => materialAsset('slider/activities/silent-letters/img/wrapper.webp'),
                 'alt'   => 'Wrapper',
             ],
             [
                 'label' => '<b class="text-orange-500 dark:text-orange-400">W</b>restle',
-                'image' => 'https://unsplash.com/photos/H-FX-3xmtKU/download?force=true&w=1000',
+                'image' => materialAsset('slider/activities/silent-letters/img/wrestle.webp'),
                 'alt'   => 'Wrestle',
             ],
             [
                 'label' => '<b class="text-orange-500 dark:text-orange-400">W</b>rist',
-                'image' => 'https://unsplash.com/photos/Ks5CgGjKKD4/download?force=true&w=1000',
+                'image' => materialAsset('slider/activities/silent-letters/img/wrist.webp'),
                 'alt'   => 'Wrist',
             ],
             [
                 'label' => '<b class="text-orange-500 dark:text-orange-400">W</b>reck',
-                'image' => 'https://unsplash.com/photos/MquQzrcY1dk/download?force=true&w=1000',
+                'image' => materialAsset('slider/activities/silent-letters/img/wreck.webp'),
                 'alt'   => 'Wreck',
             ],
         ],
