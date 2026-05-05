@@ -45,19 +45,16 @@
 
         'decorations' => [
             [
-                'src' => 'https://api.iconify.design/fluent-emoji-flat:palm-tree.svg',
-                'alt' => 'Palm tree',
-                'class' => 'right-1 top-8 w-20 rotate-[10deg] opacity-80 sm:w-24 lg:w-32',
+                'emoji' => '🐄',
+                'class' => 'right-1 top-8 text-4xl rotate-[10deg] opacity-80 sm:text-5xl lg:text-6xl',
             ],
             [
-                'src' => 'https://api.iconify.design/fluent-emoji-flat:thought-balloon.svg',
-                'alt' => 'Thought balloon',
-                'class' => 'right-4 bottom-4 w-16 opacity-80 sm:w-20 lg:w-24',
+                'emoji' => '🐟',
+                'class' => 'right-4 bottom-4 text-4xl rotate-[8deg] opacity-80 sm:text-5xl lg:text-6xl',
             ],
             [
-                'src' => 'https://api.iconify.design/fluent-emoji-flat:pencil.svg',
-                'alt' => 'Pencil',
-                'class' => 'left-2 bottom-2 w-14 -rotate-[12deg] opacity-75 sm:w-16 lg:w-20',
+                'emoji' => '🥚',
+                'class' => 'left-2 bottom-2 text-4xl -rotate-[12deg] opacity-75 sm:text-5xl lg:text-6xl',
             ],
         ],
     ];

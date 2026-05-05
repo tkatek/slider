@@ -3,18 +3,18 @@ $content = [
     'title'    => 'Let’s Learn About',
     'subtitle' => 'Silent letters',
 
-    'vectors' => [
+    'emojis' => [
         [
-            'src' => 'https://api.iconify.design/fluent-emoji-flat:books.svg',
+            'emoji' => '📚',
             'alt' => 'Books',
         ],
         [
-            'src' => 'https://api.iconify.design/fluent-emoji-flat:smiling-face-with-heart-eyes.svg',
-            'alt' => 'Happy face',
+            'emoji' => '🤫',
+            'alt' => 'Silent',
         ],
         [
-            'src' => 'https://api.iconify.design/fluent-emoji-flat:star.svg',
-            'alt' => 'Star',
+            'emoji' => '✨',
+            'alt' => 'Sparkles',
         ],
     ],
 
@@ -28,7 +28,7 @@ $content = [
     $title = trim((string)($content['title'] ?? ''));
     $subtitle = trim((string)($content['subtitle'] ?? ''));
 
-    $vectors = is_array($content['vectors'] ?? null) ? $content['vectors'] : [];
+    $emojis = is_array($content['emojis'] ?? null) ? $content['emojis'] : [];
 
     $buttonText = trim((string)($content['button'] ?? 'Start Session'));
     $nextFallback = trim((string)($content['next_fallback'] ?? 'slide-2.blade.php'));
@@ -38,7 +38,7 @@ $content = [
 
 @section('content')
     <style>
-        #simpleIntroVectors {
+        #simpleIntroEmojis {
             isolation: isolate;
 
             --intro-card-bg: rgba(255, 255, 255, 0.78);
@@ -51,7 +51,7 @@ $content = [
             --intro-muted: #475569;
         }
 
-        .dark #simpleIntroVectors {
+        .dark #simpleIntroEmojis {
             --intro-card-bg: rgba(15, 23, 42, 0.78);
             --intro-card-border: rgba(148, 163, 184, 0.20);
             --intro-card-shadow: 0 34px 100px rgba(0, 0, 0, 0.44);
@@ -62,81 +62,81 @@ $content = [
             --intro-muted: #cbd5e1;
         }
 
-        #simpleIntroVectors .theme-gradient-bg {
+        #simpleIntroEmojis .theme-gradient-bg {
             background: var(--top-bar-gradient);
         }
 
-        #simpleIntroVectors .theme-gradient-text {
+        #simpleIntroEmojis .theme-gradient-text {
             background-image: var(--top-bar-gradient);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
 
-        #simpleIntroVectors .theme-soft-one {
+        #simpleIntroEmojis .theme-soft-one {
             background: var(--ambient-one);
         }
 
-        #simpleIntroVectors .theme-soft-two {
+        #simpleIntroEmojis .theme-soft-two {
             background: var(--ambient-two);
         }
 
-        #simpleIntroVectors .theme-soft-three {
+        #simpleIntroEmojis .theme-soft-three {
             background: var(--ambient-three);
         }
 
-        #simpleIntroVectors .intro-title {
+        #simpleIntroEmojis .intro-title {
             font-size: clamp(2.45rem, 6.2vw, 5.15rem);
             line-height: 0.96;
             letter-spacing: -0.065em;
             text-wrap: balance;
         }
 
-        #simpleIntroVectors .intro-subtitle {
+        #simpleIntroEmojis .intro-subtitle {
             font-size: clamp(1.3rem, 2.65vw, 2.35rem);
             line-height: 1.12;
             letter-spacing: -0.045em;
             text-wrap: balance;
         }
 
-        #simpleIntroVectors .intro-card {
+        #simpleIntroEmojis .intro-card {
             background: var(--intro-card-bg);
             border-color: var(--intro-card-border);
             box-shadow: var(--intro-card-shadow);
         }
 
-        #simpleIntroVectors .vector-tile {
+        #simpleIntroEmojis .emoji-tile {
             background: var(--intro-surface-bg);
             border-color: var(--intro-surface-border);
         }
 
         @media (max-height: 780px) and (min-width: 768px) {
-            #simpleIntroVectors .intro-title {
+            #simpleIntroEmojis .intro-title {
                 font-size: clamp(2.25rem, 5vw, 4.15rem);
             }
 
-            #simpleIntroVectors .intro-subtitle {
+            #simpleIntroEmojis .intro-subtitle {
                 font-size: clamp(1.15rem, 2.1vw, 1.85rem);
             }
 
-            #simpleIntroVectors .intro-card {
+            #simpleIntroEmojis .intro-card {
                 padding-top: 3rem;
                 padding-bottom: 3rem;
             }
 
-            #simpleIntroVectors .vector-row {
+            #simpleIntroEmojis .emoji-row {
                 margin-top: 2rem;
             }
         }
 
         @media (max-width: 640px) {
-            #simpleIntroVectors .intro-card {
+            #simpleIntroEmojis .intro-card {
                 border-radius: 1.75rem;
             }
         }
     </style>
 
-    <div id="simpleIntroVectors" class="font-sans min-h-[100dvh] overflow-x-hidden overflow-y-auto">
+    <div id="simpleIntroEmojis" class="font-sans min-h-[100dvh] overflow-x-hidden overflow-y-auto">
         <main class="mx-auto flex min-h-[100dvh] w-full max-w-6xl items-center justify-center px-4 py-6 sm:px-6 lg:px-8">
             <section class="flex w-full items-center justify-center py-4 sm:py-6">
                 <div class="intro-card relative w-full overflow-hidden rounded-[2.5rem] border px-5 py-12 text-center backdrop-blur-xl sm:px-8 sm:py-16 lg:px-12 lg:py-20">
@@ -164,12 +164,12 @@ $content = [
                             </p>
                         @endif
 
-                        @if(count($vectors))
-                            <div id="vectorRow" class="vector-row mt-9 flex flex-wrap items-center justify-center gap-4 sm:mt-10 sm:gap-5 lg:gap-6">
-                                @foreach($vectors as $index => $vector)
+                        @if(count($emojis))
+                            <div id="emojiRow" class="emoji-row mt-9 flex flex-wrap items-center justify-center gap-4 sm:mt-10 sm:gap-5 lg:gap-6">
+                                @foreach($emojis as $index => $emojiItem)
                                     @php
-                                        $src = (string)($vector['src'] ?? '');
-                                        $alt = (string)($vector['alt'] ?? '');
+                                        $emoji = (string)($emojiItem['emoji'] ?? '');
+                                        $alt = (string)($emojiItem['alt'] ?? '');
 
                                         $rotations = [
                                             'rotate-[-7deg]',
@@ -189,19 +189,16 @@ $content = [
                                         $offset = $offsets[$index % count($offsets)];
                                     @endphp
 
-                                    @if($src !== '')
+                                    @if($emoji !== '')
                                         <div class="group relative {{ $offset }}">
                                             <div class="theme-gradient-bg absolute -inset-1 rounded-[1.8rem] opacity-30 blur-md transition duration-300 group-hover:opacity-45"></div>
 
-                                            <div class="vector-tile relative flex h-20 w-20 items-center justify-center rounded-[1.6rem] border shadow-lg shadow-slate-900/10 backdrop-blur transition duration-300 group-hover:-translate-y-1 group-hover:shadow-xl dark:shadow-black/25 sm:h-24 sm:w-24 lg:h-28 lg:w-28">
-                                                <img
-                                                        src="{{ $src }}"
-                                                        alt="{{ $alt }}"
-                                                        class="h-12 w-12 select-none object-contain drop-shadow-sm transition duration-300 group-hover:scale-110 sm:h-14 sm:w-14 lg:h-16 lg:w-16 {{ $rotation }}"
-                                                        loading="eager"
-                                                        decoding="async"
-                                                        draggable="false"
-                                                />
+                                            <div class="emoji-tile relative flex h-20 w-20 items-center justify-center rounded-[1.6rem] border shadow-lg shadow-slate-900/10 backdrop-blur transition duration-300 group-hover:-translate-y-1 group-hover:shadow-xl dark:shadow-black/25 sm:h-24 sm:w-24 lg:h-28 lg:w-28">
+                                                <span
+                                                        role="img"
+                                                        aria-label="{{ $alt }}"
+                                                        class="select-none text-4xl drop-shadow-sm transition duration-300 group-hover:scale-110 sm:text-5xl lg:text-6xl {{ $rotation }}"
+                                                >{{ $emoji }}</span>
                                             </div>
                                         </div>
                                     @endif
@@ -233,7 +230,7 @@ $content = [
 @section("script")
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const root = document.getElementById("simpleIntroVectors");
+            const root = document.getElementById("simpleIntroEmojis");
             if (!root) return;
 
             const btn = document.getElementById("startBtn");

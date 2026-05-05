@@ -8,22 +8,22 @@
 
         'items' => [
             [
-                'label' => 'lam<b class="text-orange-500 dark:text-orange-400">b</b>',
+                'label' => 'Lam<b class="text-orange-500 dark:text-orange-400">b</b>',
                 'image' => 'https://images.unsplash.com/photo-1484557985045-edf25e08da73?q=80&w=1000&h=800&auto=format&fit=crop',
                 'alt'   => 'lamb',
             ],
             [
-                'label' => 'thum<b class="text-orange-500 dark:text-orange-400">b</b>',
+                'label' => 'Thum<b class="text-orange-500 dark:text-orange-400">b</b>',
                 'image' => 'https://images.unsplash.com/photo-1580893211123-627e0262be3a?q=80&w=1000&h=800&auto=format&fit=crop',
                 'alt'   => 'thumb',
             ],
             [
-                'label' => 'de<b class="text-orange-500 dark:text-orange-400">b</b>t',
+                'label' => 'De<b class="text-orange-500 dark:text-orange-400">b</b>t',
                 'image' => 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1000&h=800&auto=format&fit=crop',
                 'alt'   => 'debt',
             ],
             [
-                'label' => 'bom<b class="text-orange-500 dark:text-orange-400">b</b>',
+                'label' => 'Bom<b class="text-orange-500 dark:text-orange-400">b</b>',
                 'image' => 'https://images.unsplash.com/photo-1756027132696-f725e53ff15d?q=80&w=1000&h=800&auto=format&fit=crop',
                 'alt'   => 'bomb',
             ],
@@ -31,19 +31,16 @@
 
         'decorations' => [
             [
-                'src' => 'https://api.iconify.design/fluent-emoji-flat:pencil.svg',
-                'alt' => 'Pencil',
-                'class' => 'right-3 top-3 w-14 sm:w-16 lg:w-20 rotate-[12deg]',
+                'emoji' => '🐑',
+                'class' => 'right-3 top-3 text-4xl rotate-[12deg] sm:text-5xl lg:text-6xl',
             ],
             [
-                'src' => 'https://api.iconify.design/fluent-emoji-flat:books.svg',
-                'alt' => 'Books',
-                'class' => 'left-2 bottom-2 w-16 sm:w-20 lg:w-24',
+                'emoji' => '👍',
+                'class' => 'left-2 bottom-2 text-4xl -rotate-[8deg] sm:text-5xl lg:text-6xl',
             ],
             [
-                'src' => 'https://api.iconify.design/fluent-emoji-flat:books.svg',
-                'alt' => 'Books',
-                'class' => 'right-2 bottom-2 w-16 sm:w-20 lg:w-24',
+                'emoji' => '💰',
+                'class' => 'right-2 bottom-2 text-4xl rotate-[8deg] sm:text-5xl lg:text-6xl',
             ],
         ],
     ];

@@ -18,14 +18,14 @@
                 <div class="pointer-events-none absolute bottom-0 left-1/2 h-40 w-40 -translate-x-1/2 opacity-40 blur-3xl [background:var(--ambient-three)]"></div>
 
                 @foreach(($content['decorations'] ?? []) as $decoration)
-                    <img
-                            src="{{ $decoration['src'] }}"
-                            alt="{{ $decoration['alt'] ?? '' }}"
-                            aria-hidden="true"
-                            class="pointer-events-none absolute hidden select-none opacity-80 sm:block {{ $decoration['class'] ?? '' }}"
-                            loading="lazy"
-                            draggable="false"
-                    />
+                    @if(!empty($decoration['emoji']))
+                        <div
+                                aria-hidden="true"
+                                class="pointer-events-none absolute hidden select-none opacity-80 drop-shadow-sm sm:block {{ $decoration['class'] ?? '' }}"
+                        >
+                            {{ $decoration['emoji'] }}
+                        </div>
+                    @endif
                 @endforeach
 
                 <div class="relative z-10 mx-auto max-w-6xl">

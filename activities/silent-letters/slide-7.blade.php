@@ -33,19 +33,16 @@
 
         'decorations' => [
             [
-                'src' => 'https://api.iconify.design/fluent-emoji-flat:pencil.svg',
-                'alt' => 'Pencil',
-                'class' => 'right-2 top-3 w-12 rotate-[12deg] opacity-80 sm:w-14 lg:w-16',
+                'emoji' => '🧙',
+                'class' => 'right-2 top-3 text-4xl rotate-[12deg] opacity-80 sm:text-5xl lg:text-6xl',
             ],
             [
-                'src' => 'https://api.iconify.design/fluent-emoji-flat:books.svg',
-                'alt' => 'Books',
-                'class' => 'left-2 bottom-2 w-16 opacity-80 sm:w-20 lg:w-24',
+                'emoji' => '🦵',
+                'class' => 'left-2 bottom-2 text-4xl -rotate-[8deg] opacity-80 sm:text-5xl lg:text-6xl',
             ],
             [
-                'src' => 'https://api.iconify.design/fluent-emoji-flat:sparkles.svg',
-                'alt' => 'Sparkles',
-                'class' => 'right-3 bottom-3 w-14 opacity-80 sm:w-16 lg:w-20',
+                'emoji' => '🔪',
+                'class' => 'right-3 bottom-3 text-4xl rotate-[8deg] opacity-80 sm:text-5xl lg:text-6xl',
             ],
         ],
     ];
