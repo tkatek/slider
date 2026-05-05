@@ -1,3 +1,87 @@
+<?php
+$content = [
+    'title'    => 'New Language',
+    'subtitle' => '',
+
+    // Set this to true when you want the no-image version
+    'hide_image' => true,
+
+    // Keep image here if you want to switch back later by setting hide_image to false
+    'image'    => materialAsset('slider/A2/Advanced/chapter-1/img/slide4.webp'),
+
+    // This will be used for the no-image version too
+    'items_grid_class' => 'grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4',
+
+    'items' => [
+        [
+            'emoji' => '💼',
+            'text'  => 'What’s your <span class="font-black text-rose-700 dark:text-rose-300">role</span> in the company?',
+            'sound' => materialAsset('slider/A2/Advanced/chapter-1/audios/slide7/1.mp3'),
+        ],
+        [
+            'emoji' => '👔',
+            'text'  => 'What do you <span class="font-black text-rose-700 dark:text-rose-300">do for a living</span>?',
+            'sound' => materialAsset('slider/A2/Advanced/chapter-1/audios/slide7/2.mp3'),
+        ],
+        [
+            'emoji' => '✅',
+            'text'  => 'What are you <span class="font-black text-rose-700 dark:text-rose-300">responsible for</span>?',
+            'sound' => materialAsset('slider/A2/Advanced/chapter-1/audios/slide7/3.mp3'),
+        ],
+        [
+            'emoji' => '🎨',
+            'text'  => 'I’m <span class="font-black text-rose-700 dark:text-rose-300">the head of</span> design.',
+            'sound' => materialAsset('slider/A2/Advanced/chapter-1/audios/slide7/4.mp3'),
+        ],
+        [
+            'emoji' => '🧑‍🎨',
+            'text'  => 'I <span class="font-black text-rose-700 dark:text-rose-300">manage</span> artists and graphic designers.',
+            'sound' => materialAsset('slider/A2/Advanced/chapter-1/audios/slide7/5.mp3'),
+        ],
+        [
+            'emoji' => '🤝',
+            'text'  => 'What about you?',
+            'sound' => materialAsset('slider/A2/Advanced/chapter-1/audios/slide7/6.mp3'),
+        ],
+        [
+            'emoji' => '🎬',
+            'text'  => 'I’m a content producer.',
+            'sound' => materialAsset('slider/A2/Advanced/chapter-1/audios/slide7/7.mp3'),
+        ],
+        [
+            'emoji' => '✍️',
+            'text'  => 'I’m responsible for writing.',
+            'sound' => materialAsset('slider/A2/Advanced/chapter-1/audios/slide7/8.mp3'),
+        ],
+        [
+            'emoji' => '❓',
+            'text'  => 'What <span class="font-black text-rose-700 dark:text-rose-300">do you do</span>?',
+            'sound' => materialAsset('slider/A2/Advanced/chapter-1/audios/slide7/9.mp3'),
+        ],
+        [
+            'emoji' => '❤️',
+            'text'  => 'Do you like your job?',
+            'sound' => materialAsset('slider/A2/Advanced/chapter-1/audios/slide7/10.mp3'),
+        ],
+        [
+            'emoji' => '😍',
+            'text'  => 'Yes, I love it!',
+            'sound' => materialAsset('slider/A2/Advanced/chapter-1/audios/slide7/11.mp3'),
+        ],
+        [
+            'emoji' => '⭐',
+            'text'  => 'What’s the best part of your job?',
+            'sound' => materialAsset('slider/A2/Advanced/chapter-1/audios/slide7/12.mp3'),
+        ],
+        [
+            'emoji' => '👥',
+            'text'  => 'Do you like the people you work with?',
+            'sound' => materialAsset('slider/A2/Advanced/chapter-1/audios/slide7/13.mp3'),
+        ],
+    ],
+];
+?>
+
 @extends('slider.simple-layout')
 
 @section('script')
@@ -116,10 +200,17 @@
         $footerText = trim((string)($content['footer_text'] ?? ''));
         $footerItems = is_array($content['footer_items'] ?? null) ? $content['footer_items'] : [];
         $footerBelowImage = (bool)($content['footer_below_image'] ?? false);
+
         $hideImage = (bool)($content['hide_image'] ?? false);
+        $hasImage = !$hideImage && !empty($content['image']);
+
         $imageAspectRatio = trim((string)($content['image_aspect_ratio'] ?? '1 / 1'));
 
-        $itemsGridClass = trim((string)($content['items_grid_class'] ?? 'grid grid-cols-1 gap-2.5 sm:gap-3 lg:gap-3.5 text-left'));
+        $itemsGridClass = trim((string)($content['items_grid_class'] ?? (
+            $hasImage
+                ? 'grid grid-cols-1 gap-2.5 sm:gap-3 lg:gap-3.5 text-left'
+                : 'grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-left'
+        )));
 
         $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
 
@@ -158,6 +249,14 @@
         $audioBtnClass = $isOrangeTheme
             ? 'bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 shadow-orange-500/20 focus-visible:ring-orange-300/40'
             : 'bg-gradient-to-br from-indigo-500 via-blue-500 to-violet-500 shadow-indigo-500/20 focus-visible:ring-indigo-300/40';
+
+        $sectionClass = $hasImage
+            ? 'grid grid-cols-1 items-center gap-6 lg:grid-cols-[minmax(0,52%)_minmax(320px,42%)] lg:gap-10 xl:gap-12'
+            : 'mx-auto grid w-full max-w-5xl grid-cols-1 items-center gap-6';
+
+        $textColumnClass = $hasImage
+            ? 'w-full text-center lg:text-left'
+            : 'mx-auto w-full text-center';
     @endphp
 
     <div class="relative h-[100dvh] w-full overflow-hidden font-sans">
@@ -167,10 +266,9 @@
                     class="mx-auto flex min-h-[100dvh] w-full max-w-[1280px] items-center px-4 py-5 sm:px-6 sm:py-7 lg:px-8 lg:py-6"
             >
                 <main class="w-full">
-                    <section class="grid grid-cols-1 items-center gap-6 lg:grid-cols-[minmax(0,52%)_minmax(320px,42%)] lg:gap-10 xl:gap-12">
+                    <section class="{{ $sectionClass }}">
 
-                        {{-- LEFT: title + subtitle + items --}}
-                        <div class="w-full text-center lg:text-left">
+                        <div class="{{ $textColumnClass }}">
                             @include('slider.components.title-subtitle')
 
                             <section id="cards" class="mt-5 w-full sm:mt-6 lg:mt-7">
@@ -191,24 +289,26 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="shrink-0">
-                                                    <button
-                                                            type="button"
-                                                            class="audio-btn inline-flex h-9 w-9 items-center justify-center overflow-hidden rounded-full {{ $audioBtnClass }} text-white shadow-md ring-1 ring-white/25 backdrop-blur-md [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-4 sm:h-10 sm:w-10"
-                                                            aria-label="{{ $playLabel }}"
-                                                            data-sound="{{ $item['sound'] }}"
-                                                    >
-                                                        <svg class="static-icon block h-4 w-4 sm:h-[18px] sm:w-[18px]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                                            <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-                                                        </svg>
+                                                @if(!empty($item['sound']))
+                                                    <div class="shrink-0">
+                                                        <button
+                                                                type="button"
+                                                                class="audio-btn inline-flex h-9 w-9 items-center justify-center overflow-hidden rounded-full {{ $audioBtnClass }} text-white shadow-md ring-1 ring-white/25 backdrop-blur-md [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-4 sm:h-10 sm:w-10"
+                                                                aria-label="{{ $playLabel }}"
+                                                                data-sound="{{ $item['sound'] }}"
+                                                        >
+                                                            <svg class="static-icon block h-4 w-4 sm:h-[18px] sm:w-[18px]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                                <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                                            </svg>
 
-                                                        <span class="wave-wrap hidden h-4 items-center justify-center gap-[2px]" aria-hidden="true">
-                                                            <span class="h-1.5 w-[2.5px] animate-pulse rounded-full bg-current"></span>
-                                                            <span class="h-3.5 w-[2.5px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
-                                                            <span class="h-2 w-[2.5px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
-                                                        </span>
-                                                    </button>
-                                                </div>
+                                                            <span class="wave-wrap hidden h-4 items-center justify-center gap-[2px]" aria-hidden="true">
+                                                                <span class="h-1.5 w-[2.5px] animate-pulse rounded-full bg-current"></span>
+                                                                <span class="h-3.5 w-[2.5px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
+                                                                <span class="h-2 w-[2.5px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </article>
                                     @endforeach
@@ -234,9 +334,8 @@
                             @endif
                         </div>
 
-                        {{-- RIGHT: image --}}
-                        <div class="w-full">
-                            @unless($hideImage)
+                        @if($hasImage)
+                            <div class="w-full">
                                 <div class="mx-auto w-full max-w-[300px] sm:max-w-[400px] lg:max-w-[430px] xl:max-w-[460px]">
                                     <div class="relative p-3 sm:p-4">
                                         <div class="pointer-events-none absolute inset-0 -translate-x-3 translate-y-3 rounded-[24px] border-2 {{ $frameBorderOne }}"></div>
@@ -278,8 +377,9 @@
                                         @endif
                                     </div>
                                 @endif
-                            @endunless
-                        </div>
+                            </div>
+                        @endif
+
                     </section>
                 </main>
             </div>

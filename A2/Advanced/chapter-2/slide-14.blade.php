@@ -3,84 +3,60 @@ $content = [
     'page_title' => 'Practice 5',
     'title' => 'Practice 5',
     'subtitle' => '',
-    'activity_title' => 'Match the feeling with the correct action',
+    'activity_title' => 'Match each unusual job (1–4) with the correct definition (A–D).',
 
     'pairs' => [
         [
-            'id' => 'angry',
+            'id' => 'professional-sleeper',
             'left' => [
                 'type' => 'word',
-                'text' => 'He is angry.',
+                'text' => '1. Professional Sleeper',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'He frowns.',
+                'text' => 'B. A person who is hired to sleep in different beds and test how comfortable they are.',
             ],
         ],
         [
-            'id' => 'confused',
+            'id' => 'pet-food-taster',
             'left' => [
                 'type' => 'word',
-                'text' => 'She is confused.',
+                'text' => '2. Pet Food Taster',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'She raises her eyebrows.',
+                'text' => 'A. A person who is paid to eat and test pet food to make sure it tastes good and is safe for animals.',
             ],
         ],
         [
-            'id' => 'unhappy',
+            'id' => 'water-slide-tester',
             'left' => [
                 'type' => 'word',
-                'text' => 'He is unhappy.',
+                'text' => '3. Water Slide Tester',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'He pouts his lips.',
+                'text' => 'D. A person who travels to water parks and rides slides to check their safety, speed, and fun level.',
             ],
         ],
         [
-            'id' => 'surprised',
+            'id' => 'professional-mourner',
             'left' => [
                 'type' => 'word',
-                'text' => 'She is surprised.',
+                'text' => '4. Professional Mourner',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'She drops her jaw.',
-            ],
-        ],
-        [
-            'id' => 'thinking',
-            'left' => [
-                'type' => 'word',
-                'text' => 'He is thinking.',
-            ],
-            'right' => [
-                'type' => 'word',
-                'text' => 'He scrunches up his nose.',
-            ],
-        ],
-        [
-            'id' => 'silly',
-            'left' => [
-                'type' => 'word',
-                'text' => 'She is being silly.',
-            ],
-            'right' => [
-                'type' => 'word',
-                'text' => 'She sticks her tongue out.',
+                'text' => 'C. A person who is paid to cry and show sadness at funerals to help the family mourn.',
             ],
         ],
     ],
 
     'right_order' => [
-        'confused',
-        'angry',
-        'silly',
-        'thinking',
-        'surprised',
-        'unhappy',
+        'pet-food-taster',
+        'professional-sleeper',
+        'professional-mourner',
+        'water-slide-tester',
     ],
 ];
 ?>

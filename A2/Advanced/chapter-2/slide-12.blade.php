@@ -2,7 +2,7 @@
 $content = [
     'title' => 'Notice the following',
     'subtitle'=> 'Work is what you do. A job is where you do it',
-    'image' => materialAsset('slider/A2/Intermediate/chapter-9/img/slide9.webp'),
+    'image' => materialAsset('slider/A2/Advanced/chapter-2/img/slide12.webp'),
 ];
 ?>
 

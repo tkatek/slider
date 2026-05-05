@@ -3,524 +3,73 @@
 @php
     $mode = $content['mode'] ?? (!empty($content['options']) ? 'choice_table' : 'type_table');
     $playerAudio = !empty($content['audio']) ? $content['audio'] : null;
+
     $scriptLines = is_array($content['transcript'] ?? null)
         ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $content['transcript']), static fn ($line) => $line !== ''))
         : [];
+
     $hasScript = $scriptLines !== [];
+
     $choiceRows = is_array($content['rows'] ?? null) ? $content['rows'] : [];
     $choiceUsesRowOptions = false;
     $maxChoiceColumns = 0;
+
     foreach ($choiceRows as $choiceRow) {
         if (is_array($choiceRow['options'] ?? null) && ($choiceRow['options'] ?? []) !== []) {
             $choiceUsesRowOptions = true;
         }
+
         $maxChoiceColumns = max($maxChoiceColumns, count($choiceRow['options'] ?? []));
     }
+
     if (!$choiceUsesRowOptions) {
         $maxChoiceColumns = count($content['options'] ?? []);
     }
+
+    $tableHeaders = is_array($content['table_headers'] ?? null) ? $content['table_headers'] : [];
+    $hasMeaningColumn = !empty($tableHeaders[2]);
+
+    foreach (($content['rows'] ?? []) as $typeRow) {
+        foreach (($typeRow['answers'] ?? []) as $typeAnswer) {
+            if (array_key_exists('meaning_answer', $typeAnswer) || array_key_exists('meaning', $typeAnswer)) {
+                $hasMeaningColumn = true;
+                break 2;
+            }
+        }
+    }
+
+    $typeColumns = [
+        [
+            'key' => 'country',
+            'header' => $tableHeaders[1] ?? 'Country',
+            'placeholder' => $content['country_placeholder'] ?? ($tableHeaders[1] ?? 'Country'),
+            'answer_key' => 'country_answer',
+            'value_key' => 'country',
+        ],
+    ];
+
+    if ($hasMeaningColumn) {
+        $typeColumns[] = [
+            'key' => 'meaning',
+            'header' => $tableHeaders[2] ?? 'Meaning',
+            'placeholder' => $content['meaning_placeholder'] ?? ($tableHeaders[2] ?? 'Meaning'),
+            'answer_key' => 'meaning_answer',
+            'value_key' => 'meaning',
+        ];
+    }
+
+    $typeInputColumnCount = count($typeColumns);
+    $firstTypeColumnWidth = $typeInputColumnCount === 1 ? 'w-[58%]' : 'w-[34%]';
+    $inputTypeColumnWidth = $typeInputColumnCount === 1 ? 'w-[42%]' : 'w-[33%]';
+
+    $tableHeadClass = 'border-b border-slate-200 bg-slate-100 px-4 py-3 text-left text-xs font-black uppercase tracking-[0.04em] text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200';
+    $tableHeadCenterClass = 'border-b border-slate-200 bg-slate-100 px-4 py-3 text-center text-xs font-black uppercase tracking-[0.04em] text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200';
+    $tableCellClass = 'border-b border-slate-200 bg-white px-4 py-3 align-middle dark:border-slate-700 dark:bg-slate-900/80';
+    $tableCellSoftClass = 'border-b border-slate-200 bg-slate-50/70 px-4 py-3 align-middle dark:border-slate-700 dark:bg-slate-950/35';
+    $pillClass = 'inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-sm font-black leading-tight text-slate-800 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700';
+    $choiceControlClass = 'h-5 w-5 cursor-pointer rounded border-slate-300 accent-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400/40 dark:border-slate-600 dark:accent-slate-200 dark:focus:ring-slate-300/30';
+    $inputClass = 'answer-input w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-extrabold text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-4 focus:ring-slate-300/45 disabled:border-emerald-400 disabled:bg-emerald-50 disabled:text-emerald-700 disabled:opacity-100 data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=correct]:text-emerald-800 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 data-[state=wrong]:text-red-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder:text-slate-500 dark:focus:border-slate-400 dark:focus:ring-slate-600/45 dark:disabled:border-emerald-500/70 dark:disabled:bg-emerald-950/45 dark:disabled:text-emerald-100 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/45 dark:data-[state=correct]:text-emerald-100 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/45 dark:data-[state=wrong]:text-red-100';
 @endphp
-
-@section('style')
-    <style>
-        .lt-card {
-            border-radius: 24px;
-            border: 1px solid rgba(226, 232, 240, .9);
-            background: rgba(255, 255, 255, .92);
-            box-shadow: 0 18px 45px rgba(2, 6, 23, .08);
-        }
-
-        .dark .lt-card {
-            border-color: rgba(51, 65, 85, .75);
-            background: rgba(15, 23, 42, .86);
-        }
-
-        .lt-title-panel {
-            border-radius: 20px;
-            border: 1px solid rgba(251, 146, 60, .22);
-            background: linear-gradient(135deg, rgba(255, 247, 237, .92), rgba(255, 255, 255, .82));
-            padding: .9rem 1rem;
-        }
-
-        .dark .lt-title-panel {
-            border-color: rgba(251, 146, 60, .18);
-            background: linear-gradient(135deg, rgba(67, 20, 7, .34), rgba(15, 23, 42, .66));
-        }
-
-        .lt-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            table-layout: fixed;
-        }
-
-        .lt-table th {
-            background: linear-gradient(135deg, #fff7ed, #fed7aa);
-            color: #9a3412;
-            font-size: .78rem;
-            font-weight: 900;
-            letter-spacing: .02em;
-            padding: .85rem;
-            text-align: left;
-            border-top: 1px solid rgba(251, 146, 60, .28);
-            border-bottom: 1px solid rgba(251, 146, 60, .24);
-        }
-
-        .lt-table th + th {
-            border-left: 1px solid rgba(251, 146, 60, .18);
-        }
-
-        .lt-table th:first-child {
-            border-top-left-radius: 18px;
-        }
-
-        .lt-table th:last-child {
-            border-top-right-radius: 18px;
-        }
-
-        .lt-table td {
-            border-right: 1px solid rgba(226, 232, 240, .9);
-            border-bottom: 1px solid rgba(226, 232, 240, .9);
-            background: rgba(248, 250, 252, .72);
-            padding: .7rem;
-            vertical-align: middle;
-        }
-
-        .lt-table td:first-child {
-            border-left: 1px solid rgba(226, 232, 240, .9);
-            font-weight: 900;
-            color: #0f172a;
-        }
-
-        .lt-choice-table th,
-        .lt-choice-table td {
-            text-align: center;
-        }
-
-        .lt-choice-table th:first-child,
-        .lt-choice-table td:first-child {
-            text-align: left;
-        }
-
-        .lt-label-cell {
-            background: linear-gradient(180deg, rgba(255, 247, 237, .75), rgba(248, 250, 252, .75)) !important;
-        }
-
-        .lt-label-pill {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .55rem;
-            border-radius: 999px;
-            background: rgba(251, 146, 60, .12);
-            color: #9a3412;
-            padding: .45rem .7rem;
-            font-size: .9rem;
-            font-weight: 900;
-            line-height: 1.2;
-        }
-
-        .lt-label-pill small {
-            color: #64748b;
-            font-size: .76rem;
-            font-weight: 800;
-        }
-
-        .dark .lt-table td {
-            border-color: rgba(51, 65, 85, .85);
-            background: rgba(2, 6, 23, .28);
-        }
-
-        .dark .lt-table td:first-child {
-            color: #f8fafc;
-        }
-
-        .dark .lt-label-cell {
-            background: linear-gradient(180deg, rgba(67, 20, 7, .22), rgba(2, 6, 23, .22)) !important;
-        }
-
-        .dark .lt-label-pill {
-            background: rgba(251, 146, 60, .14);
-            color: #fed7aa;
-        }
-
-        .dark .lt-label-pill small {
-            color: #cbd5e1;
-        }
-
-        .lt-input {
-            width: 100%;
-            border-radius: 14px;
-            border: 1px solid rgba(203, 213, 225, 1);
-            background: #fff;
-            padding: .75rem .8rem;
-            font-size: .95rem;
-            font-weight: 800;
-            color: #0f172a;
-            transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
-        }
-
-        .lt-input:focus {
-            outline: none;
-            border-color: rgba(249, 115, 22, .72);
-            box-shadow: 0 0 0 4px rgba(249, 115, 22, .16);
-        }
-
-        .lt-input:disabled {
-            border-color: rgba(34, 197, 94, .45);
-            background: rgba(220, 252, 231, .78);
-            color: #166534;
-            opacity: 1;
-        }
-
-        .lt-input.is-correct {
-            border-color: #16a34a;
-            background: rgba(220, 252, 231, .9);
-            color: #166534;
-        }
-
-        .lt-input.is-wrong {
-            border-color: #dc2626;
-            background: rgba(254, 226, 226, .95);
-            color: #991b1b;
-        }
-
-        .dark .lt-input {
-            border-color: rgba(51, 65, 85, 1);
-            background: rgba(15, 23, 42, .82);
-            color: #f8fafc;
-        }
-
-        .dark .lt-input:disabled,
-        .dark .lt-input.is-correct {
-            background: rgba(20, 83, 45, .42);
-            color: #bbf7d0;
-        }
-
-        .dark .lt-input.is-wrong {
-            background: rgba(127, 29, 29, .42);
-            color: #fecaca;
-        }
-
-        .lt-choice {
-            position: relative;
-            display: inline-flex;
-            min-height: 42px;
-            min-width: 48px;
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-            border-radius: 14px;
-            border: 1px solid rgba(203, 213, 225, 1);
-            background: rgba(255, 255, 255, .88);
-            transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease, transform .16s ease;
-        }
-
-        .lt-choice:hover {
-            transform: translateY(-1px);
-            border-color: rgba(249, 115, 22, .52);
-            box-shadow: 0 10px 22px rgba(234, 88, 12, .10);
-        }
-
-        .lt-choice input {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .lt-box {
-            display: grid;
-            height: 22px;
-            width: 22px;
-            place-items: center;
-            border-radius: 6px;
-            border: 2px solid #94a3b8;
-            background: #fff;
-            color: #fff;
-            font-size: .85rem;
-            font-weight: 900;
-            line-height: 1;
-        }
-
-        .lt-choice input:checked + .lt-box {
-            border-color: #f97316;
-            background: linear-gradient(135deg, #fdba74, #f97316);
-        }
-
-        .lt-choice input:checked + .lt-box::after {
-            content: '\2713';
-        }
-
-        .lt-choice.is-correct {
-            border-color: #16a34a;
-            background: rgba(220, 252, 231, .82);
-        }
-
-        .lt-choice.is-wrong {
-            border-color: rgba(120, 113, 108, .72);
-            background: rgba(245, 245, 244, .92);
-        }
-
-        .lt-choice-row.is-correct td {
-            background-color: rgba(240, 253, 244, .74);
-        }
-
-        .lt-choice-row.is-wrong td {
-            background-color: rgba(245, 245, 244, .74);
-        }
-
-        .dark .lt-choice {
-            border-color: rgba(51, 65, 85, 1);
-            background: rgba(15, 23, 42, .82);
-        }
-
-        .dark .lt-box {
-            border-color: #64748b;
-            background: #020617;
-        }
-
-        .dark .lt-choice.is-correct {
-            background: rgba(20, 83, 45, .42);
-        }
-
-        .dark .lt-choice.is-wrong {
-            border-color: rgba(168, 162, 158, .54);
-            background: rgba(68, 64, 60, .38);
-        }
-
-        .dark .lt-choice-row.is-wrong td {
-            background-color: rgba(68, 64, 60, .24);
-        }
-
-        .lt-btn {
-            border-radius: 14px;
-            padding: .65rem 1rem;
-            font-size: .82rem;
-            font-weight: 900;
-            transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease;
-        }
-
-        .lt-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .lt-btn-primary {
-            border: 1px solid rgba(255, 255, 255, .14);
-            background: linear-gradient(135deg, #fdba74, #f97316);
-            color: #fff;
-            box-shadow: 0 10px 22px rgba(234, 88, 12, .16);
-        }
-
-        .lt-btn-soft {
-            border: 1px solid rgba(226, 232, 240, 1);
-            background: #fff;
-            color: #334155;
-            box-shadow: 0 8px 22px rgba(2, 6, 23, .05);
-        }
-
-        .dark .lt-btn-soft {
-            border-color: rgba(51, 65, 85, 1);
-            background: #0f172a;
-            color: #e2e8f0;
-        }
-
-        .lt-mobile-list {
-            display: none;
-        }
-
-        .lt-mobile-card {
-            border-radius: 20px;
-            border: 1px solid rgba(226, 232, 240, .9);
-            background: rgba(248, 250, 252, .78);
-            padding: .85rem;
-        }
-
-        .dark .lt-mobile-card {
-            border-color: rgba(51, 65, 85, .85);
-            background: rgba(2, 6, 23, .28);
-        }
-
-        .lt-mobile-card.is-correct {
-            border-color: rgba(34, 197, 94, .45);
-            background: rgba(240, 253, 244, .78);
-        }
-
-        .lt-mobile-card.is-wrong {
-            border-color: rgba(120, 113, 108, .42);
-            background: rgba(245, 245, 244, .78);
-        }
-
-        .dark .lt-mobile-card.is-wrong {
-            border-color: rgba(168, 162, 158, .42);
-            background: rgba(68, 64, 60, .28);
-        }
-
-        .lt-mobile-title {
-            display: inline-flex;
-            border-radius: 999px;
-            background: rgba(251, 146, 60, .12);
-            color: #9a3412;
-            padding: .42rem .7rem;
-            font-size: .86rem;
-            font-weight: 900;
-        }
-
-        .dark .lt-mobile-title {
-            background: rgba(251, 146, 60, .14);
-            color: #fed7aa;
-        }
-
-        .lt-field-label {
-            display: block;
-            margin-bottom: .35rem;
-            font-size: .72rem;
-            font-weight: 900;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-        }
-
-        .dark .lt-field-label {
-            color: #94a3b8;
-        }
-
-        .lt-mobile-option {
-            display: flex;
-            width: 100%;
-            align-items: center;
-            justify-content: space-between;
-            gap: .85rem;
-            border-radius: 16px;
-            border: 1px solid rgba(226, 232, 240, .95);
-            background: rgba(255, 255, 255, .72);
-            padding: .78rem .85rem;
-            font-size: .92rem;
-            font-weight: 900;
-            color: #0f172a;
-        }
-
-        .dark .lt-mobile-option {
-            border-color: rgba(51, 65, 85, .85);
-            background: rgba(15, 23, 42, .62);
-            color: #f8fafc;
-        }
-
-        .lt-choice-stack {
-            display: grid;
-            gap: .55rem;
-        }
-
-        .lt-choice-line {
-            display: flex;
-            width: 100%;
-            align-items: center;
-            justify-content: space-between;
-            gap: .85rem;
-            border-radius: 16px;
-            border: 1px solid rgba(226, 232, 240, .95);
-            background: rgba(255, 255, 255, .72);
-            padding: .72rem .85rem;
-            font-size: .92rem;
-            font-weight: 900;
-            color: #0f172a;
-        }
-
-        .dark .lt-choice-line {
-            border-color: rgba(51, 65, 85, .85);
-            background: rgba(15, 23, 42, .62);
-            color: #f8fafc;
-        }
-
-        .lt-choice-inline {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .55rem;
-            min-height: 24px;
-            width: 100%;
-            border: 0;
-            background: transparent;
-            box-shadow: none;
-            border-radius: 0;
-            padding: 0;
-            color: #334155;
-        }
-
-        .lt-choice-inline:hover {
-            transform: none;
-            border: 0;
-            background: transparent;
-            box-shadow: none;
-        }
-
-        .lt-choice-inline .lt-box {
-            height: 18px;
-            width: 18px;
-            border-radius: 4px;
-        }
-
-        .lt-choice-inline .lt-choice-text {
-            font-size: .92rem;
-            font-weight: 700;
-            line-height: 1.2;
-        }
-
-        .lt-choice-inline.is-correct,
-        .lt-choice-inline.is-wrong {
-            background: transparent;
-            border: 0;
-        }
-
-        .lt-choice-inline.is-correct .lt-choice-text {
-            color: #166534;
-        }
-
-        .lt-choice-inline.is-wrong .lt-choice-text {
-            color: #991b1b;
-        }
-
-        .dark .lt-choice-inline {
-            color: #e2e8f0;
-        }
-
-        .dark .lt-choice-inline .lt-choice-text {
-            color: #e2e8f0;
-        }
-
-        .dark .lt-choice-inline.is-correct .lt-choice-text {
-            color: #bbf7d0;
-        }
-
-        .dark .lt-choice-inline.is-wrong .lt-choice-text {
-            color: #fecaca;
-        }
-
-        @media (max-width: 640px) {
-            .lt-table-wrap {
-                display: none;
-            }
-
-            .lt-mobile-list {
-                display: grid;
-                gap: .85rem;
-            }
-
-            .lt-card {
-                border-radius: 20px;
-                padding: .85rem !important;
-            }
-
-            .lt-title-panel {
-                padding: .8rem;
-            }
-
-            .lt-btn {
-                flex: 1 1 100%;
-                padding: .72rem .85rem;
-            }
-        }
-    </style>
-@endsection
 
 @section('content')
     <main class="flex min-h-[100dvh] w-full flex-col justify-center">
@@ -533,10 +82,10 @@
                 </div>
             @endif
 
-            <div class="lt-card p-4 sm:p-6">
-                <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-                    <div class="lt-title-panel min-w-0 flex-1">
-                        <h2 class="text-sm font-black leading-snug text-slate-900 dark:text-white sm:text-lg">
+            <div class="rounded-[1.75rem] border border-slate-200/90 bg-white/95 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.08)] dark:border-slate-700/80 dark:bg-slate-900/90 sm:p-6">
+                <div class="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div class="min-w-0 flex-1 rounded-[1.25rem] border border-slate-200 bg-slate-50/80 px-4 py-3 dark:border-slate-700 dark:bg-slate-950/35">
+                        <h2 class="text-sm font-black leading-snug text-slate-950 dark:text-white sm:text-lg">
                             {{ $content['instruction'] ?? 'Listen and complete the activity.' }}
                         </h2>
 
@@ -547,82 +96,138 @@
                         @endif
                     </div>
 
-                    <div class="flex flex-wrap items-center justify-end gap-2">
-                        <button id="checkAnswersBtn" type="button" class="lt-btn lt-btn-primary">Check Answers</button>
-                        <button id="revealAnswersBtn" type="button" class="lt-btn lt-btn-soft">Reveal answers</button>
-                        <button id="retakeBtn" type="button" class="lt-btn lt-btn-soft">Retake</button>
+                    <div class="grid w-full grid-cols-3 gap-1.5 sm:gap-2 lg:w-auto lg:flex lg:flex-wrap lg:items-center lg:justify-end">
+                        <button
+                                id="checkAnswersBtn"
+                                type="button"
+                                class="min-w-0 rounded-xl border border-slate-900 bg-slate-900 px-2 py-2 text-[10px] font-black leading-tight text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 dark:border-slate-200 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-white dark:focus:ring-slate-600 sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-xs"
+                        >
+                            Check Answers
+                        </button>
+
+                        <button
+                                id="revealAnswersBtn"
+                                type="button"
+                                class="min-w-0 rounded-xl border border-slate-200 bg-white px-2 py-2 text-[10px] font-black leading-tight text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:focus:ring-slate-700 sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-xs"
+                        >
+                            Reveal answers
+                        </button>
+
+                        <button
+                                id="retakeBtn"
+                                type="button"
+                                class="min-w-0 rounded-xl border border-slate-200 bg-white px-2 py-2 text-[10px] font-black leading-tight text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:focus:ring-slate-700 sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-xs"
+                        >
+                            Retake
+                        </button>
                     </div>
                 </div>
 
                 @if($mode === 'choice_table')
-                    <div class="lt-table-wrap">
-                        <table class="lt-table lt-choice-table" aria-label="{{ $content['table_aria_label'] ?? 'Listening choice table' }}">
+                    <div class="hidden overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 sm:block">
+                        <table class="w-full table-fixed border-separate border-spacing-0" aria-label="{{ $content['table_aria_label'] ?? 'Listening choice table' }}">
                             <thead>
-                                <tr>
-                                    <th style="width: 26%;">{{ $content['row_heading'] ?? 'Number' }}</th>
+                            <tr>
+                                <th class="w-[26%] {{ $tableHeadClass }}">
+                                    {{ $content['row_heading'] ?? 'Number' }}
+                                </th>
+
+                                @if($choiceUsesRowOptions)
+                                    <th colspan="{{ max(1, $maxChoiceColumns) }}" class="{{ $tableHeadCenterClass }}">
+                                        {{ $content['option_heading'] ?? 'Options' }}
+                                    </th>
+                                @else
+                                    @foreach(($content['options'] ?? []) as $label)
+                                        <th class="{{ $tableHeadCenterClass }} border-l">
+                                            {{ $label }}
+                                        </th>
+                                    @endforeach
+                                @endif
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            @foreach(($content['rows'] ?? []) as $row)
+                                @php
+                                    $rowCorrect = $row['correct'] ?? '';
+                                    $isMultiChoiceRow = is_array($rowCorrect);
+                                    $choiceInputType = $isMultiChoiceRow ? 'checkbox' : 'radio';
+                                    $rowKey = $row['key'] ?? $row['number'] ?? $loop->index;
+                                    $rowLabel = $row['label'] ?? $row['number'] ?? '';
+                                    $choiceControlRoundedClass = $choiceInputType === 'radio' ? 'rounded-full' : 'rounded-md';
+                                @endphp
+
+                                <tr
+                                        data-choice-row
+                                        data-correct='@json($rowCorrect)'
+                                        data-multi="{{ $isMultiChoiceRow ? '1' : '0' }}"
+                                        class="data-[state=correct]:[&>td]:bg-emerald-50 data-[state=wrong]:[&>td]:bg-red-50/80 dark:data-[state=correct]:[&>td]:bg-emerald-950/30 dark:data-[state=wrong]:[&>td]:bg-red-950/30"
+                                >
+                                    <td class="{{ $tableCellSoftClass }} border-r">
+                                            <span class="{{ $pillClass }}">
+                                                {{ $rowLabel }}
+
+                                                @if(!empty($row['item']))
+                                                    <small class="text-xs font-extrabold text-slate-500 dark:text-slate-300">
+                                                        {{ $row['item'] }}
+                                                    </small>
+                                                @endif
+                                            </span>
+                                    </td>
+
                                     @if($choiceUsesRowOptions)
-                                        <th colspan="{{ max(1, $maxChoiceColumns) }}">{{ $content['option_heading'] ?? 'Options' }}</th>
+                                        @php
+                                            $rowOptions = array_values($row['options'] ?? []);
+                                        @endphp
+
+                                        @for($optionIndex = 0; $optionIndex < max(1, $maxChoiceColumns); $optionIndex++)
+                                            <td class="{{ $tableCellClass }} border-r text-center last:border-r-0">
+                                                @if(array_key_exists($optionIndex, $rowOptions))
+                                                    @php
+                                                        $optionLabel = $rowOptions[$optionIndex];
+                                                        $optionValue = is_string($optionLabel) ? $optionLabel : (string) $optionIndex;
+                                                    @endphp
+
+                                                    <label
+                                                            data-choice
+                                                            class="inline-flex w-full cursor-pointer items-center justify-center gap-3 rounded-2xl border border-transparent px-3 py-2 text-sm font-bold text-slate-700 transition hover:border-slate-200 hover:bg-slate-50 data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=correct]:text-emerald-800 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 data-[state=wrong]:text-red-800 dark:text-slate-200 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/45 dark:data-[state=correct]:text-emerald-100 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/45 dark:data-[state=wrong]:text-red-100"
+                                                    >
+                                                        <input
+                                                                type="{{ $choiceInputType }}"
+                                                                name="desktop_choice_{{ $rowKey }}{{ $isMultiChoiceRow ? '[]' : '' }}"
+                                                                value="{{ $optionValue }}"
+                                                                class="{{ $choiceControlClass }} {{ $choiceControlRoundedClass }}"
+                                                        >
+                                                        <span class="leading-tight">{{ $optionLabel }}</span>
+                                                    </label>
+                                                @endif
+                                            </td>
+                                        @endfor
                                     @else
-                                        @foreach(($content['options'] ?? []) as $label)
-                                            <th>{{ $label }}</th>
+                                        @foreach(($content['options'] ?? []) as $key => $label)
+                                            <td class="{{ $tableCellClass }} border-r text-center last:border-r-0">
+                                                <label
+                                                        data-choice
+                                                        class="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-2xl border border-slate-300 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/45 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/45"
+                                                >
+                                                    <input
+                                                            type="{{ $choiceInputType }}"
+                                                            name="desktop_choice_{{ $rowKey }}{{ $isMultiChoiceRow ? '[]' : '' }}"
+                                                            value="{{ is_int($key) ? $label : $key }}"
+                                                            class="{{ $choiceControlClass }} {{ $choiceControlRoundedClass }}"
+                                                            aria-label="{{ $label }}"
+                                                    >
+                                                </label>
+                                            </td>
                                         @endforeach
                                     @endif
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach(($content['rows'] ?? []) as $row)
-                                    @php
-                                        $rowCorrect = $row['correct'] ?? '';
-                                        $isMultiChoiceRow = is_array($rowCorrect);
-                                        $choiceInputType = $isMultiChoiceRow ? 'checkbox' : 'radio';
-                                        $rowKey = $row['key'] ?? $row['number'] ?? $loop->index;
-                                        $rowLabel = $row['label'] ?? $row['number'] ?? '';
-                                    @endphp
-                                    <tr class="lt-choice-row" data-choice-row data-correct='@json($rowCorrect)' data-multi="{{ $isMultiChoiceRow ? '1' : '0' }}">
-                                        <td>
-                                            <span class="lt-label-pill">
-                                                {{ $rowLabel }}
-                                                @if(!empty($row['item']))
-                                                    <small>{{ $row['item'] }}</small>
-                                                @endif
-                                            </span>
-                                        </td>
-                                        @if($choiceUsesRowOptions)
-                                            @php
-                                                $rowOptions = array_values($row['options'] ?? []);
-                                            @endphp
-                                            @for($optionIndex = 0; $optionIndex < max(1, $maxChoiceColumns); $optionIndex++)
-                                                <td>
-                                                    @if(array_key_exists($optionIndex, $rowOptions))
-                                                        @php
-                                                            $optionLabel = $rowOptions[$optionIndex];
-                                                            $optionValue = is_string($optionLabel) ? $optionLabel : (string) $optionIndex;
-                                                        @endphp
-                                                        <label class="lt-choice lt-choice-inline">
-                                                            <input type="{{ $choiceInputType }}" name="desktop_choice_{{ $rowKey }}{{ $isMultiChoiceRow ? '[]' : '' }}" value="{{ $optionValue }}">
-                                                            <span class="lt-box" aria-hidden="true"></span>
-                                                            <span class="lt-choice-text">{{ $optionLabel }}</span>
-                                                        </label>
-                                                    @endif
-                                                </td>
-                                            @endfor
-                                        @else
-                                            @foreach(($content['options'] ?? []) as $key => $label)
-                                                <td>
-                                                    <label class="lt-choice">
-                                                        <input type="{{ $choiceInputType }}" name="desktop_choice_{{ $rowKey }}{{ $isMultiChoiceRow ? '[]' : '' }}" value="{{ is_int($key) ? $label : $key }}">
-                                                        <span class="lt-box" aria-hidden="true"></span>
-                                                    </label>
-                                                </td>
-                                            @endforeach
-                                        @endif
-                                    </tr>
-                                @endforeach
+                            @endforeach
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="lt-mobile-list">
+                    <div class="grid gap-3 sm:hidden">
                         @foreach(($content['rows'] ?? []) as $row)
                             @php
                                 $rowCorrect = $row['correct'] ?? '';
@@ -630,20 +235,35 @@
                                 $choiceInputType = $isMultiChoiceRow ? 'checkbox' : 'radio';
                                 $rowKey = $row['key'] ?? $row['number'] ?? $loop->index;
                                 $rowLabel = $row['label'] ?? $row['number'] ?? '';
+                                $choiceControlRoundedClass = $choiceInputType === 'radio' ? 'rounded-full' : 'rounded-md';
                             @endphp
-                            <article class="lt-mobile-card" data-choice-row data-correct='@json($rowCorrect)' data-multi="{{ $isMultiChoiceRow ? '1' : '0' }}">
+
+                            <article
+                                    data-choice-row
+                                    data-correct='@json($rowCorrect)'
+                                    data-multi="{{ $isMultiChoiceRow ? '1' : '0' }}"
+                                    class="rounded-[1.25rem] border border-slate-200 bg-white p-3 shadow-sm data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 dark:border-slate-700 dark:bg-slate-900 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/35 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/35"
+                            >
                                 <div class="mb-3">
-                                    <span class="lt-mobile-title">
-                                        {{ $rowLabel }}@if(!empty($row['item'])) - {{ $row['item'] }} @endif
+                                    <span class="{{ $pillClass }}">
+                                        {{ $rowLabel }}@if(!empty($row['item'])) <small class="text-xs font-extrabold text-slate-500 dark:text-slate-300">{{ $row['item'] }}</small> @endif
                                     </span>
                                 </div>
 
                                 <div class="grid grid-cols-1 gap-2">
                                     @foreach(($choiceUsesRowOptions ? ($row['options'] ?? []) : ($content['options'] ?? [])) as $key => $label)
-                                        <label class="lt-choice lt-mobile-option">
+                                        <label
+                                                data-choice
+                                                class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 px-3 py-3 text-sm font-black text-slate-900 transition hover:border-slate-300 hover:bg-white data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=correct]:text-emerald-800 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 data-[state=wrong]:text-red-800 dark:border-slate-700 dark:bg-slate-950/35 dark:text-slate-50 dark:hover:bg-slate-800 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/45 dark:data-[state=correct]:text-emerald-100 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/45 dark:data-[state=wrong]:text-red-100"
+                                        >
                                             <span>{{ $label }}</span>
-                                            <input type="{{ $choiceInputType }}" name="mobile_choice_{{ $rowKey }}{{ $isMultiChoiceRow ? '[]' : '' }}" value="{{ is_int($key) ? $label : $key }}">
-                                            <span class="lt-box" aria-hidden="true"></span>
+
+                                            <input
+                                                    type="{{ $choiceInputType }}"
+                                                    name="mobile_choice_{{ $rowKey }}{{ $isMultiChoiceRow ? '[]' : '' }}"
+                                                    value="{{ is_int($key) ? $label : $key }}"
+                                                    class="{{ $choiceControlClass }} {{ $choiceControlRoundedClass }} shrink-0"
+                                            >
                                         </label>
                                     @endforeach
                                 </div>
@@ -651,94 +271,93 @@
                         @endforeach
                     </div>
                 @else
-                    <div class="lt-table-wrap">
-                        <table class="lt-table" aria-label="{{ $content['table_aria_label'] ?? 'Listening answer table' }}">
+                    <div class="hidden overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 sm:block">
+                        <table class="w-full table-fixed border-separate border-spacing-0" aria-label="{{ $content['table_aria_label'] ?? 'Listening answer table' }}">
                             <thead>
-                                <tr>
-                                    <th style="width: 26%;">{{ $content['table_headers'][0] ?? 'Superstition' }}</th>
-                                    <th style="width: 27%;">{{ $content['table_headers'][1] ?? 'Country' }}</th>
-                                    <th>{{ $content['table_headers'][2] ?? 'Meaning' }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach(($content['rows'] ?? []) as $row)
-                                    @foreach(($row['answers'] ?? []) as $index => $answer)
-                                        @php
-                                            $done = !empty($answer['done']);
-                                            $countryValue = $done ? ($answer['country'] ?? '') : '';
-                                            $meaningValue = $done ? ($answer['meaning'] ?? '') : '';
-                                        @endphp
-                                        <tr>
-                                            @if($index === 0)
-                                                <td rowspan="{{ count($row['answers'] ?? []) }}" class="lt-label-cell">
-                                                    <span class="lt-label-pill">{{ $row['superstition'] ?? '' }}</span>
-                                                </td>
-                                            @endif
-                                            <td>
-                                                <input
-                                                        type="text"
-                                                        class="lt-input answer-input"
-                                                        data-answer="{{ $answer['country_answer'] ?? '' }}"
-                                                        value="{{ $countryValue }}"
-                                                        placeholder="{{ $content['country_placeholder'] ?? 'Country' }}"
-                                                        @if($done) disabled @endif
-                                                >
-                                            </td>
-                                            <td>
-                                                <input
-                                                        type="text"
-                                                        class="lt-input answer-input"
-                                                        data-answer="{{ $answer['meaning_answer'] ?? '' }}"
-                                                        value="{{ $meaningValue }}"
-                                                        placeholder="{{ $content['meaning_placeholder'] ?? 'Meaning' }}"
-                                                        @if($done) disabled @endif
-                                                >
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                            <tr>
+                                <th class="{{ $firstTypeColumnWidth }} {{ $tableHeadClass }}">
+                                    {{ $tableHeaders[0] ?? 'Superstition' }}
+                                </th>
+
+                                @foreach($typeColumns as $column)
+                                    <th class="{{ $inputTypeColumnWidth }} {{ $tableHeadClass }} border-l">
+                                        {{ $column['header'] }}
+                                    </th>
                                 @endforeach
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            @foreach(($content['rows'] ?? []) as $row)
+                                @foreach(($row['answers'] ?? []) as $index => $answer)
+                                    <tr>
+                                        @if($index === 0)
+                                            <td rowspan="{{ max(1, count($row['answers'] ?? [])) }}" class="{{ $tableCellSoftClass }} border-r">
+                                                    <span class="{{ $pillClass }}">
+                                                        {{ $row['superstition'] ?? '' }}
+                                                    </span>
+                                            </td>
+                                        @endif
+
+                                        @foreach($typeColumns as $column)
+                                            @php
+                                                $done = !empty($answer['done']);
+                                                $inputValue = $done ? ($answer[$column['value_key']] ?? '') : '';
+                                                $answerValue = $answer[$column['answer_key']] ?? '';
+                                            @endphp
+
+                                            <td class="{{ $tableCellClass }} border-r last:border-r-0">
+                                                <input
+                                                        type="text"
+                                                        class="{{ $inputClass }}"
+                                                        data-answer="{{ $answerValue }}"
+                                                        value="{{ $inputValue }}"
+                                                        placeholder="{{ $column['placeholder'] }}"
+                                                        @if($done) disabled @endif
+                                                >
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                @endforeach
+                            @endforeach
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="lt-mobile-list">
+                    <div class="grid gap-3 sm:hidden">
                         @foreach(($content['rows'] ?? []) as $row)
-                            <article class="lt-mobile-card">
+                            <article class="rounded-[1.25rem] border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                                 <div class="mb-3">
-                                    <span class="lt-mobile-title">{{ $row['superstition'] ?? '' }}</span>
+                                    <span class="{{ $pillClass }}">
+                                        {{ $row['superstition'] ?? '' }}
+                                    </span>
                                 </div>
 
                                 <div class="grid grid-cols-1 gap-3">
                                     @foreach(($row['answers'] ?? []) as $answer)
-                                        @php
-                                            $done = !empty($answer['done']);
-                                            $countryValue = $done ? ($answer['country'] ?? '') : '';
-                                            $meaningValue = $done ? ($answer['meaning'] ?? '') : '';
-                                        @endphp
-                                        <div class="grid grid-cols-1 gap-2 rounded-2xl border border-slate-200/80 bg-white/70 p-3 dark:border-slate-700/70 dark:bg-slate-950/25">
-                                            <label>
-                                                <span class="lt-field-label">{{ $content['table_headers'][1] ?? 'Country' }}</span>
-                                                <input
-                                                        type="text"
-                                                        class="lt-input answer-input"
-                                                        data-answer="{{ $answer['country_answer'] ?? '' }}"
-                                                        value="{{ $countryValue }}"
-                                                        placeholder="{{ $content['country_placeholder'] ?? 'Country' }}"
-                                                        @if($done) disabled @endif
-                                                >
-                                            </label>
+                                        <div class="grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-3 dark:border-slate-700 dark:bg-slate-950/35">
+                                            @foreach($typeColumns as $column)
+                                                @php
+                                                    $done = !empty($answer['done']);
+                                                    $inputValue = $done ? ($answer[$column['value_key']] ?? '') : '';
+                                                    $answerValue = $answer[$column['answer_key']] ?? '';
+                                                @endphp
 
-                                            <label>
-                                                <span class="lt-field-label">{{ $content['table_headers'][2] ?? 'Meaning' }}</span>
-                                                <input
-                                                        type="text"
-                                                        class="lt-input answer-input"
-                                                        data-answer="{{ $answer['meaning_answer'] ?? '' }}"
-                                                        value="{{ $meaningValue }}"
-                                                        placeholder="{{ $content['meaning_placeholder'] ?? 'Meaning' }}"
-                                                        @if($done) disabled @endif
-                                                >
-                                            </label>
+                                                <label>
+                                                    <span class="mb-1.5 block text-[0.7rem] font-black uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+                                                        {{ $column['header'] }}
+                                                    </span>
+
+                                                    <input
+                                                            type="text"
+                                                            class="{{ $inputClass }}"
+                                                            data-answer="{{ $answerValue }}"
+                                                            value="{{ $inputValue }}"
+                                                            placeholder="{{ $column['placeholder'] }}"
+                                                            @if($done) disabled @endif
+                                                    >
+                                                </label>
+                                            @endforeach
                                         </div>
                                     @endforeach
                                 </div>
@@ -788,24 +407,29 @@
 
             function clearInputState(input) {
                 if (input.disabled) return;
-                input.classList.remove('is-correct', 'is-wrong');
+
+                delete input.dataset.state;
+                input.removeAttribute('aria-invalid');
             }
 
             function isInputCorrect(input) {
                 const value = normalize(input.value);
+
                 return value !== '' && answersFor(input).includes(value);
             }
 
             function clearChoiceRow(row) {
-                row.classList.remove('is-correct', 'is-wrong');
-                row.querySelectorAll('.lt-choice').forEach(choice => {
-                    choice.classList.remove('is-correct', 'is-wrong');
+                delete row.dataset.state;
+
+                row.querySelectorAll('[data-choice]').forEach(choice => {
+                    delete choice.dataset.state;
                 });
             }
 
             function correctValues(row) {
                 try {
                     const parsed = JSON.parse(row.dataset.correct || '""');
+
                     return Array.isArray(parsed) ? parsed.map(normalize) : [normalize(parsed)];
                 } catch (error) {
                     return [normalize(row.dataset.correct || '')];
@@ -822,6 +446,7 @@
 
             function sameSet(a, b) {
                 if (a.length !== b.length) return false;
+
                 const sortedA = [...a].sort();
                 const sortedB = [...b].sort();
 
@@ -836,14 +461,19 @@
                 const correctSet = correctValues(row);
 
                 if (selected.length === 0) {
-                    row.classList.add('is-wrong');
+                    row.dataset.state = 'wrong';
                     return;
                 }
 
                 const isCorrect = sameSet(selectedSet, correctSet);
-                row.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
+                row.dataset.state = isCorrect ? 'correct' : 'wrong';
+
                 selected.forEach(input => {
-                    input.closest('.lt-choice')?.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
+                    const choice = input.closest('[data-choice]');
+
+                    if (choice) {
+                        choice.dataset.state = isCorrect ? 'correct' : 'wrong';
+                    }
                 });
             }
 
@@ -865,8 +495,10 @@
 
                 visibleInputs().forEach(input => {
                     if (input.disabled) return;
-                    input.classList.remove('is-correct', 'is-wrong');
-                    input.classList.add(isInputCorrect(input) ? 'is-correct' : 'is-wrong');
+
+                    const isCorrect = isInputCorrect(input);
+                    input.dataset.state = isCorrect ? 'correct' : 'wrong';
+                    input.setAttribute('aria-invalid', isCorrect ? 'false' : 'true');
                 });
             });
 
@@ -881,15 +513,18 @@
 
                         markChoiceRow(row);
                     });
+
                     return;
                 }
 
                 visibleInputs().forEach(input => {
                     const answer = String(input.dataset.answer || '').split('|')[0].trim();
+
                     if (!answer || input.disabled) return;
+
                     input.value = answer;
-                    input.classList.remove('is-wrong');
-                    input.classList.add('is-correct');
+                    input.dataset.state = 'correct';
+                    input.setAttribute('aria-invalid', 'false');
                 });
             });
 
@@ -899,15 +534,19 @@
                         row.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
                             input.checked = false;
                         });
+
                         clearChoiceRow(row);
                     });
+
                     return;
                 }
 
                 visibleInputs().forEach(input => {
                     if (input.disabled) return;
+
                     input.value = '';
-                    input.classList.remove('is-correct', 'is-wrong');
+                    delete input.dataset.state;
+                    input.removeAttribute('aria-invalid');
                 });
             });
 

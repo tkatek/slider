@@ -3,7 +3,7 @@
         'page_title'    => 'Listening',
         'title'         => 'Listening',
         'subtitle'      => 'Listen. Complete the questions and answers.',
-        'audio'         => materialAsset('slider/A1/Beginner/chapter-2/audios/slide9.mp3'),
+        'audio'         => materialAsset('slider/activities/audios/listening.mp3'),
 
         // Full transcript
         'script'        => [

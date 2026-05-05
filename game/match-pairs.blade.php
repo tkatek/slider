@@ -12,7 +12,7 @@
             position: relative;
             max-width: 980px;
             margin-inline: auto;
-            touch-action: none; 
+            touch-action: none;
         }
 
         .mp-line-layer {
@@ -23,17 +23,17 @@
         }
 
         .mp-line {
-            position: absolute; 
-            height: 4px; 
+            position: absolute;
+            height: 4px;
             border-radius: 999px;
             background: linear-gradient(90deg, #475569, #18181b);
             box-shadow: 0 8px 18px rgba(15, 23, 42, .10);
-            transform-origin: left center; 
+            transform-origin: left center;
             pointer-events: none;
         }
 
         .mp-line.is-drawing {
-            background: linear-gradient(90deg, #64748b, #27272a); 
+            background: linear-gradient(90deg, #64748b, #27272a);
             opacity: .86;
         }
 

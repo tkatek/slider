@@ -82,7 +82,7 @@
 @section('content')
     <main id="ticketBoothPractice" class="flex min-h-[100dvh] w-full flex-col items-center">
         @include('slider.components.title-subtitle')
-        @include('slider.components.game-status')
+
 
         <div id="ticketBoothContent" class="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-start gap-4 px-4 pb-4 sm:px-6 lg:px-8">
             <section id="ddbPoolRail" class="order-[-1] w-full max-w-full flex-none self-stretch">
