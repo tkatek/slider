@@ -89,10 +89,10 @@
                                     $dotClass = $dotClasses[$index % max(count($dotClasses), 1)] ?? 'bg-orange-400';
                                 @endphp
 
-                                <div class="group relative overflow-hidden rounded-[1.15rem] border border-white/75 bg-white/72 px-3 py-3 shadow-[0_12px_32px_-24px_rgba(15,23,42,0.28)] backdrop-blur-md transition duration-200 hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-xl dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 sm:rounded-[1.55rem] sm:px-5 sm:py-5">
-                                    <span class="absolute left-3 top-3 h-2.5 w-2.5 rounded-full opacity-80 sm:h-3 sm:w-3 {{ $dotClass }}"></span>
+                                <div class="group relative -translate-y-0.5 overflow-hidden rounded-[1.15rem] border border-white/80 bg-white/90 px-3 py-3 shadow-[0_20px_52px_-30px_rgba(15,23,42,0.34)] ring-1 ring-white/65 backdrop-blur-md transition duration-300 hover:-translate-y-1.5 hover:scale-[1.015] hover:border-white hover:bg-white hover:shadow-[0_26px_70px_-34px_rgba(15,23,42,0.48)] hover:ring-indigo-200/70 dark:border-white/10 dark:bg-white/10 dark:ring-white/10 dark:hover:border-white/15 dark:hover:bg-white/15 dark:hover:shadow-black/35 dark:hover:ring-white/20 sm:rounded-[1.55rem] sm:px-5 sm:py-5">
+                                    <span class="absolute left-3 top-3 h-2.5 w-2.5 rounded-full opacity-85 shadow-sm transition duration-300 group-hover:scale-125 sm:h-3 sm:w-3 {{ $dotClass }}"></span>
 
-                                    <span class="block text-[1.35rem] font-black leading-none tracking-[-0.025em] text-slate-800 dark:text-slate-50 sm:text-3xl lg:text-4xl">
+                                    <span class="block text-[1.35rem] font-black leading-none tracking-[-0.025em] text-slate-800 transition duration-300 group-hover:text-slate-950 dark:text-slate-50 dark:group-hover:text-white sm:text-3xl lg:text-4xl">
                                         {{ $word }}
                                     </span>
                                 </div>

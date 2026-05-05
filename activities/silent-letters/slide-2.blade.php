@@ -116,10 +116,10 @@
 
                     <div class="mx-auto mt-5 grid max-w-5xl grid-cols-1 gap-3 sm:mt-8 sm:gap-4 lg:mt-9 xl:grid-cols-2">
                         @foreach($content['questions'] as $question)
-                            <article class="group relative flex min-h-[62px] items-center gap-3 overflow-hidden rounded-[1.35rem] border border-white/75 bg-white/72 px-3.5 py-3 shadow-[0_16px_42px_-32px_rgba(15,23,42,0.24)] backdrop-blur-md transition duration-300 hover:-translate-y-0.5 hover:bg-white/90 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 sm:min-h-[68px] sm:gap-4 sm:rounded-[1.45rem] sm:px-5 sm:py-4">
+                            <article class="group relative flex min-h-[62px] -translate-y-0.5 items-center gap-3 overflow-hidden rounded-[1.35rem] border border-white/80 bg-white/90 px-3.5 py-3 shadow-[0_20px_52px_-30px_rgba(15,23,42,0.34)] ring-1 ring-white/65 backdrop-blur-md transition duration-300 hover:-translate-y-1.5 hover:scale-[1.015] hover:border-white hover:bg-white hover:shadow-[0_26px_70px_-34px_rgba(15,23,42,0.48)] hover:ring-indigo-200/70 dark:border-white/10 dark:bg-white/10 dark:ring-white/10 dark:hover:border-white/15 dark:hover:bg-white/15 dark:hover:shadow-black/35 dark:hover:ring-white/20 sm:min-h-[68px] sm:gap-4 sm:rounded-[1.45rem] sm:px-5 sm:py-4">
                                 <span class="absolute inset-y-3 left-0 w-1 rounded-r-full bg-gradient-to-b {{ $question['accent'] }}"></span>
 
-                                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-2xl shadow-sm ring-1 {{ $question['soft'] }} {{ $question['ring'] }} sm:h-12 sm:w-12">
+                                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-2xl shadow-md ring-1 transition duration-300 group-hover:scale-110 group-hover:rotate-[-3deg] {{ $question['soft'] }} {{ $question['ring'] }} sm:h-12 sm:w-12">
                                     {{ $question['emoji'] }}
                                 </span>
 
@@ -129,7 +129,7 @@
                                     </p>
                                 </div>
 
-                                <span class="hidden h-2.5 w-2.5 shrink-0 rounded-full bg-gradient-to-r {{ $question['accent'] }} sm:block"></span>
+                                <span class="hidden h-2.5 w-2.5 shrink-0 rounded-full bg-gradient-to-r shadow-sm transition duration-300 group-hover:scale-125 {{ $question['accent'] }} sm:block"></span>
                             </article>
                         @endforeach
                     </div>

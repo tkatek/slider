@@ -39,9 +39,9 @@
 
                 <div class="relative z-10 mx-auto flex max-w-5xl flex-col items-center">
                     @if(count($pillEmojis))
-                        <div class="mb-5 inline-flex items-center justify-center gap-3 rounded-full border border-white/70 bg-white/50 px-4 py-2 text-2xl shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:mb-6 sm:text-3xl">
+                        <div class="group mb-5 inline-flex -translate-y-0.5 items-center justify-center gap-3 rounded-full border border-white/80 bg-white/90 px-4 py-2 text-2xl shadow-[0_14px_36px_-28px_rgba(15,23,42,0.34)] ring-1 ring-white/65 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:scale-[1.015] hover:bg-white hover:shadow-[0_20px_54px_-30px_rgba(15,23,42,0.46)] hover:ring-indigo-200/70 dark:border-white/10 dark:bg-white/10 dark:ring-white/10 dark:hover:bg-white/15 dark:hover:ring-white/20 sm:mb-6 sm:text-3xl">
                             @foreach($pillEmojis as $emoji)
-                                <span aria-hidden="true">{{ $emoji }}</span>
+                                <span aria-hidden="true" class="transition duration-300 group-hover:scale-110 group-hover:rotate-[-3deg]">{{ $emoji }}</span>
                             @endforeach
                         </div>
                     @endif
@@ -53,16 +53,16 @@
                     @endif
 
                     @if($promptFirst !== '' || $promptSecond !== '')
-                        <div class="{{ $title !== '' ? 'mt-7 sm:mt-8' : '' }} w-full max-w-4xl rounded-[1.45rem] border border-white/75 bg-white/72 px-5 py-7 shadow-[0_18px_46px_-34px_rgba(15,23,42,0.28)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:rounded-[1.8rem] sm:px-7 sm:py-8 lg:px-9 lg:py-10">
+                        <div class="{{ $title !== '' ? 'mt-7 sm:mt-8' : '' }} group w-full max-w-4xl -translate-y-0.5 rounded-[1.45rem] border border-white/80 bg-white/90 px-5 py-7 shadow-[0_20px_52px_-30px_rgba(15,23,42,0.34)] ring-1 ring-white/65 backdrop-blur-md transition duration-300 hover:-translate-y-1.5 hover:scale-[1.015] hover:border-white hover:bg-white hover:shadow-[0_26px_70px_-34px_rgba(15,23,42,0.48)] hover:ring-indigo-200/70 dark:border-white/10 dark:bg-white/10 dark:ring-white/10 dark:hover:border-white/15 dark:hover:bg-white/15 dark:hover:shadow-black/35 dark:hover:ring-white/20 sm:rounded-[1.8rem] sm:px-7 sm:py-8 lg:px-9 lg:py-10">
                             <p class="text-3xl font-black leading-[1.25] tracking-[-0.035em] sm:text-4xl lg:text-5xl">
                                 @if($promptFirst !== '')
-                                    <span class="text-orange-500 dark:text-orange-400">
+                                    <span class="text-orange-500 transition duration-300 group-hover:text-orange-600 dark:text-orange-400 dark:group-hover:text-orange-300">
                                         {{ $promptFirst }}
                                     </span>
                                 @endif
 
                                 @if($promptSecond !== '')
-                                    <span class="text-slate-800 dark:text-slate-100">
+                                    <span class="text-slate-800 transition duration-300 group-hover:text-slate-950 dark:text-slate-100 dark:group-hover:text-white">
                                         {{ $promptFirst !== '' ? ' ' : '' }}{{ $promptSecond }}
                                     </span>
                                 @endif

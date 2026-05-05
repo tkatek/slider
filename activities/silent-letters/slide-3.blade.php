@@ -91,16 +91,16 @@
 
                         <div class="mx-auto mt-5 grid max-w-4xl grid-cols-1 gap-3 sm:mt-7 sm:gap-4 lg:mx-0 lg:mt-8">
                             @foreach($content['points'] as $index => $point)
-                                <article class="group relative overflow-hidden rounded-[1.45rem] border border-white/75 bg-white/72 px-4 py-4 shadow-[0_18px_46px_-34px_rgba(15,23,42,0.28)] backdrop-blur-md transition duration-300 hover:-translate-y-0.5 hover:bg-white/90 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 sm:rounded-[1.7rem] sm:px-5 sm:py-5 lg:px-6">
+                                <article class="group relative -translate-y-0.5 overflow-hidden rounded-[1.45rem] border border-white/80 bg-white/90 px-4 py-4 shadow-[0_20px_52px_-30px_rgba(15,23,42,0.34)] ring-1 ring-white/65 backdrop-blur-md transition duration-300 hover:-translate-y-1.5 hover:scale-[1.015] hover:border-white hover:bg-white hover:shadow-[0_26px_70px_-34px_rgba(15,23,42,0.48)] hover:ring-indigo-200/70 dark:border-white/10 dark:bg-white/10 dark:ring-white/10 dark:hover:border-white/15 dark:hover:bg-white/15 dark:hover:shadow-black/35 dark:hover:ring-white/20 sm:rounded-[1.7rem] sm:px-5 sm:py-5 lg:px-6">
                                     <span class="absolute inset-y-4 left-0 w-1 rounded-r-full bg-gradient-to-b {{ $point['accent'] }}"></span>
 
                                     <div class="relative z-10 flex items-start gap-3 sm:gap-4">
-                                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl shadow-sm ring-1 {{ $point['soft'] }} {{ $point['ring'] }} sm:h-14 sm:w-14 sm:text-3xl">
+                                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl shadow-md ring-1 transition duration-300 group-hover:scale-110 group-hover:rotate-[-3deg] {{ $point['soft'] }} {{ $point['ring'] }} sm:h-14 sm:w-14 sm:text-3xl">
                                             {{ $point['emoji'] }}
                                         </div>
 
                                         <div class="min-w-0 flex-1">
-                                            <div class="mb-2 inline-flex rounded-full bg-slate-900/5 px-2.5 py-1 text-xs font-black tracking-[0.12em] text-slate-500 dark:bg-white/10 dark:text-slate-300">
+                                            <div class="mb-2 inline-flex rounded-full bg-slate-900/5 px-2.5 py-1 text-xs font-black tracking-[0.12em] text-slate-500 shadow-sm transition duration-300 group-hover:bg-slate-900/10 group-hover:text-slate-700 dark:bg-white/10 dark:text-slate-300 dark:group-hover:bg-white/15 dark:group-hover:text-slate-100">
                                                 {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
                                             </div>
 
