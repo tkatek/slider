@@ -5,6 +5,8 @@ $content = [
     'subtitle' => '',
     'audio' => materialAsset('slider/A2/Intermediate/chapter-2/audios/slide14.mp3'),
     'activity_title' => 'Listen again and match the custom with the country',
+    'left_label' => 'Customs',
+    'right_label' => 'Countries',
 
     'script' => [
         'One',
@@ -58,4 +60,4 @@ $content = [
 ];
 ?>
 
-@include('slider.game.match-pairs', ['content' => $content])
+@include('slider.game.matching-pairs', ['content' => $content])

@@ -5,6 +5,10 @@
         $pairs = collect($content['pairs'] ?? [])->values();
         $pairById = $pairs->keyBy('id');
         $playerAudio = !empty($content['audio']) ? $content['audio'] : null;
+        $scriptLines = is_array($content['script'] ?? null)
+            ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $content['script']), static fn ($line) => $line !== ''))
+            : [];
+        $hasScript = $scriptLines !== [];
         $showCheckButton = filter_var($content['show_check_button'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $matchSounds = array_replace([
             'tap' => materialAsset('slider/sounds/tap.wav'),
@@ -38,10 +42,13 @@
         }
 
         $activityTitle = $content['activity_title'] ?? $content['directions'] ?? 'Match the items.';
+        $leftLabel = $content['left_label'] ?? 'A. Items';
+        $rightLabel = $content['right_label'] ?? 'B. Matches';
+        $hintText = $content['hint_text'] ?? 'Tap a card on the left, then tap its match on the right.';
 
-        $pictureFrameClass = 'grid aspect-[5/4] w-[min(100%,70px)] place-items-center overflow-hidden rounded-xl border border-orange-100 bg-white shadow-inner dark:border-orange-400/20 dark:bg-white/95 max-sm:w-[min(100%,52px)]';
+        $pictureFrameClass = 'match-picture';
         $imageClass = 'pointer-events-none h-full w-full object-contain';
-        $wordClass = 'block max-w-full text-balance text-[0.66rem] font-black leading-[1.15] tracking-[-0.01em] text-slate-900 dark:text-slate-50 min-[380px]:text-[0.72rem] sm:text-[0.84rem] lg:text-[0.94rem]';
+        $wordClass = 'match-word';
 
         $renderMatchItem = function ($item) use ($pictureFrameClass, $imageClass, $wordClass) {
             $type = $item['type'] ?? 'word';
@@ -56,46 +63,337 @@
             return '<span class="' . $wordClass . '">' . ($item['text'] ?? $item['word'] ?? '') . '</span>';
         };
 
-        $matchButtonBaseClass = 'inline-flex min-h-9 items-center justify-center rounded-xl px-3 py-1.5 text-[0.7rem] font-black tracking-[-0.01em] transition duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-4 sm:min-h-10 sm:rounded-2xl sm:px-4 sm:py-2 sm:text-xs max-sm:flex-1 max-[370px]:basis-full';
-        $matchButtonPrimaryClass = $matchButtonBaseClass . ' border border-white/30 bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-400 text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/35 focus:ring-orange-400/25';
-        $matchButtonSoftClass = $matchButtonBaseClass . ' border border-orange-100 bg-white text-slate-700 shadow-sm hover:border-orange-200 hover:bg-orange-50 focus:ring-orange-300/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-orange-400/35 dark:hover:bg-slate-800';
-        $matchButtonNeutralClass = $matchButtonBaseClass . ' border border-slate-200 bg-slate-950 text-white shadow-lg hover:bg-slate-800 focus:ring-slate-400/20 dark:border-slate-600 dark:bg-white dark:text-slate-950 dark:hover:bg-orange-50';
+        $matchButtonBaseClass = 'match-action-btn';
+        $matchButtonPrimaryClass = $matchButtonBaseClass . ' match-action-primary';
+        $matchButtonSoftClass = $matchButtonBaseClass . ' match-action-soft';
+        $matchButtonNeutralClass = $matchButtonBaseClass . ' match-action-dark';
 
-        $matchCardBaseClass = 'match-card relative z-10 flex min-h-[50px] w-full cursor-pointer select-none items-center justify-center rounded-xl border-2 border-orange-100/90 px-1.5 py-1 text-center shadow-[0_8px_20px_rgba(15,23,42,0.055)] transition duration-200 ease-out hover:-translate-y-0.5 hover:border-orange-300 hover:shadow-[0_14px_30px_rgba(251,146,60,0.14)] focus:outline-none focus:ring-4 focus:ring-orange-300/20 disabled:cursor-default disabled:opacity-95 disabled:hover:translate-y-0 disabled:[&_[data-connector]]:cursor-default disabled:[&_[data-connector]]:opacity-55 dark:border-slate-700/90 dark:shadow-[0_14px_30px_rgba(2,6,23,0.24)] dark:hover:border-orange-400/50 min-[380px]:min-h-[54px] sm:min-h-[66px] sm:rounded-2xl sm:px-3 sm:py-2';
-        $matchConnectorBaseClass = "absolute top-1/2 z-20 grid size-7 -translate-y-1/2 touch-none place-items-center rounded-full bg-transparent transition duration-200 ease-out after:block after:size-3 after:rounded-full after:border-2 after:border-white after:bg-orange-500 after:shadow-[0_4px_12px_rgba(249,115,22,0.45)] after:ring-2 after:ring-orange-200/80 after:content-[''] hover:scale-110 focus:outline-none dark:after:bg-orange-400 dark:after:ring-orange-300/30 max-sm:size-8 max-sm:after:size-2.5";
-        $matchConnectorStartClass = $matchConnectorBaseClass . ' -right-3.5 cursor-grab active:cursor-grabbing max-sm:-right-4';
-        $matchConnectorTargetClass = $matchConnectorBaseClass . ' -left-3.5 cursor-pointer max-sm:-left-4';
+        $matchCardBaseClass = 'match-card';
+        $matchConnectorBaseClass = 'match-connector';
+        $matchConnectorStartClass = $matchConnectorBaseClass . ' match-connector-start';
+        $matchConnectorTargetClass = $matchConnectorBaseClass . ' match-connector-target';
 
         $rowToneClasses = [
-            'bg-gradient-to-b from-orange-50/95 via-white to-white dark:from-orange-950/35 dark:via-slate-900 dark:to-slate-950',
-            'bg-gradient-to-b from-amber-50/95 via-white to-white dark:from-amber-950/30 dark:via-slate-900 dark:to-slate-950',
-            'bg-gradient-to-b from-yellow-50/90 via-white to-white dark:from-yellow-950/20 dark:via-slate-900 dark:to-slate-950',
-            'bg-gradient-to-b from-white via-white to-orange-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-orange-950/20',
+            'bg-white dark:bg-slate-900',
+            'bg-sky-50/75 dark:bg-sky-950/20',
+            'bg-violet-50/70 dark:bg-violet-950/20',
+            'bg-emerald-50/70 dark:bg-emerald-950/20',
+            'bg-rose-50/65 dark:bg-rose-950/20',
+            'bg-cyan-50/70 dark:bg-cyan-950/20',
         ];
     @endphp
 
-    <main class="flex min-h-[100dvh] w-full flex-col justify-center overflow-x-hidden">
+    <style>
+            #matchingPairsShell {
+                --match-accent: #4f46e5;
+                --match-accent-2: #06b6d4;
+                --match-line: #10b981;
+            }
+
+            .matching-panel {
+                border-radius: 1.35rem;
+                border: 1px solid rgba(203, 213, 225, .9);
+                background:
+                    radial-gradient(120% 90% at 0% 0%, rgba(14, 165, 233, .11), transparent 46%),
+                    radial-gradient(90% 100% at 100% 0%, rgba(124, 58, 237, .10), transparent 44%),
+                    radial-gradient(100% 80% at 50% 100%, rgba(16, 185, 129, .08), transparent 48%),
+                    rgba(255, 255, 255, .94);
+                box-shadow: 0 20px 46px -34px rgba(15, 23, 42, .42);
+            }
+
+            .dark .matching-panel {
+                border-color: rgba(71, 85, 105, .72);
+                background:
+                    radial-gradient(120% 90% at 0% 0%, rgba(14, 165, 233, .14), transparent 46%),
+                    radial-gradient(90% 100% at 100% 0%, rgba(124, 58, 237, .16), transparent 44%),
+                    radial-gradient(100% 80% at 50% 100%, rgba(16, 185, 129, .10), transparent 48%),
+                    rgba(15, 23, 42, .86);
+            }
+
+            .matching-board {
+                display: grid;
+                grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+                align-items: stretch;
+                column-gap: clamp(2rem, 6vw, 7.5rem);
+                row-gap: clamp(.34rem, .8vh, .65rem);
+            }
+
+            .match-column-label {
+                position: sticky;
+                top: 0;
+                z-index: 7;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 2rem;
+                border-radius: 999px;
+                border: 1px solid rgba(203, 213, 225, .9);
+                background: linear-gradient(135deg, rgba(255, 255, 255, .92), rgba(248, 250, 252, .86));
+                color: #1e293b;
+                font-size: .72rem;
+                font-weight: 950;
+                letter-spacing: .02em;
+                box-shadow: 0 10px 22px -18px rgba(15, 23, 42, .45);
+                backdrop-filter: blur(10px);
+            }
+
+            .dark .match-column-label {
+                border-color: rgba(71, 85, 105, .8);
+                background: rgba(15, 23, 42, .76);
+                color: #e2e8f0;
+            }
+
+            .match-card {
+                position: relative;
+                z-index: 10;
+                display: flex;
+                width: 100%;
+                min-height: clamp(2.45rem, 7.2vh, 4.15rem);
+                cursor: pointer;
+                user-select: none;
+                align-items: center;
+                justify-content: center;
+                border-radius: 1rem;
+                border: 2px solid rgba(203, 213, 225, .88);
+                padding: .35rem .52rem;
+                text-align: center;
+                box-shadow: 0 10px 24px -20px rgba(15, 23, 42, .52);
+                transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+            }
+
+            .match-card:hover {
+                transform: translateY(-1px);
+                border-color: rgba(99, 102, 241, .72);
+                box-shadow: 0 14px 28px -22px rgba(79, 70, 229, .62);
+            }
+
+            .match-card:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 4px rgba(99, 102, 241, .20), 0 14px 28px -22px rgba(79, 70, 229, .62);
+            }
+
+            .match-card:disabled {
+                cursor: default;
+                opacity: .98;
+                transform: none;
+            }
+
+            .dark .match-card {
+                border-color: rgba(51, 65, 85, .96);
+                box-shadow: 0 14px 28px -22px rgba(2, 6, 23, .82);
+            }
+
+            .match-card > span:not(.match-connector) {
+                width: 100%;
+                min-width: 0;
+                padding-inline: clamp(.4rem, 1.8vw, 1.45rem);
+            }
+
+            .match-word {
+                display: block;
+                max-width: 100%;
+                color: #0f172a;
+                font-size: clamp(.68rem, 1.52vw, .98rem);
+                font-weight: 950;
+                line-height: 1.14;
+                overflow-wrap: anywhere;
+                text-wrap: balance;
+            }
+
+            .dark .match-word {
+                color: #f8fafc;
+            }
+
+            .match-picture {
+                display: grid;
+                aspect-ratio: 5 / 4;
+                width: min(100%, 4.4rem);
+                place-items: center;
+                overflow: hidden;
+                border-radius: .9rem;
+                border: 1px solid rgba(203, 213, 225, .9);
+                background: #fff;
+                box-shadow: inset 0 1px 5px rgba(15, 23, 42, .08);
+            }
+
+            .match-connector {
+                position: absolute;
+                top: 50%;
+                z-index: 20;
+                display: grid;
+                width: 2rem;
+                height: 2rem;
+                translate: 0 -50%;
+                touch-action: none;
+                place-items: center;
+                border-radius: 999px;
+                background: transparent;
+                transition: transform .16s ease;
+            }
+
+            .match-connector::after {
+                content: "";
+                display: block;
+                width: .72rem;
+                height: .72rem;
+                border-radius: 999px;
+                border: 2px solid #fff;
+                background: linear-gradient(135deg, #4f46e5, #06b6d4);
+                box-shadow: 0 4px 12px rgba(79, 70, 229, .34);
+                outline: 2px solid rgba(125, 211, 252, .58);
+            }
+
+            .match-connector:hover {
+                transform: scale(1.12);
+            }
+
+            .match-connector-start {
+                right: -1rem;
+                cursor: grab;
+            }
+
+            .match-connector-start:active {
+                cursor: grabbing;
+            }
+
+            .match-connector-target {
+                left: -1rem;
+                cursor: pointer;
+            }
+
+            .match-action-btn {
+                display: inline-flex;
+                min-height: 2rem;
+                align-items: center;
+                justify-content: center;
+                border-radius: .85rem;
+                padding: .36rem .72rem;
+                font-size: .72rem;
+                font-weight: 950;
+                line-height: 1;
+                transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease;
+            }
+
+            .match-action-btn:hover {
+                transform: translateY(-1px);
+            }
+
+            .match-action-primary {
+                border: 1px solid rgba(255, 255, 255, .45);
+                background: linear-gradient(135deg, #4f46e5, #06b6d4, #10b981);
+                color: #fff;
+                box-shadow: 0 12px 24px -18px rgba(79, 70, 229, .8);
+            }
+
+            .match-action-soft {
+                border: 1px solid rgba(203, 213, 225, .9);
+                background: #fff;
+                color: #334155;
+            }
+
+            .match-action-dark {
+                border: 1px solid rgba(15, 23, 42, .12);
+                background: #0f172a;
+                color: #fff;
+            }
+
+            .dark .match-action-soft {
+                border-color: rgba(71, 85, 105, .9);
+                background: rgba(15, 23, 42, .78);
+                color: #e2e8f0;
+            }
+
+            .dark .match-action-dark {
+                border-color: rgba(255, 255, 255, .12);
+                background: #fff;
+                color: #0f172a;
+            }
+
+            @media (max-width: 640px) {
+                .matching-panel {
+                    border-radius: 1rem;
+                }
+
+                .matching-board {
+                    column-gap: 2rem;
+                    row-gap: .32rem;
+                }
+
+                .match-column-label {
+                    min-height: 1.65rem;
+                    font-size: .62rem;
+                }
+
+                .match-card {
+                    min-height: clamp(2.18rem, 6.6vh, 3rem);
+                    border-radius: .82rem;
+                    padding: .26rem .36rem;
+                }
+
+                .match-word {
+                    font-size: clamp(.58rem, 3.05vw, .74rem);
+                    line-height: 1.1;
+                }
+
+                .match-card > span:not(.match-connector) {
+                    padding-inline: .28rem;
+                }
+
+                .match-connector {
+                    width: 1.75rem;
+                    height: 1.75rem;
+                }
+
+                .match-connector::after {
+                    width: .56rem;
+                    height: .56rem;
+                }
+
+                .match-connector-start {
+                    right: -.9rem;
+                }
+
+                .match-connector-target {
+                    left: -.9rem;
+                }
+
+                .match-action-btn {
+                    flex: 1 1 auto;
+                    min-height: 1.85rem;
+                    border-radius: .72rem;
+                    padding-inline: .55rem;
+                    font-size: .66rem;
+                }
+            }
+    </style>
+
+    <main id="matchingPairsShell" class="flex min-h-[100dvh] w-full flex-col justify-center overflow-x-hidden">
         @include('slider.components.title-subtitle')
 
-        <section class="mx-auto w-full max-w-6xl px-1.5 py-1.5 sm:px-5 sm:py-4 lg:px-6">
+        <section class="mx-auto w-full max-w-6xl px-1.5 py-1 sm:px-5 sm:py-3 lg:px-6">
             @if($playerAudio)
-                <div class="mx-auto mb-3 max-w-3xl sm:mb-5">
+                <div class="mx-auto mb-2 max-w-3xl sm:mb-4">
                     @include('slider.components.audio-player')
                 </div>
             @endif
 
-            <div class="rounded-[1.1rem] border border-orange-100/90 bg-white/95 p-2 shadow-[0_18px_44px_rgba(15,23,42,0.075)] backdrop-blur dark:border-slate-700/70 dark:bg-slate-950/92 sm:rounded-[1.6rem] sm:p-4 lg:p-5">
-                <div class="mb-2.5 flex flex-col gap-2 sm:mb-4 lg:flex-row lg:items-center lg:justify-between">
-                    <h2 class="text-balance text-sm font-black leading-tight tracking-[-0.03em] text-slate-950 dark:text-white sm:text-xl lg:text-2xl">
-                        {{ $activityTitle }}
-                    </h2>
+            <div class="matching-panel p-2 sm:p-3 lg:p-4">
+                <div class="mb-2 flex flex-col gap-2 sm:mb-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div class="min-w-0">
+                        <h2 class="text-balance text-sm font-black leading-tight tracking-[-0.03em] text-slate-950 dark:text-white sm:text-lg lg:text-xl">
+                            {{ $activityTitle }}
+                        </h2>
+                        <p class="mt-1 hidden text-xs font-bold leading-tight text-slate-500 dark:text-slate-300 sm:block">
+                            {{ $hintText }}
+                        </p>
+                    </div>
 
                     <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 max-sm:w-full">
-                        <div class="inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-1.5 text-[0.68rem] font-black text-emerald-700 shadow-sm dark:border-emerald-400/20 dark:bg-emerald-950/25 dark:text-emerald-200 sm:px-3 sm:text-xs">
+                        <div class="inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-1 text-[0.68rem] font-black text-emerald-700 shadow-sm dark:border-emerald-400/20 dark:bg-emerald-950/25 dark:text-emerald-200 sm:px-3 sm:text-xs">
                             <span>Score</span>
                             <span><span id="score">0</span>/<span>{{ $pairs->count() }}</span></span>
                         </div>
-                        <div class="inline-flex items-center gap-1.5 rounded-full border border-rose-100 bg-rose-50 px-2.5 py-1.5 text-[0.68rem] font-black text-rose-700 shadow-sm dark:border-rose-400/20 dark:bg-rose-950/25 dark:text-rose-200 sm:px-3 sm:text-xs">
+                        <div class="inline-flex items-center gap-1.5 rounded-full border border-rose-100 bg-rose-50 px-2.5 py-1 text-[0.68rem] font-black text-rose-700 shadow-sm dark:border-rose-400/20 dark:bg-rose-950/25 dark:text-rose-200 sm:px-3 sm:text-xs">
                             <span>Mistakes</span>
                             <span id="mistakes">0</span>
                         </div>
@@ -116,8 +414,11 @@
                     </div>
                 </div>
 
-                <div id="matchBoard" class="relative mx-auto grid w-full touch-none grid-cols-2 items-center gap-x-7 gap-y-1.5 min-[380px]:gap-x-8 sm:gap-x-14 sm:gap-y-2.5 md:gap-x-20 lg:gap-x-24 xl:gap-x-32">
+                <div id="matchBoard" class="matching-board relative mx-auto w-full touch-none">
                     <svg id="lineLayer" class="pointer-events-none absolute inset-0 z-[5] h-full w-full overflow-visible" aria-hidden="true"></svg>
+
+                    <div class="match-column-label">{{ $leftLabel }}</div>
+                    <div class="match-column-label">{{ $rightLabel }}</div>
 
                     @foreach($leftItems as $index => $item)
                         <button
@@ -128,7 +429,7 @@
                                 data-row-tone="{{ $index % 4 }}"
                                 aria-label="Select {{ strip_tags($item['content']['text'] ?? $item['content']['word'] ?? 'left item') }}"
                         >
-                            <span class="px-2 sm:px-6">
+                            <span>
                                 {!! $renderMatchItem($item['content']) !!}
                             </span>
                             <span class="{{ $matchConnectorStartClass }}" data-connector="start" aria-hidden="true"></span>
@@ -143,7 +444,7 @@
                                 aria-label="Choose {{ strip_tags($rightItems[$index]['content']['text'] ?? $rightItems[$index]['content']['word'] ?? 'right item') }}"
                         >
                             <span class="{{ $matchConnectorTargetClass }}" data-connector="target" aria-hidden="true"></span>
-                            <span class="px-2 sm:px-6">
+                            <span>
                                 {!! $renderMatchItem($rightItems[$index]['content']) !!}
                             </span>
                         </button>
@@ -196,27 +497,27 @@
 
             const svgNamespace = 'http://www.w3.org/2000/svg';
             const lineClass = 'stroke-emerald-500 [stroke-linecap:round] [stroke-width:4.5] drop-shadow-sm dark:stroke-emerald-300 max-sm:[stroke-width:3.5]';
-            const activeLineClass = 'stroke-orange-500 opacity-90 [stroke-linecap:round] [stroke-width:4.5] drop-shadow-sm dark:stroke-orange-300 max-sm:[stroke-width:3.5]';
+            const activeLineClass = 'stroke-indigo-500 opacity-90 [stroke-linecap:round] [stroke-width:4.5] drop-shadow-sm dark:stroke-cyan-300 max-sm:[stroke-width:3.5]';
 
             const stateClasses = {
                 selected: [
                     '-translate-y-0.5',
-                    '!border-orange-500',
-                    '!bg-orange-50',
+                    '!border-indigo-500',
+                    '!bg-indigo-50',
                     '!bg-none',
                     'ring-4',
-                    'ring-orange-400/25',
-                    'shadow-[0_16px_34px_rgba(249,115,22,0.18)]',
-                    'dark:!border-orange-300',
-                    'dark:!bg-orange-950/35',
-                    'dark:ring-orange-300/15',
+                    'ring-indigo-400/25',
+                    'shadow-[0_16px_34px_rgba(79,70,229,0.18)]',
+                    'dark:!border-indigo-300',
+                    'dark:!bg-indigo-950/35',
+                    'dark:ring-indigo-300/15',
                 ],
                 target: [
-                    '!border-amber-400',
+                    '!border-sky-400',
                     'ring-4',
-                    'ring-amber-300/18',
-                    'dark:!border-amber-300/80',
-                    'dark:ring-amber-300/12',
+                    'ring-sky-300/18',
+                    'dark:!border-sky-300/80',
+                    'dark:ring-sky-300/12',
                 ],
                 correct: [
                     '!border-emerald-400',
@@ -242,9 +543,9 @@
                 connectorHot: [
                     'scale-125',
                     'after:!bg-slate-950',
-                    'after:!ring-orange-300',
+                    'after:!ring-sky-300',
                     'dark:after:!bg-white',
-                    'dark:after:!ring-orange-200/40',
+                    'dark:after:!ring-sky-200/40',
                 ],
             };
 

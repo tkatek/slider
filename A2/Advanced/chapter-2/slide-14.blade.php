@@ -4,6 +4,8 @@ $content = [
     'title' => 'Practice 5',
     'subtitle' => '',
     'activity_title' => 'Match each unusual job (1–4) with the correct definition (A–D).',
+    'left_label' => 'Jobs',
+    'right_label' => 'Definitions',
 
     'pairs' => [
         [

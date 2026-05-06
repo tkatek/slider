@@ -5,6 +5,8 @@ $content = [
     'title' => 'Task 2',
     'subtitle' => 'Listen again. What sport does each person want to try?',
     'activity_title' => 'Match each person with the sport they want to try.',
+    'left_label' => 'People',
+    'right_label' => 'Sports',
     'audio' => materialAsset("slider/A2/Beginner/chapter11/audios/slide11/dialogue.mp3"),
     'script' => [
         'I was a big athlete in high school. All I did was swimming, swimming, and more swimming! But I work now, and I never go swimming. I know that I should exercise more, but I’m just too lazy. Jogging? That’s way too much work, and it really makes my knees hurt. A lot of people I know are into bicycling, but I don’t have a bike. I guess there’s tennis, though. My wife loves it, and wants to teach me how to play. I’d like to play, I think.',
@@ -53,4 +55,4 @@ $content = [
 
 ?>
 
-@include('slider.game.match-pairs', ['content' => $content])
+@include('slider.game.matching-pairs', ['content' => $content])

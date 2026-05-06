@@ -4,6 +4,8 @@ $content = [
     'title' => 'Practice 6',
     'subtitle' => '',
     'activity_title' => 'Read & Match the sentences',
+    'left_label' => 'Sentences',
+    'right_label' => 'Replies',
 
     'pairs' => [
         [
@@ -85,4 +87,4 @@ $content = [
 ];
 ?>
 
-@include('slider.game.match-pairs', ['content' => $content])
+@include('slider.game.matching-pairs', ['content' => $content])

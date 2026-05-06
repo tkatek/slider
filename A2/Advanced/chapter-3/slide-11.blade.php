@@ -4,6 +4,8 @@ $content = [
     'title' => 'Practice 5',
     'subtitle' => '',
     'activity_title' => 'Match each job with the correct action.',
+    'left_label' => 'Jobs',
+    'right_label' => 'Actions',
 
     'pairs' => [
         [
@@ -14,7 +16,7 @@ $content = [
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'e. checks patients',
+                'text' => 'e. checks patients', 
             ],
         ],
         [
