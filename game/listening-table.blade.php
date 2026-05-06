@@ -11,6 +11,7 @@
     $hasScript = $scriptLines !== [];
 
     $choiceRows = is_array($content['rows'] ?? null) ? $content['rows'] : [];
+    $optionsList = is_array($content['options_list'] ?? null) ? $content['options_list'] : [];
     $choiceUsesRowOptions = false;
     $maxChoiceColumns = 0;
 
@@ -122,6 +123,31 @@
                         </button>
                     </div>
                 </div>
+
+                @if($optionsList !== [])
+                    <div class="mb-4 rounded-2xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
+                        @if(($content['options_list_title'] ?? '') !== '')
+                            <p class="mb-2 text-xs font-black uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+                                {{ $content['options_list_title'] }}
+                            </p>
+                        @endif
+
+                        <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                            @foreach($optionsList as $letter => $option)
+                                @php
+                                    $isAssocOption = !is_int($letter);
+                                @endphp
+
+                                <div class="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-sm font-black text-slate-800 dark:border-slate-800 dark:bg-slate-950/35 dark:text-slate-100">
+                                    @if($isAssocOption)
+                                        <span class="mr-1 text-slate-500 dark:text-slate-400">{{ $letter }}.</span>
+                                    @endif
+                                    <span>{{ $option }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
 
                 @if($mode === 'choice_table')
                     <div class="hidden overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 sm:block">

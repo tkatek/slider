@@ -3,7 +3,7 @@ $content = [
     'page_title' => 'Discussion',
     'title'      => 'Discussion',
     'subtitle'   => '',
-    'image'      => materialAsset('slider/A2/Advanced/chapter-3/img/slide1.webp'),
+    'image'      => materialAsset('slider/A2/Advanced/chapter-3/img/slide4.webp'),
 
     'cards' => [
         [

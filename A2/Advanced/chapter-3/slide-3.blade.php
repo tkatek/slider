@@ -10,6 +10,7 @@ $content = [
             'title' => '',
             'description' => '',
             'image' => materialAsset('slider/A2/Advanced/chapter-1/img/slide3/singer.webp'),
+            'audio' => materialAsset('slider/A1/Beginner/chapter-1/audios/vocab/Nurse.mpeg'),
         ],
         [
             'title' => '',
@@ -33,16 +34,19 @@ $content = [
             'title' => '',
             'description' => '',
             'image' => materialAsset('slider/A1/Advanced/chapter-4/img/slide7/taxi.webp'),
+            'audio' => materialAsset('slider/A1/Beginner/chapter-1/audios/vocab/Firefighter.mpeg'),
         ],
         [
             'title' => '',
             'description' => '',
             'image' => materialAsset('slider/A1/Beginner/chapter-1/img/slide9/farmer.webp'),
+            'audio' => materialAsset('slider/A1/Beginner/chapter-1/audios/vocab/Firefighter.mpeg'),
         ],
         [
             'title' => '',
             'description' => '',
             'image' => materialAsset('slider/A2/Advanced/chapter-1/img/slide3/veterinarian.webp'),
+            'audio' => materialAsset('slider/A1/Beginner/chapter-1/audios/vocab/Firefighter.mpeg'),
         ],
         [
             'title' => '',
@@ -66,11 +70,13 @@ $content = [
             'title' => '',
             'description' => '',
             'image' => materialAsset('slider/A2/Advanced/chapter-1/img/slide3/salesperson.webp'),
+            'audio' => materialAsset('slider/A1/Beginner/chapter-1/audios/vocab/Firefighter.mpeg'),
         ],
         [
             'title' => '',
             'description' => '',
             'image' => materialAsset('slider/A2/Advanced/chapter-1/img/slide3/cook.webp'),
+            'audio' => materialAsset('slider/A1/Beginner/chapter-1/audios/vocab/Firefighter.mpeg'),
         ],
         [
             'title' => '',
@@ -109,8 +115,8 @@ $content = [
 @section('title', $pageTitle)
 
 @section("content")
-    <main class="w-full">
-        <div id="app" class="relative mx-auto w-full max-w-5xl px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
+    <main class="flex min-h-[100dvh] w-full flex-col items-center justify-center px-4 py-4">
+        <div id="app" class="relative mx-auto w-full max-w-5xl px-0 sm:px-4 lg:px-6">
             <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
                 <div class="absolute left-10 top-10 h-48 w-48 rounded-full bg-[var(--ambient-one)] opacity-20 blur-3xl"></div>
                 <div class="absolute bottom-10 right-10 h-48 w-48 rounded-full bg-[var(--ambient-two)] opacity-20 blur-3xl"></div>
@@ -227,11 +233,7 @@ $content = [
             </div>
         </div>
 
-        <div id="toastOverlay" class="pointer-events-none fixed bottom-24 left-1/2 z-50 w-full max-w-3xl -translate-x-1/2 px-4 sm:bottom-28">
-            <div id="toastArea" class="space-y-2"></div>
-        </div>
-
-        <div id="bottomBar" class="sticky bottom-3 z-50 mx-auto mt-5 w-full max-w-xl px-4 sm:px-0">
+        <div id="bottomBar" class="z-50 mx-auto mt-4 w-full max-w-xl px-0">
             <div class="rounded-2xl border border-white/70 bg-white/86 p-2 shadow-[0_18px_45px_-34px_rgba(15,23,42,0.55)] ring-1 ring-slate-200/70 backdrop-blur-xl dark:border-slate-700/40 dark:bg-slate-950/70 dark:ring-slate-700/45">
                 <div class="grid grid-cols-3 gap-2 sm:gap-3">
                     <button id="btnShuffle"
@@ -283,8 +285,6 @@ $content = [
 
             const progressEl = document.getElementById("progress");
             const totalCardsEl = document.getElementById("totalCards");
-            const toastArea = document.getElementById("toastArea");
-
             const btnDeal = document.getElementById("btnDeal");
             const btnUndo = document.getElementById("btnUndo");
             const btnShuffle = document.getElementById("btnShuffle");
@@ -305,7 +305,6 @@ $content = [
             let unlocked = false;
 
             const classNames = {
-                toast: "pointer-events-auto mx-auto flex w-fit items-center gap-2 rounded-2xl border border-white/70 bg-white/90 px-4 py-3 text-sm font-black text-slate-900 shadow-xl shadow-slate-900/10 ring-1 ring-slate-200/70 backdrop-blur-xl dark:border-slate-700/45 dark:bg-slate-950/80 dark:text-slate-50 dark:ring-slate-700/50",
                 activeCard: "relative mx-auto w-full max-w-[24rem] rounded-[1.5rem] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-200 p-3 shadow-[0_22px_55px_-38px_rgba(15,23,42,0.65)] ring-1 ring-white/80 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 dark:ring-slate-700/60",
                 imageWrap: "rounded-[1.15rem] bg-gradient-to-br from-slate-100 via-slate-200 to-slate-400 p-3 dark:from-slate-800 dark:via-slate-800 dark:to-slate-950",
                 imageFrame: "aspect-square overflow-hidden rounded-[0.9rem] border border-white bg-white ring-1 ring-slate-200/90 dark:border-slate-200 dark:bg-slate-100",
@@ -425,6 +424,8 @@ $content = [
             }
 
             function toast(message, icon = "✨") {
+                return;
+
                 const element = document.createElement("div");
                 element.className = classNames.toast;
 

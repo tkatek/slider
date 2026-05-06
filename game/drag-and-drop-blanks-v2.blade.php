@@ -10,8 +10,21 @@
     $writingTitle = trim((string) ($content['writing_title'] ?? ''));
     $writingSubtitle = trim((string) ($content['writing_subtitle'] ?? ''));
     $playerAudio = !empty($content['audio']) ? $content['audio'] : (!empty($content['audio_src']) ? $content['audio_src'] : null);
-    $scriptLines = [];
-    $hasScript = false;
+    $normalizeScriptLines = static function ($rawScript) {
+        if (is_array($rawScript)) {
+            return array_values(array_filter(
+                array_map(static fn ($line) => trim((string) $line), $rawScript),
+                static fn ($line) => $line !== ''
+            ));
+        }
+
+        return array_values(array_filter(
+            array_map('trim', preg_split('/\R+/', trim((string) $rawScript)) ?: []),
+            static fn ($line) => $line !== ''
+        ));
+    };
+    $scriptLines = $normalizeScriptLines($content['script'] ?? $content['transcript'] ?? []);
+    $hasScript = $scriptLines !== [];
     $writingExamples = array_values(array_filter(
         array_map(static fn ($example) => trim((string) $example), $content['writing_examples'] ?? []),
         static fn ($example) => $example !== ''

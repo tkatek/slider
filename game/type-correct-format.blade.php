@@ -21,7 +21,7 @@
         .verb-game-inner {
             min-height: 100dvh;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1360px;
             margin: 0 auto;
             padding: 12px 10px 18px;
             display: flex;
@@ -137,7 +137,7 @@
 
         .verb-grid {
             width: 100%;
-            max-width: 960px;
+            max-width: 1120px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr;
@@ -208,7 +208,7 @@
         }
 
         .verb-game-main.is-stacked-full-input .verb-grid {
-            max-width: 980px;
+            max-width: 1160px;
             grid-template-columns: 1fr;
         }
 
@@ -254,7 +254,7 @@
         }
 
         .verb-game-main.is-single-question .verb-grid {
-            max-width: 920px;
+            max-width: 1080px;
             min-height: clamp(220px, 38vh, 360px);
             align-items: center;
             justify-items: center;
@@ -262,7 +262,7 @@
         }
 
         .verb-game-main.is-single-question .verb-card {
-            width: min(100%, 860px);
+            width: min(100%, 980px);
             padding: 22px 18px;
         }
 

@@ -46,6 +46,35 @@
         $rightLabel = $content['right_label'] ?? 'B. Matches';
         $hintText = $content['hint_text'] ?? 'Tap a card on the left, then tap its match on the right.';
 
+        $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+        $primaryButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500'));
+        $matchPrimary = $isOrangeTheme ? '#f97316' : '#6366f1';
+        $matchSecondary = $isOrangeTheme ? '#fb923c' : '#38bdf8';
+        $matchPrimaryRgb = $isOrangeTheme ? '249, 115, 22' : '99, 102, 241';
+        $matchSecondaryRgb = $isOrangeTheme ? '251, 146, 60' : '56, 189, 248';
+        $matchGlowOne = $isOrangeTheme ? 'rgba(254, 215, 170, .38)' : 'rgba(191,219,254,.42)';
+        $matchGlowTwo = $isOrangeTheme ? 'rgba(253, 186, 116, .30)' : 'rgba(199,210,254,.34)';
+        $matchDarkGlowOne = $isOrangeTheme ? 'rgba(249, 115, 22, .20)' : 'rgba(59,130,246,.20)';
+        $matchDarkGlowTwo = $isOrangeTheme ? 'rgba(251, 146, 60, .16)' : 'rgba(129,140,248,.16)';
+        $matchAccentGradient = $isOrangeTheme
+            ? 'linear-gradient(135deg, #fb923c 0%, #f97316 54%, #ea580c 100%)'
+            : 'linear-gradient(135deg, #38bdf8 0%, #6366f1 54%, #8b5cf6 100%)';
+        $dotGradients = $isOrangeTheme ? [
+            ['gradient' => 'linear-gradient(135deg, #fb923c, #f97316)', 'solid' => '#f97316'],
+            ['gradient' => 'linear-gradient(135deg, #fbbf24, #f59e0b)', 'solid' => '#f59e0b'],
+            ['gradient' => 'linear-gradient(135deg, #f97316, #dc2626)', 'solid' => '#ea580c'],
+            ['gradient' => 'linear-gradient(135deg, #14b8a6, #0f766e)', 'solid' => '#0d9488'],
+            ['gradient' => 'linear-gradient(135deg, #a855f7, #7c3aed)', 'solid' => '#8b5cf6'],
+            ['gradient' => 'linear-gradient(135deg, #ef4444, #e11d48)', 'solid' => '#ef4444'],
+        ] : [
+            ['gradient' => 'linear-gradient(135deg, #38bdf8, #2563eb)', 'solid' => '#2563eb'],
+            ['gradient' => 'linear-gradient(135deg, #6366f1, #8b5cf6)', 'solid' => '#6366f1'],
+            ['gradient' => 'linear-gradient(135deg, #a855f7, #d946ef)', 'solid' => '#a855f7'],
+            ['gradient' => 'linear-gradient(135deg, #14b8a6, #22c55e)', 'solid' => '#14b8a6'],
+            ['gradient' => 'linear-gradient(135deg, #f59e0b, #f97316)', 'solid' => '#f97316'],
+            ['gradient' => 'linear-gradient(135deg, #ec4899, #e11d48)', 'solid' => '#ec4899'],
+        ];
+
         $pictureFrameClass = 'match-picture';
         $imageClass = 'pointer-events-none h-full w-full object-contain';
         $wordClass = 'match-word';
@@ -64,7 +93,7 @@
         };
 
         $matchButtonBaseClass = 'match-action-btn';
-        $matchButtonPrimaryClass = $matchButtonBaseClass . ' match-action-primary';
+        $matchButtonPrimaryClass = $matchButtonBaseClass . ' match-action-primary ' . $primaryButtonClass;
         $matchButtonSoftClass = $matchButtonBaseClass . ' match-action-soft';
         $matchButtonNeutralClass = $matchButtonBaseClass . ' match-action-dark';
 
@@ -75,38 +104,42 @@
 
         $rowToneClasses = [
             'bg-white dark:bg-slate-900',
-            'bg-sky-50/75 dark:bg-sky-950/20',
-            'bg-violet-50/70 dark:bg-violet-950/20',
-            'bg-emerald-50/70 dark:bg-emerald-950/20',
-            'bg-rose-50/65 dark:bg-rose-950/20',
-            'bg-cyan-50/70 dark:bg-cyan-950/20',
         ];
     @endphp
 
     <style>
             #matchingPairsShell {
-                --match-accent: #4f46e5;
-                --match-accent-2: #06b6d4;
-                --match-line: #10b981;
+                --match-primary: {{ $matchPrimary }};
+                --match-secondary: {{ $matchSecondary }};
+                --match-primary-rgb: {{ $matchPrimaryRgb }};
+                --match-secondary-rgb: {{ $matchSecondaryRgb }};
+                --match-accent-gradient: {{ $matchAccentGradient }};
+                --match-glow-one: {{ $matchGlowOne }};
+                --match-glow-two: {{ $matchGlowTwo }};
+                --match-dark-glow-one: {{ $matchDarkGlowOne }};
+                --match-dark-glow-two: {{ $matchDarkGlowTwo }};
+                --match-ink: #0f172a;
+                --match-panel: rgba(255, 255, 255, .9);
+                --match-card: rgba(255, 255, 255, .86);
             }
 
             .matching-panel {
                 border-radius: 1.35rem;
                 border: 1px solid rgba(203, 213, 225, .9);
                 background:
-                    radial-gradient(120% 90% at 0% 0%, rgba(14, 165, 233, .11), transparent 46%),
-                    radial-gradient(90% 100% at 100% 0%, rgba(124, 58, 237, .10), transparent 44%),
-                    radial-gradient(100% 80% at 50% 100%, rgba(16, 185, 129, .08), transparent 48%),
-                    rgba(255, 255, 255, .94);
-                box-shadow: 0 20px 46px -34px rgba(15, 23, 42, .42);
+                    radial-gradient(900px 420px at 7% 0%, var(--match-glow-one), transparent 58%),
+                    radial-gradient(820px 420px at 98% 0%, var(--match-glow-two), transparent 56%),
+                    linear-gradient(180deg, rgba(248, 250, 252, .94), rgba(255, 255, 255, .9));
+                box-shadow: 0 22px 50px -34px rgba(15, 23, 42, .48);
+                backdrop-filter: blur(16px);
             }
 
             .dark .matching-panel {
                 border-color: rgba(71, 85, 105, .72);
                 background:
-                    radial-gradient(120% 90% at 0% 0%, rgba(14, 165, 233, .14), transparent 46%),
-                    radial-gradient(90% 100% at 100% 0%, rgba(124, 58, 237, .16), transparent 44%),
-                    radial-gradient(100% 80% at 50% 100%, rgba(16, 185, 129, .10), transparent 48%),
+                    radial-gradient(900px 420px at 7% 0%, var(--match-dark-glow-one), transparent 58%),
+                    radial-gradient(820px 420px at 98% 0%, var(--match-dark-glow-two), transparent 56%),
+                    linear-gradient(180deg, rgba(30, 41, 59, .86), rgba(15, 23, 42, .88)),
                     rgba(15, 23, 42, .86);
             }
 
@@ -128,7 +161,9 @@
                 min-height: 2rem;
                 border-radius: 999px;
                 border: 1px solid rgba(203, 213, 225, .9);
-                background: linear-gradient(135deg, rgba(255, 255, 255, .92), rgba(248, 250, 252, .86));
+                background:
+                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .08), rgba(var(--match-secondary-rgb), .07)),
+                    linear-gradient(135deg, rgba(255, 255, 255, .94), rgba(248, 250, 252, .88));
                 color: #1e293b;
                 font-size: .72rem;
                 font-weight: 950;
@@ -139,7 +174,9 @@
 
             .dark .match-column-label {
                 border-color: rgba(71, 85, 105, .8);
-                background: rgba(15, 23, 42, .76);
+                background:
+                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .18), rgba(var(--match-secondary-rgb), .12)),
+                    rgba(15, 23, 42, .76);
                 color: #e2e8f0;
             }
 
@@ -158,18 +195,45 @@
                 padding: .35rem .52rem;
                 text-align: center;
                 box-shadow: 0 10px 24px -20px rgba(15, 23, 42, .52);
+                background:
+                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(248, 250, 252, .86)),
+                    var(--match-card);
                 transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+            }
+
+            .match-card[data-row-tone="0"] {
+                background:
+                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .08), rgba(255, 255, 255, .05)),
+                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(248, 250, 252, .88));
+            }
+
+            .match-card[data-row-tone="1"] {
+                background:
+                    linear-gradient(135deg, rgba(var(--match-secondary-rgb), .08), rgba(255, 255, 255, .05)),
+                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(248, 250, 252, .88));
+            }
+
+            .match-card[data-row-tone="2"] {
+                background:
+                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .06), rgba(var(--match-secondary-rgb), .06)),
+                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(248, 250, 252, .88));
+            }
+
+            .match-card[data-row-tone="3"] {
+                background:
+                    linear-gradient(135deg, rgba(148, 163, 184, .11), rgba(var(--match-secondary-rgb), .05)),
+                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(248, 250, 252, .88));
             }
 
             .match-card:hover {
                 transform: translateY(-1px);
-                border-color: rgba(99, 102, 241, .72);
-                box-shadow: 0 14px 28px -22px rgba(79, 70, 229, .62);
+                border-color: rgba(var(--match-primary-rgb), .42);
+                box-shadow: 0 16px 32px -22px rgba(var(--match-primary-rgb), .35), 0 12px 24px -22px rgba(15, 23, 42, .34);
             }
 
             .match-card:focus-visible {
                 outline: none;
-                box-shadow: 0 0 0 4px rgba(99, 102, 241, .20), 0 14px 28px -22px rgba(79, 70, 229, .62);
+                box-shadow: 0 0 0 4px rgba(var(--match-primary-rgb), .18), 0 14px 28px -22px rgba(15, 23, 42, .42);
             }
 
             .match-card:disabled {
@@ -178,9 +242,75 @@
                 transform: none;
             }
 
+            .match-card.is-selected {
+                transform: translateY(-2px);
+                border-color: rgba(var(--match-primary-rgb), .72);
+                background:
+                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .15), rgba(var(--match-secondary-rgb), .11)),
+                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(248, 250, 252, .9));
+                box-shadow: 0 0 0 4px rgba(var(--match-primary-rgb), .14), 0 16px 34px rgba(15, 23, 42, .12);
+            }
+
+            .match-card.is-target {
+                border-color: rgba(var(--match-secondary-rgb), .5);
+                box-shadow: 0 0 0 4px rgba(var(--match-secondary-rgb), .12), 0 12px 24px -20px rgba(15, 23, 42, .35);
+            }
+
+            .match-card.is-correct {
+                border-color: rgba(16, 185, 129, .68);
+                background:
+                    linear-gradient(135deg, rgba(16, 185, 129, .18), rgba(20, 184, 166, .12)),
+                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(240, 253, 250, .92));
+                box-shadow: 0 0 0 4px rgba(16, 185, 129, .15), 0 16px 30px -20px rgba(16, 185, 129, .5);
+            }
+
+            .match-card.is-wrong {
+                border-color: rgba(244, 63, 94, .78);
+                background:
+                    linear-gradient(135deg, rgba(244, 63, 94, .15), rgba(251, 113, 133, .1)),
+                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(255, 241, 242, .92));
+                box-shadow: 0 0 0 4px rgba(244, 63, 94, .16), 0 14px 28px -20px rgba(244, 63, 94, .45);
+                animation: matchPulse .45s ease;
+            }
+
             .dark .match-card {
                 border-color: rgba(51, 65, 85, .96);
+                background:
+                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .12), rgba(var(--match-secondary-rgb), .07)),
+                    linear-gradient(135deg, rgba(30, 41, 59, .92), rgba(15, 23, 42, .9));
                 box-shadow: 0 14px 28px -22px rgba(2, 6, 23, .82);
+            }
+
+            .dark .match-card.is-selected {
+                border-color: rgba(var(--match-primary-rgb), .88);
+                background:
+                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .26), rgba(var(--match-secondary-rgb), .16)),
+                    linear-gradient(135deg, rgba(30, 41, 59, .92), rgba(15, 23, 42, .9));
+                box-shadow: 0 0 0 4px rgba(var(--match-primary-rgb), .16), 0 16px 34px rgba(2, 6, 23, .34);
+            }
+
+            .dark .match-card.is-target {
+                border-color: rgba(var(--match-secondary-rgb), .72);
+                box-shadow: 0 0 0 4px rgba(var(--match-secondary-rgb), .13), 0 12px 24px -20px rgba(2, 6, 23, .55);
+            }
+
+            .dark .match-card.is-correct {
+                border-color: rgba(110, 231, 183, .8);
+                background:
+                    linear-gradient(135deg, rgba(16, 185, 129, .28), rgba(20, 184, 166, .16)),
+                    linear-gradient(135deg, rgba(15, 23, 42, .96), rgba(6, 78, 59, .38));
+            }
+
+            .dark .match-card.is-wrong {
+                border-color: rgba(251, 113, 133, .82);
+                background:
+                    linear-gradient(135deg, rgba(244, 63, 94, .26), rgba(251, 113, 133, .14)),
+                    linear-gradient(135deg, rgba(15, 23, 42, .96), rgba(76, 5, 25, .36));
+            }
+
+            @keyframes matchPulse {
+                0%, 100% { transform: translateY(0); }
+                45% { transform: translateY(-1px) scale(1.01); }
             }
 
             .match-card > span:not(.match-connector) {
@@ -238,13 +368,62 @@
                 height: .72rem;
                 border-radius: 999px;
                 border: 2px solid #fff;
-                background: linear-gradient(135deg, #4f46e5, #06b6d4);
-                box-shadow: 0 4px 12px rgba(79, 70, 229, .34);
-                outline: 2px solid rgba(125, 211, 252, .58);
+                background: linear-gradient(135deg, var(--match-primary), var(--match-secondary));
+                box-shadow: 0 4px 12px rgba(var(--match-primary-rgb), .26);
+                outline: 2px solid rgba(var(--match-primary-rgb), .18);
             }
+
+            @foreach($dotGradients as $toneIndex => $dotTone)
+                .match-connector[data-dot-tone="{{ $toneIndex }}"]::after {
+                    background: {{ $dotTone['gradient'] }};
+                    box-shadow: 0 4px 12px color-mix(in srgb, {{ $dotTone['solid'] }} 34%, transparent);
+                    outline-color: color-mix(in srgb, {{ $dotTone['solid'] }} 24%, transparent);
+                }
+
+                .match-line[data-dot-tone="{{ $toneIndex }}"],
+                .match-active-line[data-dot-tone="{{ $toneIndex }}"] {
+                    stroke: {{ $dotTone['solid'] }};
+                }
+
+                .match-connector[data-dot-tone="{{ $toneIndex }}"].is-hot::after {
+                    background: {{ $dotTone['gradient'] }};
+                    box-shadow:
+                        0 0 0 5px color-mix(in srgb, {{ $dotTone['solid'] }} 18%, transparent),
+                        0 8px 18px color-mix(in srgb, {{ $dotTone['solid'] }} 34%, transparent);
+                }
+            @endforeach
 
             .match-connector:hover {
                 transform: scale(1.12);
+            }
+
+            .match-connector.is-hot::after {
+                background: linear-gradient(135deg, var(--match-secondary), var(--match-primary));
+                box-shadow: 0 0 0 5px rgba(var(--match-primary-rgb), .16), 0 8px 18px rgba(var(--match-primary-rgb), .28);
+                outline-color: rgba(var(--match-secondary-rgb), .28);
+            }
+
+            .match-line,
+            .match-active-line {
+                stroke-linecap: round;
+                filter: drop-shadow(0 4px 8px rgba(15, 23, 42, .14));
+            }
+
+            .match-line {
+                stroke: var(--match-primary);
+                stroke-width: 4.5;
+                opacity: .88;
+            }
+
+            .match-active-line {
+                stroke: var(--match-secondary);
+                stroke-width: 4.5;
+                opacity: .92;
+            }
+
+            .dark .match-line,
+            .dark .match-active-line {
+                opacity: .95;
             }
 
             .match-connector-start {
@@ -279,21 +458,22 @@
             }
 
             .match-action-primary {
-                border: 1px solid rgba(255, 255, 255, .45);
-                background: linear-gradient(135deg, #4f46e5, #06b6d4, #10b981);
+                border: 1px solid rgba(15, 23, 42, .12);
                 color: #fff;
-                box-shadow: 0 12px 24px -18px rgba(79, 70, 229, .8);
+                box-shadow: 0 13px 26px -17px rgba(var(--match-primary-rgb), .68);
             }
 
             .match-action-soft {
                 border: 1px solid rgba(203, 213, 225, .9);
-                background: #fff;
+                background:
+                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .07), rgba(var(--match-secondary-rgb), .06)),
+                    #fff;
                 color: #334155;
             }
 
             .match-action-dark {
                 border: 1px solid rgba(15, 23, 42, .12);
-                background: #0f172a;
+                background: linear-gradient(135deg, #0f172a, #334155);
                 color: #fff;
             }
 
@@ -389,11 +569,11 @@
                     </div>
 
                     <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 max-sm:w-full">
-                        <div class="inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-1 text-[0.68rem] font-black text-emerald-700 shadow-sm dark:border-emerald-400/20 dark:bg-emerald-950/25 dark:text-emerald-200 sm:px-3 sm:text-xs">
+                        <div class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[0.68rem] font-black text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 sm:px-3 sm:text-xs">
                             <span>Score</span>
                             <span><span id="score">0</span>/<span>{{ $pairs->count() }}</span></span>
                         </div>
-                        <div class="inline-flex items-center gap-1.5 rounded-full border border-rose-100 bg-rose-50 px-2.5 py-1 text-[0.68rem] font-black text-rose-700 shadow-sm dark:border-rose-400/20 dark:bg-rose-950/25 dark:text-rose-200 sm:px-3 sm:text-xs">
+                        <div class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[0.68rem] font-black text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 sm:px-3 sm:text-xs">
                             <span>Mistakes</span>
                             <span id="mistakes">0</span>
                         </div>
@@ -427,12 +607,13 @@
                                 data-side="left"
                                 data-id="{{ $item['id'] }}"
                                 data-row-tone="{{ $index % 4 }}"
+                                data-dot-tone="{{ $index % count($dotGradients) }}"
                                 aria-label="Select {{ strip_tags($item['content']['text'] ?? $item['content']['word'] ?? 'left item') }}"
                         >
                             <span>
                                 {!! $renderMatchItem($item['content']) !!}
                             </span>
-                            <span class="{{ $matchConnectorStartClass }}" data-connector="start" aria-hidden="true"></span>
+                            <span class="{{ $matchConnectorStartClass }}" data-connector="start" data-dot-tone="{{ $index % count($dotGradients) }}" aria-hidden="true"></span>
                         </button>
 
                         <button
@@ -441,9 +622,10 @@
                                 data-side="right"
                                 data-id="{{ $rightItems[$index]['id'] }}"
                                 data-row-tone="{{ $index % 4 }}"
+                                data-dot-tone="{{ $index % count($dotGradients) }}"
                                 aria-label="Choose {{ strip_tags($rightItems[$index]['content']['text'] ?? $rightItems[$index]['content']['word'] ?? 'right item') }}"
                         >
-                            <span class="{{ $matchConnectorTargetClass }}" data-connector="target" aria-hidden="true"></span>
+                            <span class="{{ $matchConnectorTargetClass }}" data-connector="target" data-dot-tone="{{ $index % count($dotGradients) }}" aria-hidden="true"></span>
                             <span>
                                 {!! $renderMatchItem($rightItems[$index]['content']) !!}
                             </span>
@@ -496,56 +678,24 @@
             };
 
             const svgNamespace = 'http://www.w3.org/2000/svg';
-            const lineClass = 'stroke-emerald-500 [stroke-linecap:round] [stroke-width:4.5] drop-shadow-sm dark:stroke-emerald-300 max-sm:[stroke-width:3.5]';
-            const activeLineClass = 'stroke-indigo-500 opacity-90 [stroke-linecap:round] [stroke-width:4.5] drop-shadow-sm dark:stroke-cyan-300 max-sm:[stroke-width:3.5]';
+            const lineClass = 'match-line';
+            const activeLineClass = 'match-active-line';
 
             const stateClasses = {
                 selected: [
-                    '-translate-y-0.5',
-                    '!border-indigo-500',
-                    '!bg-indigo-50',
-                    '!bg-none',
-                    'ring-4',
-                    'ring-indigo-400/25',
-                    'shadow-[0_16px_34px_rgba(79,70,229,0.18)]',
-                    'dark:!border-indigo-300',
-                    'dark:!bg-indigo-950/35',
-                    'dark:ring-indigo-300/15',
+                    'is-selected',
                 ],
                 target: [
-                    '!border-sky-400',
-                    'ring-4',
-                    'ring-sky-300/18',
-                    'dark:!border-sky-300/80',
-                    'dark:ring-sky-300/12',
+                    'is-target',
                 ],
                 correct: [
-                    '!border-emerald-400',
-                    '!bg-emerald-50',
-                    '!bg-none',
-                    'ring-4',
-                    'ring-emerald-300/20',
-                    'shadow-[0_14px_32px_rgba(16,185,129,0.15)]',
-                    'dark:!border-emerald-300',
-                    'dark:!bg-emerald-950/35',
-                    'dark:ring-emerald-300/12',
+                    'is-correct',
                 ],
                 wrong: [
-                    '!border-rose-500',
-                    '!bg-rose-50',
-                    '!bg-none',
-                    'ring-4',
-                    'ring-rose-400/25',
-                    'animate-pulse',
-                    'dark:!border-rose-400',
-                    'dark:!bg-rose-950/40',
+                    'is-wrong',
                 ],
                 connectorHot: [
-                    'scale-125',
-                    'after:!bg-slate-950',
-                    'after:!ring-sky-300',
-                    'dark:after:!bg-white',
-                    'dark:after:!ring-sky-200/40',
+                    'is-hot',
                 ],
             };
 
@@ -682,6 +832,7 @@
                 const line = document.createElementNS(svgNamespace, 'line');
                 line.setAttribute('class', lineClass);
                 line.dataset.id = leftCard.dataset.id;
+                line.dataset.dotTone = leftCard.dataset.dotTone || '0';
 
                 positionLine(
                     line,
@@ -703,6 +854,7 @@
 
                 activeLine = document.createElementNS(svgNamespace, 'line');
                 activeLine.setAttribute('class', activeLineClass);
+                activeLine.dataset.dotTone = leftCard.dataset.dotTone || '0';
                 lineLayer.appendChild(activeLine);
 
                 positionLine(

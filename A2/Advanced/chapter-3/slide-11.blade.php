@@ -1,7 +1,7 @@
 <?php
 $content = [
-    'page_title' => 'Practice 5',
-    'title' => 'Practice 5',
+    'page_title' => 'Practice 4',
+    'title' => 'Practice 4',
     'subtitle' => '',
     'activity_title' => 'Match each job with the correct action.',
     'left_label' => 'Jobs',
@@ -16,7 +16,7 @@ $content = [
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'e. checks patients', 
+                'text' => 'e. checks patients',
             ],
         ],
         [

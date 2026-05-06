@@ -3,6 +3,7 @@
 
     $title = trim((string)($content['title'] ?? 'Thank you'));
     $subtitle = trim((string)($content['subtitle'] ?? ''));
+    $subtitleHtml = preg_replace('/&lt;br\s*\/?&gt;/i', '<br>', e($subtitle));
     $image = (string)($content['image'] ?? '');
     $buttonText = trim((string)($content['button'] ?? 'Start Again'));
 @endphp
@@ -47,7 +48,7 @@
 
                 @if($subtitle !== '')
                     <p class="mt-5 max-w-2xl text-lg font-bold leading-relaxed text-stone-800 dark:text-orange-100 sm:text-xl lg:text-2xl">
-                        {!! nl2br(e($subtitle)) !!}
+                        {!! nl2br($subtitleHtml) !!}
                     </p>
                 @endif
 

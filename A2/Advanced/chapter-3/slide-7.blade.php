@@ -5,8 +5,8 @@ $content = [
     'subtitle' => 'Match the tools with the right job',
 
     'pool_item_type' => 'image',
-    'desktop_game_width' => 70,
-    'desktop_pool_width' => 30,
+    'desktop_game_width' => 50,
+    'desktop_pool_width' => 50,
 
     'categories' => [
         'Doctor' => [
