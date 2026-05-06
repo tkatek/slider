@@ -2,49 +2,42 @@
 
 $content = [
     'title' => 'Practice 6',
-    'subtitle' => 'Find the mistake! Each sentence has one mistake. Write the correct word or form.',
-    'hide_hints' => false,
+    'subtitle' => 'Find the mistake! Each sentence has one mistake. Write the correct sentence.',
+    'stacked_full_input' => true,
+    'stacked_grid_cols_2' => true,
 
     'questions' => [
         [
-            'prefix' => '1. I',
-            'suffix' => 'lived in this city for two months.',
-            'hint' => 'has',
+            'hint' => '1. I has lived in this city for two months.',
             'answers' => [
-                'have',
+                'I have lived in this city for two months.',
             ],
         ],
         [
-            'prefix' => '2. Have you ever',
-            'suffix' => 'a famous person?',
-            'hint' => 'saw',
+            'hint' => '2. Have you ever saw a famous person?',
             'answers' => [
-                'seen',
+                'Have you ever seen a famous person?',
             ],
         ],
         [
-            'prefix' => '3. She has',
-            'suffix' => 'the new library today.',
-            'hint' => 'visit',
+            'hint' => '3. She has visit the new library today.',
             'answers' => [
-                'visited',
+                'She has visited the new library today.',
             ],
         ],
         [
-            'prefix' => "4. They haven’t",
-            'suffix' => 'tried the local food.',
-            'hint' => 'never',
+            'hint' => "4. They haven’t never tried the local food.",
             'answers' => [
-                '',
-                'ever',
+                "They haven’t tried the local food.",
+                "They have never tried the local food.",
+                "They haven't tried the local food.",
+                "They have never tried the local food.",
             ],
         ],
         [
-            'prefix' => '5. My friend',
-            'suffix' => 'been to the bank already.',
-            'hint' => 'have',
+            'hint' => '5. My friend have been to the bank already.',
             'answers' => [
-                'has',
+                'My friend has been to the bank already.', 
             ],
         ],
     ],

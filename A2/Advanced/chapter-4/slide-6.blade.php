@@ -6,7 +6,7 @@ $content = [
 
     'mode' => 'choice_table',
 
-    'audio' => materialAsset('slider/A2/Advanced/chapter-4/audios/slide4/who-has-done-it.mp3'),
+    'audio' => materialAsset('slider/A2/Advanced/chapter-4/audios/slide6.mp3'),
 
     'instruction' => 'Listen to 2 conversations about people’s personal experiences.',
     'instruction_note' => 'Tick the person who has done each experience. Then role-play the dialogues.',

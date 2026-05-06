@@ -6,7 +6,7 @@ $content = [
     'subtitle'   => 'Complete the sentences using the words from the box.',
     'type'       => 'reading',
 
-    'audio' => materialAsset('slider/A2/Advanced/chapter-4/audios/slide5/listening-again.mp3'),
+    'audio' => materialAsset('slider/A2/Advanced/chapter-4/audios/slide6.mp3'),
 
     'sentences' => [
         '<span class="mr-2 inline-flex items-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 px-3 py-1 text-sm font-black text-white">1</span>The woman {{1}} all the Star Wars movies.',
