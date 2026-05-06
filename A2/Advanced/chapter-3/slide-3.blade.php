@@ -15,7 +15,7 @@ $content = [
             'title' => '',
             'description' => '',
             'image' => materialAsset('slider/A1/Beginner/chapter-1/img/slide8/nurse.webp'),
-            'audio' => materialAsset('slider/A1/Beginner/chapter-1/audios/vocab/Nurse.mpeg'), 
+            'audio' => materialAsset('slider/A1/Beginner/chapter-1/audios/vocab/Nurse.mpeg'),
         ],
         [
             'title' => '',
@@ -110,18 +110,25 @@ $content = [
 
 @section("content")
     <main class="w-full">
-        <div id="app" class="relative mx-auto w-full max-w-6xl px-4 pt-5 pb-32 sm:px-6 sm:pt-7 lg:px-8 lg:pb-10">
+        <div id="app" class="relative mx-auto w-full max-w-5xl px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
             <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-                <div class="absolute left-8 top-8 h-52 w-52 rounded-full bg-[var(--ambient-one)] opacity-25 blur-3xl"></div>
-                <div class="absolute bottom-16 right-8 h-56 w-56 rounded-full bg-[var(--ambient-two)] opacity-25 blur-3xl"></div>
+                <div class="absolute left-10 top-10 h-48 w-48 rounded-full bg-[var(--ambient-one)] opacity-20 blur-3xl"></div>
+                <div class="absolute bottom-10 right-10 h-48 w-48 rounded-full bg-[var(--ambient-two)] opacity-20 blur-3xl"></div>
             </div>
 
             @include('slider.components.title-subtitle')
 
-            <div class="mx-auto mt-4 grid w-full grid-cols-1 gap-4 md:mt-6 md:grid-cols-12 md:gap-5 xl:gap-6">
+            <div class="mx-auto mt-4 flex max-w-4xl items-center justify-center gap-2 text-xs font-black text-slate-500 dark:text-slate-400 sm:mt-5">
+                <span><span id="progress">0</span>/<span id="totalCards">0</span></span>
+                <span class="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
+                <span><span id="deckCount">0</span> left</span>
+                <span class="hidden"><span id="mobileDeckCount">0</span></span>
+            </div>
+
+            <div class="mx-auto mt-4 grid w-full max-w-4xl grid-cols-1 items-center gap-5 md:grid-cols-[minmax(12rem,16rem)_minmax(0,1fr)] md:gap-8">
                 <section id="deckPanel"
-                         class="hidden min-h-[28rem] flex-col rounded-[2rem] border border-white/70 bg-white/82 p-5 shadow-[0_24px_70px_-46px_rgba(15,23,42,0.45)] ring-1 ring-slate-200/70 backdrop-blur-xl dark:border-slate-700/40 dark:bg-slate-950/48 dark:shadow-black/35 dark:ring-slate-700/45 md:col-span-5 md:flex lg:col-span-4">
-                    <div class="flex items-center justify-between gap-3">
+                         class="hidden justify-center md:flex">
+                    <div class="hidden">
                         <div class="flex items-center gap-3">
                             <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-2xl shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-900/70 dark:ring-slate-700/50">
                                 🃏
@@ -137,48 +144,46 @@ $content = [
                         </div>
 
                         <div class="rounded-full bg-white px-3 py-1.5 text-sm font-black text-slate-800 shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-slate-700/50">
-                            <span id="deckCount">0</span> left
+                            <span>0</span> left
                         </div>
                     </div>
 
-                    <div class="mt-6 flex flex-1 items-center justify-center">
-                        <div class="relative aspect-[3/4] w-full max-w-[18rem]">
-                            <div id="deckStack" class="absolute inset-0">
-                                <div class="absolute inset-x-1 top-9 h-full rounded-[1.55rem] border border-slate-300 bg-slate-300 shadow-xl dark:border-slate-700 dark:bg-slate-800"></div>
-                                <div class="absolute inset-x-0 top-6 h-full rounded-[1.55rem] border border-slate-300 bg-slate-200 shadow-xl dark:border-slate-700 dark:bg-slate-800"></div>
-                                <div class="absolute inset-x-0 top-3 h-full rounded-[1.55rem] border border-slate-300 bg-slate-100 shadow-xl dark:border-slate-700 dark:bg-slate-800"></div>
-                                <div class="absolute inset-0 rounded-[1.55rem] border-[10px] border-slate-100 bg-gradient-to-br from-slate-200 via-slate-500 to-slate-800 p-4 shadow-[0_30px_70px_-42px_rgba(15,23,42,0.75)] dark:border-slate-700">
-                                    <div class="relative h-full w-full overflow-hidden rounded-[1rem] border-2 border-white/45 bg-white/10">
-                                        <div class="absolute inset-3 rounded-[0.8rem] border-2 border-white/30"></div>
-                                        <div class="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-3xl border-2 border-white/20 bg-white/10"></div>
-                                        <div class="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10"></div>
-                                        <div class="absolute left-5 top-5 h-8 w-8 rounded-md border-2 border-white/25"></div>
-                                        <div class="absolute right-5 top-5 h-8 w-8 rounded-md border-2 border-white/25"></div>
-                                        <div class="absolute bottom-5 left-5 h-8 w-8 rounded-md border-2 border-white/25"></div>
-                                        <div class="absolute bottom-5 right-5 h-8 w-8 rounded-md border-2 border-white/25"></div>
-                                    </div>
+                    <div class="relative aspect-[3/4] w-full max-w-[15rem]">
+                        <div id="deckStack" class="absolute inset-0">
+                            <div class="absolute inset-x-1 top-9 h-full rounded-[1.55rem] border border-slate-300 bg-slate-300 shadow-xl dark:border-slate-700 dark:bg-slate-800"></div>
+                            <div class="absolute inset-x-0 top-6 h-full rounded-[1.55rem] border border-slate-300 bg-slate-200 shadow-xl dark:border-slate-700 dark:bg-slate-800"></div>
+                            <div class="absolute inset-x-0 top-3 h-full rounded-[1.55rem] border border-slate-300 bg-slate-100 shadow-xl dark:border-slate-700 dark:bg-slate-800"></div>
+                            <div class="absolute inset-0 rounded-[1.55rem] border-[10px] border-slate-100 bg-gradient-to-br from-slate-200 via-slate-500 to-slate-800 p-4 shadow-[0_30px_70px_-42px_rgba(15,23,42,0.75)] dark:border-slate-700">
+                                <div class="relative h-full w-full overflow-hidden rounded-[1rem] border-2 border-white/45 bg-white/10">
+                                    <div class="absolute inset-3 rounded-[0.8rem] border-2 border-white/30"></div>
+                                    <div class="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-3xl border-2 border-white/20 bg-white/10"></div>
+                                    <div class="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10"></div>
+                                    <div class="absolute left-5 top-5 h-8 w-8 rounded-md border-2 border-white/25"></div>
+                                    <div class="absolute right-5 top-5 h-8 w-8 rounded-md border-2 border-white/25"></div>
+                                    <div class="absolute bottom-5 left-5 h-8 w-8 rounded-md border-2 border-white/25"></div>
+                                    <div class="absolute bottom-5 right-5 h-8 w-8 rounded-md border-2 border-white/25"></div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div id="deckEmpty"
-                                 class="absolute inset-0 hidden items-center justify-center rounded-[2rem] border-2 border-dashed border-slate-300/80 bg-white/80 p-6 text-center shadow-inner dark:border-slate-700/70 dark:bg-slate-950/40">
-                                <div>
-                                    <div class="text-5xl">✅</div>
-                                    <div class="mt-3 text-xl font-black text-slate-950 dark:text-slate-50">No more cards</div>
-                                    <div class="mt-1 text-sm font-bold text-slate-500 dark:text-slate-400">Shuffle to start again.</div>
-                                </div>
+                        <div id="deckEmpty"
+                             class="absolute inset-0 hidden items-center justify-center rounded-[2rem] border-2 border-dashed border-slate-300/80 bg-white/80 p-6 text-center shadow-inner dark:border-slate-700/70 dark:bg-slate-950/40">
+                            <div>
+                                <div class="text-5xl">✅</div>
+                                <div class="mt-3 text-xl font-black text-slate-950 dark:text-slate-50">No more cards</div>
+                                <div class="mt-1 text-sm font-bold text-slate-500 dark:text-slate-400">Shuffle to start again.</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-5 rounded-2xl bg-slate-50/85 px-4 py-3 text-sm font-bold text-slate-600 ring-1 ring-slate-200/70 dark:bg-slate-900/45 dark:text-slate-300 dark:ring-slate-700/45">
+                    <div class="hidden">
                         Deal one card, look at the image, listen if needed, then speak.
                     </div>
                 </section>
 
                 <section id="playPanel"
-                         class="min-h-[29rem] rounded-[2rem] border border-white/70 bg-white/86 p-4 shadow-[0_24px_70px_-46px_rgba(15,23,42,0.45)] ring-1 ring-slate-200/70 backdrop-blur-xl dark:border-slate-700/40 dark:bg-slate-950/50 dark:shadow-black/35 dark:ring-slate-700/45 sm:p-5 md:col-span-7 lg:col-span-8">
-                    <div class="flex flex-wrap items-center justify-between gap-3">
+                         class="min-h-[24rem]">
+                    <div class="hidden">
                         <div class="flex items-center gap-3">
                             <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-2xl shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-900/70 dark:ring-slate-700/50">
                                 🗣️
@@ -195,59 +200,56 @@ $content = [
 
                         <div class="flex items-center gap-2">
                             <div class="rounded-full bg-white px-3 py-1.5 text-sm font-black text-slate-800 shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-slate-700/50 md:hidden">
-                                <span id="mobileDeckCount">0</span> left
+                                <span>0</span> left
                             </div>
                             <div class="rounded-full bg-white px-3 py-1.5 text-sm font-black text-slate-800 shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-slate-700/50">
-                                <span id="progress">0</span>/<span id="totalCards">0</span>
+                                <span>0</span>/<span>0</span>
                             </div>
                         </div>
                     </div>
 
-                    <div id="emptyPlay" class="flex min-h-[22rem] items-center justify-center px-2 py-6 text-center sm:min-h-[25rem]">
+                    <div id="emptyPlay" class="flex min-h-[24rem] items-center justify-center rounded-[1.6rem] border border-white/70 bg-white/75 px-4 py-8 text-center shadow-[0_20px_55px_-42px_rgba(15,23,42,0.6)] ring-1 ring-slate-200/70 backdrop-blur-xl dark:border-slate-700/40 dark:bg-slate-950/45 dark:ring-slate-700/45">
                         <div class="mx-auto max-w-md">
-                            <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-[1.6rem] bg-[var(--top-bar-gradient)] text-4xl text-white shadow-[0_20px_50px_-32px_rgba(79,70,229,0.8)]">
+                            <div class="hidden">
                                 ✨
                             </div>
-                            <h2 id="emptyTitle" class="mt-5 text-3xl font-black tracking-tight text-slate-950 dark:text-slate-50">
+                            <h2 id="emptyTitle" class="text-3xl font-black tracking-tight text-slate-950 dark:text-slate-50">
                                 Ready?
                             </h2>
-                            <p id="emptyMessage" class="mt-2 text-base font-bold leading-relaxed text-slate-600 dark:text-slate-300">
-                                Press Deal to show the first speaking card.
+                            <p id="emptyMessage" class="mt-2 text-sm font-bold leading-relaxed text-slate-500 dark:text-slate-400">
+                                Press Deal.
                             </p>
                         </div>
                     </div>
 
-                    <div id="cardSlot" class="hidden pt-5"></div>
+                    <div id="cardSlot" class="hidden"></div>
                 </section>
             </div>
         </div>
 
-        <div id="toastOverlay" class="pointer-events-none fixed bottom-28 left-1/2 z-50 w-full max-w-3xl -translate-x-1/2 px-4 sm:bottom-32">
+        <div id="toastOverlay" class="pointer-events-none fixed bottom-24 left-1/2 z-50 w-full max-w-3xl -translate-x-1/2 px-4 sm:bottom-28">
             <div id="toastArea" class="space-y-2"></div>
         </div>
 
-        <div id="bottomBar" class="fixed bottom-3 left-1/2 z-50 w-full max-w-4xl -translate-x-1/2 px-4 sm:bottom-4 sm:px-6">
-            <div class="rounded-[1.75rem] border border-white/70 bg-white/86 p-2 shadow-[0_24px_70px_-46px_rgba(15,23,42,0.55)] ring-1 ring-slate-200/70 backdrop-blur-xl dark:border-slate-700/40 dark:bg-slate-950/65 dark:ring-slate-700/45 sm:p-3">
+        <div id="bottomBar" class="sticky bottom-3 z-50 mx-auto mt-5 w-full max-w-xl px-4 sm:px-0">
+            <div class="rounded-2xl border border-white/70 bg-white/86 p-2 shadow-[0_18px_45px_-34px_rgba(15,23,42,0.55)] ring-1 ring-slate-200/70 backdrop-blur-xl dark:border-slate-700/40 dark:bg-slate-950/70 dark:ring-slate-700/45">
                 <div class="grid grid-cols-3 gap-2 sm:gap-3">
                     <button id="btnShuffle"
                             type="button"
-                            class="group flex min-h-16 items-center justify-center gap-2 rounded-2xl bg-white px-3 py-2 font-black text-slate-800 shadow-sm ring-1 ring-slate-200/80 transition hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 disabled:pointer-events-none disabled:opacity-45 dark:bg-slate-900/80 dark:text-slate-100 dark:ring-slate-700/60">
-                        <span class="text-xl sm:text-2xl">🔀</span>
-                        <span class="text-sm sm:text-base">Shuffle</span>
+                            class="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 disabled:pointer-events-none disabled:opacity-45 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+                        <span>Shuffle</span>
                     </button>
 
                     <button id="btnUndo"
                             type="button"
-                            class="group flex min-h-16 items-center justify-center gap-2 rounded-2xl bg-white px-3 py-2 font-black text-slate-800 shadow-sm ring-1 ring-slate-200/80 transition hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 disabled:pointer-events-none disabled:opacity-45 dark:bg-slate-900/80 dark:text-slate-100 dark:ring-slate-700/60">
-                        <span class="text-xl sm:text-2xl">↩️</span>
-                        <span class="text-sm sm:text-base">Undo</span>
+                            class="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 disabled:pointer-events-none disabled:opacity-45 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+                        <span>Undo</span>
                     </button>
 
                     <button id="btnDeal"
                             type="button"
-                            class="group flex min-h-16 items-center justify-center gap-2 rounded-2xl px-3 py-2 font-black text-white shadow-xl shadow-indigo-900/15 transition hover:-translate-y-0.5 hover:shadow-2xl active:translate-y-0 disabled:pointer-events-none disabled:opacity-45 {{ $dealButtonClass }}">
-                        <span class="text-xl sm:text-2xl">🃏</span>
-                        <span class="text-sm sm:text-base">Deal</span>
+                            class="flex min-h-12 items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-black text-white shadow-lg shadow-indigo-900/15 transition hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 disabled:pointer-events-none disabled:opacity-45 {{ $dealButtonClass }}">
+                        <span>Deal</span>
                     </button>
                 </div>
             </div>
@@ -304,16 +306,16 @@ $content = [
 
             const classNames = {
                 toast: "pointer-events-auto mx-auto flex w-fit items-center gap-2 rounded-2xl border border-white/70 bg-white/90 px-4 py-3 text-sm font-black text-slate-900 shadow-xl shadow-slate-900/10 ring-1 ring-slate-200/70 backdrop-blur-xl dark:border-slate-700/45 dark:bg-slate-950/80 dark:text-slate-50 dark:ring-slate-700/50",
-                activeCard: "relative mx-auto w-full max-w-[25rem] rounded-[1.8rem] border-[10px] border-slate-100 bg-gradient-to-br from-slate-50 via-white to-slate-300 p-3 shadow-[0_34px_90px_-46px_rgba(15,23,42,0.7)] ring-1 ring-slate-300/80 dark:border-slate-700 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 dark:ring-slate-600/70",
-                imageWrap: "rounded-[1.25rem] bg-gradient-to-br from-slate-100 via-slate-300 to-slate-500 p-4 shadow-inner dark:from-slate-700 dark:via-slate-800 dark:to-slate-950",
-                imageFrame: "aspect-[3/4] overflow-hidden rounded-[0.95rem] border-[10px] border-white bg-white shadow-inner ring-1 ring-slate-300/80 dark:border-slate-100 dark:bg-slate-100",
+                activeCard: "relative mx-auto w-full max-w-[24rem] rounded-[1.5rem] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-200 p-3 shadow-[0_22px_55px_-38px_rgba(15,23,42,0.65)] ring-1 ring-white/80 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 dark:ring-slate-700/60",
+                imageWrap: "rounded-[1.15rem] bg-gradient-to-br from-slate-100 via-slate-200 to-slate-400 p-3 dark:from-slate-800 dark:via-slate-800 dark:to-slate-950",
+                imageFrame: "aspect-square overflow-hidden rounded-[0.9rem] border border-white bg-white ring-1 ring-slate-200/90 dark:border-slate-200 dark:bg-slate-100",
                 image: "h-full w-full object-cover",
                 fallback: "flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 text-7xl",
                 cardBody: "space-y-4 px-4 pb-3 pt-5 sm:px-5",
                 title: "text-center text-xl font-black leading-tight tracking-tight text-slate-950 dark:text-slate-50 sm:text-2xl",
                 description: "mx-auto max-w-xs text-center text-sm font-bold leading-relaxed text-slate-600 dark:text-slate-300 sm:text-base",
                 audioRow: "flex justify-center",
-                audioBtn: "group flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-300/90 bg-gradient-to-br from-white via-slate-100 to-slate-200 text-slate-700 shadow-[0_18px_44px_-30px_rgba(15,23,42,0.75)] ring-1 ring-slate-400/30 transition hover:-translate-y-0.5 hover:from-slate-50 hover:to-slate-300 active:translate-y-0 dark:border-slate-600/70 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100 dark:ring-slate-500/40 sm:h-[4.5rem] sm:w-[4.5rem]",
+                audioBtn: "group flex h-14 w-14 items-center justify-center rounded-xl border border-slate-300/90 bg-gradient-to-br from-white via-slate-100 to-slate-200 text-slate-700 shadow-sm ring-1 ring-slate-400/20 transition hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 dark:border-slate-600/70 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100 dark:ring-slate-500/40 sm:h-16 sm:w-16",
                 audioBtnPlaying: "scale-105 ring-slate-500/70 dark:ring-slate-300/55",
                 audioIcon: "h-8 w-8",
                 countPill: "absolute right-5 top-5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-black text-slate-700 shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-950/75 dark:text-slate-200 dark:ring-slate-700/60"
@@ -463,12 +465,12 @@ $content = [
 
                 if (noMoreCards) {
                     emptyTitleEl.textContent = "No more cards";
-                    emptyMessageEl.textContent = "Press Shuffle to restart the deck.";
+                    emptyMessageEl.textContent = "Shuffle to restart.";
                     return;
                 }
 
                 emptyTitleEl.textContent = "Ready?";
-                emptyMessageEl.textContent = "Press Deal to show the first speaking card.";
+                emptyMessageEl.textContent = "Press Deal.";
             }
 
             function createSpeakerIcon() {
