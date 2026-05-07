@@ -20,11 +20,11 @@
 
         return array_values(array_filter(
             array_map('trim', preg_split('/\R+/', trim((string) $rawScript)) ?: []),
-            static fn ($line) => $line !== ''
+            static fn ($line) => $line !== '' 
         ));
     };
     $scriptLines = $normalizeScriptLines($content['script'] ?? $content['transcript'] ?? []);
-    $hasScript = $scriptLines !== [];
+    $hasScript = $scriptLines !== []; 
     $writingExamples = array_values(array_filter(
         array_map(static fn ($example) => trim((string) $example), $content['writing_examples'] ?? []),
         static fn ($example) => $example !== ''
@@ -93,11 +93,14 @@
 @extends('slider.simple-layout')
 
 @section('content')
-    <main id="ticketBoothPractice" class="flex min-h-[100dvh] w-full flex-col items-center">
-        @include('slider.components.title-subtitle')
+    <main id="ticketBoothPractice" class="flex min-h-[100dvh] w-full flex-col items-center justify-center py-4">
+        <div class="w-full">
+            <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+                @include('slider.components.title-subtitle')
+            </div>
 
 
-        <div id="ticketBoothContent" class="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-start gap-4 px-4 pb-4 sm:px-6 lg:px-8">
+        <div id="ticketBoothContent" class="mx-auto flex w-full max-w-6xl flex-none flex-col justify-start gap-4 px-4 pb-4 sm:px-6 lg:px-8">
             <section id="ddbPoolRail" class="order-[-1] w-full max-w-full flex-none self-stretch">
                 <div id="ddbPoolBar" class="relative w-full max-w-full p-0">
                     <div class="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/90 shadow-[0_18px_45px_rgba(2,6,23,0.10)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/75">
@@ -207,6 +210,7 @@
             </section>
 
             @include('slider.components.game-win-modal', ['modalActions' => $modalActions])
+        </div>
         </div>
     </main>
 @endsection
@@ -380,13 +384,11 @@
 
             TicketBoothGame.prototype.syncVerticalLayout = function() {
                 var content = this.pageContent;
-                var fitsViewport;
 
                 if (!content) return;
 
-                fitsViewport = content.scrollHeight <= content.clientHeight + 2;
-                content.classList.toggle('justify-center', fitsViewport);
-                content.classList.toggle('justify-start', !fitsViewport);
+                content.classList.remove('justify-center');
+                content.classList.add('justify-start');
             };
 
             TicketBoothGame.prototype.getBlanks = function() {

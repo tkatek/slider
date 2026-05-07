@@ -2,13 +2,13 @@
 $content = [
     'page_title' => 'New Language',
     'title' => 'New Language',
-    'subtitle' => '',
-    'grid_class' => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+    'subtitle' => 'Useful Language',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3',
 
     'groups' => [
         [
             'key' => 'useful-opinion-expressions',
-            'title' => 'Useful Language',
+            'title' => '',
             'grid_class' => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
             'items' => [
                 [

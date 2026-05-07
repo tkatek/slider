@@ -1,13 +1,13 @@
 @php
     $content = [
-        'unit' => 'Advanced',
+        'unit' => 'Communication Skills',
         'lesson' => 'Expressing Complex Opinions',
         'unit_number' => '1',
         'lesson_number' => '1',
-        'image' => materialAsset('slider/activities/silent-letters/slide3.webp'),
-        'image_alt' => 'Notebook and writing',
+        'image' => materialAsset('slider/C2/chapter-1/img/slide1.webp'),
+        'image_alt' => 'Notebook and writing', 
         'button' => 'Start Session',
-        'next_fallback' => 'slide-2.blade.php', 
+        'next_fallback' => 'slide-2.blade.php',  
     ];
 
     $content = is_array($content ?? null) ? $content : []; 
@@ -35,55 +35,57 @@
                 <div class="pointer-events-none absolute bottom-[-3rem] left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-rose-500/12 blur-3xl dark:bg-rose-500/10"></div>
 
                 <div class="relative z-10 mx-auto grid max-w-6xl overflow-hidden rounded-[1.45rem] border border-red-100/80 bg-white shadow-[0_28px_72px_-42px_rgba(127,29,29,0.42)] ring-1 ring-white/80 dark:border-white/10 dark:bg-slate-900 dark:ring-red-400/10 lg:grid-cols-[minmax(0,1fr)_minmax(300px,42%)]">
-                    <section class="relative order-1 px-5 py-7 text-center sm:px-7 sm:py-9 lg:order-1 lg:px-10 lg:py-12 lg:text-left">
-                        <div class="pointer-events-none absolute left-0 top-8 hidden h-28 w-1.5 rounded-r-full bg-gradient-to-b from-red-600 via-rose-500 to-orange-400 lg:block"></div>
+                    <section class="relative order-1 flex min-h-[420px] items-center justify-center px-5 py-8 text-center sm:px-8 sm:py-10 lg:order-1 lg:min-h-[520px] lg:px-10 lg:py-14">
+                        <div class="pointer-events-none absolute left-0 top-1/2 hidden h-28 w-1.5 -translate-y-1/2 rounded-r-full bg-gradient-to-b from-red-600 via-rose-500 to-orange-400 lg:block"></div>
 
-                        <div class="mx-auto mb-7 flex max-w-xl items-center justify-center gap-3 lg:mx-0 lg:justify-start">
-                            @if($unitNumber !== '')
-                                <div class="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-[0.72rem] font-black uppercase tracking-[0.18em] text-red-700 shadow-sm dark:border-red-400/20 dark:bg-red-500/10 dark:text-red-200">
-                                    <span class="text-slate-500 dark:text-slate-300">Unit</span>
-                                    <span class="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-gradient-to-br from-red-600 to-rose-600 px-2 text-xs text-white shadow-sm shadow-red-700/20 dark:from-red-500 dark:to-rose-500">
-                                        {{ $unitNumber }}
+                        <div class="mx-auto max-w-2xl">
+                            <div class="mx-auto mb-7 flex max-w-xl items-center justify-center gap-3">
+                                @if($unitNumber !== '')
+                                    <div class="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-stone-50 px-3 py-1.5 text-[0.72rem] font-black uppercase tracking-[0.18em] text-stone-700 shadow-sm dark:border-stone-400/20 dark:bg-stone-500/10 dark:text-stone-200">
+                                        <span class="text-slate-500 dark:text-slate-300">Unit</span>
+                                        <span class="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-gradient-to-br from-stone-700 to-zinc-700 px-2 text-xs text-white shadow-sm shadow-stone-700/20 dark:from-stone-300 dark:to-zinc-300 dark:text-stone-950">
+                                            {{ $unitNumber }}
+                                        </span>
+                                    </div>
+                                @endif
+                            </div>
+
+                            @if($unit !== '')
+                                <p class="text-sm font-black uppercase tracking-[0.26em] text-stone-700/85 dark:text-stone-200/85 sm:text-base">
+                                    {{ $unit }}
+                                </p>
+                            @endif
+
+                            @if($lesson !== '')
+                                <h1 class="mx-auto mt-3 max-w-3xl text-4xl font-black leading-[1.04] tracking-[-0.04em] sm:text-[2.85rem] lg:text-5xl xl:text-6xl">
+                                    <span class="bg-gradient-to-r from-red-800 via-red-600 to-rose-600 bg-clip-text text-transparent dark:from-red-300 dark:via-red-200 dark:to-rose-300">
+                                        {{ $lesson }}
                                     </span>
+                                </h1>
+                            @endif
+
+                            @if($lessonNumber !== '')
+                                <div class="mx-auto mt-6 flex max-w-sm items-center justify-center gap-4 rounded-[1.25rem] border border-red-100 bg-red-50/80 px-4 py-3 shadow-[0_16px_42px_-32px_rgba(127,29,29,0.35)] dark:border-red-400/15 dark:bg-red-500/10">
+                                    <span class="text-xs font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-300">Lesson</span>
+                                    <span class="text-4xl font-black leading-none text-red-700 dark:text-red-200">{{ $lessonNumber }}</span>
                                 </div>
                             @endif
+
+                            @if($buttonText !== '')
+                                <button
+                                        id="startBtn"
+                                        type="button"
+                                        aria-label="{{ $buttonText }}"
+                                        data-next-fallback="{{ $nextFallback }}"
+                                        class="group mt-7 inline-flex items-center justify-center gap-2.5 rounded-2xl border border-white/25 bg-gradient-to-r from-red-700 via-rose-600 to-orange-500 px-5 py-3 text-sm font-black text-white shadow-xl shadow-red-900/15 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.03] hover:shadow-red-900/20 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-500/25 dark:from-red-700 dark:via-rose-700 dark:to-orange-700 dark:shadow-black/35 sm:px-7 sm:py-3.5 sm:text-base"
+                                >
+                                    <span>{{ $buttonText }}</span>
+                                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-white/25 bg-white/20 text-white leading-none transition-transform duration-200 group-hover:translate-x-1">
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </span>
+                                </button>
+                            @endif
                         </div>
-
-                        @if($unit !== '')
-                            <p class="text-sm font-black uppercase tracking-[0.26em] text-red-700/80 dark:text-red-200/80 sm:text-base">
-                                {{ $unit }}
-                            </p>
-                        @endif
-
-                        @if($lesson !== '')
-                            <h1 class="mx-auto mt-3 max-w-3xl text-4xl font-black leading-[1.04] tracking-[-0.04em] sm:text-[2.85rem] lg:mx-0 lg:text-5xl xl:text-6xl">
-                                <span class="bg-gradient-to-r from-red-800 via-red-600 to-rose-600 bg-clip-text text-transparent dark:from-red-300 dark:via-red-200 dark:to-rose-300">
-                                    {{ $lesson }}
-                                </span>
-                            </h1>
-                        @endif
-
-                        @if($lessonNumber !== '')
-                            <div class="mx-auto mt-6 flex max-w-sm items-center justify-center gap-4 rounded-[1.25rem] border border-red-100 bg-red-50/80 px-4 py-3 shadow-[0_16px_42px_-32px_rgba(127,29,29,0.35)] dark:border-red-400/15 dark:bg-red-500/10 lg:mx-0">
-                                <span class="text-xs font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-300">Lesson</span>
-                                <span class="text-4xl font-black leading-none text-red-700 dark:text-red-200">{{ $lessonNumber }}</span>
-                            </div>
-                        @endif
-
-                        @if($buttonText !== '')
-                            <button
-                                    id="startBtn"
-                                    type="button"
-                                    aria-label="{{ $buttonText }}"
-                                    data-next-fallback="{{ $nextFallback }}"
-                                    class="group mt-7 inline-flex items-center justify-center gap-2.5 rounded-2xl border border-white/25 bg-gradient-to-r from-red-700 via-rose-600 to-orange-500 px-5 py-3 text-sm font-black text-white shadow-xl shadow-red-900/15 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.03] hover:shadow-red-900/20 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-500/25 dark:from-red-700 dark:via-rose-700 dark:to-orange-700 dark:shadow-black/35 sm:px-7 sm:py-3.5 sm:text-base"
-                            >
-                                <span>{{ $buttonText }}</span>
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-white/25 bg-white/20 text-white leading-none transition-transform duration-200 group-hover:translate-x-1">
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </span>
-                            </button>
-                        @endif
                     </section>
 
                     @if($image !== '')

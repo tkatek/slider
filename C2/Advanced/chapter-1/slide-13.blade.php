@@ -3,7 +3,7 @@
         'title' => 'Thank You',
         'subtitle' => "Don't forget to complete your homework",
         'badge' => 'Lesson Complete',
-        'image' => materialAsset('slider/activities/silent-letters/slide3.webp'),
+        'image' => materialAsset('slider/C2/chapter-1/img/thankyou.webp'),
         'image_alt' => 'Notebook and writing',
         'button' => 'Start Again',
         'first_fallback' => 'slide-1.blade.php',
@@ -16,7 +16,7 @@
     $badge = trim((string) ($content['badge'] ?? 'Lesson Complete'));
     $image = (string) ($content['image'] ?? '');
     $imageAlt = (string) ($content['image_alt'] ?? 'Slide image');
-    $buttonText = trim((string) ($content['button'] ?? 'Start Again')); 
+    $buttonText = trim((string) ($content['button'] ?? 'Start Again'));
     $firstFallback = trim((string) ($content['first_fallback'] ?? 'slide-1.blade.php'));
 @endphp
 
