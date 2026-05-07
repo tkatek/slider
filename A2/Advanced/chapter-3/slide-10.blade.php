@@ -18,17 +18,17 @@ $content = [
         [
             'emoji' => '🩺',
             'text'  => 'A doctor <span class="text-purple-600 dark:text-purple-300 font-black">uses</span> a stethoscope <span class="text-orange-500 dark:text-orange-300 font-black">to check</span> patients.',
-            'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide7/doctor-uses-stethoscope.mp3'),
+            'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide10/1.mp3'),
         ],
         [
             'emoji' => '👩‍🏫',
             'text'  => 'A teacher <span class="text-purple-600 dark:text-purple-300 font-black">uses</span> a whiteboard <span class="text-orange-500 dark:text-orange-300 font-black">to teach</span> students.',
-            'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide7/teacher-uses-whiteboard.mp3'),
+            'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide10/2.mp3'),
         ],
         [
             'emoji' => '👨‍🚒',
             'text'  => 'A firefighter <span class="text-purple-600 dark:text-purple-300 font-black">uses</span> a hose <span class="text-orange-500 dark:text-orange-300 font-black">to put out</span> fires.',
-            'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide7/firefighter-uses-hose.mp3'),
+            'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide10/3.mp3'),
         ],
         [
             'emoji' => '✍️',

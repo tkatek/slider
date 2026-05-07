@@ -37,17 +37,17 @@ $content = [
                 ],
                 [
                     'text' => 'keep (people safe)',
-                    'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide9/keep-people-safe.mp3'),
+                    'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide9/keep.mp3'),
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide9/keep-people-safe.webp'),
                 ],
                 [
                     'text' => 'put out (fires)',
-                    'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide9/put-out-fires.mp3'),
+                    'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide9/put-out.mp3'),
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide9/put-out-fires.webp'),
                 ],
                 [
                     'text' => 'grow (crops)',
-                    'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide9/grow-crops.mp3'),
+                    'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide9/grow.mp3'),
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide9/grow-crops.webp'),
                 ],
                 [

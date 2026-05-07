@@ -36,10 +36,9 @@ $content = [
                     'sound' => materialAsset('slider/C2/Advanced/chapter-1/audios/slide5/it-depends-on.mp3'),
                 ],
                 [
-                    'text' => 'I\'d argue that...',
+                    'text' => 'I’d argue that...',
                     'emoji' => '🎯',
                     'description' => 'Strong but polite opinion',
-
                     'sound' => materialAsset('slider/C2/Advanced/chapter-1/audios/slide5/id-argue-that.mp3'),
                 ],
             ],

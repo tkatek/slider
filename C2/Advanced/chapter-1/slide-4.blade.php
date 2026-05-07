@@ -1,53 +1,50 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
-    'title' => 'New Vocabulary',
+    'page_title' => 'New Language',
+    'title' => 'New Language',
     'subtitle' => '',
-    'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5',
+    'grid_class' => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
 
     'groups' => [
         [
-            'key' => 'advanced-opinion-vocabulary',
+            'key' => 'new-language-vocabulary',
             'title' => 'Useful Language',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5',
+            'grid_class' => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
             'items' => [
                 [
                     'text' => 'To some extent',
-                    'sound' => materialAsset('slider/C2/Advanced/chapter-1/audios/slide4/to-some-extent.mp3'),
-                    'image' => materialAsset('slider/C2/Advanced/chapter-1/img/slide4/to-some-extent.webp'),
+                    'emoji' => '↔️',
+                    'description' => 'Partially',
+                    'sound' => null,
                 ],
                 [
                     'text' => 'Nuanced',
-                    'sound' => materialAsset('slider/C2/Advanced/chapter-1/audios/slide4/nuanced.mp3'),
-                    'image' => materialAsset('slider/C2/Advanced/chapter-1/img/slide4/nuanced.webp'),
+                    'emoji' => '✨',
+                    'description' => 'Showing subtle differences',
+                    'sound' => null,
                 ],
                 [
                     'text' => 'Fulfillment',
-                    'sound' => materialAsset('slider/C2/Advanced/chapter-1/audios/slide4/fulfillment.mp3'),
-                    'image' => materialAsset('slider/C2/Advanced/chapter-1/img/slide4/fulfillment.webp'),
+                    'emoji' => '😊',
+                    'description' => 'Feeling satisfied',
+                    'sound' => null,
                 ],
                 [
                     'text' => 'Perspective',
-                    'sound' => materialAsset('slider/C2/Advanced/chapter-1/audios/slide4/perspective.mp3'),
-                    'image' => materialAsset('slider/C2/Advanced/chapter-1/img/slide4/perspective.webp'),
+                    'emoji' => '👁️',
+                    'description' => 'Point of view',
+                    'sound' => null,
                 ],
                 [
                     'text' => 'Diplomatically',
-                    'sound' => materialAsset('slider/C2/Advanced/chapter-1/audios/slide4/diplomatically.mp3'),
-                    'image' => materialAsset('slider/C2/Advanced/chapter-1/img/slide4/diplomatically.webp'),
+                    'emoji' => '🤝',
+                    'description' => 'Politely and carefully',
+                    'sound' => null,
                 ],
-                [
-                    'text' => 'To some extent',
-                    'description' => 'Partially',
-
-                    'sound' => materialAsset('slider/C2/Advanced/chapter-1/audios/slide4/diplomatically.mp3'),
-                    'image' => materialAsset('slider/C2/Advanced/chapter-1/img/slide4/diplomatically.webp'),
-                ],
-
             ],
         ],
     ],
 ];
 ?>
 
-@include('slider.vocab.image-card', ['content' => $content])
+@include('slider.vocab.sentence-audio', ['content' => $content])

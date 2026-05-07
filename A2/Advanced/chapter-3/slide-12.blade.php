@@ -6,7 +6,7 @@ $content = [
     'subtitle' => '',
     'instruction' => 'People are describing their favorite gadgets and machines. Which gadget is each person describing? Listen and write the correct letter.',
     'instruction_note' => 'Write the correct letter.',
-    'audio' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide13/listening.mp3'),
+    'audio' => materialAsset('slider/A2/Advanced/chapter-3/audios/listening.mp3'),
 
     'transcript' => [
         '1. I love this computer. It is small and light. I can carry it with me. I take it to the library to work.',

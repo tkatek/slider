@@ -52,7 +52,7 @@ $content = [
                 ],
                 [
                     'text' => 'a fire hose',
-                    'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide8/fire-hose.mp3'),
+                    'sound' => materialAsset('slider/A2/Advanced/chapter-3/audios/slide8/a-fire-hose.mp3'),
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/fire-hose.webp'),
                 ],
                 [

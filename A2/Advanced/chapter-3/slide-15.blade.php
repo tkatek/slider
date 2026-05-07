@@ -10,11 +10,11 @@ $content = [
 
     'people' => [
         'left'  => [
-            'name'  => 'Pupil A',
+            'name'  => 'Anna',
             'image' => materialAsset('slider/A1/Intermediate/chapter-1/img/slide-10/mia.webp'),
         ],
         'right' => [
-            'name'  => 'Pupil B',
+            'name'  => 'Jack',
             'image' => materialAsset('slider/A1/Intermediate/chapter-1/img/slide-10/tom.webp'),
         ],
     ],
@@ -24,13 +24,13 @@ $content = [
             'text'   => 'What do you use your laptop to do?',
             'side'   => 'left',
             'gender' => 'female',
-            'sound'  => '',
+            'sound'  => materialAsset('slider/A2/Advanced/chapter-3/audios/slide15/1.mp3'),
         ],
         [
             'text'   => 'I use my laptop to work in class.',
             'side'   => 'right',
             'gender' => 'male',
-            'sound'  => '',
+            'sound'  => materialAsset('slider/A2/Advanced/chapter-3/audios/slide15/2.mp3'),
         ],
     ],
 ];
