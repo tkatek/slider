@@ -2,12 +2,12 @@
 $content = [
     'page_title' => 'New Vocabulary',
     'title'      => 'New Vocabulary',
-    'subtitle'   => '',
+    'subtitle'   => 'Body Parts',
     'groups'     => [
         [
             'key'        => 'body-parts',
-            'title'      => 'Body Parts',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-4',
+            'title'      => '',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4',
             'items'      => [
                 [
                     'text'  => 'Tongue',
@@ -46,43 +46,7 @@ $content = [
                 ],
             ],
         ],
-        [
-            'key'        => 'regions-and-people',
-            'title'      => 'Regions & People',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-6',
-            'items'      => [
-                [
-                    'text'  => 'Gulf countries',
-                    'sound' => materialAsset('slider/A2/Intermediate/chapter-1/audios/slide7/gulf-countries.mp3'),
-                    'image' => materialAsset('slider/A2/Intermediate/chapter-1/img/slide7/gulf-countries.webp'),
-                ],
-                [
-                    'text'  => 'European / South American countries',
-                    'sound' => materialAsset('slider/A2/Intermediate/chapter-1/audios/slide7/european-south-american-countries.mp3'),
-                    'image' => materialAsset('slider/A2/Intermediate/chapter-1/img/slide7/european-south-american-countries.webp'),
-                ],
-                [
-                    'text'  => 'East Asian / Southeast Asian countries',
-                    'sound' => materialAsset('slider/A2/Intermediate/chapter-1/audios/slide7/east-asian.mp3'),
-                    'image' => materialAsset('slider/A2/Intermediate/chapter-1/img/slide7/east-asian-southeast-asian-countries.webp'),
-                ],
-                [
-                    'text'  => 'Māori people',
-                    'sound' => materialAsset('slider/A2/Intermediate/chapter-1/audios/slide7/maori-people.mp3'),
-                    'image' => materialAsset('slider/A2/Intermediate/chapter-1/img/slide7/maori-people.webp'),
-                ],
-                [
-                    'text'  => 'Inuit people',
-                    'sound' => materialAsset('slider/A2/Intermediate/chapter-1/audios/slide7/inuit-people.mp3'),
-                    'image' => materialAsset('slider/A2/Intermediate/chapter-1/img/slide7/inuit-people.webp'),
-                ],
-                [
-                    'text'  => 'Arctic regions',
-                    'sound' => materialAsset('slider/A2/Intermediate/chapter-1/audios/slide7/arctic-regions.mp3'),
-                    'image' => materialAsset('slider/A2/Intermediate/chapter-1/img/slide7/arctic-regions.webp'),
-                ],
-            ],
-        ],
+
     ],
 ];
 ?>

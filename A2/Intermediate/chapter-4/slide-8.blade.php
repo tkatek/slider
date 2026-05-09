@@ -1,70 +1,75 @@
 <?php
 $content = [
-    'title'    => 'Listening',
-    'subtitle' => 'Listen to the audio, find out what happened to Ahmed, and choose the correct answers.',
-    'type'     => 'audio',
+    'page_title' => 'Listening',
+    'title'      => 'Listening',
+    'subtitle'   => 'Listen. What happened to Ahmed? What was he doing when it happened? <br>Practice the conversation.',
 
-    'audio' => materialAsset('slider/A2/Intermediate/chapter-4/slide8.mpeg'),
+    // --- Image Control ---
+    'show_footer_image' => 0,
+    'footer_image'      => '',
 
-    'image_panel_col_class'  => 'sm:col-span-0',
-    'answer_panel_col_class' => 'sm:col-span-12',
-
-    'script' => [
-        'Noura: So, how was your ski trip? Did you have a good time?',
-        'Ahmed: Yeah, I guess. I sort of had an accident.',
-        'Noura: Oh, really? What happened? Did you hurt yourself?',
-        'Ahmed: Yeah, I broke my leg.',
-        'Noura: Oh, no! How did it happen? I mean, what were you doing?',
-        'Ahmed: Well, actually, I was talking on my cell phone....',
-        'Noura: While you were skiing? That\'s kind of dangerous.',
-        'Ahmed: Yeah, I know. But I was by myself, so I was lucky I had my cell to call for help.',
+    'people' => [
+        'left'  => [
+            'name'  => 'Noura',
+            'image' => materialAsset('slider/A2/Intermediate/chapter-4/audios/slide8/noura.webp'),
+        ],
+        'right' => [
+            'name'  => 'Ahmed',
+            'image' => materialAsset('slider/A2/Intermediate/chapter-4/audios/slide8/ahmed.webp'),
+        ],
     ],
 
-    'questions' => [
+    'dialogues' => [
         [
-            'prompt'  => 'What happened to Ahmed?',
-            'correct' => '',
-            'options' => null
+            'text'   => "So, how was your ski trip? Did you have a good time?",
+            'side'   => 'left',
+            'gender' => 'female',
+            'sound'  => materialAsset('slider/A2/Intermediate/chapter-4/audios/slide8/1.mp3'),
         ],
         [
-            'prompt'  => 'What was he doing when it happened?',
-            'correct' => '',
-            'options' => null
+            'text'   => "Yeah, I guess. I sort of had an accident.",
+            'side'   => 'right',
+            'gender' => 'male',
+            'sound'  => materialAsset('slider/A2/Intermediate/chapter-4/audios/slide8/2.mp3'),
         ],
         [
-            'prompt'  => 'What________you doing?',
-            'correct' => 'were',
-            'options' => [
-                'were',
-                'did',
-            ],
+            'text'   => "Oh, really? What happened? Did you hurt yourself?",
+            'side'   => 'left',
+            'gender' => 'female',
+            'sound'  => materialAsset('slider/A2/Intermediate/chapter-4/audios/slide8/3.mp3'),
         ],
         [
-            'prompt'  => 'How____________ ?',
-            'correct' => 'did it happen',
-            'options' => [
-                'did it happen',
-                'was it happening',
-            ],
+            'text'   => "Yeah, I broke my leg.",
+            'side'   => 'right',
+            'gender' => 'male',
+            'sound'  => materialAsset('slider/A2/Intermediate/chapter-4/audios/slide8/4.mp3'),
         ],
         [
-            'prompt'  => 'Did you hurt_________?',
-            'correct' => 'yourself',
-            'options' => [
-                'yourself',
-                'you',
-            ],
+            'text'   => "Oh, no! How did it happen? I mean, what were you doing?",
+            'side'   => 'left',
+            'gender' => 'female',
+            'sound'  => materialAsset('slider/A2/Intermediate/chapter-4/audios/slide8/5.mp3'),
         ],
         [
-            'prompt'  => 'I don\'t enjoy skiing_______myself. Do you?',
-            'correct' => 'by',
-            'options' => [
-                'by',
-                'with',
-            ],
+            'text'   => "Well, actually, I was talking on my cell phone...",
+            'side'   => 'right',
+            'gender' => 'male',
+            'sound'  => materialAsset('slider/A2/Intermediate/chapter-4/audios/slide8/6.mp3'),
+        ],
+        [
+            'text'   => "While you were skiing? That's kind of dangerous.",
+            'side'   => 'left',
+            'gender' => 'female',
+            'sound'  => materialAsset('slider/A2/Intermediate/chapter-4/audios/slide8/7.mp3'),
+        ],
+        [
+            'text'   => "Yeah, I know. But I was by myself, so I was lucky I had my cell to call for help.",
+            'side'   => 'right',
+            'gender' => 'male',
+            'sound'  => materialAsset('slider/A2/Intermediate/chapter-4/audios/slide8/8.mp3'),
         ],
     ],
 ];
 ?>
 
-@include('slider.game.multi-choice-all-in-one', ['content' => $content])
+@include("slider.vocab.image-conversation", ['content' => $content])

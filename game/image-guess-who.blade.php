@@ -556,7 +556,7 @@
 @endsection
 
 @section('content')
-    <div class="min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto px-0 py-4 sm:py-6 {{ $centerPage ? 'flex flex-col justify-center' : '' }}">
+    <div class="flex min-h-[100dvh] w-full flex-col justify-center overflow-x-hidden overflow-y-auto px-0 py-4 sm:py-6">
         @include('slider.components.title-subtitle')
 
         <section class="mx-auto w-full max-w-5xl px-4 sm:px-8">

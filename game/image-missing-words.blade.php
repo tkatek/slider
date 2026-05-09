@@ -24,528 +24,27 @@
     $scriptLines = $normalizeScriptLines($content['script'] ?? []);
     $hasScript = $scriptLines !== [];
 
-    $normalizeCols = static fn ($cols) => max(1, min(6, (int) $cols));
-
-    $extractCols = static function (?string $breakpoint, string $classString, int $fallback) use ($normalizeCols) {
-        $pattern = $breakpoint
-            ? '/(?:^|\s)' . preg_quote($breakpoint, '/') . ':grid-cols-(\d+)/'
-            : '/(?:^|\s)grid-cols-(\d+)/';
-
-        if (preg_match($pattern, $classString, $match)) {
-            return $normalizeCols($match[1]);
-        }
-
-        return $fallback;
-    };
-
-    $baseCols = $extractCols(null, $gridClass, 1);
-    $smCols = $extractCols('sm', $gridClass, $baseCols);
-    $lgCols = $extractCols('lg', $gridClass, $smCols);
-    $xlCols = $extractCols('xl', $gridClass, $lgCols);
-
     $storageKey = 'missing-word-game-' . md5(request()->path());
     $checkButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500'));
+    $imageAspectClass = $squareImages ? 'aspect-square h-auto min-h-0' : 'h-[128px] min-h-[118px] sm:h-[136px] sm:min-h-[128px] lg:h-[145px] lg:min-h-[132px]';
+
+    if (!$squareImages && $imageAspectRatio !== '') {
+        $imageAspectClass = match (preg_replace('/\s+/', '', $imageAspectRatio)) {
+            '3/2' => 'aspect-[3/2] h-auto min-h-0',
+            '4/3' => 'aspect-[4/3] h-auto min-h-0',
+            '16/9' => 'aspect-video h-auto min-h-0',
+            '1/1' => 'aspect-square h-auto min-h-0',
+            default => $imageAspectClass,
+        };
+    }
 @endphp
 
 @section('title', $pageTitle)
 
-@section('style')
-    <style>
-        .word-game-shell{
-            min-height:100dvh;
-            width:100%;
-            overflow-x:hidden;
-            font-family:"Plus Jakarta Sans", sans-serif;
-            background:
-                    linear-gradient(180deg, rgba(255,255,255,.65) 0%, rgba(248,250,252,.88) 100%),
-                    radial-gradient(900px 420px at 8% 6%, rgba(79,70,229,.08), transparent 55%),
-                    radial-gradient(720px 420px at 100% 0%, rgba(59,130,246,.08), transparent 55%);
-        }
-
-        .dark .word-game-shell{
-            background:
-                    linear-gradient(180deg, rgba(2,6,23,.88) 0%, rgba(15,23,42,.96) 100%),
-                    radial-gradient(900px 420px at 8% 6%, rgba(99,102,241,.16), transparent 55%),
-                    radial-gradient(720px 420px at 100% 0%, rgba(59,130,246,.14), transparent 55%);
-        }
-
-        .word-game-inner{
-            min-height:100dvh;
-            width:100%;
-            max-width:1320px;
-            margin:0 auto;
-            padding:20px 16px 28px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-        }
-
-        .word-game-main{
-            width:100%;
-        }
-
-        .top-actions{
-            width:100%;
-            max-width:80rem;
-            margin:0 auto 16px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            gap:12px;
-            flex-wrap:wrap;
-        }
-
-        .top-actions-buttons{
-            display:flex;
-            align-items:center;
-            gap:.75rem;
-            flex-wrap:wrap;
-        }
-
-        .mca-btn-primary{
-            appearance:none;
-            cursor:pointer;
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:.5rem;
-            border-radius:.5rem;
-            padding:.55rem .85rem;
-            font-size:.8rem;
-            font-weight:900;
-            color:#fff;
-            border:1px solid rgba(255,255,255,.2);
-            background:linear-gradient(135deg, #9333ea, #4f46e5, #2563eb);
-            box-shadow:0 10px 24px rgba(79,70,229,.10);
-            transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease, background-color .2s ease;
-        }
-
-        .mca-btn-primary:hover{
-            transform:scale(1.05);
-        }
-
-        .mca-btn-primary:active{
-            transform:scale(.95);
-        }
-
-        .mca-btn-reveal{
-            color:rgb(154 52 18);
-            border-color:rgb(253 186 116);
-            background:rgb(255 237 213);
-            box-shadow:0 8px 22px rgba(234,88,12,.10);
-        }
-
-        .mca-btn-reveal:hover{
-            background:rgb(254 215 170);
-            box-shadow:0 10px 24px rgba(234,88,12,.14);
-        }
-
-        .dark .mca-btn-reveal{
-            color:rgb(254 215 170);
-            border-color:rgba(194, 65, 12, .45);
-            background:rgba(154, 52, 18, .35);
-        }
-
-        .dark .mca-btn-reveal:hover{
-            background:rgba(154, 52, 18, .5);
-        }
-
-        .mca-btn-check:hover{
-            box-shadow:0 12px 28px rgba(59,130,246,.20);
-        }
-
-        .mca-btn-secondary{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:.5rem;
-            border-radius:.5rem;
-            padding:.55rem .85rem;
-            font-size:.8rem;
-            font-weight:900;
-            color:rgb(15 23 42);
-            border:1px solid rgb(226 232 240);
-            background:#fff;
-            box-shadow:0 8px 22px rgba(2,6,23,.05);
-            transition:transform .2s ease, background .2s ease, box-shadow .2s ease, opacity .2s ease, color .2s ease, border-color .2s ease;
-        }
-
-        .mca-btn-secondary:hover{
-            transform:scale(1.05);
-            background:rgb(248 250 252);
-        }
-
-        .mca-btn-secondary:active{
-            transform:scale(.98);
-        }
-
-        .dark .mca-btn-secondary{
-            color:rgb(241 245 249);
-            border-color:rgba(71,85,105,.8);
-            background:rgba(15,23,42,.92);
-            box-shadow:0 8px 22px rgba(2,6,23,.18);
-        }
-
-        .dark .mca-btn-secondary:hover{
-            background:rgba(30,41,59,.96);
-        }
-
-        .word-grid{
-            display:grid;
-            width:100%;
-            max-width:1240px;
-            margin:0 auto;
-            gap:14px;
-            grid-template-columns:repeat(1, minmax(0, 1fr));
-        }
-
-        .word-grid[data-base-cols="2"]{grid-template-columns:repeat(2, minmax(0, 1fr));} 
-        .word-grid[data-base-cols="3"]{grid-template-columns:repeat(3, minmax(0, 1fr));}
-        .word-grid[data-base-cols="4"]{grid-template-columns:repeat(4, minmax(0, 1fr));}
-        .word-grid[data-base-cols="5"]{grid-template-columns:repeat(5, minmax(0, 1fr));}
-        .word-grid[data-base-cols="6"]{grid-template-columns:repeat(6, minmax(0, 1fr));}
-
-        .word-card{
-            display:flex;
-            flex-direction:column;
-            min-height:100%;
-            border-radius:24px;
-            border:1px solid rgba(217,226,241,.9);
-            background:linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(248,250,252,.94) 100%);
-            box-shadow:0 12px 28px -24px rgba(15,23,42,.12);
-            padding:16px;
-            transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-        }
-
-        .dark .word-card{
-            border-color:rgba(71,85,105,.8);
-            background:linear-gradient(180deg, rgba(15,23,42,.94) 0%, rgba(17,24,39,.94) 100%);
-            box-shadow:0 12px 28px -24px rgba(2,6,23,.35);
-        }
-
-        .word-card:hover{
-            transform:translateY(-2px);
-            border-color:rgba(99,102,241,.28);
-            box-shadow:0 18px 40px -28px rgba(37,99,235,.18);
-        }
-
-        .word-card.ring-2{
-            border-color:rgba(99,102,241,.34);
-            box-shadow:0 0 0 1px rgba(99,102,241,.12), 0 18px 40px -28px rgba(79,70,229,.35);
-        }
-
-        .word-image-frame{
-            position:relative;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            min-height:180px;
-            height:clamp(180px, 18vw, 230px);
-            padding:0;
-            border-radius:18px;
-            overflow:hidden;
-            background:rgba(238,242,255,.72);
-            border:1px solid rgba(199,210,254,.65);
-        }
-
-        .dark .word-image-frame{
-            background:rgba(30,41,59,.72);
-            border-color:rgba(99,102,241,.18);
-        }
-
-        .word-image{
-            width:100%;
-            height:100%;
-            max-height:none;
-            object-fit:cover;
-        }
-
-        .word-image-empty{
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            width:100%;
-            min-height:170px;
-            border-radius:16px;
-            border:1px dashed rgba(148,163,184,.7);
-            color:#94a3b8;
-            font-size:.95rem;
-            line-height:1.35;
-            font-weight:800;
-            text-align:center;
-            padding:12px;
-            background:rgba(255,255,255,.45);
-        }
-
-        .dark .word-image-empty{
-            border-color:rgba(100,116,139,.75);
-            color:#94a3b8;
-            background:rgba(15,23,42,.35);
-        }
-
-        .card-audio{
-            position:absolute;
-            top:12px;
-            right:12px;
-            z-index:2;
-        }
-
-        .speak-btn{
-            -webkit-tap-highlight-color:transparent;
-            border:0;
-            cursor:pointer;
-            background:transparent;
-            padding:0;
-        }
-
-        .speak-btn:focus-visible{
-            outline:none;
-        }
-
-        .speak-btn-shell{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            width:44px;
-            height:44px;
-            border-radius:999px;
-            color:#ffffff;
-            border:1px solid rgba(255,255,255,.62);
-            background:rgba(15,23,42,.22);
-            box-shadow:
-                    0 14px 28px -18px rgba(15,23,42,.6),
-                    inset 0 1px 0 rgba(255,255,255,.18);
-            backdrop-filter:blur(10px);
-            -webkit-backdrop-filter:blur(10px);
-            transition:transform .16s ease, background-color .16s ease;
-        }
-
-        .speak-btn:hover .speak-btn-shell{
-            transform:scale(1.04);
-            background:rgba(15,23,42,.3);
-        }
-
-        .speak-btn.speaking .speak-btn-shell{
-            background:rgba(79,70,229,.54);
-        }
-
-        .wave-bar{
-            display:none;
-            width:3px;
-            height:12px;
-            background:currentColor;
-            border-radius:2px;
-            margin:0 1px;
-        }
-
-        .speak-btn.speaking .wave-bar{
-            display:block;
-            animation:waveGrowth .6s infinite ease-in-out;
-        }
-
-        .speak-btn.speaking .static-icon{
-            display:none;
-        }
-
-        @keyframes waveGrowth{
-            0%,100%{height:6px;}
-            50%{height:16px;}
-        }
-
-        .word-answer{
-            margin-top:14px;
-            width:100%;
-            display:flex;
-            align-items:center;
-            gap:8px;
-            flex-wrap:wrap;
-            font-size:1.04rem;
-            line-height:1.4;
-            font-weight:700;
-            color:#0f172a;
-            min-width:0;
-            overflow-wrap:anywhere;
-            word-break:normal;
-        }
-
-        .dark .word-answer{
-            color:#f8fafc;
-        }
-
-        .word-prefix,
-        .word-suffix{
-            flex:0 1 auto;
-            letter-spacing:.01em;
-            min-width:0;
-            max-width:100%;
-            white-space:pre-wrap;
-            overflow-wrap:anywhere;
-        }
-
-        .word-input{
-            box-sizing:content-box;
-            flex:var(--answer-length, 1) 1 var(--answer-text-width, 3ch);
-            width:var(--answer-text-width, 3ch);
-            min-width:var(--answer-text-width, 1ch);
-            height:36px;
-            border-radius:12px;
-            border:1.5px solid #cbd5e1;
-            background:rgba(255,255,255,.96);
-            color:#0f172a;
-            padding:6px 8px;
-            font-size:.95rem;
-            line-height:1;
-            font-weight:700;
-            text-align:center;
-            text-transform:uppercase;
-            outline:none;
-            transition:border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
-        }
-
-        .word-input:focus{
-            border-color:#6366f1;
-            box-shadow:0 0 0 4px rgba(99,102,241,.12);
-        }
-
-        .dark .word-input{
-            border-color:#334155;
-            background:rgba(15,23,42,.98);
-            color:#f8fafc;
-        }
-
-        .word-input.is-correct{
-            border-color:#16a34a;
-            background:rgba(220,252,231,.9);
-            color:#166534;
-        }
-
-        .word-input.is-wrong{
-            border-color:#dc2626;
-            background:rgba(254,226,226,.95);
-            color:#991b1b;
-        }
-
-        .dark .word-input.is-correct{
-            background:rgba(20,83,45,.34);
-            color:#bbf7d0;
-        }
-
-        .dark .word-input.is-wrong{
-            background:rgba(127,29,29,.34);
-            color:#fecaca;
-        }
-
-        .word-result{
-            min-width:22px;
-            font-size:1.1rem;
-            font-weight:900;
-            line-height:1;
-        }
-
-        .word-result.is-correct{
-            color:#16a34a;
-        }
-
-        .word-result.is-wrong{
-            color:#dc2626;
-        }
-
-        @media (min-width: 640px){
-            .word-game-inner{
-                padding:24px 20px 32px;
-            }
-
-            .word-grid{
-                gap:16px;
-            }
-
-            .word-grid[data-sm-cols="1"]{grid-template-columns:repeat(1, minmax(0, 1fr));}
-            .word-grid[data-sm-cols="2"]{grid-template-columns:repeat(2, minmax(0, 1fr));}
-            .word-grid[data-sm-cols="3"]{grid-template-columns:repeat(3, minmax(0, 1fr));}
-            .word-grid[data-sm-cols="4"]{grid-template-columns:repeat(4, minmax(0, 1fr));}
-            .word-grid[data-sm-cols="5"]{grid-template-columns:repeat(5, minmax(0, 1fr));}
-            .word-grid[data-sm-cols="6"]{grid-template-columns:repeat(6, minmax(0, 1fr));}
-        }
-
-        @media (min-width: 1024px){
-            .word-grid{
-                gap:18px;
-            }
-
-            .word-grid[data-lg-cols="1"]{grid-template-columns:repeat(1, minmax(0, 1fr));}
-            .word-grid[data-lg-cols="2"]{grid-template-columns:repeat(2, minmax(0, 1fr));}
-            .word-grid[data-lg-cols="3"]{grid-template-columns:repeat(3, minmax(0, 1fr));}
-            .word-grid[data-lg-cols="4"]{grid-template-columns:repeat(4, minmax(0, 1fr));}
-            .word-grid[data-lg-cols="5"]{grid-template-columns:repeat(5, minmax(0, 1fr));}
-            .word-grid[data-lg-cols="6"]{grid-template-columns:repeat(6, minmax(0, 1fr));}
-        }
-
-        @media (min-width: 1280px){
-            .word-grid[data-xl-cols="1"]{grid-template-columns:repeat(1, minmax(0, 1fr));}
-            .word-grid[data-xl-cols="2"]{grid-template-columns:repeat(2, minmax(0, 1fr));}
-            .word-grid[data-xl-cols="3"]{grid-template-columns:repeat(3, minmax(0, 1fr));}
-            .word-grid[data-xl-cols="4"]{grid-template-columns:repeat(4, minmax(0, 1fr));}
-            .word-grid[data-xl-cols="5"]{grid-template-columns:repeat(5, minmax(0, 1fr));}
-            .word-grid[data-xl-cols="6"]{grid-template-columns:repeat(6, minmax(0, 1fr));}
-        }
-
-        @media (max-width: 639px){
-            .word-card{
-                padding:14px;
-                border-radius:24px;
-            }
-
-            .word-image-frame{
-                min-height:150px;
-                height:170px;
-            }
-
-            .word-image{
-                max-height:none;
-            }
-
-            .word-answer{
-                font-size:.98rem;
-            }
-
-            .word-input{
-                width:var(--answer-text-width, 3ch);
-                min-width:var(--answer-text-width, 1ch);
-                height:34px;
-            }
-        }
-
-        .word-game-square-images .word-image-frame{
-            aspect-ratio:1 / 1;
-            height:auto;
-            min-height:0;
-        }
-
-            .word-game-square-images .word-image{
-            object-fit:cover;
-        }
-
-        .word-game-custom-ratio .word-image-frame{
-            aspect-ratio:var(--word-image-ratio, 3 / 2);
-            height:auto;
-            min-height:0;
-        }
-
-        .word-game-custom-ratio .word-image{
-            object-fit:cover;
-        }
-    </style>
-@endsection
-
 @section('content')
-    <div class="word-game-shell">
-        <div class="word-game-inner">
-            <main
-                class="word-game-main{{ $squareImages ? ' word-game-square-images' : '' }}{{ $imageAspectRatio !== '' ? ' word-game-custom-ratio' : '' }}"
-                @if($imageAspectRatio !== '')
-                    style="--word-image-ratio: {{ $imageAspectRatio }};"
-                @endif
-            >
+    <div class="min-h-[100dvh] w-full overflow-x-hidden bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.10),transparent_32rem),radial-gradient(circle_at_top_right,rgba(59,130,246,0.08),transparent_30rem),linear-gradient(180deg,rgba(255,255,255,0.70),rgba(248,250,252,0.92))] font-sans dark:bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.16),transparent_32rem),radial-gradient(circle_at_top_right,rgba(59,130,246,0.14),transparent_30rem),linear-gradient(180deg,rgba(2,6,23,0.88),rgba(15,23,42,0.96))]">
+        <div class="mx-auto flex min-h-[100dvh] w-full max-w-[1480px] items-center justify-center px-3 pb-5 pt-4 sm:px-4 sm:pb-6 sm:pt-5">
+            <main class="w-full">
                 @include('slider.components.title-subtitle')
 
 
@@ -557,20 +56,16 @@
                     </div>
                 @endif
 
-                <div class="top-actions">
-                    <div class="top-actions-buttons">
-                        <button type="button" class="mca-btn-primary mca-btn-reveal" id="btnRevealAnswers">Reveal answers</button>
-                        <button type="button" class="mca-btn-secondary hidden" id="btnRetakeTest">Retake test</button>
-                        <button type="button" class="mca-btn-primary mca-btn-check {{ $checkButtonClass }}" id="checkAnswersBtn">Check Answers</button>
+                <div class="mx-auto mb-3 flex w-full max-w-[1400px] flex-wrap items-center justify-center gap-2.5">
+                    <div class="flex flex-wrap items-center justify-center gap-2.5">
+                        <button type="button" class="inline-flex items-center justify-center gap-2 rounded-lg border border-orange-300 bg-orange-50 px-3 py-1.5 text-[0.76rem] font-black text-orange-800 shadow-[0_8px_22px_-18px_rgba(234,88,12,0.42)] transition duration-200 hover:scale-105 hover:bg-orange-100 active:scale-95 dark:border-orange-700/60 dark:bg-orange-950/40 dark:text-orange-200 dark:hover:bg-orange-900/50" id="btnRevealAnswers">Reveal answers</button>
+                        <button type="button" class="hidden inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[0.76rem] font-black text-slate-900 shadow-[0_8px_22px_-18px_rgba(2,6,23,0.35)] transition duration-200 hover:scale-105 hover:bg-slate-50 active:scale-95 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800" id="btnRetakeTest">Retake test</button>
+                        <button type="button" class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/20 px-3 py-1.5 text-[0.76rem] font-black text-white shadow-[0_10px_24px_-18px_rgba(79,70,229,0.45)] transition duration-200 hover:scale-105 hover:shadow-[0_12px_28px_-18px_rgba(59,130,246,0.55)] active:scale-95 {{ $checkButtonClass }}" id="checkAnswersBtn">Check Answers</button>
                     </div>
                 </div>
 
                 <section
-                        class="word-grid"
-                        data-base-cols="{{ $baseCols }}"
-                        data-sm-cols="{{ $smCols }}"
-                        data-lg-cols="{{ $lgCols }}"
-                        data-xl-cols="{{ $xlCols }}"
+                        class="word-grid mx-auto grid w-full max-w-[1400px] gap-3 sm:gap-3.5 lg:gap-4 {{ $gridClass }}"
                 >
                     @foreach($items as $index => $item)
                         @php
@@ -621,31 +116,28 @@
                             $parts = $normalizedParts;
                         @endphp
 
-                        <article class="word-card">
+                        <article class="word-card flex min-h-full flex-col rounded-2xl border border-slate-200/90 bg-gradient-to-b from-white/95 to-slate-50/95 p-2.5 shadow-[0_12px_28px_-24px_rgba(15,23,42,0.22)] transition duration-200 hover:-translate-y-0.5 hover:border-indigo-300/60 hover:shadow-[0_18px_40px_-28px_rgba(37,99,235,0.35)] dark:border-slate-700/80 dark:from-slate-900/95 dark:to-slate-950/90 sm:p-3">
                             @if(!empty($item['image']))
-                                <div class="word-image-frame">
+                                <div class="relative flex items-center justify-center overflow-hidden rounded-2xl border border-indigo-200/70 bg-indigo-50/70 dark:border-indigo-400/20 dark:bg-slate-800/70 {{ $imageAspectClass }}">
                                     <img
                                             src="{{ $item['image'] }}"
                                             alt="{{ $item['name'] ?? ('Item ' . ($item['number'] ?? ($index + 1))) }}"
                                             loading="lazy"
-                                            class="word-image"
+                                            class="h-full w-full object-contain"
                                     />
 
                                     @if(!empty($item['sound']))
-                                        <div class="card-audio">
+                                        <div class="absolute right-3 top-3 z-10">
                                             <button
                                                     type="button"
-                                                    class="speak-btn"
+                                                    class="speak-btn cursor-pointer bg-transparent p-0 focus-visible:outline-none"
                                                     aria-label="Play Audio"
                                                     data-audio="{{ $item['sound'] }}"
                                             >
-                                                <span class="speak-btn-shell">
-                                                    <svg class="static-icon h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                <span class="js-speak-shell inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-slate-950/25 text-white shadow-[0_14px_28px_-18px_rgba(15,23,42,0.7)] backdrop-blur-md transition duration-150 hover:scale-105 hover:bg-slate-950/35">
+                                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                                         <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
                                                     </svg>
-                                                    <span class="wave-bar" style="animation-delay:.1s"></span>
-                                                    <span class="wave-bar" style="animation-delay:.2s"></span>
-                                                    <span class="wave-bar" style="animation-delay:.3s"></span>
                                                 </span>
                                             </button>
                                         </div>
@@ -653,34 +145,35 @@
                                 </div>
                             @endif
 
-                            <div class="word-answer">
+                            <div class="mt-2.5 flex w-full min-w-0 flex-wrap items-center gap-1.5 text-[0.9rem] font-bold leading-[1.34] text-slate-900 [overflow-wrap:anywhere] dark:text-slate-50 sm:text-[0.96rem]">
                                 @php $inputCounter = 0; @endphp
 
                                 @foreach($parts as $part)
                                     @if(array_key_exists('text', $part))
-                                        <span class="word-prefix">{{ $part['text'] }}</span>
+                                        <span class="min-w-0 max-w-full flex-none whitespace-pre-wrap tracking-[0.01em] [overflow-wrap:anywhere]">{{ $part['text'] }}</span>
                                     @endif
 
                                     @if(array_key_exists('answer', $part))
                                         @php
                                             $fieldId = 'missing-word-' . $index . '-' . $inputCounter;
-                                            $answerValue = strtoupper((string) $part['answer']);
+                                            $answerValue = (string) $part['answer'];
                                             $maxLength = max(1, mb_strlen((string) $part['answer']));
+                                            $inputSize = min(56, max(6, $maxLength + 4));
                                             $placeholder = (string) ($part['placeholder'] ?? $part['hint'] ?? $item['placeholder'] ?? $item['hint'] ?? '');
                                         @endphp
 
                                         <input
                                                 id="{{ $fieldId }}"
                                                 type="text"
-                                                class="word-input js-word-input"
-                                                style="--answer-length: {{ $maxLength }}; --answer-text-width: {{ $maxLength }}ch"
+                                                class="js-word-input h-[30px] min-w-[4ch] max-w-full rounded-xl border border-slate-300 bg-white/95 px-1.5 py-1 text-center text-[0.74rem] font-bold leading-none text-slate-900 outline-none transition duration-150 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-50 dark:focus:border-indigo-400 sm:h-8 sm:text-[0.8rem]"
+                                                size="{{ $inputSize }}"
                                                 maxlength="{{ $maxLength }}"
                                                 placeholder="{{ $placeholder }}"
                                                 data-key="{{ $index }}-{{ $inputCounter }}"
                                                 data-group="{{ $index }}"
                                                 data-answer="{{ $answerValue }}"
                                                 autocomplete="off"
-                                                autocapitalize="characters"
+                                                autocapitalize="none"
                                                 spellcheck="false"
                                         />
 
@@ -688,7 +181,7 @@
                                     @endif
                                 @endforeach
 
-                                <span class="word-result js-word-result" aria-live="polite"></span>
+                                <span class="js-word-result min-w-[22px] text-lg font-black leading-none" aria-live="polite"></span>
                             </div>
                         </article>
                     @endforeach
@@ -738,8 +231,42 @@
                 } catch (e) {}
             };
 
+            const inputBaseClasses = [
+                'border-slate-300', 'bg-white/95', 'text-slate-900',
+                'dark:border-slate-700', 'dark:bg-slate-950', 'dark:text-slate-50'
+            ];
+            const inputCorrectClasses = [
+                'border-emerald-500', 'bg-emerald-50', 'text-emerald-800',
+                'dark:border-emerald-400', 'dark:bg-emerald-950/40', 'dark:text-emerald-200'
+            ];
+            const inputWrongClasses = [
+                'border-rose-500', 'bg-rose-50', 'text-rose-800', 
+                'dark:border-rose-400', 'dark:bg-rose-950/40', 'dark:text-rose-200'
+            ];
+            const resultStateClasses = ['text-emerald-600', 'text-rose-600', 'dark:text-emerald-300', 'dark:text-rose-300'];
+
+            const setInputState = (input, state = 'base') => {
+                input.classList.remove(...inputBaseClasses, ...inputCorrectClasses, ...inputWrongClasses);
+                input.classList.add(...(state === 'correct' ? inputCorrectClasses : state === 'wrong' ? inputWrongClasses : inputBaseClasses));
+            };
+
+            const setResultState = (result, state = 'base') => {
+                if (!result) return;
+                result.classList.remove(...resultStateClasses);
+
+                if (state === 'correct') {
+                    result.classList.add('text-emerald-600', 'dark:text-emerald-300');
+                } else if (state === 'wrong') {
+                    result.classList.add('text-rose-600', 'dark:text-rose-300');
+                }
+            };
+
             const setAudioBtnState = (btn, isPlaying) => {
-                if (btn) btn.classList.toggle('speaking', isPlaying);
+                const shell = btn?.querySelector('.js-speak-shell');
+                if (!shell) return;
+                shell.classList.toggle('scale-105', isPlaying);
+                shell.classList.toggle('bg-indigo-600/70', isPlaying);
+                shell.classList.toggle('shadow-indigo-900/30', isPlaying);
             };
 
             const setAudioCardState = (card, isPlaying) => {
@@ -820,9 +347,12 @@
             };
 
             const normalizeValue = (value) => {
-                return (value || '')
-                    .toUpperCase()
-                    .replace(/[^A-Z0-9]/g, '');
+                return String(value || '')
+                    .replace(/[\u2018\u2019]/g, "'")
+                    .replace(/[\u201c\u201d]/g, '"')
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .toUpperCase();
             };
 
             const formatTime = (seconds) => {
@@ -848,12 +378,12 @@
                 const result = card.querySelector('.js-word-result');
 
                 cardInputs.forEach((input) => {
-                    input.classList.remove('is-correct', 'is-wrong');
+                    setInputState(input);
                 });
 
                 if (result) {
                     result.textContent = '';
-                    result.classList.remove('is-correct', 'is-wrong');
+                    setResultState(result);
                 }
             };
 
@@ -863,7 +393,7 @@
 
                 return cardInputs.every((input) => {
                     const userValue = normalizeValue(input.value);
-                    const correctValue = (input.dataset.answer || '').toUpperCase();
+                    const correctValue = normalizeValue(input.dataset.answer);
                     return userValue !== '' && userValue === correctValue;
                 });
             };
@@ -892,14 +422,14 @@
 
             inputs.forEach((input) => {
                 const key = input.dataset.key;
-                const answer = (input.dataset.answer || '').toUpperCase();
+                const answer = input.dataset.answer || '';
 
                 if (typeof savedData[key] === 'string') {
-                    input.value = normalizeValue(savedData[key]).slice(0, answer.length);
+                    input.value = savedData[key].slice(0, answer.length);
                 }
 
                 input.addEventListener('input', () => {
-                    input.value = normalizeValue(input.value).slice(0, answer.length);
+                    input.value = input.value.slice(0, answer.length);
 
                     const card = input.closest('.word-card');
                     if (card) clearCardFeedback(card);
@@ -909,7 +439,7 @@
                 });
 
                 input.addEventListener('blur', () => {
-                    input.value = normalizeValue(input.value).slice(0, answer.length);
+                    input.value = input.value.slice(0, answer.length);
                     saveAll();
                 });
             });
@@ -944,28 +474,26 @@
 
                     cardInputs.forEach((input) => {
                         const userValue = normalizeValue(input.value);
-                        const correctValue = (input.dataset.answer || '').toUpperCase();
-
-                        input.classList.remove('is-correct', 'is-wrong');
+                        const correctValue = normalizeValue(input.dataset.answer);
 
                         if (userValue !== '' && userValue === correctValue) {
-                            input.classList.add('is-correct');
+                            setInputState(input, 'correct');
                         } else {
-                            input.classList.add('is-wrong');
+                            setInputState(input, 'wrong');
                             cardCorrect = false;
                         }
                     });
 
                     if (result) {
-                        result.classList.remove('is-correct', 'is-wrong');
+                        setResultState(result);
 
                         if (cardCorrect) {
-                            result.textContent = '✓';
-                            result.classList.add('is-correct');
+                            result.textContent = '\u2713';
+                            setResultState(result, 'correct');
                             hasCorrect = true;
                         } else {
-                            result.textContent = '✕';
-                            result.classList.add('is-wrong');
+                            result.textContent = '\u00d7';
+                            setResultState(result, 'wrong');
                             hasWrong = true;
                             allCorrect = false;
                         }
@@ -994,16 +522,14 @@
                     const result = card.querySelector('.js-word-result');
 
                     cardInputs.forEach((input) => {
-                        const correctValue = (input.dataset.answer || '').toUpperCase();
+                        const correctValue = input.dataset.answer || '';
                         input.value = correctValue;
-                        input.classList.remove('is-wrong');
-                        input.classList.add('is-correct');
+                        setInputState(input, 'correct');
                     });
 
                     if (result) {
-                        result.textContent = '✓';
-                        result.classList.remove('is-wrong');
-                        result.classList.add('is-correct');
+                        result.textContent = '\u2713';
+                        setResultState(result, 'correct');
                     }
                 });
 

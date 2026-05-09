@@ -2,29 +2,35 @@
 $content = [
     'page_title' => 'Reading Comprehension',
     'title' => 'Reading Comprehension',
-    'subtitle' => 'Read the passage & choose the correct verb',
-    'type' => 'reading',
-    'sentences' => [
-        'I had a terrible journey. I {{1}} to the train station and it started raining.',
-        'And then the train was twenty minutes late. When it {{2}}, I {{3}} a seat by the window.',
-        'Some girls {{4}} music on their mobiles, but it was great music.',
-        'That was OK, but I {{5}} my book when the train {{6}} at the next station.',
-        'Two people got on and a man {{7}} down next to me and he started talking loudly on his mobile.',
-        'He {{8}} someone about his new car, his job - everything!',
-        'He was still talking when the train {{9}} in to the station.',
-    ],
-    'answers' => [
-        'was walking',
-        'came',
-        'found',
-        'were playing',
-        'was reading',
-        'arrived',
-        'sat',
-        'was telling',
-        'got',
+    'compact_layout' => true,
+    'subtitle' => 'Read the passage and choose the correct verb.',
+
+    'questions' => [
+        [
+            'segments' => [
+                'I had a terrible journey. I ',
+                ['answer' => 'was walking', 'wrong' => 'walked'],
+                ' to the train station and it started raining. And then the train was twenty minutes late. When it ',
+                ['answer' => 'came', 'wrong' => 'was coming'],
+                ', I ',
+                ['answer' => 'found', 'wrong' => 'was finding'],
+                ' a seat by the window. Some girls ',
+                ['answer' => 'were playing', 'wrong' => 'played'],
+                ' music on their mobiles, but it was great music. That was OK, but I ',
+                ['answer' => 'was reading', 'wrong' => 'read'],
+                ' my book when the train ',
+                ['answer' => 'arrived', 'wrong' => 'was arriving'],
+                ' at the next station. Two people got on and a man ',
+                ['answer' => 'sat', 'wrong' => 'was sitting'],
+                ' down next to me and he started talking loudly on his mobile. He ',
+                ['answer' => 'was telling', 'wrong' => 'told'],
+                ' someone about his new car, his job - everything! He was still talking when the train ',
+                ['answer' => 'got', 'wrong' => 'was getting'],
+                ' in to the station.',
+            ],
+        ],
     ],
 ];
-
 ?>
-@include('slider.game.drag-and-drop-blanks-v2', ['content' => $content])
+
+@include("slider.game.dropdown-blanks", ['content' => $content])

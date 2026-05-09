@@ -2,7 +2,7 @@
 $content = [
     'title'    => 'Thank you',
     'subtitle' => "What did you learn today❓🤔",
-    'image'    => materialAsset('slider/A2/Advanced/chapter-6/img/thankyou.webp'),
+    'image'    => materialAsset('slider/A2/Advanced/chapter-6/img/thankyou.png'),
     'button'   => 'Start Again',
 ];
 ?>
