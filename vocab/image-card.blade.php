@@ -303,61 +303,16 @@
             color:#cbd5e1;
         }
 
-        .card-detail-stack{
-            display:flex;
-            flex-direction:column;
-            gap:8px;
-            margin-top:2px;
-        }
-
-        .card-detail{
-            display:flex;
-            flex-direction:column;
-            gap:3px;
-            border-radius:16px;
-            border:1px solid rgba(226,232,240,.9);
-            background:rgba(248,250,252,.86);
-            padding:9px 10px;
-        }
-
-        .dark .card-detail{
-            border-color:rgba(71,85,105,.72);
-            background:rgba(30,41,59,.66);
-        }
-
-        .card-detail-label{
-            color:#64748b;
-            font-size:.66rem;
-            line-height:1;
-            font-weight:900;
-            letter-spacing:.12em;
-            text-transform:uppercase;
-        }
-
-        .dark .card-detail-label{
-            color:#94a3b8;
-        }
-
-        .card-detail-text{
-            color:#0f172a;
-            font-size:.84rem;
-            line-height:1.35;
+        .card-example-subtitle{
+            margin-top:-2px;
+            color:#7c3aed;
+            font-size:.78rem;
+            line-height:1.45;
             font-weight:800;
         }
 
-        .dark .card-detail-text{
-            color:#f8fafc;
-        }
-
-        .card-detail-example{
-            color:#334155;
-            font-size:.82rem;
-            line-height:1.45;
-            font-weight:700;
-        }
-
-        .dark .card-detail-example{
-            color:#cbd5e1;
+        .dark .card-example-subtitle{
+            color:#c4b5fd;
         }
 
         .speak-btn{
@@ -589,23 +544,7 @@
                                                 @endif
                                             </div>
 
-                                            @if(!empty($item['description']) || !empty($item['example']))
-                                                <div class="card-detail-stack">
-                                                    @if(!empty($item['description']))
-                                                        <div class="card-detail">
-                                                            <span class="card-detail-label">Meaning</span>
-                                                            <span class="card-detail-text">{{ $item['description'] }}</span>
-                                                        </div>
-                                                    @endif
-
-                                                    @if(!empty($item['example']))
-                                                        <div class="card-detail">
-                                                            <span class="card-detail-label">Example</span>
-                                                            <span class="card-detail-example">{{ $item['example'] }}</span>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            @elseif(!empty($item['subtitle']))
+                                            @if(!empty($item['subtitle']))
                                                 <div class="card-subtitle">
                                                     @if($allowHtmlSubtitles)
                                                         {!! $item['subtitle'] !!}
@@ -613,6 +552,16 @@
                                                         {{ $item['subtitle'] }}
                                                     @endif
                                                 </div>
+
+                                                @if(!empty($item['example_subtitle']))
+                                                    <div class="card-example-subtitle">
+                                                        @if($allowHtmlSubtitles)
+                                                            {!! $item['example_subtitle'] !!}
+                                                        @else
+                                                            {{ $item['example_subtitle'] }}
+                                                        @endif
+                                                    </div>
+                                                @endif
                                             @endif
                                         </div>
                                     </article>

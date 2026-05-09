@@ -4,12 +4,12 @@ $content = [
     'title'      => 'Grammar Focus',
     'subtitle'   => "Can / Can't (Communication Problems)",
 
-    'cards_grid_class' => 'mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2',
+    'cards_grid_class' => 'mt-5 grid grid-cols-1 gap-4 lg:grid-cols-2',
 
     'cards' => [
         [
             'type' => 'sections',
-            'title' => "Can / Can't",
+            'title' => '',
             'tone' => 'from-emerald-500 via-green-500 to-lime-500',
             'plain_sections' => true,
             'raw_items' => true,
@@ -17,38 +17,64 @@ $content = [
                 [
                     'heading' => '',
                     'items' => [
-                        '<div class="space-y-5">
-                            <div class="rounded-2xl border border-emerald-100 bg-emerald-50/80 px-5 py-4 dark:border-emerald-400/20 dark:bg-emerald-950/20">
-                                <p class="text-lg sm:text-xl font-black leading-tight text-slate-900 dark:text-slate-50">
-                                    We use <span class="text-emerald-700 dark:text-emerald-300">can / can\'t</span> to talk about:
+                        '<div class="space-y-4">
+                            <div class="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4 shadow-sm dark:border-emerald-400/20 dark:bg-emerald-950/20 sm:p-5">
+                                <div class="mb-3 flex items-center gap-3">
+                                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-xl shadow-sm ring-1 ring-emerald-100 dark:bg-slate-900/80 dark:ring-emerald-400/20">
+                                        🗣️
+                                    </span>
+                                    <h3 class="text-sm font-black uppercase tracking-[0.14em] text-emerald-600 dark:text-emerald-300">
+                                        Can / Can&apos;t
+                                    </h3>
+                                </div>
+
+                                <p class="text-base font-black leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg">
+                                    We use
+                                    <span class="rounded-lg bg-white px-2 py-0.5 text-emerald-700 shadow-sm ring-1 ring-emerald-100 dark:bg-slate-900/80 dark:text-emerald-300 dark:ring-emerald-400/20">can / can&apos;t</span>
+                                    to talk about:
                                 </p>
-                                <ul class="mt-4 space-y-3 text-base sm:text-lg font-black text-slate-800 dark:text-slate-100">
-                                    <li class="flex items-center gap-3">
-                                        <span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
-                                        <span>ability</span>
-                                    </li>
-                                    <li class="flex items-center gap-3">
-                                        <span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
-                                        <span>Permission</span>
-                                    </li>
-                                </ul>
+
+                                <div class="mt-4 grid gap-2 sm:grid-cols-2">
+                                    <div class="rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-800 shadow-sm ring-1 ring-emerald-100 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-emerald-400/20 sm:text-base">
+                                        ability
+                                    </div>
+
+                                    <div class="rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-800 shadow-sm ring-1 ring-emerald-100 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-emerald-400/20 sm:text-base">
+                                        Permission
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="rounded-2xl border border-amber-100 bg-amber-50/90 px-5 py-4 dark:border-amber-400/20 dark:bg-amber-950/20">
-                                <p class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-300">Form:</p>
-                                <div class="mt-4 space-y-3">
-                                    <p class="text-base sm:text-lg font-black leading-[1.45] text-slate-900 dark:text-slate-100">
+                            <div class="rounded-2xl border border-amber-100 bg-amber-50/70 p-4 shadow-sm dark:border-amber-400/20 dark:bg-amber-950/20 sm:p-5">
+                                <div class="mb-3 flex items-center gap-3">
+                                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-xl shadow-sm ring-1 ring-amber-100 dark:bg-slate-900/80 dark:ring-amber-400/20">
+                                        🧩
+                                    </span>
+                                    <h3 class="text-sm font-black uppercase tracking-[0.14em] text-amber-600 dark:text-amber-300">
+                                        Form
+                                    </h3>
+                                </div>
+
+                                <div class="grid gap-2.5">
+                                    <div class="rounded-2xl bg-white px-4 py-3 text-sm font-black leading-[1.35] text-slate-800 shadow-sm ring-1 ring-amber-100 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-amber-400/20 sm:text-base">
                                         <span class="text-blue-700 dark:text-blue-300">Affirmative:</span>
-                                        Subject + <span class="text-violet-600 dark:text-violet-300">can</span> + base verb
-                                    </p>
-                                    <p class="text-base sm:text-lg font-black leading-[1.45] text-slate-900 dark:text-slate-100">
+                                        Subject +
+                                        <span class="text-violet-600 dark:text-violet-300">can</span>
+                                        + base verb
+                                    </div>
+
+                                    <div class="rounded-2xl bg-white px-4 py-3 text-sm font-black leading-[1.35] text-slate-800 shadow-sm ring-1 ring-amber-100 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-amber-400/20 sm:text-base">
                                         <span class="text-blue-700 dark:text-blue-300">Negative:</span>
-                                        Subject + <span class="text-violet-600 dark:text-violet-300">can\'t</span> + base verb
-                                    </p>
-                                    <p class="text-base sm:text-lg font-black leading-[1.45] text-slate-900 dark:text-slate-100">
+                                        Subject +
+                                        <span class="text-violet-600 dark:text-violet-300">can&apos;t</span>
+                                        + base verb
+                                    </div>
+
+                                    <div class="rounded-2xl bg-white px-4 py-3 text-sm font-black leading-[1.35] text-slate-800 shadow-sm ring-1 ring-amber-100 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-amber-400/20 sm:text-base">
                                         <span class="text-blue-700 dark:text-blue-300">Question:</span>
-                                        <span class="text-violet-600 dark:text-violet-300">Can</span> + subject + base verb?
-                                    </p>
+                                        <span class="text-violet-600 dark:text-violet-300">Can</span>
+                                        + subject + base verb?
+                                    </div>
                                 </div>
                             </div>
                         </div>',
@@ -59,7 +85,7 @@ $content = [
 
         [
             'type' => 'sections',
-            'title' => 'Examples',
+            'title' => '',
             'tone' => 'from-blue-500 via-indigo-500 to-violet-500',
             'plain_sections' => true,
             'raw_items' => true,
@@ -68,45 +94,65 @@ $content = [
                     'heading' => '',
                     'items' => [
                         '<div class="space-y-4">
-                            <div class="rounded-2xl border border-slate-200 bg-white px-5 py-4 dark:border-slate-700 dark:bg-slate-900/70">
-                                <ul class="space-y-3 text-base sm:text-lg font-black leading-[1.45] text-slate-900 dark:text-slate-100">
-                                    <li class="flex gap-3">
-                                        <span class="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-slate-900 dark:bg-slate-100"></span>
-                                        <span>I <span class="text-amber-500 dark:text-amber-300">can</span> hear you.</span>
-                                    </li>
-                                    <li class="flex gap-3">
-                                        <span class="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-slate-900 dark:bg-slate-100"></span>
-                                        <span>I <span class="text-amber-500 dark:text-amber-300">can\'t</span> hear you.</span>
-                                    </li>
-                                    <li class="flex gap-3">
-                                        <span class="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-slate-900 dark:bg-slate-100"></span>
-                                        <span>I can\'t connect to the internet.</span>
-                                    </li>
-                                    <li class="flex gap-3">
-                                        <span class="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-slate-900 dark:bg-slate-100"></span>
-                                        <span>I can\'t open the file.</span>
-                                    </li>
-                                    <li class="flex gap-3">
-                                        <span class="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-slate-900 dark:bg-slate-100"></span>
-                                        <span>Can you repeat that?</span>
-                                    </li>
-                                    <li class="flex gap-3">
-                                        <span class="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-slate-900 dark:bg-slate-100"></span>
-                                        <span>Can you send the message again?</span>
-                                    </li>
-                                </ul>
+                            <div class="rounded-2xl border border-sky-100 bg-sky-50/70 p-4 shadow-sm dark:border-sky-400/20 dark:bg-sky-950/20 sm:p-5">
+                                <div class="mb-3 flex items-center gap-3">
+                                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-xl shadow-sm ring-1 ring-sky-100 dark:bg-slate-900/80 dark:ring-sky-400/20">
+                                        🎧
+                                    </span>
+                                    <h3 class="text-sm font-black uppercase tracking-[0.14em] text-sky-600 dark:text-sky-300">
+                                        Examples
+                                    </h3>
+                                </div>
+
+                                <div class="grid gap-2.5">
+                                    <div class="rounded-2xl bg-white px-4 py-3 text-sm font-black leading-[1.35] text-slate-800 shadow-sm ring-1 ring-sky-100 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-sky-400/20 sm:text-base">
+                                        I <span class="text-amber-500 dark:text-amber-300">can</span> hear you.
+                                    </div>
+
+                                    <div class="rounded-2xl bg-white px-4 py-3 text-sm font-black leading-[1.35] text-slate-800 shadow-sm ring-1 ring-sky-100 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-sky-400/20 sm:text-base">
+                                        I <span class="text-amber-500 dark:text-amber-300">can&apos;t</span> hear you.
+                                    </div>
+
+                                    <div class="rounded-2xl bg-white px-4 py-3 text-sm font-black leading-[1.35] text-slate-800 shadow-sm ring-1 ring-sky-100 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-sky-400/20 sm:text-base">
+                                        I can&apos;t connect to the internet.
+                                    </div>
+
+                                    <div class="rounded-2xl bg-white px-4 py-3 text-sm font-black leading-[1.35] text-slate-800 shadow-sm ring-1 ring-sky-100 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-sky-400/20 sm:text-base">
+                                        I can&apos;t open the file.
+                                    </div>
+
+                                    <div class="rounded-2xl bg-white px-4 py-3 text-sm font-black leading-[1.35] text-slate-800 shadow-sm ring-1 ring-sky-100 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-sky-400/20 sm:text-base">
+                                        Can you repeat that?
+                                    </div>
+
+                                    <div class="rounded-2xl bg-white px-4 py-3 text-sm font-black leading-[1.35] text-slate-800 shadow-sm ring-1 ring-sky-100 dark:bg-slate-900/70 dark:text-slate-100 dark:ring-sky-400/20 sm:text-base">
+                                        Can you send the message again?
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="rounded-2xl border border-indigo-100 bg-indigo-50/90 px-5 py-4 dark:border-indigo-400/20 dark:bg-indigo-950/20">
-                                <p class="text-base sm:text-lg font-black leading-[1.45] text-slate-900 dark:text-slate-100">
-                                    Which one of them is a possibility and which is ability? Can you tell?
-                                </p>
+                            <div class="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-4 shadow-sm dark:border-indigo-400/20 dark:bg-indigo-950/20">
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-white text-lg shadow-sm ring-1 ring-indigo-100 dark:bg-slate-900/80 dark:ring-indigo-400/20">
+                                        ❓
+                                    </span>
+
+                                    <p class="text-sm font-black leading-[1.35] text-slate-900 dark:text-slate-100 sm:text-base">
+                                        Which one of them is a possibility and which is ability? Can you tell?
+                                    </p>
+                                </div>
                             </div>
 
-                            <div class="rounded-2xl border border-emerald-100 bg-emerald-50/80 px-5 py-4 dark:border-emerald-400/20 dark:bg-emerald-950/20">
-                                <p class="text-base sm:text-lg font-black leading-[1.45] text-slate-900 dark:text-slate-100">
-                                    👉 Use: talking about problems and asking for help
-                                </p>
+                            <div class="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4 shadow-sm dark:border-emerald-400/20 dark:bg-emerald-950/20">
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-white text-lg shadow-sm ring-1 ring-emerald-100 dark:bg-slate-900/80 dark:ring-emerald-400/20">
+                                        💬
+                                    </span>
+
+                                    <p class="text-sm font-black leading-[1.35] text-slate-900 dark:text-slate-100 sm:text-base">
+                                        Use: talking about problems and asking for help
+                                    </p>
+                                </div>
                             </div>
                         </div>',
                     ],

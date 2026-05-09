@@ -1,3 +1,8 @@
+@php
+    $audioPlayerUid = $audioPlayerUid ?? ('audio_player_' . substr(md5(($playerAudio ?? '') . uniqid('', true)), 0, 10));
+    $audioPlayerFloating = $audioPlayerFloating ?? true;
+@endphp
+
 <style>
     @keyframes audioPlayerWaveGrowth {
         0%, 100% { height: 7px; }
@@ -17,7 +22,7 @@
         width: 3px;
         height: 10px;
         background: currentColor;  
-        border-radius: 999px;  
+        border-radius: 999px;
         margin: 0 1px;
     }
 
@@ -237,7 +242,7 @@
 </style>
 
 @if(!empty($playerAudio))
-    <div data-audio-player class="rounded-2xl border border-slate-200 bg-slate-50/90 px-3 py-2 shadow-sm dark:border-slate-700 dark:bg-slate-800/40 sm:px-4 sm:py-3">
+    <div data-audio-player="{{ $audioPlayerUid }}" class="rounded-2xl border border-slate-200 bg-slate-50/90 px-3 py-2 shadow-sm dark:border-slate-700 dark:bg-slate-800/40 sm:px-4 sm:py-3">
         <div class="flex items-center gap-2.5 sm:gap-3">
             <button
                     data-audio-player-toggle
@@ -290,55 +295,57 @@
         </audio>
     </div>
 
-    <div data-audio-player-floating class="audio-player-floating" aria-label="Mini audio player">
-        <div data-audio-player-feedback class="audio-player-floating-feedback" aria-hidden="true"></div>
+    @if($audioPlayerFloating)
+        <div data-audio-player-floating="{{ $audioPlayerUid }}" class="audio-player-floating" aria-label="Mini audio player">
+            <div data-audio-player-feedback class="audio-player-floating-feedback" aria-hidden="true"></div>
 
-        <button
-                type="button"
-                class="audio-player-float-btn"
-                data-audio-player-backward
-                aria-label="Go back 10 seconds"
-        >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 8.25L6.75 12l3.75 3.75"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L13.5 12l3.75 3.75"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5.75 7.25v9.5"></path>
-            </svg>
-        </button>
+            <button
+                    type="button"
+                    class="audio-player-float-btn"
+                    data-audio-player-backward
+                    aria-label="Go back 10 seconds"
+            >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 8.25L6.75 12l3.75 3.75"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L13.5 12l3.75 3.75"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.75 7.25v9.5"></path>
+                </svg>
+            </button>
 
-        <button
-                type="button"
-                class="audio-player-float-btn is-primary"
-                data-audio-player-floating-toggle
-                aria-label="Play audio"
-        >
-            <svg data-audio-player-floating-play-icon viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M8 5v14l11-7-11-7z"/>
-            </svg>
-            <span class="audio-player-floating-wave-bars" aria-hidden="true">
-                <span class="audio-player-floating-wave-bar"></span>
-                <span class="audio-player-floating-wave-bar"></span>
-                <span class="audio-player-floating-wave-bar"></span>
-            </span>
-        </button>
+            <button
+                    type="button"
+                    class="audio-player-float-btn is-primary"
+                    data-audio-player-floating-toggle
+                    aria-label="Play audio"
+            >
+                <svg data-audio-player-floating-play-icon viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M8 5v14l11-7-11-7z"/>
+                </svg>
+                <span class="audio-player-floating-wave-bars" aria-hidden="true">
+                    <span class="audio-player-floating-wave-bar"></span>
+                    <span class="audio-player-floating-wave-bar"></span>
+                    <span class="audio-player-floating-wave-bar"></span>
+                </span>
+            </button>
 
-        <button
-                type="button"
-                class="audio-player-float-btn"
-                data-audio-player-forward
-                aria-label="Go forward 10 seconds"
-        >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 8.25L17.25 12l-3.75 3.75"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 8.25L10.5 12l-3.75 3.75"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M18.25 7.25v9.5"></path>
-            </svg>
-        </button>
-    </div>
+            <button
+                    type="button"
+                    class="audio-player-float-btn"
+                    data-audio-player-forward
+                    aria-label="Go forward 10 seconds"
+            >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 8.25L17.25 12l-3.75 3.75"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 8.25L10.5 12l-3.75 3.75"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.25 7.25v9.5"></path>
+                </svg>
+            </button>
+        </div>
+    @endif
 @endif
 
 @if($hasScript)
-    <div data-audio-player-modal class="hidden fixed inset-0 z-[3000]">
+    <div data-audio-player-modal="{{ $audioPlayerUid }}" class="hidden fixed inset-0 z-[3000]">
         <div data-audio-player-backdrop class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm dark:bg-black/60"></div>
 
         <div class="relative flex min-h-full w-full items-center justify-center p-4 sm:p-6">
@@ -388,27 +395,7 @@
 
 <script>
     (function () {
-        var root = document.querySelector('[data-audio-player]');
-        var modal = document.querySelector('[data-audio-player-modal]');
-        var playerAudio = root ? root.querySelector('[data-audio-player-media]') : null;
-        var playButton = root ? root.querySelector('[data-audio-player-toggle]') : null;
-        var progressTrack = root ? root.querySelector('[data-audio-player-track]') : null;
-        var progressFill = root ? root.querySelector('[data-audio-player-fill]') : null;
-        var progressKnob = root ? root.querySelector('[data-audio-player-knob]') : null;
-        var currentTimeEl = root ? root.querySelector('[data-audio-player-current]') : null;
-        var totalTimeEl = root ? root.querySelector('[data-audio-player-total]') : null;
-        var showScriptBtn = root ? root.querySelector('[data-audio-player-script-open]') : null;
-        var floating = document.querySelector('[data-audio-player-floating]');
-        var floatingToggle = floating ? floating.querySelector('[data-audio-player-floating-toggle]') : null;
-        var floatingPlayIcon = floating ? floating.querySelector('[data-audio-player-floating-play-icon]') : null;
-        var feedbackEl = floating ? floating.querySelector('[data-audio-player-feedback]') : null;
-        var backwardBtn = floating ? floating.querySelector('[data-audio-player-backward]') : null;
-        var forwardBtn = floating ? floating.querySelector('[data-audio-player-forward]') : null;
-        var scriptBackdrop = modal ? modal.querySelector('[data-audio-player-backdrop]') : null;
-        var closeScriptBtn = modal ? modal.querySelector('[data-audio-player-script-close]') : null;
-        var frameId = null;
-        var feedbackTimer = null;
-        var externalFloatingVisible = false;
+        window.audioPlayerInstances = window.audioPlayerInstances || [];
 
         function formatTime(seconds) {
             var minutes;
@@ -422,184 +409,278 @@
             return minutes + ':' + String(remainingSeconds).padStart(2, '0');
         }
 
-        function syncPlayerUI() {
-            var duration;
-            var current;
-            var pct;
+        function stopOtherPlayers(activeAudio) {
+            window.audioPlayerInstances.forEach(function (instance) {
+                if (!instance || !instance.audio || instance.audio === activeAudio) return;
 
-            if (!playerAudio) return;
+                try {
+                    instance.audio.pause();
+                    instance.sync();
+                } catch (error) {}
+            });
+        }
 
-            duration = isFinite(playerAudio.duration) ? playerAudio.duration : 0;
-            current = isFinite(playerAudio.currentTime) ? playerAudio.currentTime : 0;
-            pct = duration > 0 ? (current / duration) * 100 : 0;
+        function initAudioPlayer(root) {
+            var uid;
+            var modal;
+            var playerAudio;
+            var playButton;
+            var progressTrack;
+            var progressFill;
+            var progressKnob;
+            var currentTimeEl;
+            var totalTimeEl;
+            var showScriptBtn;
+            var floating;
+            var floatingToggle;
+            var floatingPlayIcon;
+            var feedbackEl;
+            var backwardBtn;
+            var forwardBtn;
+            var scriptBackdrop;
+            var closeScriptBtn;
+            var frameId = null;
+            var feedbackTimer = null;
+            var externalFloatingVisible = false;
 
-            if (currentTimeEl) currentTimeEl.textContent = formatTime(current);
-            if (totalTimeEl) totalTimeEl.textContent = duration ? formatTime(duration) : '0:00';
-            if (progressFill) progressFill.style.width = pct + '%';
-            if (progressKnob) progressKnob.style.left = pct + '%';
-            if (playButton) playButton.classList.toggle('is-playing', !playerAudio.paused);
-            if (floatingToggle) floatingToggle.classList.toggle('is-playing', !playerAudio.paused);
-            if (floatingPlayIcon) floatingPlayIcon.classList.toggle('hidden', !playerAudio.paused);
-            if (floatingToggle) {
-                floatingToggle.setAttribute('aria-label', playerAudio.paused ? 'Play audio' : 'Pause audio');
+            if (!root || root.dataset.audioPlayerReady === '1') return;
+
+            root.dataset.audioPlayerReady = '1';
+            uid = root.getAttribute('data-audio-player') || '';
+            modal = uid ? document.querySelector('[data-audio-player-modal="' + uid + '"]') : null;
+            playerAudio = root.querySelector('[data-audio-player-media]');
+            playButton = root.querySelector('[data-audio-player-toggle]');
+            progressTrack = root.querySelector('[data-audio-player-track]');
+            progressFill = root.querySelector('[data-audio-player-fill]');
+            progressKnob = root.querySelector('[data-audio-player-knob]');
+            currentTimeEl = root.querySelector('[data-audio-player-current]');
+            totalTimeEl = root.querySelector('[data-audio-player-total]');
+            showScriptBtn = root.querySelector('[data-audio-player-script-open]');
+            floating = uid ? document.querySelector('[data-audio-player-floating="' + uid + '"]') : null;
+            floatingToggle = floating ? floating.querySelector('[data-audio-player-floating-toggle]') : null;
+            floatingPlayIcon = floating ? floating.querySelector('[data-audio-player-floating-play-icon]') : null;
+            feedbackEl = floating ? floating.querySelector('[data-audio-player-feedback]') : null;
+            backwardBtn = floating ? floating.querySelector('[data-audio-player-backward]') : null;
+            forwardBtn = floating ? floating.querySelector('[data-audio-player-forward]') : null;
+            scriptBackdrop = modal ? modal.querySelector('[data-audio-player-backdrop]') : null;
+            closeScriptBtn = modal ? modal.querySelector('[data-audio-player-script-close]') : null;
+
+            function syncPlayerUI() {
+                var duration;
+                var current;
+                var pct;
+
+                if (!playerAudio) return;
+
+                duration = isFinite(playerAudio.duration) ? playerAudio.duration : 0;
+                current = isFinite(playerAudio.currentTime) ? playerAudio.currentTime : 0;
+                pct = duration > 0 ? (current / duration) * 100 : 0;
+
+                if (currentTimeEl) currentTimeEl.textContent = formatTime(current);
+                if (totalTimeEl) totalTimeEl.textContent = duration ? formatTime(duration) : '0:00';
+                if (progressFill) progressFill.style.width = pct + '%';
+                if (progressKnob) progressKnob.style.left = pct + '%';
+                if (playButton) playButton.classList.toggle('is-playing', !playerAudio.paused);
+                if (floatingToggle) floatingToggle.classList.toggle('is-playing', !playerAudio.paused);
+                if (floatingPlayIcon) floatingPlayIcon.classList.toggle('hidden', !playerAudio.paused);
+                if (floatingToggle) {
+                    floatingToggle.setAttribute('aria-label', playerAudio.paused ? 'Play audio' : 'Pause audio');
+                }
             }
-        }
 
-        function stopAudioPlayer() {
-            if (!playerAudio) return;
+            function stopAudioPlayer() {
+                if (!playerAudio) return;
 
-            playerAudio.pause();
-            playerAudio.currentTime = 0;
-            syncPlayerUI();
-        }
+                playerAudio.pause();
+                playerAudio.currentTime = 0;
+                syncPlayerUI();
+            }
 
-        window.syncAudioPlayerUI = syncPlayerUI;
-        window.stopAudioPlayer = stopAudioPlayer;
-        window.setAudioPlayerFloatingVisible = function (isVisible) {
-            externalFloatingVisible = !!isVisible;
-            computeFloatingVisibility();
-        };
+            function seekBy(delta) {
+                var duration;
+                var nextTime;
 
-        function seekBy(delta) {
-            var duration;
-            var nextTime;
+                if (!playerAudio) return;
 
-            if (!playerAudio) return;
+                duration = isFinite(playerAudio.duration) ? playerAudio.duration : 0;
+                nextTime = Math.max(0, playerAudio.currentTime + delta);
 
-            duration = isFinite(playerAudio.duration) ? playerAudio.duration : 0;
-            nextTime = Math.max(0, playerAudio.currentTime + delta);
+                if (duration > 0) nextTime = Math.min(duration, nextTime);
 
-            if (duration > 0) nextTime = Math.min(duration, nextTime);
+                playerAudio.currentTime = nextTime;
+                syncPlayerUI();
+            }
 
-            playerAudio.currentTime = nextTime;
-            syncPlayerUI();
-        }
+            function showSeekFeedback(delta) {
+                if (!feedbackEl) return;
 
-        function showSeekFeedback(delta) {
-            if (!feedbackEl) return;
+                window.clearTimeout(feedbackTimer);
+                feedbackEl.textContent = (delta > 0 ? '+' : '-') + Math.abs(delta) + 's';
+                feedbackEl.classList.add('is-visible');
 
-            window.clearTimeout(feedbackTimer);
-            feedbackEl.textContent = (delta > 0 ? '+' : '-') + Math.abs(delta) + 's';
-            feedbackEl.classList.add('is-visible');
+                feedbackTimer = window.setTimeout(function () {
+                    feedbackEl.classList.remove('is-visible');
+                }, 900);
+            }
 
-            feedbackTimer = window.setTimeout(function () {
-                feedbackEl.classList.remove('is-visible');
-            }, 900);
-        }
+            function setFloatingVisibility(isVisible) {
+                if (!floating) return;
+                floating.classList.toggle('is-visible', !!isVisible);
+            }
 
-        function setFloatingVisibility(isVisible) {
-            if (!floating) return;
-            floating.classList.toggle('is-visible', !!isVisible);
-        }
+            function computeFloatingVisibility() {
+                var rect;
+                var viewportHeight;
+                var scrolledY;
+                var originalNotVisible;
 
-        function computeFloatingVisibility() {
-            var rect;
-            var viewportHeight;
-            var scrolledY;
-            var originalNotVisible;
+                if (!floating || !root) return;
 
-            if (!floating || !root) return;
+                rect = root.getBoundingClientRect();
+                viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+                scrolledY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+                originalNotVisible = rect.bottom <= 0 || rect.top >= viewportHeight;
 
-            rect = root.getBoundingClientRect();
-            viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-            scrolledY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
-            originalNotVisible = rect.bottom <= 0 || rect.top >= viewportHeight;
+                setFloatingVisibility(externalFloatingVisible || scrolledY > (viewportHeight * 0.5) || originalNotVisible);
+            }
 
-            setFloatingVisibility(externalFloatingVisible || scrolledY > (viewportHeight * 0.5) || originalNotVisible);
-        }
+            function queueFloatingVisibilityCheck() {
+                if (frameId) return;
+                frameId = window.requestAnimationFrame(function () {
+                    frameId = null;
+                    computeFloatingVisibility();
+                });
+            }
 
-        function queueFloatingVisibilityCheck() {
-            if (frameId) return;
-            frameId = window.requestAnimationFrame(function () {
-                frameId = null;
-                computeFloatingVisibility();
-            });
-        }
+            if (modal && modal.parentNode !== document.body) {
+                document.body.appendChild(modal);
+            }
 
-        if (modal && modal.parentNode !== document.body) {
-            document.body.appendChild(modal);
-        }
+            if (floating && floating.parentNode !== document.body) {
+                document.body.appendChild(floating);
+            }
 
-        if (floating && floating.parentNode !== document.body) {
-            document.body.appendChild(floating);
-        }
+            if (playButton && playerAudio) {
+                playButton.addEventListener('click', function () {
+                    if (playerAudio.paused) {
+                        stopOtherPlayers(playerAudio);
+                        playerAudio.play().catch(function(){});
+                    } else {
+                        playerAudio.pause();
+                    }
+                });
+            }
 
-        if (playButton && playerAudio) {
-            playButton.addEventListener('click', function () {
-                if (playerAudio.paused) playerAudio.play().catch(function(){});
-                else playerAudio.pause();
-            });
-        }
+            if (progressTrack && playerAudio) {
+                progressTrack.addEventListener('click', function (event) {
+                    var rect = event.currentTarget.getBoundingClientRect();
+                    var x = Math.min(Math.max(0, event.clientX - rect.left), rect.width);
+                    var ratio = rect.width > 0 ? x / rect.width : 0;
 
-        if (progressTrack && playerAudio) {
-            progressTrack.addEventListener('click', function (event) {
-                var rect = event.currentTarget.getBoundingClientRect();
-                var x = Math.min(Math.max(0, event.clientX - rect.left), rect.width);
-                var ratio = rect.width > 0 ? x / rect.width : 0;
+                    if (isFinite(playerAudio.duration) && playerAudio.duration > 0) {
+                        playerAudio.currentTime = ratio * playerAudio.duration;
+                        syncPlayerUI();
+                    }
+                });
+            }
 
-                if (isFinite(playerAudio.duration) && playerAudio.duration > 0) {
-                    playerAudio.currentTime = ratio * playerAudio.duration;
+            if (floatingToggle && playerAudio) {
+                floatingToggle.addEventListener('click', function () {
+                    if (playerAudio.paused) {
+                        stopOtherPlayers(playerAudio);
+                        playerAudio.play().catch(function(){});
+                    } else {
+                        playerAudio.pause();
+                    }
+                });
+            }
+
+            if (backwardBtn && playerAudio) {
+                backwardBtn.addEventListener('click', function () {
+                    seekBy(-10);
+                    showSeekFeedback(-10);
+                });
+            }
+
+            if (forwardBtn && playerAudio) {
+                forwardBtn.addEventListener('click', function () {
+                    seekBy(10);
+                    showSeekFeedback(10);
+                });
+            }
+
+            if (playerAudio) {
+                playerAudio.preload = 'metadata';
+                playerAudio.addEventListener('loadedmetadata', syncPlayerUI);
+                playerAudio.addEventListener('timeupdate', syncPlayerUI);
+                playerAudio.addEventListener('ended', syncPlayerUI);
+                playerAudio.addEventListener('play', function () {
+                    stopOtherPlayers(playerAudio);
                     syncPlayerUI();
+                });
+                playerAudio.addEventListener('pause', syncPlayerUI);
+            }
+
+            if (showScriptBtn) {
+                showScriptBtn.addEventListener('click', function () {
+                    if (modal) modal.classList.remove('hidden');
+                });
+            }
+
+            if (closeScriptBtn) {
+                closeScriptBtn.addEventListener('click', function () {
+                    if (modal) modal.classList.add('hidden');
+                });
+            }
+
+            if (scriptBackdrop) {
+                scriptBackdrop.addEventListener('click', function () {
+                    if (modal) modal.classList.add('hidden');
+                });
+            }
+
+            if (root && floating) {
+                document.body.classList.add('audio-player-has-floating');
+                window.addEventListener('scroll', queueFloatingVisibilityCheck, { passive: true });
+                window.addEventListener('resize', queueFloatingVisibilityCheck);
+                queueFloatingVisibilityCheck();
+            }
+
+            window.audioPlayerInstances.push({
+                root: root,
+                audio: playerAudio,
+                sync: syncPlayerUI,
+                stop: stopAudioPlayer,
+                setFloatingVisible: function (isVisible) {
+                    externalFloatingVisible = !!isVisible;
+                    computeFloatingVisibility();
                 }
             });
+
+            syncPlayerUI();
+            computeFloatingVisibility();
         }
 
-        if (floatingToggle && playerAudio) {
-            floatingToggle.addEventListener('click', function () {
-                if (playerAudio.paused) playerAudio.play().catch(function(){});
-                else playerAudio.pause();
+        document.querySelectorAll('[data-audio-player]').forEach(initAudioPlayer);
+
+        window.syncAudioPlayerUI = function () {
+            window.audioPlayerInstances.forEach(function (instance) {
+                if (instance && typeof instance.sync === 'function') instance.sync();
             });
-        }
+        };
 
-        if (backwardBtn && playerAudio) {
-            backwardBtn.addEventListener('click', function () {
-                seekBy(-10);
-                showSeekFeedback(-10);
+        window.stopAudioPlayer = function () {
+            window.audioPlayerInstances.forEach(function (instance) {
+                if (instance && typeof instance.stop === 'function') instance.stop();
             });
-        }
+        };
 
-        if (forwardBtn && playerAudio) {
-            forwardBtn.addEventListener('click', function () {
-                seekBy(10);
-                showSeekFeedback(10);
+        window.setAudioPlayerFloatingVisible = function (isVisible) {
+            window.audioPlayerInstances.forEach(function (instance) {
+                if (instance && typeof instance.setFloatingVisible === 'function') {
+                    instance.setFloatingVisible(isVisible);
+                }
             });
-        }
-
-        if (playerAudio) {
-            playerAudio.preload = 'metadata';
-            playerAudio.addEventListener('loadedmetadata', syncPlayerUI);
-            playerAudio.addEventListener('timeupdate', syncPlayerUI);
-            playerAudio.addEventListener('ended', syncPlayerUI);
-            playerAudio.addEventListener('play', syncPlayerUI);
-            playerAudio.addEventListener('pause', syncPlayerUI);
-        }
-
-        if (showScriptBtn) {
-            showScriptBtn.addEventListener('click', function () {
-                if (modal) modal.classList.remove('hidden');
-            });
-        }
-
-        if (closeScriptBtn) {
-            closeScriptBtn.addEventListener('click', function () {
-                if (modal) modal.classList.add('hidden');
-            });
-        }
-
-        if (scriptBackdrop) {
-            scriptBackdrop.addEventListener('click', function () {
-                if (modal) modal.classList.add('hidden');
-            });
-        }
-
-        if (root && floating) {
-            document.body.classList.add('audio-player-has-floating');
-            window.addEventListener('scroll', queueFloatingVisibilityCheck, { passive: true });
-            window.addEventListener('resize', queueFloatingVisibilityCheck);
-            queueFloatingVisibilityCheck();
-        }
-
-        syncPlayerUI();
-        computeFloatingVisibility();
+        };
     })();
 </script>

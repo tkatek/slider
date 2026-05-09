@@ -2,6 +2,12 @@
 
 @php
     $uid = $content['uid'] ?? ('listen_match_' . substr(md5(uniqid('', true)), 0, 10));
+    $scriptLines = is_array($content['script'] ?? null)
+        ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $content['script']), static fn ($line) => $line !== ''))
+        : (is_array($content['transcript'] ?? null)
+            ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $content['transcript']), static fn ($line) => $line !== ''))
+            : []);
+    $hasScript = $scriptLines !== [];
 @endphp
 
 @section('title', $content['page_title'])
@@ -285,7 +291,21 @@
                                                 <h3 class="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-slate-50">
                                                     {{ $index + 1 }}. {{ $speaker['name'] }}
                                                 </h3>
-                                                <audio class="speaker-audio mt-2" controls preload="none" src="{{ $speaker['audio'] }}"></audio>
+
+                                                @if(!empty($speaker['audio']))
+                                                    <div class="mt-2">
+                                                        @include('slider.components.audio-player', [
+                                                            'playerAudio' => $speaker['audio'],
+                                                            'scriptLines' => [],
+                                                            'hasScript' => false,
+                                                            'audioPlayerFloating' => false,
+                                                        ])
+                                                    </div>
+                                                @elseif(!empty($speaker['note']))
+                                                    <p class="mt-1 text-xs font-bold text-slate-500 dark:text-slate-400 sm:text-sm">
+                                                        {{ $speaker['note'] }}
+                                                    </p>
+                                                @endif
                                             </div>
                                         </div>
 
@@ -373,6 +393,21 @@
         document.addEventListener('DOMContentLoaded', function () {
             const root = document.getElementById(@json($uid));
             const CHOICES = @json($content['choices']);
+            const SFX = {
+                enabled: true,
+                sources: {
+                    correct: @json($content['sfx']['correct'] ?? '/slider/sounds/correct.wav'),
+                    wrong: @json($content['sfx']['wrong'] ?? '/slider/sounds/wrong.wav'),
+                    success: @json($content['sfx']['success'] ?? '/slider/sounds/success.wav')
+                },
+                volume: { correct: 1, wrong: 1, success: 1 }
+            };
+
+            const audio = {
+                correct: new Audio(SFX.sources.correct),
+                wrong: new Audio(SFX.sources.wrong),
+                success: new Audio(SFX.sources.success)
+            };
 
             const choicesBank = root.querySelector('#choicesBank');
             const speakerCards = Array.from(root.querySelectorAll('.speaker-card'));
@@ -385,6 +420,29 @@
             const allAudioElements = Array.from(root.querySelectorAll('.speaker-audio'));
 
             let sortableInstances = [];
+
+            function clamp01(value) {
+                value = Number(value);
+                if (!Number.isFinite(value)) return 0.5;
+                return Math.max(0, Math.min(1, value));
+            }
+
+            function applyVolumes() {
+                audio.correct.volume = clamp01(SFX.volume.correct);
+                audio.wrong.volume = clamp01(SFX.volume.wrong);
+                audio.success.volume = clamp01(SFX.volume.success);
+            }
+
+            function play(sound) {
+                if (!SFX.enabled || !sound) return;
+                sound.pause();
+                sound.currentTime = 0;
+                sound.play().catch(function(){});
+            }
+
+            function playCorrect() { play(audio.correct); }
+            function playWrong() { play(audio.wrong); }
+            function playWin() { play(audio.success); }
 
             function renderChoiceCard(choice) {
                 return `
@@ -414,6 +472,8 @@
                         audio.currentTime = 0;
                     } catch (e) {}
                 });
+
+                window.stopAudioPlayer?.();
             }
 
             window.stopSlideAudio = stopAllAudio;
@@ -447,6 +507,7 @@
             }
 
             function flashWrong(card, zone) {
+                playWrong();
                 card.classList.add('is-wrong');
                 zone.classList.add('wrong');
 
@@ -457,6 +518,7 @@
             }
 
             function setCorrect(card, zone, choiceCard) {
+                playCorrect();
                 const choiceId = choiceCard.getAttribute('data-choice-id');
                 const image = choiceCard.getAttribute('data-choice-image');
                 const title = choiceCard.getAttribute('data-choice-title');
@@ -522,7 +584,10 @@
                 checkIfBankEmpty();
 
                 if (allMatched()) {
-                    setTimeout(showFinishModal, 280);
+                    setTimeout(function () {
+                        playWin();
+                        showFinishModal();
+                    }, 280);
                 }
             }
 
@@ -636,6 +701,7 @@
             continueBtn.addEventListener('click', goToNextSlide);
             finishBg.addEventListener('click', hideFinishModal);
 
+            applyVolumes();
             updateProgress();
             initializeSortable();
         });

@@ -24,15 +24,15 @@
     }
 
     if (!$choiceUsesRowOptions) {
-        $maxChoiceColumns = count($content['options'] ?? []);
+        $maxChoiceColumns = count($content['options'] ?? []); 
     }
 
-    $tableHeaders = is_array($content['table_headers'] ?? null) ? $content['table_headers'] : [];
+    $tableHeaders = is_array($content['table_headers'] ?? null) ? $content['table_headers'] : []; 
     $hasMeaningColumn = !empty($tableHeaders[2]);
 
     foreach (($content['rows'] ?? []) as $typeRow) {
         foreach (($typeRow['answers'] ?? []) as $typeAnswer) {
-            if (array_key_exists('meaning_answer', $typeAnswer) || array_key_exists('meaning', $typeAnswer)) {
+            if (array_key_exists('meaning_answer', $typeAnswer) || array_key_exists('meaning', $typeAnswer)) { 
                 $hasMeaningColumn = true;
                 break 2;
             }
@@ -63,12 +63,35 @@
     $firstTypeColumnWidth = $typeInputColumnCount === 1 ? 'w-[58%]' : 'w-[34%]';
     $inputTypeColumnWidth = $typeInputColumnCount === 1 ? 'w-[42%]' : 'w-[33%]';
 
-    $tableHeadClass = 'border-b border-slate-200 bg-slate-100 px-4 py-3 text-left text-xs font-black uppercase tracking-[0.04em] text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200';
-    $tableHeadCenterClass = 'border-b border-slate-200 bg-slate-100 px-4 py-3 text-center text-xs font-black uppercase tracking-[0.04em] text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200';
+    $theme = $theme ?? [];
+    $primaryGradient = trim((string) ($theme['primary_color'] ?? 'bg-gradient-to-r from-indigo-500 to-blue-500'));
+    $buttonGradient = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500'));
+
+    $choiceColumnThemes = [
+        [
+            'head' => 'bg-sky-50 text-sky-800 dark:bg-sky-950/45 dark:text-sky-100',
+            'cell' => 'bg-sky-50/20 dark:bg-sky-950/10',
+        ],
+        [
+            'head' => 'bg-violet-50 text-violet-800 dark:bg-violet-950/45 dark:text-violet-100',
+            'cell' => 'bg-violet-50/20 dark:bg-violet-950/10',
+        ],
+        [
+            'head' => 'bg-amber-50 text-amber-800 dark:bg-amber-950/45 dark:text-amber-100',
+            'cell' => 'bg-amber-50/20 dark:bg-amber-950/10',
+        ],
+        [
+            'head' => 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100',
+            'cell' => 'bg-slate-50/45 dark:bg-slate-950/20',
+        ],
+    ];
+
+    $tableHeadClass = 'border-b border-slate-200 bg-slate-100 px-4 py-3 text-left text-xs font-black uppercase tracking-[0.06em] text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200';
+    $tableHeadCenterClass = 'border-b border-slate-200 px-4 py-3 text-center text-xs font-black uppercase tracking-[0.06em] dark:border-slate-700';
     $tableCellClass = 'border-b border-slate-200 bg-white px-4 py-3 align-middle dark:border-slate-700 dark:bg-slate-900/80';
-    $tableCellSoftClass = 'border-b border-slate-200 bg-slate-50/70 px-4 py-3 align-middle dark:border-slate-700 dark:bg-slate-950/35';
-    $pillClass = 'inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-sm font-black leading-tight text-slate-800 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700';
-    $choiceControlClass = 'h-5 w-5 cursor-pointer rounded border-slate-300 accent-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400/40 dark:border-slate-600 dark:accent-slate-200 dark:focus:ring-slate-300/30';
+    $tableCellSoftClass = 'border-b border-slate-200 bg-slate-50/80 px-4 py-3 align-middle dark:border-slate-700 dark:bg-slate-950/45';
+    $pillClass = 'inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-black leading-tight text-slate-800 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100';
+    $choiceControlClass = 'h-5 w-5 cursor-pointer rounded border-slate-300 accent-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400/35 dark:border-slate-600 dark:accent-indigo-300 dark:focus:ring-indigo-300/25';
     $inputClass = 'answer-input w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-extrabold text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:border-slate-500 focus:outline-none focus:ring-4 focus:ring-slate-300/45 disabled:border-emerald-400 disabled:bg-emerald-50 disabled:text-emerald-700 disabled:opacity-100 data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=correct]:text-emerald-800 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 data-[state=wrong]:text-red-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder:text-slate-500 dark:focus:border-slate-400 dark:focus:ring-slate-600/45 dark:disabled:border-emerald-500/70 dark:disabled:bg-emerald-950/45 dark:disabled:text-emerald-100 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/45 dark:data-[state=correct]:text-emerald-100 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/45 dark:data-[state=wrong]:text-red-100';
 @endphp
 
@@ -83,9 +106,13 @@
                 </div>
             @endif
 
-            <div class="rounded-[1.75rem] border border-slate-200/90 bg-white/95 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.08)] dark:border-slate-700/80 dark:bg-slate-900/90 sm:p-6">
+            <div class="relative overflow-hidden rounded-[1.75rem] border border-slate-200/90 bg-white/95 p-4 shadow-[0_22px_58px_rgba(15,23,42,0.09)] dark:border-slate-700/80 dark:bg-slate-900/90 sm:p-6">
+                <div class="pointer-events-none absolute inset-x-0 top-0 h-1.5 {{ $primaryGradient }}"></div>
+
                 <div class="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                    <div class="min-w-0 flex-1 rounded-[1.25rem] border border-slate-200 bg-slate-50/80 px-4 py-3 dark:border-slate-700 dark:bg-slate-950/35">
+                    <div class="relative min-w-0 flex-1 overflow-hidden rounded-[1.25rem] border border-slate-200 bg-slate-50/80 px-4 py-3 dark:border-slate-700 dark:bg-slate-950/35">
+                        <div class="pointer-events-none absolute bottom-0 left-0 top-0 w-1.5 {{ $primaryGradient }}"></div>
+
                         <h2 class="text-sm font-black leading-snug text-slate-950 dark:text-white sm:text-lg">
                             {{ $content['instruction'] ?? 'Listen and complete the activity.' }}
                         </h2>
@@ -101,7 +128,7 @@
                         <button
                                 id="checkAnswersBtn"
                                 type="button"
-                                class="min-w-0 rounded-xl border border-slate-900 bg-slate-900 px-2 py-2 text-[10px] font-black leading-tight text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 dark:border-slate-200 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-white dark:focus:ring-slate-600 sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-xs"
+                                class="min-w-0 rounded-xl border border-white/20 px-2 py-2 text-[10px] font-black leading-tight text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-slate-300/60 dark:focus:ring-slate-600 sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-xs {{ $buttonGradient }}"
                         >
                             Check Answers
                         </button>
@@ -163,8 +190,12 @@
                                         {{ $content['option_heading'] ?? 'Options' }}
                                     </th>
                                 @else
-                                    @foreach(($content['options'] ?? []) as $label)
-                                        <th class="{{ $tableHeadCenterClass }} border-l">
+                                    @foreach(($content['options'] ?? []) as $optionIndex => $label)
+                                        @php
+                                            $columnTheme = $choiceColumnThemes[$loop->index % count($choiceColumnThemes)];
+                                        @endphp
+
+                                        <th class="{{ $tableHeadCenterClass }} {{ $columnTheme['head'] }} border-l">
                                             {{ $label }}
                                         </th>
                                     @endforeach
@@ -180,6 +211,7 @@
                                     $choiceInputType = $isMultiChoiceRow ? 'checkbox' : 'radio';
                                     $rowKey = $row['key'] ?? $row['number'] ?? $loop->index;
                                     $rowLabel = $row['label'] ?? $row['number'] ?? '';
+                                    $rowLabelIsNumber = preg_match('/^\d+$/', trim((string) $rowLabel)) === 1;
                                     $choiceControlRoundedClass = $choiceInputType === 'radio' ? 'rounded-full' : 'rounded-md';
                                 @endphp
 
@@ -191,7 +223,13 @@
                                 >
                                     <td class="{{ $tableCellSoftClass }} border-r">
                                             <span class="{{ $pillClass }}">
-                                                {{ $rowLabel }}
+                                                @if($rowLabelIsNumber)
+                                                    <span class="inline-flex h-7 min-w-7 items-center justify-center rounded-full px-2 text-xs font-black text-white shadow-sm {{ $buttonGradient }}">
+                                                        {{ $rowLabel }}
+                                                    </span>
+                                                @else
+                                                    <span>{{ $rowLabel }}</span>
+                                                @endif
 
                                                 @if(!empty($row['item']))
                                                     <small class="text-xs font-extrabold text-slate-500 dark:text-slate-300">
@@ -231,10 +269,14 @@
                                         @endfor
                                     @else
                                         @foreach(($content['options'] ?? []) as $key => $label)
-                                            <td class="{{ $tableCellClass }} border-r text-center last:border-r-0">
+                                            @php
+                                                $columnTheme = $choiceColumnThemes[$loop->index % count($choiceColumnThemes)];
+                                            @endphp
+
+                                            <td class="{{ $tableCellClass }} {{ $columnTheme['cell'] }} border-r text-center last:border-r-0">
                                                 <label
                                                         data-choice
-                                                        class="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-2xl border border-slate-300 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/45 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/45"
+                                                        class="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-2xl border border-slate-300 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 has-[:checked]:border-slate-700 has-[:checked]:bg-slate-900 has-[:checked]:text-white data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800 dark:has-[:checked]:border-slate-200 dark:has-[:checked]:bg-slate-100 dark:has-[:checked]:text-slate-950 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/45 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/45"
                                                 >
                                                     <input
                                                             type="{{ $choiceInputType }}"
@@ -261,6 +303,7 @@
                                 $choiceInputType = $isMultiChoiceRow ? 'checkbox' : 'radio';
                                 $rowKey = $row['key'] ?? $row['number'] ?? $loop->index;
                                 $rowLabel = $row['label'] ?? $row['number'] ?? '';
+                                $rowLabelIsNumber = preg_match('/^\d+$/', trim((string) $rowLabel)) === 1;
                                 $choiceControlRoundedClass = $choiceInputType === 'radio' ? 'rounded-full' : 'rounded-md';
                             @endphp
 
@@ -272,7 +315,17 @@
                             >
                                 <div class="mb-3">
                                     <span class="{{ $pillClass }}">
-                                        {{ $rowLabel }}@if(!empty($row['item'])) <small class="text-xs font-extrabold text-slate-500 dark:text-slate-300">{{ $row['item'] }}</small> @endif
+                                        @if($rowLabelIsNumber)
+                                            <span class="inline-flex h-7 min-w-7 items-center justify-center rounded-full px-2 text-xs font-black text-white shadow-sm {{ $buttonGradient }}">
+                                                {{ $rowLabel }}
+                                            </span>
+                                        @else
+                                            <span>{{ $rowLabel }}</span>
+                                        @endif
+
+                                        @if(!empty($row['item']))
+                                            <small class="text-xs font-extrabold text-slate-500 dark:text-slate-300">{{ $row['item'] }}</small>
+                                        @endif
                                     </span>
                                 </div>
 
@@ -280,7 +333,7 @@
                                     @foreach(($choiceUsesRowOptions ? ($row['options'] ?? []) : ($content['options'] ?? [])) as $key => $label)
                                         <label
                                                 data-choice
-                                                class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 px-3 py-3 text-sm font-black text-slate-900 transition hover:border-slate-300 hover:bg-white data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=correct]:text-emerald-800 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 data-[state=wrong]:text-red-800 dark:border-slate-700 dark:bg-slate-950/35 dark:text-slate-50 dark:hover:bg-slate-800 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/45 dark:data-[state=correct]:text-emerald-100 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/45 dark:data-[state=wrong]:text-red-100"
+                                                class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 px-3 py-3 text-sm font-black text-slate-900 transition hover:border-slate-300 hover:bg-white has-[:checked]:border-slate-700 has-[:checked]:bg-slate-900 has-[:checked]:text-white data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=correct]:text-emerald-800 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 data-[state=wrong]:text-red-800 dark:border-slate-700 dark:bg-slate-950/35 dark:text-slate-50 dark:hover:bg-slate-800 dark:has-[:checked]:border-slate-200 dark:has-[:checked]:bg-slate-100 dark:has-[:checked]:text-slate-950 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/45 dark:data-[state=correct]:text-emerald-100 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/45 dark:data-[state=wrong]:text-red-100"
                                         >
                                             <span>{{ $label }}</span>
 

@@ -24,21 +24,38 @@
             ];
         })->values();
 
-        $rightItems = collect($content['right_order'] ?? [])->map(function ($id) use ($pairById) {
-            $pair = $pairById->get($id);
+        $hasRightOrder = is_array($content['right_order'] ?? null) && count($content['right_order']) > 0;
+        $rightItems = collect();
 
-            return $pair
-                ? ['id' => $pair['id'], 'content' => $pair['right'] ?? []]
-                : null;
-        })->filter()->values();
+        if ($hasRightOrder) {
+            $rightItems = collect($content['right_order'])->map(function ($id) use ($pairById) {
+                $pair = $pairById->get($id);
 
-        if ($rightItems->count() !== $pairs->count()) {
+                return $pair
+                    ? ['id' => $pair['id'], 'content' => $pair['right'] ?? []]
+                    : null;
+            })->filter()->values();
+        }
+
+        if (!$hasRightOrder || $rightItems->count() !== $pairs->count()) {
             $rightItems = $pairs->map(function ($pair, $index) {
                 return [
                     'id' => $pair['id'] ?? 'pair-' . $index,
                     'content' => $pair['right'] ?? [],
                 ];
             })->values();
+
+            $shuffleRightItems = filter_var($content['shuffle_right'] ?? true, FILTER_VALIDATE_BOOLEAN);
+
+            if ($shuffleRightItems && $rightItems->count() > 1) {
+                $originalOrder = $rightItems->pluck('id')->values()->all();
+                $rightItems = $rightItems->shuffle()->values();
+
+                if ($rightItems->pluck('id')->values()->all() === $originalOrder) {
+                    $firstItem = $rightItems->shift();
+                    $rightItems = $rightItems->push($firstItem)->values();
+                }
+            }
         }
 
         $activityTitle = $content['activity_title'] ?? $content['directions'] ?? 'Match the items.';

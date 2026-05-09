@@ -5,6 +5,10 @@
     $title = trim((string)($content['title'] ?? 'Discussion'));
     $subtitle = trim((string)($content['subtitle'] ?? ''));
     $cards = is_array($content['cards'] ?? null) ? $content['cards'] : [];
+    $supportItems = is_array($content['support_items'] ?? null)
+        ? array_values($content['support_items'])
+        : (is_array($content['practice_phrases'] ?? null) ? array_values($content['practice_phrases']) : []);
+    $supportTitle = trim((string)($content['support_title'] ?? ($content['practice_phrases_title'] ?? 'Useful language')));
     $image = (string)($content['image'] ?? '');
     $imageAlt = (string)($content['image_alt'] ?? '');
 @endphp
@@ -166,6 +170,10 @@
             ? 'bg-orange-400/20 dark:bg-orange-400/20'
             : 'bg-violet-400/20 dark:bg-violet-400/20';
 
+        $practiceDotClass = ($theme['name'] ?? null) === 'orange'
+            ? 'bg-gradient-to-br from-orange-500 to-amber-400'
+            : 'bg-gradient-to-br from-indigo-500 to-blue-500';
+
     @endphp
     <div class="discussion-page relative h-[100dvh] w-full overflow-hidden">
         <div id="slideViewport" class="slide-viewport">
@@ -178,6 +186,33 @@
                                 $titleHeadingClass = 'mb-2 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl';
                             @endphp
                             @include('slider.components.title-subtitle')
+
+                            @if($supportItems !== [])
+                                <div class="mb-3 rounded-[18px] border border-slate-200/80 bg-white/70 p-3 text-left shadow-[0_14px_28px_-24px_rgba(15,23,42,0.24)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:p-4">
+                                    @if($supportTitle !== '')
+                                        <p class="text-[0.62rem] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                                            {{ $supportTitle }}
+                                        </p>
+                                    @endif
+
+                                    <ul class="mt-2 space-y-1.5">
+                                        @foreach($supportItems as $phrase)
+                                            @php
+                                                $phraseText = trim((string) $phrase);
+                                            @endphp
+
+                                            @if($phraseText !== '')
+                                                <li class="flex items-start gap-2.5">
+                                                    <span class="mt-[0.42rem] h-2 w-2 shrink-0 rounded-full shadow-sm {{ $practiceDotClass }}"></span>
+                                                    <span class="text-sm font-extrabold leading-[1.3] text-slate-700 dark:text-slate-200 sm:text-[0.95rem]">
+                                                        {!! $phraseText !!}
+                                                    </span>
+                                                </li>
+                                            @endif
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
 
                             <div class="grid grid-cols-1 gap-3 sm:gap-4">
                                 @foreach($cards as $index => $card)

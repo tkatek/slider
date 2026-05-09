@@ -1,8 +1,8 @@
 <?php
 $content = [
     'title' => 'Notice the following',
-    'subtitle'=> 'Work is what you do. A job is where you do it',
-    'image' => materialAsset('slider/A2/Advanced/chapter-2/img/slide12.webp'),
+    'subtitle'=> 'I have lived here since 2015<br>I’ve studied English for three years',
+    'image' => materialAsset('slider/A2/Advanced/chapter-6/img/slide14.webp'),
 
     // Use 'square' for 1:1
     // Use 'wide' for 5:4
