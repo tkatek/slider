@@ -24,7 +24,7 @@
     }
 
     if (!$choiceUsesRowOptions) {
-        $maxChoiceColumns = count($content['options'] ?? []); 
+        $maxChoiceColumns = count($content['options'] ?? []);
     }
 
     $tableHeaders = is_array($content['table_headers'] ?? null) ? $content['table_headers'] : []; 
@@ -66,6 +66,10 @@
     $theme = $theme ?? [];
     $primaryGradient = trim((string) ($theme['primary_color'] ?? 'bg-gradient-to-r from-indigo-500 to-blue-500'));
     $buttonGradient = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500'));
+    $sounds = array_replace(
+        is_array($content['sounds'] ?? null) ? $content['sounds'] : [],
+        is_array($content['sfx'] ?? null) ? $content['sfx'] : []
+    );
 
     $choiceColumnThemes = [
         [
@@ -276,7 +280,7 @@
                                             <td class="{{ $tableCellClass }} {{ $columnTheme['cell'] }} border-r text-center last:border-r-0">
                                                 <label
                                                         data-choice
-                                                        class="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-2xl border border-slate-300 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 has-[:checked]:border-slate-700 has-[:checked]:bg-slate-900 has-[:checked]:text-white data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800 dark:has-[:checked]:border-slate-200 dark:has-[:checked]:bg-slate-100 dark:has-[:checked]:text-slate-950 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/45 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/45"
+                                                        class="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-2xl border border-slate-300 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/45 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/45"
                                                 >
                                                     <input
                                                             type="{{ $choiceInputType }}"
@@ -333,7 +337,7 @@
                                     @foreach(($choiceUsesRowOptions ? ($row['options'] ?? []) : ($content['options'] ?? [])) as $key => $label)
                                         <label
                                                 data-choice
-                                                class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 px-3 py-3 text-sm font-black text-slate-900 transition hover:border-slate-300 hover:bg-white has-[:checked]:border-slate-700 has-[:checked]:bg-slate-900 has-[:checked]:text-white data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=correct]:text-emerald-800 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 data-[state=wrong]:text-red-800 dark:border-slate-700 dark:bg-slate-950/35 dark:text-slate-50 dark:hover:bg-slate-800 dark:has-[:checked]:border-slate-200 dark:has-[:checked]:bg-slate-100 dark:has-[:checked]:text-slate-950 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/45 dark:data-[state=correct]:text-emerald-100 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/45 dark:data-[state=wrong]:text-red-100"
+                                                class="flex w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 px-3 py-3 text-sm font-black text-slate-900 transition hover:border-slate-300 hover:bg-white data-[state=correct]:border-emerald-500 data-[state=correct]:bg-emerald-50 data-[state=correct]:text-emerald-800 data-[state=wrong]:border-red-500 data-[state=wrong]:bg-red-50 data-[state=wrong]:text-red-800 dark:border-slate-700 dark:bg-slate-950/35 dark:text-slate-50 dark:hover:bg-slate-800 dark:data-[state=correct]:border-emerald-500 dark:data-[state=correct]:bg-emerald-950/45 dark:data-[state=correct]:text-emerald-100 dark:data-[state=wrong]:border-red-500 dark:data-[state=wrong]:bg-red-950/45 dark:data-[state=wrong]:text-red-100"
                                         >
                                             <span>{{ $label }}</span>
 
@@ -458,6 +462,22 @@
             const checkBtn = document.getElementById('checkAnswersBtn');
             const revealBtn = document.getElementById('revealAnswersBtn');
             const retakeBtn = document.getElementById('retakeBtn');
+            const sounds = @json($sounds);
+            const sfx = {
+                tap: new Audio(sounds.tap || '/slider/sounds/tap.wav'),
+                correct: new Audio(sounds.correct || '/slider/sounds/correct.wav'),
+                wrong: new Audio(sounds.wrong || '/slider/sounds/wrong.wav'),
+                success: new Audio(sounds.success || '/slider/sounds/success.wav'),
+            };
+
+            function playSfx(type) {
+                const sound = sfx[type];
+                if (!sound) return;
+
+                sound.pause();
+                sound.currentTime = 0;
+                sound.play().catch(() => {});
+            }
 
             function visibleInputs() {
                 return inputs.filter(input => input.offsetParent !== null);
@@ -541,7 +561,7 @@
 
                 if (selected.length === 0) {
                     row.dataset.state = 'wrong';
-                    return;
+                    return false;
                 }
 
                 const isCorrect = sameSet(selectedSet, correctSet);
@@ -554,31 +574,44 @@
                         choice.dataset.state = isCorrect ? 'correct' : 'wrong';
                     }
                 });
+
+                return isCorrect;
             }
 
             inputs.forEach(input => {
+                input.addEventListener('focus', () => playSfx('tap'));
                 input.addEventListener('input', () => clearInputState(input));
             });
 
             rows.forEach(row => {
                 row.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
-                    input.addEventListener('change', () => clearChoiceRow(row));
+                    input.addEventListener('change', () => {
+                        playSfx('tap');
+                        clearChoiceRow(row);
+                    });
                 });
             });
 
             checkBtn?.addEventListener('click', () => {
                 if (MODE === 'choice_table') {
-                    visibleRows().forEach(markChoiceRow);
+                    const currentRows = visibleRows();
+                    const correctCount = currentRows.filter(markChoiceRow).length;
+                    playSfx(correctCount === currentRows.length && currentRows.length > 0 ? 'success' : 'wrong');
                     return;
                 }
 
-                visibleInputs().forEach(input => {
-                    if (input.disabled) return;
+                let correctCount = 0;
+                const currentInputs = visibleInputs().filter(input => !input.disabled);
 
+                currentInputs.forEach(input => {
                     const isCorrect = isInputCorrect(input);
                     input.dataset.state = isCorrect ? 'correct' : 'wrong';
                     input.setAttribute('aria-invalid', isCorrect ? 'false' : 'true');
+
+                    if (isCorrect) correctCount++;
                 });
+
+                playSfx(correctCount === currentInputs.length && currentInputs.length > 0 ? 'success' : 'wrong');
             });
 
             revealBtn?.addEventListener('click', () => {
@@ -593,6 +626,7 @@
                         markChoiceRow(row);
                     });
 
+                    playSfx('success');
                     return;
                 }
 
@@ -605,6 +639,8 @@
                     input.dataset.state = 'correct';
                     input.setAttribute('aria-invalid', 'false');
                 });
+
+                playSfx('success');
             });
 
             retakeBtn?.addEventListener('click', () => {

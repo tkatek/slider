@@ -5,7 +5,7 @@ $content = [
     'subtitle'   => '',
 
     'mode'  => 'type_table',
-    'audio' => materialAsset('slider/A2/Advanced/chapter-6/audios/slide10/listening.mp3'),
+    'audio' => materialAsset('slider/A2/Advanced/chapter-6/audios/slide10.mp3'),
 
     'instruction'      => 'You will hear five people talking about problems they had working abroad',
     'instruction_note' => 'For each person decide which problem they mention. Write A–H.',

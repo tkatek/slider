@@ -2,6 +2,7 @@
 $content = [
     'title' => 'Writing',
     'subtitle' => 'Write the correct word',
+    'focus_note' => 'Sad - Happy - Angry - Scared - Bored - Shy - Hungry - Thirsty - Hot - Sick',
 
     'questions' => [
         [

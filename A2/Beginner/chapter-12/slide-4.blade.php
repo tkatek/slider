@@ -3,36 +3,11 @@ $content = [
     'page_title' => 'Practice 1',
     'title' => 'Practice 1: Warm-up',
     'subtitle' => 'Drag & drop each picture in the right column',
-
     'pool_item_type' => 'image',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Layout
-    |--------------------------------------------------------------------------
-    | We force the 1280x800 "sm/tablet-style" layout on all non-mobile screens.
-    | Mobile stays controlled by items_per_line_mobile.
-    */
-    'desktop_game_width' => 100,
-    'desktop_pool_width' => 100,
-
-    'items_per_line_mobile' => 1,
-    'items_per_line_tablet' => 2,
-
-    // Keep desktop behaving like the mid/sm layout
-    'items_per_line' => 2,
-    'items_per_line_wide' => 2,
-
-    'initial_visible_slots' => 2,
-    'category_content_grid_class' => 'grid-cols-2',
-
-    // Pool layout like the 1280x800 screenshot
-    'tablet_pool_columns' => 5,
-    'tablet_pool_tile_max_width' => '104px',
-
-    // IMPORTANT: force the sm stacked layout on all screens except mobile
-    'mid_screen_stack_layout' => true,
-    'mid_screen_stack_max_width' => '9999px',
+    'desktop_game_width' => 53,
+    'desktop_pool_width' => 47,
+    'items_per_line' => 3,
+    'items_per_line_mobile' => 2,
 
     'categories' => [
         'Carbohydrates' => [

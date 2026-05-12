@@ -4,7 +4,9 @@ $content = [
     'title' => 'Practice 3',
     'subtitle' => 'Match the words with the emojis',
 
-    'cards_grid' => 'grid-cols-1 sm:grid-cols-3 lg:grid-cols-1',
+    'items_per_line_mobile' => 2,
+    'items_per_line_tablet' => 4,
+    'items_per_line' => 4,
     'desktop_game_width' => 100,
     'desktop_pool_width' => 100,
     'categories' => [

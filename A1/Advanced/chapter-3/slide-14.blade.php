@@ -81,10 +81,7 @@ $content = [
                     'label' => 'very good',
                     'sound' => materialAsset('slider/A1/Advanced/chapter-3/audios/slide14/very-good.mp3'),
                 ],
-                [
-                    'label' => 'very good',
-                    'sound' => materialAsset('slider/A1/Advanced/chapter-3/audios/slide14/very-good.mp3'),
-                ],
+
                 [
                     'label' => 'not expensive',
                     'sound' => materialAsset('slider/A1/Advanced/chapter-3/audios/slide14/not-expensive.mp3'),

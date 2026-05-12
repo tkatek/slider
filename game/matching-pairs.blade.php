@@ -105,6 +105,8 @@
         $rowToneClasses = [
             'bg-white dark:bg-slate-900',
         ];
+        $matchColumnLabelClass = 'sticky top-0 z-[7] flex min-h-[2.45rem] items-center justify-center rounded-t-2xl rounded-b-none border border-slate-200 border-b-4 border-b-orange-400/80 bg-gradient-to-b from-slate-100 via-white to-stone-50 px-4 py-2 text-center text-[0.8rem] font-black uppercase leading-tight tracking-[0.14em] text-slate-700 shadow-sm shadow-slate-200/60 backdrop-blur dark:border-slate-700 dark:border-b-orange-400/70 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100 dark:shadow-none sm:min-h-[2.65rem] sm:text-sm lg:min-h-[2.85rem] lg:text-base';
+
     @endphp
 
     <style>
@@ -151,34 +153,6 @@
             row-gap: clamp(.34rem, .8vh, .65rem);
         }
 
-        .match-column-label {
-            position: sticky;
-            top: 0;
-            z-index: 7;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 2rem;
-            border-radius: 999px;
-            border: 1px solid rgba(203, 213, 225, .9);
-            background:
-                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .08), rgba(var(--match-secondary-rgb), .07)),
-                    linear-gradient(135deg, rgba(255, 255, 255, .94), rgba(248, 250, 252, .88));
-            color: #1e293b;
-            font-size: .72rem;
-            font-weight: 950;
-            letter-spacing: .02em;
-            box-shadow: 0 10px 22px -18px rgba(15, 23, 42, .45);
-            backdrop-filter: blur(10px);
-        }
-
-        .dark .match-column-label {
-            border-color: rgba(71, 85, 105, .8);
-            background:
-                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .18), rgba(var(--match-secondary-rgb), .12)),
-                    rgba(15, 23, 42, .76);
-            color: #e2e8f0;
-        }
 
         .match-card {
             position: relative;
@@ -505,10 +479,6 @@
                 row-gap: .32rem;
             }
 
-            .match-column-label {
-                min-height: 1.65rem;
-                font-size: .62rem;
-            }
 
             .match-card {
                 min-height: clamp(2.18rem, 6.6vh, 3rem);
@@ -604,8 +574,8 @@
                 <div id="matchBoard" class="matching-board relative mx-auto w-full touch-none">
                     <svg id="lineLayer" class="pointer-events-none absolute inset-0 z-[5] h-full w-full overflow-visible" aria-hidden="true"></svg>
 
-                    <div class="match-column-label">{{ $leftLabel }}</div>
-                    <div class="match-column-label">{{ $rightLabel }}</div>
+                    <div class="{{ $matchColumnLabelClass }}">{{ $leftLabel }}</div>
+                    <div class="{{ $matchColumnLabelClass }}">{{ $rightLabel }}</div>
 
                     @foreach($leftItems as $index => $item)
                         <button

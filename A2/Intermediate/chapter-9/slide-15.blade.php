@@ -1,9 +1,10 @@
 <?php
 
 $content = [
-    'title' => 'Practice 3',
-    'subtitle' => 'Find the mistake in each sentence and correct it.',
+    'title' => 'Practice 7',
+    'subtitle' => 'Find the mistake in each sentence and correct it<br>(Number 1 is done for you)',
     'stacked_full_input' => true,
+    'stacked_grid_cols_2' => true,
 
     'questions' => [
         [

@@ -2,9 +2,8 @@
 $content = [
     'type'       => 'image',
     'page_title' => 'Listening',
-    'title'      => 'Listening: Gestures in different cultures',
-    'subtitle'   => 'Listen. People are comparing gestures from around the world. Which two countries are they
-talking about? Circle the correct answers.',
+    'title'      => 'Gestures in different cultures',
+    'subtitle'   => 'Listen. People are comparing gestures from around the world.<br>Which two countries are they talking about?',
 
     'enable_image_zoom'      => false,
     'game_card_width'        => 'max-w-5xl',

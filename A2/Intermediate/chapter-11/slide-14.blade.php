@@ -5,6 +5,7 @@ $content = [
 
     'instruction' => 'Read Mary’s diary and fill in the gaps with the correct feelings',
     'instruction_note' => 'Write the missing words',
+    'card_class' => '[&_.lp-input]:!w-[8.2rem] [&_.lp-input]:!min-w-[7rem] sm:[&_.lp-input]:!w-[9rem]',
 
     'transcript' => [
         'Friday 13th October',

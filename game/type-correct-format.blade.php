@@ -9,22 +9,22 @@
     $hideHints = !empty($content['hide_hints']);
     $isSingleQuestion = count($questions) === 1;
 
-    $gridClasses = 'mx-auto grid w-full max-w-[1120px] grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4';
+    $gridClasses = 'mx-auto grid w-full max-w-[1200px] grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4';
     $cardClasses = 'verb-card rounded-2xl border border-slate-200/90 bg-white/95 p-3 shadow-sm shadow-slate-200/70 transition duration-200 hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100/70 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-slate-950/20 sm:p-4';
     $answerClasses = 'flex w-full flex-wrap items-center gap-2 text-sm font-black leading-relaxed text-slate-950 dark:text-slate-50 sm:text-base';
     $hintClasses = 'inline-flex min-h-7 items-center justify-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-black text-amber-800 dark:border-amber-400/30 dark:bg-amber-500/15 dark:text-amber-100 sm:min-h-8 sm:px-3 sm:text-sm';
     $inputClasses = 'js-verb-input h-9 w-auto min-w-20 max-w-56 rounded-xl border-2 border-slate-200 bg-white px-2 text-center text-sm font-black text-slate-950 outline-none transition duration-150 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-50 dark:focus:border-indigo-400 sm:h-10 sm:min-w-24 sm:px-3 sm:text-base';
 
     if ($stackedFullInput) {
-        $gridClasses = 'mx-auto grid w-full max-w-[1160px] grid-cols-1 gap-3 sm:gap-4' . ($stackedGridCols2 ? ' sm:grid-cols-2' : '');
+        $gridClasses = 'mx-auto grid w-full max-w-[1240px] grid-cols-1 gap-3 sm:gap-4' . ($stackedGridCols2 ? ' sm:grid-cols-2' : '');
         $answerClasses = 'grid w-full grid-cols-1 gap-2 text-sm font-black leading-relaxed text-slate-950 dark:text-slate-50 sm:gap-3 sm:text-base';
         $hintClasses = 'block w-full rounded-2xl border border-slate-200 bg-slate-50/90 px-3 py-2 text-left text-sm font-black leading-relaxed text-slate-950 dark:border-slate-700 dark:bg-slate-950/70 dark:text-slate-50 sm:px-4 sm:py-3 sm:text-base';
         $inputClasses = 'js-verb-input h-11 w-full min-w-0 rounded-xl border-2 border-slate-200 bg-white px-3 text-left text-sm font-black text-slate-950 outline-none transition duration-150 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-50 dark:focus:border-indigo-400 sm:h-12 sm:text-base';
     }
 
     if ($isSingleQuestion) {
-        $gridClasses = 'mx-auto grid min-h-[clamp(220px,38vh,360px)] w-full max-w-[1080px] grid-cols-1 items-center justify-items-center gap-4';
-        $cardClasses = 'verb-card w-full max-w-[980px] rounded-3xl border border-slate-200/90 bg-white/95 p-5 shadow-sm shadow-slate-200/70 transition duration-200 hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100/70 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-slate-950/20 sm:p-8';
+        $gridClasses = 'mx-auto grid min-h-[clamp(220px,38vh,360px)] w-full max-w-[1160px] grid-cols-1 items-center justify-items-center gap-4';
+        $cardClasses = 'verb-card w-full max-w-[1060px] rounded-3xl border border-slate-200/90 bg-white/95 p-5 shadow-sm shadow-slate-200/70 transition duration-200 hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100/70 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-slate-950/20 sm:p-8';
         $answerClasses = 'flex w-full flex-wrap items-center justify-center gap-2 text-center text-lg font-black leading-relaxed text-slate-950 dark:text-slate-50 sm:gap-3 sm:text-2xl';
         $inputClasses = 'js-verb-input h-12 w-full min-w-44 max-w-sm rounded-2xl border-2 border-slate-200 bg-white px-4 text-center text-lg font-black text-slate-950 outline-none transition duration-150 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-50 dark:focus:border-indigo-400 sm:h-14 sm:min-w-56 sm:text-xl';
     }
@@ -32,9 +32,19 @@
 
 @section('content')
     <div class="min-h-[100dvh] w-full overflow-x-hidden font-sans">
-        <div class="mx-auto flex min-h-[100dvh] w-full max-w-[1360px] items-center justify-center px-3 py-4 sm:px-5 sm:py-8">
+        <div class="mx-auto flex min-h-[100dvh] w-full max-w-[1440px] items-center justify-center px-3 py-4 sm:px-5 sm:py-8">
             <main class="w-full">
                 @include('slider.components.title-subtitle')
+
+                @if(!empty($content['focus_note']))
+                    <div class="mx-auto mb-4 mt-2 w-full max-w-4xl px-2">
+                        <div class="rounded-2xl border border-orange-200/80 bg-gradient-to-r from-white via-orange-50/70 to-amber-50/70 px-3 py-2.5 text-center shadow-sm shadow-orange-100/70 backdrop-blur dark:border-orange-400/30 dark:from-slate-900/80 dark:via-orange-950/20 dark:to-slate-900/80 dark:shadow-none sm:px-5 sm:py-3">
+                            <p class="text-sm font-black leading-relaxed tracking-[-0.01em] text-slate-800 dark:text-slate-100 sm:text-base lg:text-lg">
+                                {{ $content['focus_note'] }}
+                            </p>
+                        </div>
+                    </div>
+                @endif
 
                 @include('slider.components.game-status')
 
@@ -144,6 +154,19 @@
             let wrongTries = 0;
             let startTime = Date.now();
             let timerInt = null;
+
+            const audio = {
+                correct: new Audio('/slider/sounds/correct.wav'),
+                wrong: new Audio('/slider/sounds/wrong.wav'),
+                success: new Audio('/slider/sounds/success.wav'),
+            };
+
+            const play = (sound) => {
+                if (!sound) return;
+                sound.pause();
+                sound.currentTime = 0;
+                sound.play().catch(() => {});
+            };
 
             try {
                 savedData = JSON.parse(localStorage.getItem(storageKey) || '{}') || {};
@@ -320,6 +343,7 @@
                 if (hasWrong) wrongTries += 1;
                 if (allCorrect && cards.length > 0) clearInterval(timerInt);
 
+                play(hasWrong ? audio.wrong : audio.success);
                 updateStatusUI();
                 saveAll();
             });
@@ -341,6 +365,7 @@
                 updateStatusUI();
                 updateActionButtons({ revealed: true });
                 clearInterval(timerInt);
+                play(audio.correct);
             });
 
             btnRetakeTest?.addEventListener('click', () => {
@@ -377,6 +402,10 @@
 
             window.stopSlideAudio = () => {
                 clearInterval(timerInt);
+                Object.values(audio).forEach((sound) => {
+                    sound.pause();
+                    sound.currentTime = 0;
+                });
             };
         });
     </script>

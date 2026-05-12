@@ -16,6 +16,7 @@
     $readingAllowHtml = array_key_exists('reading_allow_html', $content)
         ? !empty($content['reading_allow_html'])
         : false;
+    $readingTextSize = trim((string) ($content['reading_text_size'] ?? ''));
     $showReadingBadge = array_key_exists('show_reading_badge', $content)
         ? !empty($content['show_reading_badge'])
         : true;
@@ -705,6 +706,11 @@
             line-height:1.62;
         }
 
+        .reading-pane.is-small-text .reading-copy p{
+            font-size:.8rem;
+            line-height:1.5;
+        }
+
         .dark .mca-btn-secondary,
         .dark .action-btn-soft,
         .dark .game-modal-secondary-btn{
@@ -799,6 +805,11 @@
             .reading-copy p{
                 font-size:.97rem;
             }
+
+            .reading-pane.is-small-text .reading-copy p{
+                font-size:.86rem;
+                line-height:1.52;
+            }
         }
 
         @media (min-width: 1024px){
@@ -817,6 +828,11 @@
 
             .reading-copy p{
                 font-size:1.2rem;
+            }
+
+            .reading-pane.is-small-text .reading-copy p{
+                font-size:.95rem;
+                line-height:1.55;
             }
         }
     </style>
@@ -867,7 +883,7 @@
                                             </div>
                                         </div>
                                     @elseif($gameType === 'reading')
-                                        <div class="reading-pane{{ $readingAlign === 'left' ? ' is-left' : '' }}{{ $readingPlain ? ' is-plain' : '' }}{{ $readingCompact ? ' is-compact' : '' }}">
+                                        <div class="reading-pane{{ $readingAlign === 'left' ? ' is-left' : '' }}{{ $readingPlain ? ' is-plain' : '' }}{{ $readingCompact ? ' is-compact' : '' }}{{ in_array($readingTextSize, ['small', 'sm'], true) ? ' is-small-text' : '' }}">
                                             <div class="reading-card{{ $readingPlain ? ' is-plain-mode' : '' }}">
                                                 <div class="reading-header">
                                                     @if($showReadingBadge)

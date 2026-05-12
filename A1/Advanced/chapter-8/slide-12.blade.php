@@ -10,7 +10,7 @@
             [
                 [
                     'emoji' => '1️⃣',
-                    'text' => '<span class="text-violet-600 font-black">Positive Sentences:</span>',
+                    'text' => '<span class="text-blue-500 font-black">Positive Sentences:</span>',
                     'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide12/1.mp3'),
                 ],
                 [
@@ -42,7 +42,7 @@
             [
                 [
                     'emoji' => '3️⃣',
-                    'text' => '<span class="text-orange-400 font-black">Negative Sentences:</span>',
+                    'text' => '<span class="text-blue-500 font-black">Negative Sentences:</span>',
                     'sound' => materialAsset('slider/A1/Advanced/chapter-8/audios/slide12/7.mp3'),
                 ],
                 [

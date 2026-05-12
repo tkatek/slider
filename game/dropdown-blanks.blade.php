@@ -232,6 +232,10 @@
     @php
         $compactLayout = (bool)($content['compact_layout'] ?? false);
         $compactText = (bool)($content['compact_text'] ?? $compactLayout);
+        $questionPromptLabel = trim((string) ($content['question_prompt_label'] ?? $content['prompt_label'] ?? $content['instruction_label'] ?? 'Complete the sentence:'));
+        if ($questionPromptLabel === '') {
+            $questionPromptLabel = 'Complete the sentence:';
+        }
     @endphp
     <div class="font-sans relative isolate min-h-[100dvh] overflow-x-hidden overflow-y-auto dark:text-slate-100 {{ $compactText ? 'is-compact-text' : '' }}">
             <main class="mx-auto flex min-h-[100dvh] w-full max-w-7xl items-center justify-center px-4 sm:px-8 {{ $compactLayout ? 'py-4 sm:py-7' : 'py-5 sm:py-8' }}">
@@ -247,7 +251,7 @@
                             <div class="h-full {{ $compactLayout ? 'p-4 sm:p-5' : 'p-4 sm:p-5' }} text-left">
                                 <div class="flex items-center justify-between gap-2 sm:gap-3">
                                     <div class="min-w-0 text-[11px] sm:text-base font-extrabold text-slate-500 dark:text-slate-400">
-                                        Complete the sentence:
+                                        {{ $questionPromptLabel }}
                                     </div>
 
                                     <button

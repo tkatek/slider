@@ -1,21 +1,21 @@
 <?php
 $content = [
-    'page_title' => 'Learning Objectives',
-    'title'      => 'Learning Objectives',
+    'page_title' => 'Learning Outcomes',
+    'title'      => 'Learning Outcomes',
     'subtitle'   => 'By the end of this session, students will:',
 
     'outcomes' => [
         [
             'label' => '',
-            'text'  => 'Express complex opinions with clarity and depth.',
+            'text'  => 'Analyse ideas instead of giving surface opinions.',
         ],
         [
             'label' => '',
-            'text'  => 'Use advanced connectors and softening language.',
+            'text'  => 'Justify opinions with clear reasons and examples.',
         ],
         [
             'label' => '',
-            'text'  => 'Handle disagreement diplomatically.',
+            'text'  => 'Use advanced reasoning phrases naturally.',
         ],
     ],
 ];

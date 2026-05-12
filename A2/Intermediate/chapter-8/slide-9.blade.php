@@ -3,6 +3,7 @@ $content = [
     'title' => 'Practice 3',
     'subtitle' => 'Read the sentences & correct the mistake',
     'stacked_full_input' => true,
+    'stacked_grid_cols_2' => true,
 
 
     'questions' => [

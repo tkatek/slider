@@ -26,6 +26,12 @@ $content = [
                 [
                     'heading' => '',
                     'items' => [
+                        'Example: <span class="text-orange-500 dark:text-orange-300 font-black">&ldquo;If it rains, we will stay in.&rdquo;</span>',
+                    ],
+                ],
+                [
+                    'heading' => '',
+                    'items' => [
                         'The condition goes after <span class="text-orange-600 dark:text-orange-300 font-black">if</span> (in the present), and the result uses <span class="text-orange-600 dark:text-orange-300 font-black">will</span>.',
                     ],
                 ],

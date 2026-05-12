@@ -3,7 +3,9 @@ $content = [
     'page_title' => 'Reading Comprehension',
     'title' => 'Reading Comprehension',
     'compact_layout' => true,
-    'subtitle' => 'Read the passage and choose the correct verb.',
+    'subtitle' => '',
+    'question_prompt_label' => 'Read the passage and choose the correct verb.',
+
 
     'questions' => [
         [

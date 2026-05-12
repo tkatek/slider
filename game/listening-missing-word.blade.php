@@ -11,6 +11,7 @@
     $hasScript = $scriptLines !== [];
     $lines = is_array($content['lines'] ?? null) ? $content['lines'] : [];
     $sounds = is_array($content['sounds'] ?? null) ? $content['sounds'] : [];
+    $cardClass = trim((string) ($content['card_class'] ?? ''));
 @endphp
 
 @section('style')
@@ -261,7 +262,7 @@
                 </div>
             @endif
 
-            <div class="lt-card p-4 sm:p-6">
+            <div class="lt-card {{ $cardClass }} p-4 sm:p-6">
                 <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
                     <div class="lt-title-panel min-w-0 flex-1">
                         <h2 class="text-sm font-black leading-snug text-slate-900 dark:text-white sm:text-lg">

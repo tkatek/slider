@@ -3,29 +3,29 @@
 $customTitle = 'Speaking Practice';
 
 $customSubtitle = '
-    <span class="font-black text-slate-950 dark:text-slate-50">Students practise:</span><br>
-    <span class="text-blue-700 dark:text-blue-300 font-black">expressing layered opinions</span>,
-    <span class="text-blue-700 dark:text-blue-300 font-black">responding thoughtfully</span>, and
-    <span class="text-blue-700 dark:text-blue-300 font-black">avoiding absolute language</span>.
+    <span class="font-black text-slate-950 dark:text-slate-50">Students practice:</span><br>
+    <span class="text-blue-700 dark:text-blue-300 font-black">Giving opinions with reasons</span>,
+    <span class="text-blue-700 dark:text-blue-300 font-black">responding to opposing views</span>, and
+    <span class="text-blue-700 dark:text-blue-300 font-black">structuring answers (reason + example)</span>.
 ';
 
 $practiceNote = '
-    <div class="text-left">
-        <div class="mb-2 text-sm font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+    <span class="block text-left">
+        <span class="mb-2 block text-sm font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
             Example
-        </div>
+        </span>
 
-        <div class="space-y-2 text-slate-800 dark:text-slate-100">
-            <p>
+        <span class="block space-y-2 text-slate-800 dark:text-slate-100">
+            <span class="block">
                 <span class="font-black text-blue-700 dark:text-blue-300">A:</span>
-                “Do you think social media helps relationships?”
-            </p>
-            <p>
+                "Do you think social media is harmful?"
+            </span>
+            <span class="block">
                 <span class="font-black text-fuchsia-700 dark:text-fuchsia-300">B:</span>
-                “To some extent, yes. However, it can also create distance.”
-            </p>
-        </div>
-    </div>
+                "It can be, mainly because it affects attention span."
+            </span>
+        </span>
+    </span>
 ';
 
 $user = auth()->user();

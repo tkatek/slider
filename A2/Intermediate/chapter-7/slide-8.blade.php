@@ -2,7 +2,8 @@
 $content = [
     'page_title' => 'Practice 3',
     'title'      => 'Practice 3',
-    'subtitle'   => 'Choose the correct answers',
+    'subtitle'   => '',
+    'question_prompt_label' => 'Choose the correct answers',
     "questions" => [
         [
             "img" => "🏖️",

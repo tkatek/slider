@@ -15,6 +15,7 @@
     $imageClass     = trim((string)($content['image_class'] ?? 'block w-full h-full object-contain select-none'));
     $imageStyle     = trim((string)($content['image_style'] ?? ''));
     $lessonClass    = trim((string)($content['lesson_class'] ?? 'text-[2.1rem] sm:text-[2.6rem] lg:text-[3.5rem] xl:text-[4.25rem]'));
+    $lessonAllowHtml = !empty($content['lesson_allow_html']);
 @endphp
 
 @extends('slider.simple-layout')
@@ -99,7 +100,11 @@
                         @if($lesson !== '')
                             <h2 class="{{ $lessonClass }} font-black leading-[1.02] tracking-tight">
                             <span class="bg-gradient-to-br from-orange-600 via-orange-500 to-amber-500 bg-clip-text text-transparent dark:from-orange-400 dark:via-orange-300 dark:to-amber-300">
-                                {{ $lesson }}
+                                @if($lessonAllowHtml)
+                                    {!! $lesson !!}
+                                @else
+                                    {{ $lesson }}
+                                @endif
                             </span>
                             </h2>
                         @endif

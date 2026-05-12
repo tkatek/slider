@@ -1,9 +1,9 @@
 <?php
 
 $content = [
-    'page_title' => 'Speaking Cards',
-    'title' => 'Speaking Cards',
-    'subtitle' => '',
+    'page_title' => 'Warm-up: Practice 1',
+    'title' => 'Warm-up: Practice 1',
+    'subtitle' => 'Can you guess the job?!',
 
     'cards' => [
         [

@@ -1,13 +1,13 @@
 <?php
 $content = [
-    'video'      => materialAsset('slider/A2/Beginner/chapter-8/videos/encrypted/'),
-    'thumbnail'  => materialAsset('slider/A2/Beginner/chapter-8/img/'),
+    'video'      => materialAsset('slider/A2/Beginner/chapter-8/video/look-like-encrypted/look-like.m3u8'),
+    'thumbnail'  => materialAsset('slider/A2/Beginner/chapter-8/img/slide5.webp'),
     'isQuiz'     => 0,
 
 
     'questions' => [
         [
-            'time' => 4000,
+            'time' => 9000,
             'type' => 'multiple_choice',
             'question' => '1. What does John’s wife look like?',
             'options' => [
@@ -20,7 +20,7 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 12000,
+            'time' => 18000,
             'type' => 'multiple_choice',
             'question' => '2. What does John’s husband look like?',
             'options' => [
@@ -33,7 +33,7 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 22000,
+            'time' => 29500,
             'type' => 'multiple_choice',
             'question' => '3. What does the first boss look like?',
             'options' => [
@@ -46,7 +46,7 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 32000,
+            'time' => 40000,
             'type' => 'multiple_choice',
             'question' => '4. What does the second boss look like?',
             'options' => [
@@ -59,7 +59,7 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 42000,
+            'time' => 59000,
             'type' => 'multiple_choice',
             'question' => '5. What does the female best friend look like?',
             'options' => [
@@ -74,23 +74,23 @@ $content = [
     ],
 
     'subtitles'  => [
-        ['start' => 0,  'end' => 6,  'text' => 'What does your wife look like, John?'],
-        ['start' => 6,  'end' => 13, 'text' => 'She has medium length wavy black hair and likes to wear large earrings. She is tall and thin.'],
+        ['start' => 0,  'end' => 3,  'text' => 'What does your wife look like, John?'],
+        ['start' => 3,  'end' => 8.5, 'text' => 'She has medium length wavy black hair and likes to wear large earrings. She is tall and thin.'],
 
-        ['start' => 13, 'end' => 17, 'text' => 'How about your husband?'],
-        ['start' => 17, 'end' => 24, 'text' => 'He has short black hair and a mustache. He is a little overweight.'],
+        ['start' => 10, 'end' => 12, 'text' => 'How about your husband?'],
+        ['start' => 12.5, 'end' => 17, 'text' => 'He has short black hair and a mustache. He is a little overweight.'],
 
-        ['start' => 24, 'end' => 28, 'text' => 'What does your boss look like?'],
-        ['start' => 28, 'end' => 36, 'text' => 'She has curly white hair and she wears glasses. She has a small tattoo on her right wrist.'],
+        ['start' => 19.5, 'end' => 22, 'text' => 'What does your boss look like?'],
+        ['start' => 22.5, 'end' => 28.5, 'text' => 'She has curly white hair and she wears glasses. She has a small tattoo on her right wrist.'],
 
-        ['start' => 36, 'end' => 40, 'text' => 'How about your boss?'],
-        ['start' => 40, 'end' => 49, 'text' => 'He is average height and slim. He is usually clean-shaven. He has a mole above his upper lip.'],
+        ['start' => 30.5, 'end' => 32.5, 'text' => 'How about your boss?'],
+        ['start' => 33, 'end' => 39.5, 'text' => 'He is average height and slim. He is usually clean-shaven. He has a mole above his upper lip.'],
 
-        ['start' => 49, 'end' => 54, 'text' => 'What does your best friend look like?'],
-        ['start' => 54, 'end' => 61, 'text' => 'He is quite short and stocky. He is bald and has a beard. He has green eyes.'],
+        ['start' => 41, 'end' => 43, 'text' => 'What does your best friend look like?'],
+        ['start' => 44.5, 'end' => 50, 'text' => 'He is quite short and stocky. He is bald and has a beard. He has green eyes.'],
 
-        ['start' => 61, 'end' => 65, 'text' => 'How about your best friend?'],
-        ['start' => 65, 'end' => 72, 'text' => 'She has dyed green spiky hair and freckles. She is short and skinny.'],
+        ['start' => 51.5, 'end' => 53, 'text' => 'How about your best friend?'],
+        ['start' => 54.5, 'end' => 58.5, 'text' => 'She has dyed green spiky hair and freckles. She is short and skinny.'],
     ],
 ];
 ?>

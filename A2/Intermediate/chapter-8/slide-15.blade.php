@@ -8,6 +8,7 @@ $content = [
     'reading_align'   => 'left',
     'reading_plain'   => true,
     'reading_compact' => true,
+    'reading_text_size' => 'small',
 
     'passage' => "Tom and Sam are talking about their weekend plans. Tom says that if the weather is nice, he will go to the park and relax. Sam agrees and says that if the sun comes out, they will visit a new café together.\n\nTom says that if he meets his friend Jake, he will invite him to join them. Sam likes the idea because they can catch up and talk.\n\nHowever, if it rains, Tom will stay at home and watch a TV series. Sam says that if the rain continues, they will order pizza and spend time at his house.\n\nThey decide that if Tom calls Sam on Saturday morning, they will meet and make a final plan.",
 

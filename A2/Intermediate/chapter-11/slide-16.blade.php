@@ -16,35 +16,35 @@ $content = [
         ],
 
         [
-            'text'     => 'Scrunch up',
+            'text'     => 'Scrunch up my nose',
             'emoji'    => '😖',
-            'sound'    => materialAsset('slider/A2/Intermediate/chapter-11/audios/slide16/scrunch up.mp3'),
+            'sound'    => materialAsset('slider/A2/Intermediate/chapter-11/audios/slide16/scrunch.mp3'),
             'image'    => materialAsset('slider/A2/Intermediate/chapter-11/img/slide16/scrunch-up.webp'),
         ],
 
         [
-            'text'     => 'Pout',
+            'text'     => 'Pout my lips',
             'emoji'    => '😗',
-            'sound'    => materialAsset('slider/A2/Intermediate/chapter-11/audios/slide16/pout.mp3'),
+            'sound'    => materialAsset('slider/A2/Intermediate/chapter-11/audios/slide16/pout-my-lips.mp3'),
             'image'    => materialAsset('slider/A2/Intermediate/chapter-11/img/slide16/pout.webp'),
         ],
 
         [
-            'text'     => 'Raise',
+            'text'     => 'Raise eyebrows',
             'emoji'    => '🤨',
             'sound'    => materialAsset('slider/A2/Intermediate/chapter-11/audios/slide16/raise.mp3'),
             'image'    => materialAsset('slider/A2/Intermediate/chapter-11/img/slide16/raise.webp'),
         ],
 
         [
-            'text'     => 'Drop',
+            'text'     => 'Drop my jaw',
             'emoji'    => '😮',
             'sound'    => materialAsset('slider/A2/Intermediate/chapter-11/audios/slide16/drop.mp3'),
             'image'    => materialAsset('slider/A2/Intermediate/chapter-11/img/slide16/drop.webp'),
         ],
 
         [
-            'text'     => 'Stick',
+            'text'     => 'Stick my tongue out',
             'emoji'    => '😛',
             'sound'    => materialAsset('slider/A2/Intermediate/chapter-11/audios/slide16/stick.mp3'),
             'image'    => materialAsset('slider/A2/Intermediate/chapter-11/img/slide16/stick.webp'),

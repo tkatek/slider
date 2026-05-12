@@ -2,7 +2,7 @@
 $content = [
 
     'title' => 'Grammar',
-    'subtitle' => '',
+    'subtitle' => '“Future Forms” / “Present Continuous”',
     'cards_grid_class' => 'mt-7 grid grid-cols-1 gap-4 md:grid-cols-2',
 
     'cards' => [
