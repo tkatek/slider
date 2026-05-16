@@ -3,20 +3,19 @@
 $customTitle = 'The 3-Minute Challenge';
 
 $customSubtitle = '
-    <span class="font-black text-slate-950 dark:text-slate-50">Goal:</span>
+    <span class="font-black text-slate-950 dark:text-slate-50">C Goal:</span>
     test spontaneous speech.<br>
     Each student talks for 3 minutes about
-    <span class="font-black text-blue-700 dark:text-blue-300">why communication skills matter more at advanced levels.</span>
+    <span class="font-black text-blue-700 dark:text-blue-300">Describe a time a package got delayed and how you solved it.</span>
 ';
 
 $practiceNote = '
-    <div class="text-left">
-        <div class="font-black text-slate-900 dark:text-slate-100">Before you record:</div>
-        <ul class="mt-2 space-y-1.5">
-            <li>Speak continuously for 3 minutes.</li>
-            <li>Use at least 2 reaction phrases + 1 filler.</li>
-        </ul>
-    </div>
+    <span class="block text-left">
+        <span class="mt-2 block space-y-1.5">
+            <span class="block">. Speak continuously for 3 minutes.</span>
+            <span class="block">. Use at least 2 reaction phrases + 1 filler.</span>
+        </span>
+    </span>
 ';
 
 $user = auth()->user();

@@ -32,16 +32,22 @@
     foreach ($categoriesSource as $categoryName => $categoryData) {
         $emoji = '';
         $items = [];
+        $displayName = (string) $categoryName;
+        $description = '';
 
         if (is_array($categoryData) && array_key_exists('items', $categoryData)) {
             $emoji = (string) ($categoryData['emoji'] ?? '');
             $items = is_array($categoryData['items']) ? $categoryData['items'] : [];
+            $displayName = (string) ($categoryData['title'] ?? $categoryData['label'] ?? $categoryData['display_name'] ?? $categoryName);
+            $description = (string) ($categoryData['description'] ?? $categoryData['subtitle'] ?? '');
         } elseif (is_array($categoryData)) {
             $items = $categoryData;
         }
 
         $normalizedCategories[$categoryName] = [
             'emoji' => $emoji,
+            'display_name' => $displayName,
+            'description' => $description,
             'slot_count' => count($items),
         ];
 
@@ -83,7 +89,7 @@
 
     $categoryGridClass = $content['category_grid_class'] ?? (count($normalizedCategories) <= 2
         ? 'grid-cols-1 md:grid-cols-2'
-        : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3');
+        : ($isImageItem ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'));
 
     $poolGridClass = $content['pool_grid_class'] ?? ($isImageItem
         ? 'grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-8 2xl:grid-cols-10'
@@ -91,15 +97,31 @@
 
     $slotGridClass = $content['slot_grid_class'] ?? ($isImageItem
         ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'
-        : 'grid-cols-1 sm:grid-cols-2');
+        : 'grid-cols-2');
 
-    $tileClass = $isImageItem
+    $textTileThemes = $content['text_tile_themes'] ?? [
+        'bg-gradient-to-br from-orange-500 to-amber-500 border-orange-300/40 shadow-orange-200/60',
+        'bg-gradient-to-br from-sky-500 to-blue-600 border-sky-300/40 shadow-sky-200/60',
+        'bg-gradient-to-br from-emerald-500 to-teal-600 border-emerald-300/40 shadow-emerald-200/60',
+        'bg-gradient-to-br from-fuchsia-500 to-purple-600 border-fuchsia-300/40 shadow-fuchsia-200/60',
+        'bg-gradient-to-br from-rose-500 to-red-600 border-rose-300/40 shadow-rose-200/60',
+        'bg-gradient-to-br from-cyan-500 to-sky-600 border-cyan-300/40 shadow-cyan-200/60',
+        'bg-gradient-to-br from-indigo-500 to-violet-600 border-indigo-300/40 shadow-indigo-200/60',
+    ];
+    $textTileThemes = is_array($textTileThemes) ? array_values($textTileThemes) : [];
+
+    $tileClass = $content['tile_class'] ?? ($isImageItem
         ? 'dd-item w-full touch-none select-none overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm shadow-slate-200/70 transition duration-200 hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-lg hover:shadow-orange-100/70 active:cursor-grabbing dark:border-slate-700/70 dark:bg-slate-900 dark:shadow-slate-950/30 dark:hover:border-orange-400/40 sm:rounded-2xl'
-        : 'dd-item touch-none select-none rounded-xl border border-white/20 bg-gradient-to-br from-orange-500 to-amber-500 px-3 py-2 text-center text-xs font-black leading-tight text-white shadow-md shadow-orange-200/60 transition duration-200 hover:-translate-y-0.5 active:cursor-grabbing dark:shadow-none sm:text-sm';
+        : ($content['text_tile_class'] ?? 'dd-item flex min-h-[48px] touch-none select-none items-center justify-center rounded-xl border border-white/25 px-3 py-2 text-center text-[11px] font-black leading-tight text-white shadow-md transition duration-200 hover:-translate-y-0.5 active:cursor-grabbing dark:shadow-none sm:min-h-[54px] sm:px-3.5 sm:text-xs lg:text-[13px]'));
 
-    $slotClass = $isImageItem
+    $slotClass = $content['slot_class'] ?? ($isImageItem
         ? 'dd-slot grid min-h-[96px] place-items-center rounded-2xl border-2 border-dashed border-slate-200/90 bg-white/45 p-1 transition duration-200 dark:border-slate-700/70 dark:bg-slate-900/30 sm:min-h-[120px] lg:min-h-[132px]'
-        : 'dd-slot grid min-h-[42px] place-items-center rounded-2xl border-2 border-dashed border-slate-200/90 bg-white/45 p-1.5 transition duration-200 dark:border-slate-700/70 dark:bg-slate-900/30';
+        : ($content['text_slot_class'] ?? 'dd-slot grid min-h-[58px] place-items-center rounded-2xl border-2 border-dashed border-slate-200/80 bg-white/50 p-1.5 transition duration-200 dark:border-slate-700/70 dark:bg-slate-900/30 sm:min-h-[66px]'));
+
+    $categoryCardClass = $content['category_card_class'] ?? 'rounded-[1.45rem] border border-slate-200/80 bg-gradient-to-br from-white via-slate-50/80 to-stone-50/80 p-3 shadow-xl shadow-slate-200/70 backdrop-blur-xl transition duration-200 dark:border-slate-700/70 dark:from-slate-950/70 dark:via-slate-900/65 dark:to-stone-950/30 dark:shadow-slate-950/30 sm:p-4';
+    $categoryHeaderClass = $content['category_header_class'] ?? 'flex items-center justify-center gap-2 rounded-2xl border border-slate-200/80 bg-white/85 px-3 py-2.5 shadow-sm backdrop-blur dark:border-slate-700/70 dark:bg-slate-900/70';
+    $categoryTitleClass = $content['category_title_class'] ?? 'text-center text-sm font-black leading-tight text-slate-900 dark:text-white sm:text-base lg:text-lg';
+    $categoryDescriptionClass = $content['category_description_class'] ?? 'mt-1 text-center text-[0.68rem] font-bold leading-snug text-slate-500 dark:text-slate-400 sm:text-xs';
 
     $mobilePoolCap = (int) ($content['mobile_pool_visible_cap'] ?? 4);
     $tabletPoolCap = (int) ($content['tablet_pool_visible_cap'] ?? 6);
@@ -116,19 +138,27 @@
                     <div id="categoriesContainer" class="grid {{ $categoryGridClass }} gap-3 sm:gap-4">
                         @foreach($normalizedCategories as $categoryName => $category)
                             <article
-                                    class="category-box rounded-[1.45rem] border border-slate-200/80 bg-gradient-to-br from-white via-slate-50/80 to-stone-50/80 p-3 shadow-xl shadow-slate-200/70 backdrop-blur-xl transition duration-200 dark:border-slate-700/70 dark:from-slate-950/70 dark:via-slate-900/65 dark:to-stone-950/30 dark:shadow-slate-950/30 sm:p-4"
+                                    class="category-box {{ $categoryCardClass }}"
                                     data-category="{{ $categoryName }}"
                             >
-                                <header class="flex items-center justify-center gap-2 rounded-2xl border border-slate-200/80 bg-white/85 px-3 py-2.5 shadow-sm backdrop-blur dark:border-slate-700/70 dark:bg-slate-900/70">
+                                <header class="{{ $categoryHeaderClass }}">
                                     @if(!empty($category['emoji']))
                                         <span class="grid h-8 w-8 place-items-center rounded-xl bg-orange-50 text-base dark:bg-orange-500/15 sm:h-9 sm:w-9 sm:text-lg">
                                             {{ $category['emoji'] }}
                                         </span>
                                     @endif
 
-                                    <h2 class="text-center text-base font-black leading-tight tracking-[-0.03em] text-slate-900 dark:text-white sm:text-lg lg:text-xl">
-                                        {{ $categoryName }}
-                                    </h2>
+                                    <div class="min-w-0">
+                                        <h2 class="{{ $categoryTitleClass }}">
+                                            {{ $category['display_name'] }}
+                                        </h2>
+
+                                        @if(!empty($category['description']))
+                                            <p class="{{ $categoryDescriptionClass }}">
+                                                {{ $category['description'] }}
+                                            </p>
+                                        @endif
+                                    </div>
                                 </header>
 
                                 <div class="mt-3 grid {{ $slotGridClass }} gap-2 sm:gap-2.5" data-dropzone>
@@ -148,6 +178,13 @@
                         <div class="ring-4 ring-emerald-400/30 border-emerald-300 bg-emerald-50 dark:bg-emerald-500/10"></div>
                         <div class="ring-4 ring-rose-400/30 border-rose-300 bg-rose-50 dark:bg-rose-500/10"></div>
                         <div class="bg-rose-500 text-white border-rose-300 dark:bg-rose-500 dark:text-white"></div>
+                        <div class="bg-gradient-to-br from-orange-500 to-amber-500 border-orange-300/40 shadow-orange-200/60"></div>
+                        <div class="bg-gradient-to-br from-sky-500 to-blue-600 border-sky-300/40 shadow-sky-200/60"></div>
+                        <div class="bg-gradient-to-br from-emerald-500 to-teal-600 border-emerald-300/40 shadow-emerald-200/60"></div>
+                        <div class="bg-gradient-to-br from-fuchsia-500 to-purple-600 border-fuchsia-300/40 shadow-fuchsia-200/60"></div>
+                        <div class="bg-gradient-to-br from-rose-500 to-red-600 border-rose-300/40 shadow-rose-200/60"></div>
+                        <div class="bg-gradient-to-br from-cyan-500 to-sky-600 border-cyan-300/40 shadow-cyan-200/60"></div>
+                        <div class="bg-gradient-to-br from-indigo-500 to-violet-600 border-indigo-300/40 shadow-indigo-200/60"></div>
                     </div>
                 </section>
 
@@ -282,6 +319,10 @@
             const isImageItem = Boolean(@json($isImageItem));
             const showImageLabel = Boolean(@json($showImageLabel));
             const baseTileClass = @json($tileClass . ' cursor-grab');
+            const textTileThemes = @json($textTileThemes);
+            const textTileThemeClasses = textTileThemes
+                .flatMap(theme => String(theme).split(/\s+/))
+                .filter(Boolean);
             const mobileCap = Math.max(1, Number(@json($mobilePoolCap)));
             const tabletCap = Math.max(1, Number(@json($tabletPoolCap)));
 
@@ -442,11 +483,20 @@
                 item.classList.add('cursor-default');
 
                 if (revealed) {
+                    if (!isImageItem && textTileThemeClasses.length > 0) {
+                        item.classList.remove(...textTileThemeClasses);
+                    }
+
                     item.classList.add('bg-rose-500', 'text-white', 'border-rose-300', 'dark:bg-rose-500', 'dark:text-white');
                     return;
                 }
 
-                item.classList.add('ring-4', 'ring-emerald-400/30', 'border-emerald-300', 'bg-emerald-50', 'dark:bg-emerald-500/10');
+                if (isImageItem) {
+                    item.classList.add('ring-4', 'ring-emerald-400/30', 'border-emerald-300', 'bg-emerald-50', 'dark:bg-emerald-500/10');
+                    return;
+                }
+
+                item.classList.add('ring-4', 'ring-emerald-400/30', 'border-emerald-200/70');
             }
 
             function clearDragStyles(item) {
@@ -583,7 +633,7 @@
                 placeholder = null;
             }
 
-            function createTile(item) {
+            function createTile(item, index = 0) {
                 const node = tileTemplate.content.firstElementChild.cloneNode(true);
 
                 node.dataset.id = item.id;
@@ -604,6 +654,8 @@
                         label.textContent = item.label || '';
                     }
                 } else {
+                    const theme = textTileThemes[index % Math.max(1, textTileThemes.length)] || '';
+                    theme.split(/\s+/).filter(Boolean).forEach(className => node.classList.add(className));
                     node.textContent = item.text || '';
                 }
 
@@ -625,8 +677,8 @@
             function buildPool() {
                 poolContent.innerHTML = '';
 
-                shuffle(categoriesData).forEach(item => {
-                    poolContent.appendChild(createTile(item));
+                shuffle(categoriesData).forEach((item, index) => {
+                    poolContent.appendChild(createTile(item, index));
                 });
 
                 poolStartIndex = 0;

@@ -1,8 +1,8 @@
 <?php
 $content = [
-    'page_title' => 'Drag and drop',
-    'title' => 'Drag and drop',
-    'subtitle' => 'Restaurant requests',
+    'page_title' => 'Practice 6',
+    'title' => 'Practice 6',
+    'subtitle' => 'Drag and drop each item into its correct group',
 
     'drag_item_type' => 'text',
 

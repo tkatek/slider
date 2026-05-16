@@ -1,0 +1,106 @@
+<?php
+
+$content = [
+    'video'     => materialAsset('slider/A2/Advanced/chapter-12'),
+    'thumbnail' => materialAsset('slider/A2/Advanced/chapter-12/img/slide8.webp'),
+    'isQuiz'    => 1,
+
+    'questions' => [
+        [
+            'time' => 13000,
+            'type' => 'input',
+            'question' => 'Complete the sentence: “It’s your turn to take out the ________.”',
+            'accepted_answers' => ['trash'],
+            'correct_answer' => 'trash',
+            'points' => 10,
+        ],
+        [
+            'time' => 35000,
+            'type' => 'multiple_choice',
+            'question' => 'What does “gross” mean?',
+            'options' => [
+                'Beautiful',
+                'Expensive',
+                'Dirty or unpleasant',
+                'Funny',
+            ],
+            'correct_answer' => 2,
+            'points' => 10,
+        ],
+        [
+            'time' => 61000,
+            'type' => 'input',
+            'question' => 'Complete the sentence: “Turn off the ________, you’re an adult.”',
+            'accepted_answers' => ['lights'],
+            'correct_answer' => 'lights',
+            'points' => 10,
+        ],
+        [
+            'time' => 88000,
+            'type' => 'multiple_choice',
+            'question' => 'Why does Ashley turn on the lights?',
+            'options' => [
+                'She is scared',
+                'She wants to sleep',
+                'She cannot see anything',
+                'She wants to study',
+            ],
+            'correct_answer' => 2,
+            'points' => 10,
+        ],
+        [
+            'time' => 95000,
+            'type' => 'multiple_choice',
+            'question' => 'What are the girls arguing about?',
+            'options' => [
+                'Homework',
+                'Cleaning and lights',
+                'Cooking',
+                'Shopping',
+            ],
+            'correct_answer' => 1,
+            'points' => 10,
+        ],
+    ],
+
+    'subtitles' => [
+        ['start' => 12,  'end' => 13,  'text' => 'Did you take out the trash?'],
+        ['start' => 13,  'end' => 15,  'text' => 'It\'s your turn to take out the trash.'],
+        ['start' => 15,  'end' => 19,  'text' => 'Sarah, how long do you think you\'re going to be?'],
+        ['start' => 19,  'end' => 22,  'text' => 'Ashley!'],
+        ['start' => 22,  'end' => 26,  'text' => '(vacuum starts)'],
+        ['start' => 26,  'end' => 30,  'text' => 'Sarah!'],
+        ['start' => 30,  'end' => 32,  'text' => 'Ew, what?'],
+        ['start' => 32,  'end' => 35,  'text' => 'This is gross!'],
+        ['start' => 32,  'end' => 35,  'text' => 'Ashley this is the best...'],
+        ['start' => 35,  'end' => 36,  'text' => 'Ashley, best parts coming up, it\'s coming up.'],
+        ['start' => 36,  'end' => 38,  'text' => 'I know, I\'m watching.'],
+        ['start' => 38,  'end' => 39,  'text' => 'Okay but you\'re on your phone you\'re not like...'],
+        ['start' => 39,  'end' => 43,  'text' => 'Okay.'],
+        ['start' => 43,  'end' => 45,  'text' => 'Hey have you seen my thin mints?'],
+        ['start' => 45,  'end' => 47,  'text' => 'Ashley!'],
+        ['start' => 47,  'end' => 49,  'text' => 'Sarah you\'ve been in there for like 20 minutes.'],
+        ['start' => 49,  'end' => 52,  'text' => 'No I took out the trash yesterday.'],
+        ['start' => 52,  'end' => 54,  'text' => 'I take out the trash every day.'],
+        ['start' => 54,  'end' => 58,  'text' => 'Ugh.'],
+        ['start' => 58,  'end' => 61,  'text' => 'Turn off the lights you\'re an adult.'],
+        ['start' => 61,  'end' => 64,  'text' => 'You can turn off your lights.'],
+        ['start' => 64,  'end' => 68,  'text' => 'There\'s no lights, how am I supposed to see anything?'],
+        ['start' => 68,  'end' => 69,  'text' => 'It was paid, there was not...'],
+        ['start' => 69,  'end' => 70,  'text' => 'I get, yeah I see what you\'re...'],
+        ['start' => 70,  'end' => 72,  'text' => '(vacuum starts)'],
+        ['start' => 72,  'end' => 75,  'text' => 'Ashley!'],
+        ['start' => 75,  'end' => 78,  'text' => 'Here he goes!'],
+        ['start' => 78,  'end' => 81,  'text' => 'Okay why did you go back you\'re missing the robot!'],
+        ['start' => 81,  'end' => 84,  'text' => 'Literally every night.'],
+        ['start' => 81,  'end' => 86,  'text' => 'It\'s dark in here, god.'],
+        ['start' => 86,  'end' => 88,  'text' => 'What do we live in a cave?'],
+        ['start' => 88,  'end' => 92,  'text' => 'That\'s why Sarah\'s so pale all the time.'],
+        ['start' => 92,  'end' => 95,  'text' => 'No lights, how am I supposed to see anything?'],
+        ['start' => 95,  'end' => 99,  'text' => 'That\'s much better.'],
+    ],
+];
+
+?>
+
+@include("slider.video.interactive", ['content' => $content])

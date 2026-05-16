@@ -9,7 +9,7 @@ $content = [
         'The staff seems busy and impatient?',
     ],
 
-    'instruction' => 'Practice: each student answers in 4-6 sentences, using natural fillers (Well ... , I guess ... ) and reactions.',
+    'instruction' => 'Practice: each student answers in 4-6 sentences, using natural fillers (Well ... ,I guess ... ) and reactions.',
 ];
 
 ?>

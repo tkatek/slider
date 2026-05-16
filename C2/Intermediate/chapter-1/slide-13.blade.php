@@ -7,8 +7,7 @@ $content = [
     'subtitle' => "Don't forget to complete your homework",
     'badge'    => 'Lesson Complete',
 
-    'image'     => materialAsset('slider/C2/chapter-1/img/thankyou.webp'),
-    'image_alt' => 'Notebook and writing',
+    'image'     => materialAsset('slider/C2/Intermediate/chapter-1/img/thankyou.webp'),
 
     'button'         => 'Start Again',
     'first_fallback' => 'slide-1.blade.php',
