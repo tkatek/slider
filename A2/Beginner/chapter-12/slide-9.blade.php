@@ -4,12 +4,27 @@
         'subtitle' => 'A lot of / Much / Many?',
         'shorts' => [
             [
-                'src' => materialAsset(''),
-                'thumbnail' => materialAsset(''),
+                'src' => materialAsset('slider/A2/Beginner/chapter-12/video/much-many-encrypted/much-many.m3u8'),
+                'thumbnail' => materialAsset('slider/A2/Beginner/chapter-12/img/much-many.webp'),
                 'showCC' => false,
-                'subtitles' => [
+            'subtitles' => [
+                ['start' => 0,  'end' => 3.5,  'text' => 'A lot of / Much / or Many?'],
 
-                ],
+                ['start' => 4,  'end' => 8.8,  'text' => 'Rule number one: Use MANY with countable plural nouns.'],
+                ['start' => 8.8,  'end' => 12, 'text' => 'Like students, books, or cars.'],
+
+                ['start' => 12.7, 'end' => 17, 'text' => 'Rule number two: Use MUCH with uncountable nouns.'],
+                ['start' => 17, 'end' => 20.5, 'text' => 'Like sugar, time, or money.'],
+                ['start' => 20.5, 'end' => 25, 'text' => 'But remember: much is mostly used in negatives and questions.'],
+
+                ['start' => 26, 'end' => 32.5, 'text' => 'Rule number three: Use A LOT OF with both countable and uncountable nouns.'],
+                ['start' => 32.7, 'end' => 36.5, 'text' => 'This is the most common choice in affirmative sentences.'],
+
+                ['start' => 37, 'end' => 38.5, 'text' => 'Examples on screen:'],
+                ['start' => 39, 'end' => 42.5, 'text' => 'Negative: I don’t eat much sugar.'],
+                ['start' => 43, 'end' => 46.5, 'text' => 'Question: Are there many students?'],
+                ['start' => 46.5, 'end' => 50, 'text' => 'Affirmative: She has a lot of friends.'],
+            ],
             ],
         ],
         'guide' => [

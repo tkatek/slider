@@ -2,7 +2,7 @@
 $content = [
     'page_title' => 'Discussion',
     'title'      => 'Discussion',
-    'subtitle'   => '',
+    'subtitle'   => 'Answers in 3-4 full sentences',
     'image'      => materialAsset('slider/C2/chapter-1/img/discussion.webp'),
 
     'cards' => [

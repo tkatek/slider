@@ -2,7 +2,7 @@
 $content = [
     'page_title' => 'Warm Up',
     'title'      => 'Warm Up',
-    'subtitle'   => '',
+    'subtitle'   => 'Answers in 3-4 full sentences',
     'image'      => materialAsset('slider/C2/Beginner/chapter-2/img/slide3.webp'),
 
     'cards' => [

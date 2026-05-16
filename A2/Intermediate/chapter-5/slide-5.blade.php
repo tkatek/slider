@@ -1,11 +1,11 @@
 <?php
 $content = [
-    'video'      => materialAsset('slider/A2/Intermediate/chapter-5/videos/'),
+    'video'      => materialAsset('slider/A2/Intermediate/chapter-5/video/news-encrypted/news.m3u8'),
     'thumbnail'  => materialAsset('slider/A2/Intermediate/chapter-5/img/slide5.webp'),
     'isQuiz'     => 0,
     'questions' => [
         [
-            'time' => 5000,
+            'time' => 14500,
             'type' => 'multiple_choice',
             'question' => 'What happened in Centerville last night?',
             'options' => [
@@ -18,7 +18,7 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 16000,
+            'time' => 23800,
             'type' => 'multiple_choice',
             'question' => 'What was the man doing when the lights went out?',
             'options' => [
@@ -31,7 +31,7 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 30000,
+            'time' => 36000,
             'type' => 'multiple_choice',
             'question' => 'What were the children doing?',
             'options' => [
@@ -44,7 +44,7 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 47000,
+            'time' => 53000,
             'type' => 'multiple_choice',
             'question' => 'Why did the lights go out?',
             'options' => [
@@ -57,7 +57,7 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 70000,
+            'time' => 72000,
             'type' => 'multiple_choice',
             'question' => 'What happened on River Street?',
             'options' => [
@@ -71,21 +71,25 @@ $content = [
         ],
     ],
     'subtitles'  => [
-        ['start' => 0,  'end' => 6,  'text' => 'Good morning. Last night, there was a blackout in Centerville. The lights went out all over town.'],
-        ['start' => 6,  'end' => 10, 'text' => 'Let’s ask people what they were doing.'],
-        ['start' => 10, 'end' => 14, 'text' => 'What were you doing when the lights went out?'],
-        ['start' => 14, 'end' => 20, 'text' => 'I was washing the dishes, and my wife was giving the baby a bath.'],
-        ['start' => 20, 'end' => 25, 'text' => 'I was washing my clothes, and suddenly everything got dark.'],
-        ['start' => 25, 'end' => 32, 'text' => 'We were watching TV, and our children were doing homework.'],
-        ['start' => 32, 'end' => 36, 'text' => 'I didn’t know! I was listening to music all night.'],
-        ['start' => 36, 'end' => 41, 'text' => 'Why did the lights go out?'],
-        ['start' => 41, 'end' => 49, 'text' => 'We aren’t sure. It was raining very hard, so maybe that caused the problem.'],
-        ['start' => 49, 'end' => 54, 'text' => 'What were you doing last night?'],
-        ['start' => 54, 'end' => 60, 'text' => 'I was working in the building. They were riding in the elevator.'],
-        ['start' => 60, 'end' => 68, 'text' => 'Yesterday, there was also a robbery on River Street. Burglars broke into apartments while people were away.'],
-        ['start' => 68, 'end' => 72, 'text' => 'What were you doing yesterday afternoon?'],
-        ['start' => 72, 'end' => 79, 'text' => 'I was visiting a friend. I was playing tennis. We were having a picnic.'],
-        ['start' => 79, 'end' => 84, 'text' => 'It was a bad day for many people. Thank you for watching.'],
+        ['start' => 6,  'end' => 12.5,  'text' => 'Good morning. Last night, there was a blackout in Centerville. The lights went out all over town.'],
+        ['start' => 12.8,  'end' => 14, 'text' => 'Let’s ask people what they were doing.'],
+        ['start' => 16, 'end' => 19, 'text' => 'What were you doing when the lights went out?'],
+        ['start' => 19.5, 'end' => 23.5, 'text' => 'I was washing the dishes, and my wife was giving the baby a bath.'],
+        ['start' => 24, 'end' => 29.5, 'text' => 'I was washing my clothes, and suddenly everything got dark.'],
+        ['start' => 30, 'end' => 35, 'text' => 'We were watching TV, and our children were doing homework.'],
+        ['start' => 37, 'end' => 40, 'text' => 'What were you doing when the lights went out?'],
+        ['start' => 40.3, 'end' => 43, 'text' => 'I didn’t know! I was listening to music all night.'],
+        ['start' => 45, 'end' => 47, 'text' => 'Why did the lights go out?'],
+        ['start' => 47, 'end' => 52.5, 'text' => 'We aren’t sure. It was raining very hard, so maybe that caused the problem.'],
+        ['start' => 54, 'end' => 56, 'text' => 'What were you doing last night?'],
+        ['start' => 56.7, 'end' => 59, 'text' => 'I was working in the building.'],
+        ['start' => 59.5, 'end' => 62.5, 'text' => 'I was riding in the elevator.'],
+        ['start' => 64.5, 'end' => 71, 'text' => 'Yesterday, there was also a robbery on River Street. Burglars broke into apartments while people were away.'],
+        ['start' => 72.7, 'end' => 75.5, 'text' => 'What were you doing yesterday afternoon?'],
+        ['start' => 76, 'end' => 78.5, 'text' => 'I was visiting a friend.'],
+        ['start' => 80, 'end' => 82.5, 'text' => 'I was playing tennis.'],
+        ['start' => 83, 'end' => 85.5, 'text' => 'We were having a picnic.'],
+        ['start' => 87.5, 'end' => 92, 'text' => 'It was a bad day for many people. Thank you for watching.'],
     ],
 ];
 ?>

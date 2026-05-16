@@ -1,6 +1,6 @@
 <?php
 $content = [
-    'unit'          => "Hopes and Ambitions",
+    'unit'          => "Small Steps to Success",
     'lesson'        => "Never Give Up",
     'unit_number'   => '3',
     'lesson_number' => '2',
