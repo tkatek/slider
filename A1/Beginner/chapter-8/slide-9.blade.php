@@ -5,25 +5,19 @@ $content = [
     'title'      => 'Taxi Vocabulary',
     'subtitle'   => 'Tap the play button, listen, then repeat.',
 
-    'grid' => [
-        'base' => 1,
-        'sm'   => 1,
-        'lg'   => 3,
-        'xl'   => 3,
-        'min'  => 150,
-        'max'  => 340,
-        'gap'  => 14,
-    ],
+    'grid_class' => 'grid-cols-2 sm:grid-cols-2 ',
 
     'items' => [
         [
-            'text'  => '🚖 Driver',
-            'sound' => materialAsset("slider/A1/Beginner/chapter-8/audios/driver.mpeg"),
+            'text'  => 'Driver',
+            'emoji' => '🚖',
+            'sound' => materialAsset('slider/A1/Beginner/chapter-8/audios/driver.mpeg'),
             'image' => materialAsset('slider/A1/Beginner/chapter-8/img/driver.webp'),
         ],
         [
-            'text'  => '📟 Meter',
-            'sound' => materialAsset("slider/A1/Beginner/chapter-8/audios/meter.mpeg"),
+            'text'  => 'Meter',
+            'emoji' => '📟',
+            'sound' => materialAsset('slider/A1/Beginner/chapter-8/audios/meter.mpeg'),
             'image' => materialAsset('slider/A1/Beginner/chapter-8/img/meter.webp'),
         ],
     ],
@@ -31,4 +25,4 @@ $content = [
 
 ?>
 
-@include("slider.vocab.image-box",['content'=>$content])
+@include('slider.vocab.image-card', ['content' => $content])

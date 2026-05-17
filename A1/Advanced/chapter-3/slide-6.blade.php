@@ -3,7 +3,7 @@
         'page_title' => 'New Vocabulary',
         'title'      => 'New Vocabulary',
         'subtitle'   => '1️⃣ Check-Out Vocabulary',
-        'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-5',
+        'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4',
 
         'items' => [
             [
@@ -80,4 +80,4 @@
     ];
 @endphp
 
-@include('slider.vocab.sentence-audio', ['content' => $content])
+@include('slider.vocab.image-card', ['content' => $content])

@@ -4,8 +4,7 @@ $content = [
     'title'      => 'New Vocabulary',
     'subtitle'   => 'Let’s find out about celebrations around the world!',
 
-    'allow_html_subtitles' => true,
-    'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-3',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5',
 
     'items' => [
 
