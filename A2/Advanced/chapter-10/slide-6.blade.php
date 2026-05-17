@@ -1,15 +1,15 @@
 <?php
 $content = [
-    'page_title' => 'New Language',
+
     'title' => 'New Language',
     'subtitle' => '',
-    'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-2',
+
 
     'groups' => [
         [
             'key' => 'useful-complaint-expressions',
             'title' => '',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-2',
+            'grid_class' => 'grid-cols-1 sm:grid-cols-3 lg:sm:grid-cols-3',
             'items' => [
                 [
                     'text' => 'Can you keep it down?',

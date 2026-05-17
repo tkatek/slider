@@ -4,7 +4,7 @@
     $isReadingType = $gameType === 'reading';
 
     $desktopLayoutBreakpoint = 1024;
-    $tileClass = '!px-3 !py-2 !text-sm !min-h-[42px] sm:!px-2 sm:!py-1 sm:!text-sm sm:!min-h-[36px]';
+    $tileClass = trim((string) ($content['tile_class'] ?? '!px-3 !py-2 !text-sm !min-h-[42px] sm:!px-2 sm:!py-1 sm:!text-sm sm:!min-h-[36px]'));
     $sentences = array_values($content['sentences'] ?? []);
     $answers = array_values($content['answers'] ?? []);
     $writingTitle = trim((string) ($content['writing_title'] ?? ''));
@@ -30,14 +30,21 @@
         static fn ($example) => $example !== ''
     ));
     $writingInputCount = max(0, (int) ($content['writing_input_count'] ?? 0));
+    $mobileWordVisibleCap = max(1, (int) ($content['mobile_word_visible_cap'] ?? 5));
+    $tabletWordVisibleCap = max(1, (int) ($content['tablet_word_visible_cap'] ?? 9));
+    $mobilePlacedTileFullWidth = (bool) ($content['mobile_placed_tile_full_width'] ?? false);
+    $configuredBlankWidthMode = trim((string) ($content['blank_width_mode'] ?? ''));
+    $blankWidthMode = in_array($configuredBlankWidthMode, ['compact', 'full'], true)
+        ? $configuredBlankWidthMode
+        : ($isReadingType ? 'compact' : 'full');
+    $useFullWidthBlanks = $blankWidthMode === 'full';
     $hasWritingPanel = $writingTitle !== '' || $writingSubtitle !== '' || !empty($writingExamples) || $writingInputCount > 0;
     $sentenceRowClass = $isReadingType
         ? 'flex w-full max-w-full flex-wrap items-center gap-2 px-1.5 py-0.5 text-base font-semibold leading-[1.6] text-slate-900 sm:gap-3 sm:text-lg lg:text-[1.15rem] dark:text-slate-100'
         : 'flex w-full max-w-full flex-wrap items-center gap-2 px-1.5 py-0.5 text-base font-semibold leading-[1.6] text-slate-900 sm:gap-3 sm:text-lg lg:text-[1.15rem] dark:text-slate-100';
-    $blankClass = $isReadingType
-        ? 'ddb-blank-slot inline-flex min-h-[42px] min-w-[96px] w-auto flex-none items-center justify-center rounded-xl border border-dashed border-slate-300/90 bg-white/80 px-3 py-1.5 text-slate-700 transition-colors duration-200 dark:border-slate-600/70 dark:bg-slate-900/30 dark:text-slate-200 sm:min-w-[118px]'
+    $blankClass = !$useFullWidthBlanks
+        ? 'ddb-blank-slot inline-flex min-h-[42px] min-w-[96px] w-auto max-w-full flex-none items-center justify-center rounded-xl border border-dashed border-slate-300/90 bg-white/80 px-3 py-1.5 text-slate-700 transition-colors duration-200 dark:border-slate-600/70 dark:bg-slate-900/30 dark:text-slate-200 sm:min-w-[118px]'
         : 'ddb-blank-slot inline-flex min-h-[44px] min-w-[110px] w-auto max-w-full flex-none items-center justify-center rounded-xl border border-dashed border-slate-300/90 bg-white/70 px-3 py-2 text-slate-700 transition-colors duration-200 dark:border-slate-600/70 dark:bg-slate-900/25 dark:text-slate-200 sm:flex sm:min-h-[50px] sm:w-full sm:flex-1';
-    $blankWidthMode = $isReadingType ? 'compact' : 'full';
     $textTokenClass = 'inline min-w-0 break-words whitespace-normal';
 
     $sentenceItems = [];
@@ -221,6 +228,9 @@
             var ANSWERS = @json($answersForJs);
             var DESKTOP_LAYOUT_BREAKPOINT = Number(@json($desktopLayoutBreakpoint));
             var TILE_CLASS = @json($tileClass);
+            var MOBILE_WORD_VISIBLE_CAP = Number(@json($mobileWordVisibleCap));
+            var TABLET_WORD_VISIBLE_CAP = Number(@json($tabletWordVisibleCap));
+            var MOBILE_PLACED_TILE_FULL_WIDTH = Boolean(@json($mobilePlacedTileFullWidth));
             var SFX = {
                 enabled: true,
                 sources: {
@@ -520,8 +530,8 @@
             TicketBoothGame.prototype.getVisibleWordLimit = function() {
                 var width = window.innerWidth || document.documentElement.clientWidth || 0;
                 if (width >= DESKTOP_LAYOUT_BREAKPOINT) return Number.MAX_SAFE_INTEGER;
-                if (width < 640) return 5;
-                return 9;
+                if (width < 640) return MOBILE_WORD_VISIBLE_CAP;
+                return TABLET_WORD_VISIBLE_CAP;
             };
 
             TicketBoothGame.prototype.shuffle = function(items) {
@@ -568,6 +578,8 @@
                     'items-center',
                     'justify-center',
                     'text-center',
+                    'break-words',
+                    'whitespace-normal',
                     'leading-snug',
                     'font-black',
                     TILE_CLASS
@@ -692,6 +704,7 @@
 
             TicketBoothGame.prototype.normalizeTileForBlank = function(tile, blank) {
                 var shouldFillWidth = blank && blank.dataset.widthMode === 'full';
+                var shouldFillMobileLine = blank && blank.dataset.mobileFullWidth === 'true' && this.isMobileViewport();
 
                 tile.classList.remove(
                     'hover:-translate-y-0.5',
@@ -708,9 +721,13 @@
                     'w-full'
                 );
 
-                tile.classList.add('inline-flex', 'max-w-full', 'items-center', 'justify-center', 'text-center', 'px-2', 'py-1.5', 'leading-tight', 'rounded-lg');
-                tile.classList.add(shouldFillWidth ? 'w-full' : 'w-fit');
+                tile.classList.add('inline-flex', 'max-w-full', 'items-center', 'justify-center', 'text-center', 'break-words', 'whitespace-normal', 'px-2', 'py-1.5', 'leading-tight', 'rounded-lg');
+                tile.classList.add((shouldFillWidth || shouldFillMobileLine) ? 'w-full' : 'w-fit');
                 tile.style.cursor = this.gameCompleted || this.hasUsedReveal ? 'default' : 'grab';
+            };
+
+            TicketBoothGame.prototype.isMobileViewport = function() {
+                return (window.innerWidth || document.documentElement.clientWidth || 0) < 640;
             };
 
             TicketBoothGame.prototype.setTileState = function(tile, state) {
@@ -898,18 +915,23 @@
 
             TicketBoothGame.prototype.lockTileIntoBlank = function(item, blank) {
                 var shouldFillWidth = blank.dataset.widthMode === 'full';
+                var shouldFillMobileLine = MOBILE_PLACED_TILE_FULL_WIDTH
+                    && blank.dataset.widthMode === 'compact'
+                    && this.isMobileViewport();
 
                 item.style.position = '';
                 item.style.left = '';
                 item.style.top = '';
-                item.style.width = '';
+                item.style.width = shouldFillMobileLine ? '100%' : '';
                 item.style.zIndex = '';
                 item.style.pointerEvents = '';
                 item.style.transform = '';
 
                 blank.innerHTML = '';
                 blank.appendChild(item);
-                blank.style.width = shouldFillWidth ? '100%' : '';
+                blank.dataset.mobileFullWidth = shouldFillMobileLine ? 'true' : 'false';
+                blank.style.width = (shouldFillWidth || shouldFillMobileLine) ? '100%' : '';
+                blank.style.maxWidth = '100%';
                 this.normalizeTileForBlank(item, blank);
                 this.resetBlankState(blank);
             };
@@ -999,6 +1021,7 @@
                     item.style.zIndex = '';
                     item.style.pointerEvents = '';
                     item.style.transform = '';
+                    item.classList.remove('w-full');
                 }, 320);
 
                 if (this.originalParent && this.placeholder) {
@@ -1023,6 +1046,8 @@
                 if (sourceBlank) {
                     sourceBlank.innerHTML = '';
                     sourceBlank.style.width = '';
+                    sourceBlank.style.maxWidth = '';
+                    sourceBlank.dataset.mobileFullWidth = 'false';
                 }
 
                 if (this.placeholder && this.placeholder.parentNode) {
@@ -1143,6 +1168,8 @@
                 this.getBlanks().forEach(function(blank) {
                     blank.innerHTML = '';
                     blank.style.width = '';
+                    blank.style.maxWidth = '';
+                    blank.dataset.mobileFullWidth = 'false';
                     blank.classList.remove(
                         'ring-2',
                         'ring-indigo-500/40',

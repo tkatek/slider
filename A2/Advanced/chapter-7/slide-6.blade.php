@@ -1,15 +1,14 @@
 <?php
 $content = [
-    'page_title' => 'Useful Language',
+
     'title' => 'Useful Language',
     'subtitle' => 'New Language',
-    'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-3',
 
     'groups' => [
         [
             'key' => 'useful-goals-expressions',
             'title' => '',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-3',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-3 ',
             'items' => [
                 [
                     'text' => 'Set goals',

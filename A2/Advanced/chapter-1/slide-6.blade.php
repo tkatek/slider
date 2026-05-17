@@ -1,15 +1,14 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
     'title' => 'New Vocabulary',
     'subtitle' => '',
-    'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+
 
     'groups' => [
         [
             'key' => 'new_jobs',
             'title' => 'New jobs',
-            'grid_class' => 'grid-cols-1 sm:grid-cols-3 lg:grid-cols-3',
+            'grid_class' => 'grid-cols-1 sm:grid-cols-3',
             'items' => [
                 [
                     'text' => 'the head of design',
@@ -34,7 +33,7 @@ $content = [
         [
             'key' => 'work_words',
             'title' => 'Work words',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-3',
             'items' => [
                 [
                     'text' => 'manage',

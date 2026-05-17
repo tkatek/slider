@@ -4,7 +4,7 @@ $content = [
     'title'      => 'New vocabulary',
     'subtitle'   => '',
 
-    'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-5',
 
     'items' => [
         [

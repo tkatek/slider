@@ -1,15 +1,13 @@
 <?php
 $content = [
-    'page_title' => 'Useful Language / Expressions',
     'title' => 'Useful Language / Expressions',
     'subtitle' => '',
-    'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-5',
 
     'groups' => [
         [
             'key' => 'daily-english-habits-expressions',
             'title' => '',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5',
+            'grid_class' => 'grid-cols-1 sm:grid-cols-2 ',
             'items' => [
                 [
                     'text' => 'Speak English every day.',

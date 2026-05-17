@@ -4,13 +4,12 @@ $content = [
     'title'      => 'Language Focus',
     'subtitle'   => 'How long have you lived here? for or since?!',
 
-    'grid_class' => 'grid-cols-1',
 
     'groups' => [
         [
             'key'        => 'conversation-1',
             'title'      => 'Listen to these 2 conversations and learn the difference between “since” and “for”, Then, role-play the dialogue',
-            'grid_class' => 'grid-cols-2',
+            'grid_class' => 'grid-cols-1 sm:grid-cols-2',
             'items'      => [
                 [
                     'text'  => "I've been wondering, John.",
@@ -43,7 +42,7 @@ $content = [
         [
             'key'        => 'conversation-2',
             'title'      => 'Conversation 2:',
-            'grid_class' => 'grid-cols-2',
+            'grid_class' => 'grid-cols-1 sm:grid-cols-2',
             'items'      => [
                 [
                     'text'  => "She's very good at her job. She's one of the best employees here.",

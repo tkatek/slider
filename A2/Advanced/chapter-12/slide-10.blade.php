@@ -5,7 +5,7 @@ $content = [
     'title'      => 'Conversation Corner',
     'subtitle'   => 'Describing people<br>Listen to the conversation. Write the missing words. Then, Practice the conversation with a partner',
     'type'       => 'reading',
-    'audio' => materialAsset('slider/A2/Advanced/chapter-12/audios/slide8.mp3'),
+    'audio' => materialAsset('slider/A2/Advanced/chapter-12/audios/slide10.mp3'),
 
     'sentences' => [
         "<span class=\"mr-2 inline-flex items-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 px-3 py-1 text-sm font-black text-white\">A</span>How do you like your new roommate?",

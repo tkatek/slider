@@ -7,7 +7,7 @@ $content = [
         [
             'key'        => 'food-items',
             'title'      => 'Food Items (Common Breakfast Foods)',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-4',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-5 ',
             'items'      => [
                 [
                     'text'  => 'Pancakes',
@@ -54,7 +54,7 @@ $content = [
         [
             'key'        => 'food-preparation',
             'title'      => 'Food Preparation',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-4',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 ',
             'items'      => [
                 [
                     'text'  => 'Boiled / hard-boiled eggs',

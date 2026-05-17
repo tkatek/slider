@@ -4,18 +4,18 @@ $content = [
     'subtitle' => 'Listen and Choose the Correct Answer<br>Undercooked Steak Surprise',
     'type'     => 'audio',
 
-    'audio' => materialAsset('slider/A2/Advanced/chapter-11/audios/slide11.mp3'),
+    'audio' => materialAsset('slider/A2/Advanced/chapter-11/audios/slide10.mp3'),
 
     'image_panel_col_class'  => 'sm:col-span-0',
     'answer_panel_col_class' => 'sm:col-span-12',
 
     'script' => [
-        '<strong>Customer:</strong> Excuse me, I ordered my steak medium, but it’s almost rare.',
-        '<strong>Waiter:</strong> I apologize for that. Would you like me to have it cooked a bit more?',
-        '<strong>Customer:</strong> Yes, I would appreciate that. Thank you.',
-        '<strong>Waiter:</strong> No problem. I’ll take it back to the kitchen right away.',
-        '<strong>Customer:</strong> Thanks. While you’re at it, could you also bring me some fresh fries?',
-        '<strong>Waiter:</strong> Certainly, I’ll have everything sorted for you as quickly as possible.',
+        'Customer: Excuse me, I ordered my steak medium, but it’s almost rare.',
+        'Waiter: I apologize for that. Would you like me to have it cooked a bit more?',
+        'Customer: Yes, I would appreciate that. Thank you.',
+        'Waiter: No problem. I’ll take it back to the kitchen right away.',
+        'Customer: Thanks. While you’re at it, could you also bring me some fresh fries?',
+        'Waiter: Certainly, I’ll have everything sorted for you as quickly as possible.',
     ],
 
     'questions' => [

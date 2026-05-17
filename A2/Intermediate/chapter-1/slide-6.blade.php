@@ -4,7 +4,7 @@ $content = [
     'title'      => 'New Vocabulary',
     'subtitle'   => '🤝 Greeting Actions (Verbs & Phrases)',
 
-    'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-5',
 
     'items' => [
 

@@ -4,7 +4,7 @@ $content = [
     'title'      => 'New Vocabulary',
     'subtitle'   => 'Notice these cooking verbs',
 
-    'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-6',
 
     'items' => [
         [

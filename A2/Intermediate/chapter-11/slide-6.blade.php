@@ -3,7 +3,7 @@
         'page_title' => 'New Vocabulary',
         'title'      => 'New Vocabulary',
         'subtitle'   => 'Facial Expressions',
-        'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4',
+        'grid_class' => 'grid-cols-2 sm:grid-cols-3',
 
         'items' => [
             [

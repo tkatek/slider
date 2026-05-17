@@ -9,6 +9,26 @@
     $sentences = is_array($content['sentences'] ?? null) ? array_values($content['sentences']) : [];
     $items = is_array($content['items'] ?? null) ? array_values($content['items']) : [];
     $groups = is_array($content['groups'] ?? null) ? array_values($content['groups']) : [];
+    $primaryGradient = trim((string) ($theme['primary_color'] ?? 'bg-[image:var(--top-bar-gradient)]'));
+    $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+    $groupTitleShellClass = $isOrangeTheme
+        ? 'border-orange-100 bg-orange-50/85 ring-orange-100/80 dark:border-orange-400/20 dark:bg-orange-950/25 dark:ring-orange-400/20'
+        : 'border-indigo-100 bg-indigo-50/85 ring-indigo-100/80 dark:border-indigo-400/20 dark:bg-indigo-950/25 dark:ring-indigo-400/20';
+    $splitLeadingEmoji = static function (string $value): array {
+        $value = trim($value);
+
+        if (preg_match('/^([\x{1F000}-\x{1FAFF}\x{2190}-\x{21FF}\x{2300}-\x{23FF}\x{25A0}-\x{27BF}\x{FE0F}\x{200D}]+)\s*(.*)$/u', $value, $match)) {
+            return [
+                'emoji' => trim($match[1] ?? ''),
+                'text' => trim($match[2] ?? ''),
+            ];
+        }
+
+        return [
+            'emoji' => '',
+            'text' => $value,
+        ];
+    };
 
     $groupSections = [];
 
@@ -35,7 +55,7 @@
         $groupSections[] = [
             'key' => (string) ($group['key'] ?? ('group-' . $index)),  
             'title' => trim((string) ($group['title'] ?? '')),
-            'grid_class' => trim((string) ($group['grid_class'] ?? $gridClass)),
+            'grid_class' => trim((string) ($group['grid_class'] ?? $gridClass)), 
             'items' => $groupItems,
         ];
     }
@@ -50,7 +70,7 @@
     }
 @endphp
 
-@section('title', $pageTitle)
+@section('title', $pageTitle) 
 
 @section('content')
     <div class="relative flex min-h-[100dvh] w-full items-center overflow-x-hidden overflow-y-auto">
@@ -61,8 +81,21 @@
                 @foreach($groupSections as $group)
                     <section class="w-full" data-group-key="{{ $group['key'] }}">
                         @if($group['title'] !== '')
-                            <h2 class="mb-3 text-left text-lg font-black leading-tight text-slate-950 dark:text-slate-50 sm:text-xl">
-                                {{ $group['title'] }}
+                            @php
+                                $groupTitleParts = $splitLeadingEmoji($group['title']);
+                                $groupTitleEmoji = $groupTitleParts['emoji'];
+                                $groupTitleText = $groupTitleParts['text'];
+                            @endphp
+                            <h2 class="mb-3 inline-flex w-fit max-w-full items-center gap-2 rounded-2xl border px-3 py-1.5 text-left text-lg font-black leading-tight shadow-sm ring-1 sm:text-xl {{ $groupTitleShellClass }}">
+                                @if($groupTitleEmoji !== '')
+                                    <span class="shrink-0 text-lg leading-none sm:text-xl">{{ $groupTitleEmoji }}</span>
+                                @else
+                                    <span class="h-2.5 w-2.5 shrink-0 rounded-full {{ $primaryGradient }}"></span>
+                                @endif
+
+                                <span class="min-w-0 bg-clip-text text-transparent {{ $primaryGradient }}">
+                                    {{ $groupTitleText }}
+                                </span>
                             </h2> 
                         @endif
 
@@ -118,9 +151,9 @@
                                     <div class="flex {{ $image === '' ? 'min-h-[4.5rem]' : 'min-h-[4rem]' }} items-center justify-between gap-2 bg-white px-3.5 py-3.5 transition-colors duration-300 dark:bg-slate-900 sm:px-4 sm:py-4">
                                         <span class="min-w-0 break-words {{ $image === '' ? 'text-base sm:text-lg' : 'text-sm sm:text-base' }} font-extrabold leading-tight text-slate-900 dark:text-slate-100">
                                             @if($emoji !== '')
-                                                {{ $emoji }}
+                                                <span class="mr-1.5 inline-block leading-none align-[-0.08em]">{{ $emoji }}</span>
                                             @elseif($image === '')
-                                                {{ $fallbackLetter }}
+                                                <span class="mr-1.5 inline-block leading-none align-[-0.08em]">{{ $fallbackLetter }}</span>
                                             @endif
                                             {!! $text !!}
                                         </span>

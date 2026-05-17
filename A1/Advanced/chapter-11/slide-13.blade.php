@@ -4,6 +4,7 @@ $content = [
     'title' => 'Practice.7',
     'subtitle' => 'Put the sentences in order',
     'type' => 'reading',
+    'blank_width_mode' => 'full',
     'sentences' => [
         "<span class=\"mr-2 inline-flex items-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 px-3 py-1 text-sm font-black text-white\">1</span>{{1}}",
         "<span class=\"mr-2 inline-flex items-center rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-3 py-1 text-sm font-black text-white\">2</span>{{2}}",
