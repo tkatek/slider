@@ -1,14 +1,13 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
+
     'title' => 'New Vocabulary',
     'subtitle' => 'Life Events',
-    'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
     'groups' => [
         [
             'key' => 'relationships_family',
-            'title' => 'Relationships & Family',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4',
+            'title' => '💞 Relationships & Family',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4',
             'items' => [
                 ['text' => 'date', 'emoji' => '💑', 'description' => 'go out with someone romantically', 'sound' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide7/date.mp3')],
                 ['text' => 'fall in love', 'emoji' => '❤️', 'description' => 'begin to love someone deeply', 'sound' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide7/fall-in-love.mp3')],
@@ -21,8 +20,8 @@ $content = [
         ],
         [
             'key' => 'milestones_lifestyle',
-            'title' => 'Milestones & Lifestyle',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4',
+            'title' => '🏡 Milestones & Lifestyle',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 ',
             'items' => [
                 ['text' => 'buy a house', 'emoji' => '🏠', 'description' => 'purchase a home', 'sound' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide7/buy-a-house.mp3')],
                 ['text' => 'move', 'emoji' => '📦', 'description' => 'go to live in a new place', 'sound' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide7/move.mp3')],
@@ -36,8 +35,8 @@ $content = [
         ],
         [
             'key' => 'end_of_life',
-            'title' => 'End of Life',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-2',
+            'title' => '🕊️ End of Life',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-3 ',
             'items' => [
                 ['text' => 'died', 'emoji' => '🕊️', 'description' => 'stopped living', 'sound' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide7/died.mp3')],
                 ['text' => 'pass away', 'emoji' => '🤍', 'description' => 'a softer way to say die', 'sound' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide7/pass-away.mp3')],
@@ -47,4 +46,4 @@ $content = [
 ];
 ?>
 
-@include('slider.vocab.sentence-audio', ['content' => $content])
+@include('slider.vocab.image-card', ['content' => $content])

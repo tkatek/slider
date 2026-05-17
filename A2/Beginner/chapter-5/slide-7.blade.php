@@ -9,8 +9,8 @@ $content = [
     'groups' => [
         [
             'key' => 'adjectives',
-            'title' => 'Adjectives',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5',
+            'title' => '💭 Adjectives',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-3',
             'items' => [
                 ['text' => 'Wonderful', 'emoji' => '✨', 'description' => 'Very good', 'sound' => materialAsset('slider/A2/Beginner/chapter-5/audios/slide7/wonderful.mp3')],
                 ['text' => 'Bumpy', 'emoji' => '🛫', 'description' => 'Not smooth (e.g., plane moves a lot)', 'sound' => materialAsset('slider/A2/Beginner/chapter-5/audios/slide7/bumpy.mp3')],
@@ -25,8 +25,8 @@ $content = [
         ],
         [
             'key' => 'expressions',
-            'title' => 'Expressions',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4',
+            'title' => '💭 Expressions',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 ',
             'items' => [
                 ['text' => 'Pretty bad', 'emoji' => '😬', 'description' => 'Very bad', 'sound' => materialAsset('slider/A2/Beginner/chapter-5/audios/slide7/pretty-bad.mp3')],
                 ['text' => "That's too bad", 'emoji' => '😟', 'description' => 'Expression of sympathy', 'sound' => materialAsset('slider/A2/Beginner/chapter-5/audios/slide7/thats-too-bad.mp3')],
@@ -39,4 +39,4 @@ $content = [
 
 ?>
 
-@include('slider.vocab.sentence-audio', ['content' => $content])
+@include('slider.vocab.image-card', ['content' => $content])

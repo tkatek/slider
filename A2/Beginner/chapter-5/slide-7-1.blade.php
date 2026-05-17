@@ -9,8 +9,8 @@ $content = [
     'groups' => [
         [
             'key' => 'verbs',
-            'title' => 'Verbs',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4',
+            'title' => '💭 Verbs',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4',
             'items' => [
                 ['text' => 'Arrive → Arrived', 'emoji' => '📍', 'description' => 'Get to a place', 'sound' => materialAsset('slider/A2/Beginner/chapter-5/audios/slide7/arrive.mp3')],
                 ['text' => 'Stay → Stayed', 'emoji' => '🏨', 'description' => 'Live somewhere for a short time', 'sound' => materialAsset('slider/A2/Beginner/chapter-5/audios/slide7/stay.mp3')],
@@ -23,8 +23,8 @@ $content = [
         ],
         [
             'key' => 'nouns',
-            'title' => 'Nouns',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-6',
+            'title' => '💭 Nouns',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 ',
             'items' => [
                 ['text' => 'Vacation', 'emoji' => '🏖️', 'description' => 'Holiday', 'sound' => materialAsset('slider/A2/Beginner/chapter-5/audios/slide7/vacation.mp3')],
                 ['text' => 'Flight', 'emoji' => '✈️', 'description' => 'Travel by plane', 'sound' => materialAsset('slider/A2/Beginner/chapter-5/audios/slide7/flight.mp3')],
@@ -44,4 +44,4 @@ $content = [
 
 ?>
 
-@include('slider.vocab.sentence-audio', ['content' => $content])
+@include('slider.vocab.image-card', ['content' => $content])

@@ -94,4 +94,4 @@
     ];
 @endphp
 
-@include('slider.vocab.sentence-audio', ['content' => $content])
+@include('slider.vocab.image-card', ['content' => $content])

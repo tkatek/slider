@@ -5,10 +5,21 @@
 
     $pageTitle = $content['page_title'] ?? 'Slide';
     $gridClass = trim((string) ($content['grid_class'] ?? 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-4'));
+    $sentenceGridClass = trim((string) ($content['sentence_grid_class'] ?? $content['sentences_grid_class'] ?? $gridClass));
+    $sentences = is_array($content['sentences'] ?? null) ? array_values($content['sentences']) : [];
     $items = is_array($content['items'] ?? null) ? array_values($content['items']) : [];
     $groups = is_array($content['groups'] ?? null) ? array_values($content['groups']) : [];
 
     $groupSections = [];
+
+    if ($sentences !== []) {
+        $groupSections[] = [
+            'key' => 'sentence-group',
+            'title' => trim((string) ($content['sentence_group_title'] ?? $content['sentences_title'] ?? '')),
+            'grid_class' => $sentenceGridClass,
+            'items' => $sentences,
+        ];
+    }
 
     foreach ($groups as $index => $group) {
         if (!is_array($group)) {
@@ -59,7 +70,7 @@
                             @foreach($group['items'] as $item)
                                 @php
                                     $item = is_array($item) ? $item : [];
-                                    $text = trim((string) ($item['text'] ?? $item['label'] ?? $item['title'] ?? $item['name'] ?? ''));
+                                    $text = trim((string) ($item['text_html'] ?? $item['html'] ?? $item['text'] ?? $item['label'] ?? $item['title'] ?? $item['name'] ?? ''));
                                     $plainText = trim(html_entity_decode(strip_tags($text), ENT_QUOTES, 'UTF-8'));
                                     $subtitle = trim((string) ($item['subtitle'] ?? $item['description'] ?? ''));
                                     $description = trim((string) ($item['description'] ?? ''));

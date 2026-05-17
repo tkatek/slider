@@ -4,7 +4,7 @@ $content = [
     'title'      => 'New Vocabulary: Time Expressions and Seasons',
     'title_class'=> 'text-2xl sm:text-3xl lg:text-4xl',
     'subtitle'   => 'Listen and Practice The Words',
-    'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-5',
 
     'items' => [
         [
@@ -161,4 +161,4 @@ $content = [
 ];
 ?>
 
-@include('slider.vocab.sentence-audio', ['content' => $content])
+@include('slider.vocab.image-card', ['content' => $content])

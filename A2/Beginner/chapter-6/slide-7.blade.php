@@ -3,12 +3,11 @@ $content = [
     'page_title' => 'New Vocabulary',
     'title' => 'New Vocabulary',
     'subtitle' => 'Life Events',
-    'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
     'groups' => [
         [
             'key' => 'early_years',
-            'title' => 'Early Years',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4',
+            'title' => '👶 Early Years:',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 ',
             'items' => [
                 ['text' => 'be born', 'emoji' => '👶', 'description' => 'come into the world', 'sound' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide7/be-born.mp3')],
                 ['text' => 'to walk', 'emoji' => '🚶', 'description' => 'learn to move on your feet', 'sound' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide7/to-walk.mp3')],
@@ -18,8 +17,8 @@ $content = [
         ],
         [
             'key' => 'education_career',
-            'title' => 'Education & Career',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4',
+            'title' => '🎓 Education & Career:',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4',
             'items' => [
                 ['text' => 'graduate from high school', 'emoji' => '🎓', 'description' => 'finish high school', 'sound' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide7/graduate-from-high-school.mp3')],
                 ['text' => 'go to college', 'emoji' => '📚', 'description' => 'study at college or university', 'sound' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide7/go-to-college.mp3')],
@@ -29,8 +28,8 @@ $content = [
         ],
         [
             'key' => 'stages_of_life',
-            'title' => 'Stages of Life',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-6',
+            'title' => '🌱 Stages of Life:',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-3 ',
             'items' => [
                 ['text' => 'infant', 'emoji' => '👶', 'description' => 'a very young baby', 'sound' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide7/infant.mp3')],
                 ['text' => 'baby', 'emoji' => '🍼', 'description' => 'a very young child', 'sound' => materialAsset('slider/A2/Beginner/chapter-6/audios/slide7/baby.mp3')],
@@ -44,4 +43,4 @@ $content = [
 ];
 ?>
 
-@include('slider.vocab.sentence-audio', ['content' => $content])
+@include('slider.vocab.image-card', ['content' => $content])
