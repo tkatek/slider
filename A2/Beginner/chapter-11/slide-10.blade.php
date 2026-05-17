@@ -1,12 +1,13 @@
 <?php
+
 $content = [
     'page_title' => 'New Vocabulary 2',
     'title'      => 'New Vocabulary 2',
     'subtitle'   => '',
 
-    'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-4',
 
-    'items'      => [
+    'items' => [
         [
             'text'  => 'swimming',
             'emoji' => '🏊',
@@ -51,6 +52,7 @@ $content = [
         ],
     ],
 ];
+
 ?>
 
-@include("slider.vocab.image-emoji-audio", ['content' => $content])
+@include('slider.vocab.image-card', ['content' => $content])

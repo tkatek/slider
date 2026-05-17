@@ -1,10 +1,11 @@
 <?php
-$content = [
-    'page_title'    => 'New Vocabulary',
-    'title'         => 'New Vocabulary',
-    'subtitle'      => 'Adjectives / Nouns',
 
-    'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5',
+$content = [
+    'page_title' => 'New Vocabulary',
+    'title'      => 'New Vocabulary',
+    'subtitle'   => 'Adjectives / Nouns',
+
+    'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-5',
 
     'items' => [
         [
@@ -99,6 +100,7 @@ $content = [
         ],
     ],
 ];
+
 ?>
 
-@include('slider.vocab.vocabulary-grid', ['content' => $content])
+@include('slider.vocab.image-card', ['content' => $content])

@@ -1,37 +1,32 @@
 ﻿<?php
-if (!function_exists('materialAsset')) {
-    function materialAsset($path) {
-        return 'https://remtoo.net/' . $path;
-    }
-}
-
 $content = [
     'title' => 'Quick wrap up!',
     'subtitle' => 'Listen and write the words.',
+
     'items' => [
         [
             'full' => 'blonde hair',
             'audio' => materialAsset('slider/A2/Beginner/chapter-7/audios/slide18/blonde-hair.mpeg'),
-            'first_letter' => 'b',
-            'first_rest' => 'londe',
-            'second_letter' => 'h',
-            'second_rest' => 'air',
+            'words' => [
+                ['first_letter' => 'b', 'answer' => 'londe'],
+                ['first_letter' => 'h', 'answer' => 'air'],
+            ],
         ],
         [
             'full' => 'dark hair',
             'audio' => materialAsset('slider/A2/Beginner/chapter-7/audios/slide18/dark-hair.mpeg'),
-            'first_letter' => 'd',
-            'first_rest' => 'ark',
-            'second_letter' => 'h',
-            'second_rest' => 'air',
+            'words' => [
+                ['first_letter' => 'd', 'answer' => 'ark'],
+                ['first_letter' => 'h', 'answer' => 'air'],
+            ],
         ],
         [
             'full' => 'ginger hair',
             'audio' => materialAsset('slider/A2/Beginner/chapter-7/audios/slide18/ginger-hair.mpeg'),
-            'first_letter' => 'g',
-            'first_rest' => 'inger',
-            'second_letter' => 'h',
-            'second_rest' => 'air',
+            'words' => [
+                ['first_letter' => 'g', 'answer' => 'inger'],
+                ['first_letter' => 'h', 'answer' => 'air'],
+            ],
         ],
     ],
 ];
@@ -41,544 +36,311 @@ $content = [
 
 @section('title', $content['title'])
 
-@section('style')
-<style>
-    .listen-write-wrap {
-        min-height: 100dvh;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 1.5rem 1rem;
-    }
-
-    .exercise-shell {
-        width: 100%;
-        max-width: 980px;
-        border: 1px solid rgba(165, 180, 252, 0.45);
-        background:
-            radial-gradient(120% 120% at 0% 0%, rgba(99, 102, 241, 0.2) 0%, transparent 45%),
-            radial-gradient(120% 120% at 100% 0%, rgba(56, 189, 248, 0.16) 0%, transparent 40%),
-            rgba(238, 242, 255, 0.72);
-        border-radius: 1.8rem;
-        padding: 1.1rem;
-        box-shadow: 0 16px 36px -26px rgba(15, 23, 42, 0.35);
-    }
-
-    .dark .exercise-shell {
-        border-color: rgba(99, 102, 241, 0.45);
-        background:
-            radial-gradient(120% 120% at 0% 0%, rgba(99, 102, 241, 0.22) 0%, transparent 45%),
-            radial-gradient(120% 120% at 100% 0%, rgba(59, 130, 246, 0.16) 0%, transparent 45%),
-            rgba(30, 41, 59, 0.62);
-        box-shadow: none;
-    }
-
-    .exercise-card {
-        width: 100%;
-        border-radius: 1.35rem;
-        border: 1px solid rgba(226, 232, 240, 0.95);
-        background: rgba(255, 255, 255, 0.95);
-        box-shadow: 0 12px 28px -20px rgba(15, 23, 42, 0.3);
-        padding: 0.9rem;
-    }
-
-    .dark .exercise-card {
-        border-color: rgba(100, 116, 139, 0.65);
-        background: rgba(15, 23, 42, 0.72);
-        box-shadow: none;
-    }
-
-    .listen-row {
-        border: 1px solid rgba(226, 232, 240, 0.92);
-        border-radius: 1rem;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(248, 250, 252, 0.92) 100%);
-        padding: 0.72rem;
-    }
-
-    .dark .listen-row {
-        border-color: rgba(100, 116, 139, 0.55);
-        background: linear-gradient(180deg, rgba(30, 41, 59, 0.78) 0%, rgba(15, 23, 42, 0.82) 100%);
-    }
-
-    .row-grid {
-        display: grid;
-        grid-template-columns: auto auto auto minmax(105px, 190px) auto minmax(105px, 190px);
-        gap: 0.55rem;
-        align-items: center;
-    }
-
-
-    .row-number {
-        width: 2rem;
-        text-align: right;
-    }
-
-    .audio-btn {
-        width: 54px;
-        height: 46px;
-        border-radius: 0.75rem;
-        border: 2px solid rgba(71, 85, 105, 0.75);
-        background: #ffffff;
-        color: #1f2937;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .dark .audio-btn {
-        border-color: rgba(148, 163, 184, 0.75);
-        background: rgba(15, 23, 42, 0.85);
-        color: #f8fafc;
-    }
-
-    .audio-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 16px rgba(30, 41, 59, 0.14);
-    }
-
-    .audio-btn.playing {
-        border-color: #2563eb;
-        color: #1d4ed8;
-        background: #eff6ff;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
-
-    .dark .audio-btn.playing {
-        color: #93c5fd;
-        background: rgba(30, 58, 138, 0.35);
-    }
-
-    .fixed-letter {
-        font-size: 1.7rem;
-        font-weight: 800;
-        line-height: 1;
-        color: #1e293b;
-        text-align: center;
-        width: 1.5rem;
-    }
-
-    .dark .fixed-letter {
-        color: #f8fafc;
-    }
-
-    .word-input {
-        height: 46px;
-        border-radius: 0.75rem;
-        border: 2px solid rgba(203, 213, 225, 0.95);
-        background: #ffffff;
-        text-align: center;
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #0f172a;
-        padding: 0.2rem 0.55rem;
-    }
-
-    .word-input::placeholder {
-        color: rgba(148, 163, 184, 0.9);
-    }
-
-    .dark .word-input {
-        border-color: rgba(100, 116, 139, 0.85);
-        background: rgba(15, 23, 42, 0.8);
-        color: #ffffff;
-    }
-
-    .dark .word-input::placeholder {
-        color: rgba(148, 163, 184, 0.85);
-    }
-
-    .word-input:focus {
-        outline: none;
-        border-color: #6366f1;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14);
-    }
-
-    .word-input.is-correct {
-        border-color: rgba(34, 197, 94, 0.75);
-        color: #15803d;
-        background: rgba(240, 253, 244, 0.92);
-    }
-
-    .dark .word-input.is-correct {
-        color: #4ade80;
-        background: rgba(20, 83, 45, 0.45);
-    }
-
-    .word-input.is-wrong {
-        border-color: rgba(239, 68, 68, 0.75);
-        color: #b91c1c;
-        background: rgba(254, 242, 242, 0.95);
-    }
-
-    .dark .word-input.is-wrong {
-        color: #fca5a5;
-        background: rgba(127, 29, 29, 0.45);
-    }
-
-    .control-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: .5rem;
-        border-radius: .9rem;
-        border: 1px solid transparent;
-        padding: .78rem 1.35rem;
-        font-weight: 900;
-        letter-spacing: .01em;
-        transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
-    }
-
-    .control-btn:hover {
-        transform: translateY(-1px);
-    }
-
-    .control-btn:active {
-        transform: scale(.97);
-    }
-
-    .control-btn.reveal {
-        color: #ffffff;
-        background: linear-gradient(135deg, #f97316, #f59e0b);
-        box-shadow: 0 12px 24px -16px rgba(234, 88, 12, 0.6);
-    }
-
-    .control-btn.reveal:hover {
-        background: linear-gradient(135deg, #ea580c, #f59e0b);
-    }
-
-    .control-btn.reset {
-        border-color: rgba(203, 213, 225, 0.95);
-        background: #ffffff;
-        color: #334155;
-    }
-
-    .control-btn.reset:hover {
-        background: #f8fafc;
-    }
-
-    .dark .control-btn.reset {
-        border-color: rgba(100, 116, 139, 0.85);
-        background: rgba(15, 23, 42, 0.78);
-        color: #f8fafc;
-    }
-
-    .dark .control-btn.reset:hover {
-        background: rgba(30, 41, 59, 0.88);
-    }
-
-    @media (max-width: 900px) {
-        .row-grid {
-            grid-template-columns: auto auto auto minmax(80px, 1fr) auto minmax(80px, 1fr);
-        }
-    }
-
-    @media (max-width: 640px) {
-        .listen-write-wrap {
-            padding: 1rem 0.55rem;
-        }
-
-        .exercise-shell {
-            padding: 0.6rem;
-            border-radius: 1.1rem;
-        }
-
-        .exercise-card {
-            padding: 0.6rem;
-        }
-
-        .listen-row {
-            padding: 0.55rem;
-        }
-
-        .row-grid {
-            grid-template-columns: 26px 52px 22px minmax(0, 1fr);
-            column-gap: 0.45rem;
-            row-gap: 0.45rem;
-        }
-
-        .row-number {
-            grid-column: 1;
-            grid-row: 1 / span 2;
-            align-self: center;
-            width: 26px;
-            font-size: 1.4rem;
-        }
-
-        .row-grid .audio-btn {
-            grid-column: 2;
-            grid-row: 1 / span 2;
-            align-self: center;
-            width: 48px;
-            height: 42px;
-        }
-
-        .row-grid .fixed-letter {
-            font-size: 1.25rem;
-            width: 1rem;
-        }
-
-        .word-input {
-            height: 42px;
-            font-size: 1rem;
-        }
-
-        .second-part-label {
-            grid-column: 3;
-            grid-row: 2;
-        }
-
-        .second-part-input {
-            grid-column: 4;
-            grid-row: 2;
-        }
-    }
-</style>
-@endsection
-
 @section('content')
-<div class="listen-write-wrap">
-    <div class="w-full max-w-5xl">
-        <header class="w-full flex flex-col items-center justify-center mb-6 sm:mb-8 text-center">
-            @include('slider.components.title-subtitle')
-        </header>
+    <main class="min-h-[100dvh] w-full flex items-center justify-center px-3 py-5 sm:px-5 sm:py-6 lg:px-8">
+        <div class="w-full max-w-5xl">
+            <header class="mb-5 text-center sm:mb-6 lg:mb-7">
+                @include('slider.components.title-subtitle')
+            </header>
 
-        <div class="exercise-shell">
-            <div class="exercise-card">
-                <div class="space-y-4 sm:space-y-5">
-                    @foreach($content['items'] as $index => $item)
-                        <article class="listen-row">
-                            <div class="row-grid">
-                                <div class="row-number text-2xl font-black text-slate-800 dark:text-slate-100">{{ $index + 1 }}.</div>
+            <section class="relative overflow-hidden rounded-[2rem] border border-indigo-200/70 bg-white/65 p-3 shadow-2xl shadow-slate-900/10 backdrop-blur-xl dark:border-indigo-400/20 dark:bg-slate-950/35 dark:shadow-none sm:p-4 lg:p-5">
+                <div class="pointer-events-none absolute -left-20 -top-24 h-64 w-64 rounded-full bg-indigo-500/20 blur-3xl dark:bg-indigo-400/15"></div>
+                <div class="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-sky-400/20 blur-3xl dark:bg-sky-400/10"></div>
+                <div class="pointer-events-none absolute bottom-0 left-1/2 h-40 w-72 -translate-x-1/2 rounded-full bg-violet-400/10 blur-3xl dark:bg-violet-400/10"></div>
 
-                                <button
-                                    type="button"
-                                    class="audio-btn play-word"
-                                    data-audio="{{ $item['audio'] }}"
-                                    data-text="{{ $item['full'] }}"
-                                    aria-label="Play item {{ $index + 1 }}"
-                                >
-                                    <i class="fa-solid fa-volume-high text-xl"></i>
-                                </button>
-
-                                <div class="fixed-letter">{{ $item['first_letter'] }}</div>
-
-                                <input
-                                    type="text"
-                                    autocomplete="off"
-                                    spellcheck="false"
-                                    class="word-input"
-                                    data-role="first"
-                                    data-fixed="{{ $item['first_letter'] }}"
-                                    data-answer="{{ $item['first_rest'] }}"
-                                    aria-label="First word for item {{ $index + 1 }}"
-                                >
-
-                                <div class="fixed-letter second-part-label">{{ $item['second_letter'] }}</div>
-
-                                <input
-                                    type="text"
-                                    autocomplete="off"
-                                    spellcheck="false"
-                                    class="word-input second-part-input"
-                                    data-role="second"
-                                    data-fixed="{{ $item['second_letter'] }}"
-                                    data-answer="{{ $item['second_rest'] }}"
-                                    aria-label="Second word for item {{ $index + 1 }}"
-                                >
+                <div class="relative rounded-[1.5rem] border border-white/80 bg-white/90 p-3 shadow-xl shadow-slate-900/5 dark:border-slate-700/40 dark:bg-slate-950/70 sm:p-4 lg:p-5">
+                    <div class="mb-4 grid gap-3 sm:grid-cols-3">
+                        <div class="rounded-2xl border border-indigo-100 bg-indigo-50/80 px-4 py-3 dark:border-indigo-400/20 dark:bg-indigo-500/10">
+                            <div class="text-2xl">🎧</div>
+                            <div class="mt-1 text-sm font-black text-slate-900 dark:text-slate-100">
+                                Listen
                             </div>
-                        </article>
-                    @endforeach
+                        </div>
+
+                        <div class="rounded-2xl border border-sky-100 bg-sky-50/80 px-4 py-3 dark:border-sky-400/20 dark:bg-sky-500/10">
+                            <div class="text-2xl">✍️</div>
+                            <div class="mt-1 text-sm font-black text-slate-900 dark:text-slate-100">
+                                Complete
+                            </div>
+                        </div>
+
+                        <div class="rounded-2xl border border-violet-100 bg-violet-50/80 px-4 py-3 dark:border-violet-400/20 dark:bg-violet-500/10">
+                            <div class="text-2xl">🔤</div>
+                            <div class="mt-1 text-sm font-black text-slate-900 dark:text-slate-100">
+                                Use The First Letter
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 sm:space-y-4">
+                        @foreach($content['items'] as $itemIndex => $item)
+                            <article class="group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-br from-white to-slate-50/90 p-3 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-500/10 dark:border-slate-700/50 dark:from-slate-900/85 dark:to-slate-950/85 dark:hover:border-indigo-400/30 sm:p-4">
+                                <div class="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-indigo-500 to-sky-500"></div>
+
+                                <div class="flex flex-col gap-3 md:grid md:grid-cols-[auto_minmax(0,1fr)] md:items-center md:gap-4">
+                                    <button
+                                            type="button"
+                                            class="play-word grid h-12 w-full place-items-center rounded-2xl border-2 border-slate-200 bg-white text-slate-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 hover:shadow-lg hover:shadow-indigo-500/15 active:scale-95 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-indigo-300/70 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-200 md:w-16"
+                                            data-audio="{{ $item['audio'] }}"
+                                            data-text="{{ $item['full'] }}"
+                                            aria-label="Play audio"
+                                    >
+                                        <i class="fa-solid fa-volume-high text-xl"></i>
+                                    </button>
+
+                                    <div class="grid gap-3 sm:grid-cols-2">
+                                        @foreach($item['words'] as $wordIndex => $word)
+                                            <label class="grid grid-cols-[3rem_minmax(0,1fr)] items-center gap-2 rounded-2xl border border-slate-200/80 bg-white/85 p-2 shadow-inner shadow-slate-900/[0.03] dark:border-slate-700/50 dark:bg-slate-950/45">
+                                            <span class="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-indigo-100 to-sky-100 text-2xl font-black leading-none text-indigo-700 dark:from-indigo-500/15 dark:to-sky-500/15 dark:text-indigo-200">
+                                                {{ $word['first_letter'] }}
+                                            </span>
+
+                                                <input
+                                                        type="text"
+                                                        autocomplete="off"
+                                                        spellcheck="false"
+                                                        class="word-input h-11 min-w-0 rounded-xl border-2 border-slate-200 bg-white px-3 text-center text-lg font-black tracking-[-0.02em] text-slate-900 shadow-sm transition-all duration-200 placeholder:text-slate-300 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/15 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-300"
+                                                        data-fixed="{{ $word['first_letter'] }}"
+                                                        data-answer="{{ $word['answer'] }}"
+                                                        aria-label="Missing letters"
+                                                >
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </article>
+                        @endforeach
+                    </div>
+
+                    <div class="mt-5 flex flex-col-reverse items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+                        <button
+                                id="resetBtn"
+                                type="button"
+                                class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-lg active:scale-95 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 sm:min-w-36"
+                        >
+                            <i class="fa-solid fa-rotate-left"></i>
+                            Reset
+                        </button>
+
+                        <button
+                                id="revealBtn"
+                                type="button"
+                                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-orange-500/25 transition-all duration-200 hover:-translate-y-0.5 hover:from-orange-600 hover:to-amber-500 hover:shadow-xl hover:shadow-orange-500/30 active:scale-95 sm:min-w-52"
+                        >
+                            <i class="fa-solid fa-circle-check"></i>
+                            Reveal Correction
+                        </button>
+                    </div>
+
+                    <p id="feedback" class="mt-4 min-h-7 text-center text-base font-black text-slate-600 dark:text-slate-300 sm:text-lg"></p>
                 </div>
-
-                <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-                    <button id="revealBtn" type="button" class="control-btn reveal">
-                        Reveal Correction
-                    </button>
-
-                    <button id="resetBtn" type="button" class="control-btn reset">
-                        Reset
-                    </button>
-                </div>
-
-                <p id="feedback" class="mt-4 text-center text-lg font-black text-slate-600 dark:text-slate-300"></p>
-            </div>
+            </section>
         </div>
-    </div>
-</div>
+    </main>
 @endsection
 
 @section('script')
-<script>
-    (function () {
-        const playButtons = Array.from(document.querySelectorAll('.play-word'));
-        const inputs = Array.from(document.querySelectorAll('.word-input'));
-        const revealBtn = document.getElementById('revealBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const feedback = document.getElementById('feedback');
+    <script>
+        (function () {
+            const playButtons = Array.from(document.querySelectorAll('.play-word'));
+            const inputs = Array.from(document.querySelectorAll('.word-input'));
+            const revealBtn = document.getElementById('revealBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const feedback = document.getElementById('feedback');
 
-        let activeAudio = null;
-        let activeButton = null;
+            let activeAudio = null;
+            let activeButton = null;
 
-        const fx = {
-            correct: new Audio('/slider/sounds/correct.wav'),
-            wrong: new Audio('/slider/sounds/wrong.wav'),
-            reveal: new Audio('/slider/sounds/success.wav')
-        };
+            const sounds = {
+                correct: new Audio('/slider/sounds/correct.wav'),
+                wrong: new Audio('/slider/sounds/wrong.wav'),
+                reveal: new Audio('/slider/sounds/success.wav')
+            };
 
-        function playFx(type) {
-            const sound = fx[type];
-            if (!sound) return;
-            sound.pause();
-            sound.currentTime = 0;
-            sound.play().catch(() => {});
-        }
+            const playingClasses = [
+                '!border-indigo-500',
+                '!bg-indigo-50',
+                '!text-indigo-700',
+                '!shadow-lg',
+                '!shadow-indigo-500/20',
+                '!ring-4',
+                '!ring-indigo-500/15',
+                'dark:!border-indigo-300',
+                'dark:!bg-indigo-500/15',
+                'dark:!text-indigo-200'
+            ];
 
-        function cleanupAudioState() {
-            if (activeButton) activeButton.classList.remove('playing');
-            activeAudio = null;
-            activeButton = null;
-        }
+            const correctClasses = [
+                '!border-emerald-500',
+                '!bg-emerald-50',
+                '!text-emerald-700',
+                '!ring-4',
+                '!ring-emerald-500/15',
+                'dark:!border-emerald-300',
+                'dark:!bg-emerald-500/10',
+                'dark:!text-emerald-300'
+            ];
 
-        function speakFallback(text) {
-            if (!('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 0.9;
-            utterance.pitch = 1;
-            window.speechSynthesis.speak(utterance);
-        }
+            const wrongClasses = [
+                '!border-red-500',
+                '!bg-red-50',
+                '!text-red-700',
+                '!ring-4',
+                '!ring-red-500/15',
+                'dark:!border-red-300',
+                'dark:!bg-red-500/10',
+                'dark:!text-red-300'
+            ];
 
-        function normalize(value) {
-            return (value || '')
-                .toLowerCase()
-                .replace(/[^a-z]/g, '')
-                .trim();
-        }
+            function playSound(type) {
+                const sound = sounds[type];
 
-        function matchesInput(inputEl) {
-            const fixed = normalize(inputEl.dataset.fixed || '');
-            const expected = normalize(inputEl.dataset.answer || '');
-            const typed = normalize(inputEl.value || '');
+                if (!sound) return;
 
-            return typed === expected || typed === (fixed + expected);
-        }
-
-        function markInput(inputEl, isCorrect) {
-            inputEl.classList.remove('is-correct', 'is-wrong');
-            inputEl.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
-        }
-
-        function validateInput(inputEl, options = {}) {
-            const { silent = false } = options;
-            const typed = normalize(inputEl.value || '');
-
-            if (!typed) {
-                inputEl.classList.remove('is-correct', 'is-wrong');
-                inputEl.dataset.validationState = '';
-                return null;
+                sound.pause();
+                sound.currentTime = 0;
+                sound.play().catch(() => {});
             }
 
-            const isCorrect = matchesInput(inputEl);
-            markInput(inputEl, isCorrect);
-
-            const nextState = isCorrect ? 'correct' : 'wrong';
-            const previousState = inputEl.dataset.validationState || '';
-            inputEl.dataset.validationState = nextState;
-
-            if (!silent && previousState !== nextState) {
-                playFx(isCorrect ? 'correct' : 'wrong');
-            }
-
-            return isCorrect;
-        }
-
-        playButtons.forEach((button) => {
-            button.addEventListener('click', () => {
-                const url = button.dataset.audio || '';
-                const text = button.dataset.text || '';
-
+            function stopActiveAudio() {
                 if (activeAudio) {
                     activeAudio.pause();
                     activeAudio.currentTime = 0;
-                    cleanupAudioState();
                 }
 
-                const audio = new Audio(url);
-                activeAudio = audio;
-                activeButton = button;
-                button.classList.add('playing');
+                if (activeButton) {
+                    activeButton.classList.remove(...playingClasses);
+                }
 
-                audio.addEventListener('ended', cleanupAudioState, { once: true });
-                audio.addEventListener('error', () => {
-                    cleanupAudioState();
-                    speakFallback(text);
-                }, { once: true });
+                activeAudio = null;
+                activeButton = null;
+            }
 
-                audio.play().catch(() => {
-                    cleanupAudioState();
-                    speakFallback(text);
+            function speakFallback(text) {
+                if (!('speechSynthesis' in window)) return;
+
+                window.speechSynthesis.cancel();
+
+                const voice = new SpeechSynthesisUtterance(text);
+                voice.rate = 0.9;
+                voice.pitch = 1;
+
+                window.speechSynthesis.speak(voice);
+            }
+
+            function normalize(value) {
+                return (value || '')
+                    .toLowerCase()
+                    .replace(/[^a-z]/g, '')
+                    .trim();
+            }
+
+            function isCorrectAnswer(input) {
+                const firstLetter = normalize(input.dataset.fixed);
+                const answer = normalize(input.dataset.answer);
+                const typed = normalize(input.value);
+
+                return typed === answer || typed === firstLetter + answer;
+            }
+
+            function clearInputState(input) {
+                input.classList.remove(...correctClasses, ...wrongClasses);
+            }
+
+            function markInput(input, isCorrect) {
+                clearInputState(input);
+                input.classList.add(...(isCorrect ? correctClasses : wrongClasses));
+            }
+
+            function checkInput(input, silent = false) {
+                const typed = normalize(input.value);
+
+                if (!typed) {
+                    clearInputState(input);
+                    input.dataset.state = '';
+                    return;
+                }
+
+                const correct = isCorrectAnswer(input);
+                const newState = correct ? 'correct' : 'wrong';
+                const oldState = input.dataset.state || '';
+
+                markInput(input, correct);
+                input.dataset.state = newState;
+
+                if (!silent && oldState !== newState) {
+                    playSound(correct ? 'correct' : 'wrong');
+                }
+            }
+
+            function resetActivity() {
+                inputs.forEach((input) => {
+                    input.value = '';
+                    input.dataset.state = '';
+                    clearInputState(input);
+                });
+
+                feedback.textContent = '';
+                feedback.className = 'mt-4 min-h-7 text-center text-base font-black text-slate-600 dark:text-slate-300 sm:text-lg';
+
+                stopActiveAudio();
+            }
+
+            playButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const audioUrl = button.dataset.audio || '';
+                    const fallbackText = button.dataset.text || '';
+
+                    stopActiveAudio();
+
+                    activeAudio = new Audio(audioUrl);
+                    activeButton = button;
+
+                    button.classList.add(...playingClasses);
+
+                    activeAudio.addEventListener('ended', stopActiveAudio, { once: true });
+
+                    activeAudio.addEventListener('error', () => {
+                        stopActiveAudio();
+                        speakFallback(fallbackText);
+                    }, { once: true });
+
+                    activeAudio.play().catch(() => {
+                        stopActiveAudio();
+                        speakFallback(fallbackText);
+                    });
                 });
             });
-        });
 
-        revealBtn?.addEventListener('click', () => {
-            inputs.forEach((inputEl) => {
-                inputEl.value = inputEl.dataset.answer || '';
-                markInput(inputEl, true);
-                inputEl.dataset.validationState = 'correct';
+            inputs.forEach((input) => {
+                input.addEventListener('input', () => checkInput(input, true));
+                input.addEventListener('blur', () => checkInput(input, false));
+
+                input.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        checkInput(input, false);
+                    }
+                });
             });
 
-            playFx('reveal');
-            feedback.textContent = 'Corrections are now shown.';
-            feedback.className = 'mt-4 text-center text-lg font-black text-indigo-600 dark:text-indigo-300';
-        });
+            revealBtn?.addEventListener('click', () => {
+                inputs.forEach((input) => {
+                    input.value = input.dataset.answer || '';
+                    input.dataset.state = 'correct';
+                    markInput(input, true);
+                });
 
-        resetBtn?.addEventListener('click', () => {
-            inputs.forEach((inputEl) => {
-                inputEl.value = '';
-                inputEl.classList.remove('is-correct', 'is-wrong');
-                inputEl.dataset.validationState = '';
-            });
-            feedback.textContent = '';
-            feedback.className = 'mt-4 text-center text-lg font-black text-slate-600 dark:text-slate-300';
+                feedback.textContent = 'Corrections are now shown.';
+                feedback.className = 'mt-4 min-h-7 text-center text-base font-black text-indigo-600 dark:text-indigo-300 sm:text-lg';
 
-            if (activeAudio) {
-                activeAudio.pause();
-                activeAudio.currentTime = 0;
-            }
-
-            cleanupAudioState();
-        });
-
-        inputs.forEach((inputEl) => {
-            inputEl.addEventListener('input', () => {
-                validateInput(inputEl, { silent: true });
+                playSound('reveal');
             });
 
-            inputEl.addEventListener('blur', () => {
-                validateInput(inputEl, { silent: false });
-            });
+            resetBtn?.addEventListener('click', resetActivity);
 
-            inputEl.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    validateInput(inputEl, { silent: false });
-                }
-            });
-        });
-
-        window.stopSlideAudio = function () {
-            if (activeAudio) {
-                activeAudio.pause();
-                activeAudio.currentTime = 0;
-            }
-            cleanupAudioState();
-        };
-    })();
-</script>
+            window.stopSlideAudio = stopActiveAudio;
+            window.resetSlide = resetActivity;
+        })();
+    </script>
 @endsection
-
-

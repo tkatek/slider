@@ -1,23 +1,24 @@
 <?php
+
 $content = [
     'page_title' => 'New Language',
     'title'      => 'New Language',
     'subtitle'   => '',
-    'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-3',
 
     'items' => [
         [
-            'text_html'  => 'I\'d like to <span class="title-highlight">book a holiday package</span>.',
+            'text'  => 'I\'d like to <span class="text-indigo-600 font-black">book a holiday package</span>.',
             'emoji' => '🧳',
             'sound' => materialAsset('slider/A1/Intermediate/chapter-8/audios/slide7/1.mp3'),
         ],
         [
-            'text_html'  => 'I\'m thinking about <span class="title-highlight">Italy</span>.',
+            'text'  => 'I\'m thinking about <span class="text-indigo-600 font-black">Italy</span>.',
             'emoji' => '✈️',
             'sound' => materialAsset('slider/A1/Intermediate/chapter-8/audios/slide7/2.mp3'),
         ],
         [
-            'text_html'  => 'I prefer <span class="title-highlight">a city tour</span>.',
+            'text'  => 'I prefer <span class="text-indigo-600 font-black">a city tour</span>.',
             'emoji' => '🏙️',
             'sound' => materialAsset('slider/A1/Intermediate/chapter-8/audios/slide7/3.mp3'),
         ],
@@ -27,32 +28,32 @@ $content = [
             'sound' => materialAsset('slider/A1/Intermediate/chapter-8/audios/slide7/4.mp3'),
         ],
         [
-            'text_html'  => 'How much does it <span class="title-highlight">cost</span>?',
+            'text'  => 'How much does it <span class="text-indigo-600 font-black">cost</span>?',
             'emoji' => '💳',
             'sound' => materialAsset('slider/A1/Intermediate/chapter-8/audios/slide7/5.mp3'),
         ],
         [
-            'text_html'  => 'Does it <span class="title-highlight">include</span> breakfast?',
+            'text'  => 'Does it <span class="text-indigo-600 font-black">include</span> breakfast?',
             'emoji' => '🍳',
             'sound' => materialAsset('slider/A1/Intermediate/chapter-8/audios/slide7/6.mp3'),
         ],
         [
-            'text_html'  => 'Breakfast <span class="title-highlight">is included</span> every day.',
+            'text'  => 'Breakfast <span class="text-indigo-600 font-black">is included</span> every day.',
             'emoji' => '🥐',
             'sound' => materialAsset('slider/A1/Intermediate/chapter-8/audios/slide7/7.mp3'),
         ],
         [
-            'text_html'  => 'I\'d like book one <span class="title-highlight">seat</span>.',
+            'text'  => 'I\'d like book one <span class="text-indigo-600 font-black">seat</span>.',
             'emoji' => '💺',
             'sound' => materialAsset('slider/A1/Intermediate/chapter-8/audios/slide7/8.mp3'),
         ],
         [
-            'text_html'  => '<span class="title-highlight">Payment confirmed</span>.',
+            'text'  => '<span class="text-indigo-600 font-black">Payment confirmed</span>.',
             'emoji' => '✅',
             'sound' => materialAsset('slider/A1/Intermediate/chapter-8/audios/slide7/9.mp3'),
         ],
         [
-            'text_html'  => '<span class="title-highlight">Here are</span> your travel documents.',
+            'text'  => '<span class="text-indigo-600 font-black">Here are</span> your travel documents.',
             'emoji' => '📄',
             'sound' => materialAsset('slider/A1/Intermediate/chapter-8/audios/slide7/10.mp3'),
         ],
@@ -62,12 +63,13 @@ $content = [
             'sound' => materialAsset('slider/A1/Intermediate/chapter-8/audios/slide7/11.mp3'),
         ],
         [
-            'text_html'  => 'Have a great trip to <span class="title-highlight">Italy</span>.',
+            'text'  => 'Have a great trip to <span class="text-indigo-600 font-black">Italy</span>.',
             'emoji' => '✈️',
             'sound' => materialAsset('slider/A1/Intermediate/chapter-8/audios/slide7/12.mp3'),
         ],
     ],
 ];
+
 ?>
 
-@include('slider.vocab.sentence-audio', ['content' => $content])
+@include('slider.vocab.image-card', ['content' => $content])

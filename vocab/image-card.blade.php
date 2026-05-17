@@ -8,114 +8,6 @@
     $items = is_array($content['items'] ?? null) ? array_values($content['items']) : [];
     $groups = is_array($content['groups'] ?? null) ? array_values($content['groups']) : [];
 
-    $normalizeCols = static fn ($cols) => max(1, min(6, (int) $cols));
-
-    $extractCols = static function (?string $breakpoint, string $classString, int $fallback) use ($normalizeCols) {
-        $pattern = $breakpoint
-            ? '/(?:^|\s)' . preg_quote($breakpoint, '/') . ':grid-cols-(\d+)/'
-            : '/(?:^|\s)grid-cols-(\d+)/';
-
-        if (preg_match($pattern, $classString, $match)) {
-            return $normalizeCols($match[1]);
-        }
-
-        return $fallback;
-    };
-
-    $gridColClasses = [
-        'base' => [
-            1 => 'grid-cols-1',
-            2 => 'grid-cols-2',
-            3 => 'grid-cols-3',
-            4 => 'grid-cols-4',
-            5 => 'grid-cols-5',
-            6 => 'grid-cols-6',
-        ],
-        'sm' => [
-            1 => 'sm:grid-cols-1',
-            2 => 'sm:grid-cols-2',
-            3 => 'sm:grid-cols-3',
-            4 => 'sm:grid-cols-4',
-            5 => 'sm:grid-cols-5',
-            6 => 'sm:grid-cols-6',
-        ],
-        'lg' => [
-            1 => 'lg:grid-cols-1',
-            2 => 'lg:grid-cols-2',
-            3 => 'lg:grid-cols-3',
-            4 => 'lg:grid-cols-4',
-            5 => 'lg:grid-cols-5',
-            6 => 'lg:grid-cols-6',
-        ],
-        'xl' => [
-            1 => 'xl:grid-cols-1',
-            2 => 'xl:grid-cols-2',
-            3 => 'xl:grid-cols-3',
-            4 => 'xl:grid-cols-4',
-            5 => 'xl:grid-cols-5',
-            6 => 'xl:grid-cols-6',
-        ],
-    ];
-
-    $gridMaxClasses = [
-        'base' => [
-            1 => 'max-w-[26rem]',
-            2 => 'max-w-[52rem]',
-            3 => 'max-w-[78rem]',
-            4 => 'max-w-[82.5rem]',
-            5 => 'max-w-[82.5rem]',
-            6 => 'max-w-[82.5rem]',
-        ],
-        'sm' => [
-            1 => 'sm:max-w-[26rem]',
-            2 => 'sm:max-w-[52rem]',
-            3 => 'sm:max-w-[78rem]',
-            4 => 'sm:max-w-[82.5rem]',
-            5 => 'sm:max-w-[82.5rem]',
-            6 => 'sm:max-w-[82.5rem]',
-        ],
-        'lg' => [
-            1 => 'lg:max-w-[26rem]',
-            2 => 'lg:max-w-[52rem]',
-            3 => 'lg:max-w-[78rem]',
-            4 => 'lg:max-w-[82.5rem]',
-            5 => 'lg:max-w-[82.5rem]',
-            6 => 'lg:max-w-[82.5rem]',
-        ],
-        'xl' => [
-            1 => 'xl:max-w-[26rem]',
-            2 => 'xl:max-w-[52rem]',
-            3 => 'xl:max-w-[78rem]',
-            4 => 'xl:max-w-[82.5rem]',
-            5 => 'xl:max-w-[82.5rem]',
-            6 => 'xl:max-w-[82.5rem]',
-        ],
-    ];
-
-    $buildGridLayoutClass = static function (string $classString, int $itemCount) use ($extractCols, $gridColClasses, $gridMaxClasses, $normalizeCols) {
-        $itemCount = max(1, $itemCount);
-        $baseCols = min($extractCols(null, $classString, 2), $itemCount);
-        $smCols = min($extractCols('sm', $classString, $baseCols), $itemCount);
-        $lgCols = min($extractCols('lg', $classString, $smCols), $itemCount);
-        $xlCols = min($extractCols('xl', $classString, $lgCols), $itemCount);
-
-        $baseCols = $normalizeCols($baseCols);
-        $smCols = $normalizeCols($smCols);
-        $lgCols = $normalizeCols($lgCols);
-        $xlCols = $normalizeCols($xlCols);
-
-        return implode(' ', [
-            $gridColClasses['base'][$baseCols],
-            $gridColClasses['sm'][$smCols],
-            $gridColClasses['lg'][$lgCols],
-            $gridColClasses['xl'][$xlCols],
-            $gridMaxClasses['base'][$baseCols],
-            $gridMaxClasses['sm'][$smCols],
-            $gridMaxClasses['lg'][$lgCols],
-            $gridMaxClasses['xl'][$xlCols],
-        ]);
-    };
-
     $groupSections = [];
 
     foreach ($groups as $index => $group) {
@@ -132,7 +24,7 @@
         $groupSections[] = [
             'key' => (string) ($group['key'] ?? ('group-' . $index)),  
             'title' => trim((string) ($group['title'] ?? '')),
-            'grid_class' => $buildGridLayoutClass(trim((string) ($group['grid_class'] ?? $gridClass)), count($groupItems)),
+            'grid_class' => trim((string) ($group['grid_class'] ?? $gridClass)),
             'items' => $groupItems,
         ];
     }
@@ -141,7 +33,7 @@
         $groupSections[] = [
             'key' => 'group-0',
             'title' => '',
-            'grid_class' => $buildGridLayoutClass($gridClass, count($items)),
+            'grid_class' => $gridClass,
             'items' => $items,
         ];
     }
@@ -154,13 +46,13 @@
         <main class="mx-auto w-full max-w-[1320px] px-4 py-10 sm:px-8 sm:py-12">
             @include('slider.components.title-subtitle')
 
-            <div class="mt-3 flex flex-col gap-7 sm:mt-4 sm:gap-8">
+            <div class="mt-6 flex flex-col gap-7 sm:mt-8 sm:gap-8">
                 @foreach($groupSections as $group)
                     <section class="w-full" data-group-key="{{ $group['key'] }}">
                         @if($group['title'] !== '')
                             <h2 class="mb-3 text-left text-lg font-black leading-tight text-slate-950 dark:text-slate-50 sm:text-xl">
                                 {{ $group['title'] }}
-                            </h2>
+                            </h2> 
                         @endif
 
                         <div class="mx-auto grid w-full justify-center gap-3 sm:gap-4 {{ $group['grid_class'] }}">
@@ -168,6 +60,7 @@
                                 @php
                                     $item = is_array($item) ? $item : [];
                                     $text = trim((string) ($item['text'] ?? $item['label'] ?? $item['title'] ?? $item['name'] ?? ''));
+                                    $plainText = trim(html_entity_decode(strip_tags($text), ENT_QUOTES, 'UTF-8'));
                                     $subtitle = trim((string) ($item['subtitle'] ?? $item['description'] ?? ''));
                                     $description = trim((string) ($item['description'] ?? ''));
                                     $example = trim((string) ($item['example_subtitle'] ?? $item['example'] ?? $item['sentence'] ?? ''));
@@ -175,11 +68,10 @@
                                     $image = trim((string) ($item['image'] ?? ''));
                                     $sound = trim((string) ($item['sound'] ?? $item['audio'] ?? ''));
                                     $script = trim((string) ($item['script'] ?? ''));
-                                    $fallbackLetter = mb_substr($text !== '' ? $text : '?', 0, 1);
+                                    $fallbackLetter = mb_substr($plainText !== '' ? $plainText : '?', 0, 1);
                                     $detailParts = array_values(array_filter([
                                         $subtitle,
                                         $description !== $subtitle ? $description : '',
-                                        $example,
                                     ]));
 
                                     if ($script === '') {
@@ -195,15 +87,17 @@
                                     role="button"
                                     tabindex="0"
                                     class="vocab-card group relative flex w-full max-w-[26rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[2rem] border border-white/70 bg-white/75 shadow-[0_15px_30px_-10px_rgba(0,0,0,0.05)] outline-none backdrop-blur-2xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:border-slate-700 hover:shadow-[0_30px_60px_-15px_rgba(2,6,23,0.28)] focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/80 {{ $image === '' ? 'min-h-[5rem]' : '' }}"
-                                    data-title="{{ $text }}"
+                                    data-title="{{ $plainText }}"
+                                    data-title-html="{{ $text }}"
                                     data-script="{{ $script }}"
+                                    data-example="{{ $example }}"
                                     data-audio="{{ $sound }}"
                                 >
                                     @if($image !== '')
                                         <div class="relative flex aspect-[5/4] items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-800">
                                             <img
                                                 src="{{ $image }}"
-                                                alt="{{ $text }}"
+                                                alt="{{ $plainText }}"
                                                 loading="lazy"
                                                 class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                             >
@@ -217,7 +111,7 @@
                                             @elseif($image === '')
                                                 {{ $fallbackLetter }}
                                             @endif
-                                            {{ $text }}
+                                            {!! $text !!}
                                         </span>
 
                                         @if($sound !== '')
@@ -250,7 +144,7 @@
 
         <div
             id="imageCardSubtitleOverlay"
-            class="pointer-events-none fixed bottom-4 left-1/2 z-[100] max-h-[28dvh] w-[calc(100%-1rem)] -translate-x-1/2 translate-y-4 scale-95 overflow-y-auto rounded-2xl border border-white/60 bg-white/75 px-3.5 py-2.5 text-center opacity-0 backdrop-blur-2xl transition-all duration-500 sm:bottom-10 sm:w-auto sm:min-w-[48rem] sm:max-w-[82vw] sm:rounded-[1.5rem] sm:px-7 sm:py-4 dark:border-white/10 dark:bg-slate-900/80"
+            class="pointer-events-none fixed left-1/2 top-1/2 z-[100] max-h-[42dvh] w-[calc(100%-1rem)] -translate-x-1/2 -translate-y-[42%] scale-95 overflow-y-auto rounded-2xl border border-white/60 bg-white/75 px-3.5 py-2.5 text-center opacity-0 backdrop-blur-2xl transition-all duration-500 sm:w-auto sm:min-w-[48rem] sm:max-w-[82vw] sm:rounded-[1.5rem] sm:px-7 sm:py-4 dark:border-white/10 dark:bg-slate-900/80"
         >
             <p id="imageCardSubtitleText" class="text-sm font-bold leading-snug text-slate-900 dark:text-slate-100 sm:text-2xl sm:leading-[1.35]"></p>
         </div>
@@ -266,11 +160,11 @@
             const audio = new Audio();
 
             audio.preload = "auto";
-            audio.crossOrigin = "anonymous";
 
             let currentCard = null;
             let currentButton = null;
             let currentSrc = "";
+            let currentObjectUrl = "";
             let syncAnimationFrame = null;
 
             const activeWordClasses = ["bg-slate-900", "text-white", "opacity-100", "scale-105", "dark:bg-slate-100", "dark:text-slate-950"];
@@ -280,7 +174,13 @@
             }
 
             function normalizeText(text) {
-                return String(text || "").trim().toLowerCase();
+                return stripHtml(text).toLowerCase();
+            }
+
+            function stripHtml(value) {
+                const template = document.createElement("template");
+                template.innerHTML = String(value || "");
+                return (template.content.textContent || "").trim();
             }
 
             function escapeHtml(value) {
@@ -333,26 +233,53 @@
                 return words;
             }
 
-            function renderSubtitle(title, text) {
+            function fillHtmlOrText(element, value) {
+                if (!element) return;
+
+                const rawValue = String(value || "").trim();
+
+                if (!rawValue) {
+                    element.textContent = "";
+                    return;
+                }
+
+                if (/<[a-z][\s\S]*>/i.test(rawValue)) {
+                    element.innerHTML = rawValue;
+                    return;
+                }
+
+                element.textContent = rawValue;
+            }
+
+            function renderSubtitle(title, titleHtml, text, example) {
                 if (!subtitleText) return [];
 
-                const safeTitle = escapeHtml(title);
-
-                const titleMarkup = safeTitle
-                    ? `<span class="mb-1 mr-1 inline-flex rounded-xl bg-slate-100 px-3 py-1 text-slate-600 shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700">${safeTitle}</span>`
+                const rawTitle = String(titleHtml || title || "").trim();
+                const titleMarkup = rawTitle
+                    ? `<span data-title-host class="mb-1 mr-1 inline-block whitespace-normal rounded-xl bg-slate-100 px-3 py-1 text-slate-600 shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"></span>`
                     : "";
                 const rawText = String(text || "").trim();
+                const rawExample = String(example || "").trim();
+                const exampleMarkup = rawExample
+                    ? `<span data-example-host class="mt-2 block rounded-xl bg-slate-50/80 px-3 py-2 text-sm font-bold leading-snug text-slate-600 ring-1 ring-slate-200/70 dark:bg-slate-800/70 dark:text-slate-300 dark:ring-slate-700 sm:text-base"></span>`
+                    : "";
 
-                subtitleText.innerHTML = `${titleMarkup}<span data-script-host class="inline"></span>`;
+                subtitleText.innerHTML = `${titleMarkup}<span data-script-host class="inline"></span>${exampleMarkup}`;
 
+                const titleHost = subtitleText.querySelector("[data-title-host]");
                 const scriptHost = subtitleText.querySelector("[data-script-host]");
+                const exampleHost = subtitleText.querySelector("[data-example-host]");
+
+                if (titleHost && rawTitle) {
+                    fillHtmlOrText(titleHost, rawTitle);
+                }
 
                 if (scriptHost && rawText) {
-                    if (/<[a-z][\s\S]*>/i.test(rawText)) {
-                        scriptHost.innerHTML = rawText;
-                    } else {
-                        scriptHost.textContent = rawText;
-                    }
+                    fillHtmlOrText(scriptHost, rawText);
+                }
+
+                if (exampleHost && rawExample) {
+                    fillHtmlOrText(exampleHost, rawExample);
                 }
 
                 return wrapSyncWords(scriptHost);
@@ -361,15 +288,15 @@
             function showOverlay() {
                 if (!overlay) return;
 
-                overlay.classList.remove("opacity-0", "translate-y-4", "scale-95");
-                overlay.classList.add("opacity-100", "translate-y-0", "scale-100");
+                overlay.classList.remove("opacity-0", "-translate-y-[42%]", "scale-95");
+                overlay.classList.add("opacity-100", "-translate-y-1/2", "scale-100");
             }
 
             function hideOverlay() {
                 if (!overlay) return;
 
-                overlay.classList.add("opacity-0", "translate-y-4", "scale-95");
-                overlay.classList.remove("opacity-100", "translate-y-0", "scale-100");
+                overlay.classList.add("opacity-0", "-translate-y-[42%]", "scale-95");
+                overlay.classList.remove("opacity-100", "-translate-y-1/2", "scale-100");
             }
 
             function setButtonState(button, isPlaying) {
@@ -421,6 +348,62 @@
                 syncAnimationFrame = null;
             }
 
+            function revokeObjectUrl() {
+                if (!currentObjectUrl) return;
+
+                URL.revokeObjectURL(currentObjectUrl);
+                currentObjectUrl = "";
+            }
+
+            function resolveAudioUrl(src) {
+                try {
+                    return new URL(src, document.baseURI).href;
+                } catch (e) {
+                    return src;
+                }
+            }
+
+            function hasMpegExtension(src) {
+                return /\.(mpeg|mpga)(?:[?#]|$)/i.test(String(src || ""));
+            }
+
+            async function getPlayableAudioSrc(src) {
+                const resolvedSrc = resolveAudioUrl(src);
+
+                if (!hasMpegExtension(resolvedSrc)) {
+                    return resolvedSrc;
+                }
+
+                try {
+                    const url = new URL(resolvedSrc);
+
+                    if (url.origin !== window.location.origin) {
+                        return resolvedSrc;
+                    }
+
+                    const response = await fetch(url.href, {
+                        credentials: "same-origin",
+                        cache: "force-cache",
+                    });
+
+                    if (!response.ok) {
+                        return resolvedSrc;
+                    }
+
+                    const rawBlob = await response.blob();
+                    const audioBlob = rawBlob.type === "audio/mpeg"
+                        ? rawBlob
+                        : new Blob([rawBlob], { type: "audio/mpeg" });
+
+                    revokeObjectUrl();
+                    currentObjectUrl = URL.createObjectURL(audioBlob);
+
+                    return currentObjectUrl;
+                } catch (e) {
+                    return resolvedSrc;
+                }
+            }
+
             function resetCurrent() {
                 setButtonState(currentButton, false);
                 setCardState(currentCard, false);
@@ -440,6 +423,7 @@
                     audio.load();
                 } catch (e) {}
 
+                revokeObjectUrl();
                 resetCurrent();
                 hideOverlay();
             }
@@ -463,12 +447,14 @@
                 update();
             }
 
-            function playCard(card) {
+            async function playCard(card) {
                 if (!card) return;
 
                 const src = card.dataset.audio || "";
                 const script = card.dataset.script || card.dataset.title || "";
                 const title = card.dataset.title || "";
+                const titleHtml = card.dataset.titleHtml || title;
+                const example = card.dataset.example || "";
                 const button = card.querySelector(".speak-btn");
                 const popupText = normalizeText(script) === normalizeText(title) ? "" : script;
 
@@ -479,7 +465,7 @@
 
                 stopAll();
 
-                const words = renderSubtitle(title, popupText);
+                const words = renderSubtitle(title, titleHtml, popupText, example);
                 showOverlay();
 
                 if (!src) {
@@ -494,7 +480,7 @@
                 setCardState(currentCard, true);
 
                 try {
-                    audio.src = currentSrc;
+                    audio.src = await getPlayableAudioSrc(currentSrc);
                     audio.currentTime = 0;
                     audio.onplay = () => syncSubtitles(words);
 

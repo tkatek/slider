@@ -1,7 +1,7 @@
 <?php
 $content = [
     'page_title' => 'New Vocabulary',
-    'title'      => 'Airport Locations:',
+    'title'      => 'Airport Locations',
     'subtitle'   => 'New Vocabulary',
 
     'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-4',

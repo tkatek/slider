@@ -1,13 +1,13 @@
 <?php
+
 $content = [
     'page_title' => 'Key Vocabulary',
     'title'      => 'Key Vocabulary',
     'subtitle'   => 'What is the MOST important thing on your list?',
 
-    'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-5',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-5',
 
     'items' => [
-
         [
             'text'  => 'A bathing suit',
             'emoji' => '🩱',
@@ -128,9 +128,9 @@ $content = [
             'image' => materialAsset('slider/A1/Intermediate/chapter-9/img/slide5/a-flashlight.webp'),
             'sound' => materialAsset('slider/A1/Intermediate/chapter-9/audios/slide5/a-flashlight.mp3'),
         ],
-
     ],
 ];
+
 ?>
 
-@include("slider.vocab.image-emoji-audio", ['content' => $content])
+@include('slider.vocab.image-card', ['content' => $content])

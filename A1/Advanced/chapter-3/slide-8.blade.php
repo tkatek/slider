@@ -3,7 +3,7 @@
         'page_title' => 'New Language',
         'title'      => 'New Language',
         'subtitle'   => '3️⃣ Polite Expressions',
-        'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4',
+        'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4',
 
         'items' => [
             [
@@ -52,4 +52,4 @@
     ];
 @endphp
 
-@include('slider.vocab.sentence-audio', ['content' => $content])
+@include('slider.vocab.image-card', ['content' => $content])
