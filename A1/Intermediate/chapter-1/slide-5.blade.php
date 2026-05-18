@@ -4,17 +4,19 @@ $content = [
     'page_title' => 'New Vocabulary',
     'title'      => 'New Vocabulary',
     'subtitle'   => '',
+    'popup' => 'card',
 
     'groups' => [
         [
             'key'        => 'play',
-            'title'      => '▶️ Play',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-6',
+            'sound'      => materialAsset('slider/A1/Intermediate/chapter-1/audio/slide5/play.mp3'),
+            'title'      => '🏟️ Play',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-6 xl:grid-cols-6',
             'items'      => [
                 [
                     'text'  => 'football',
                     'emoji' => '⚽',
-                    'sound' => materialAsset('slider/A1/Intermediate/chapter-1/audio/slide-5/football.mp3'),
+                    'sound' => materialAsset('slider/A1/Intermediate/chapter-1/audio/slide5/football.mp3'),
                     'image' => materialAsset('slider/A1/Intermediate/chapter-1/img/slide-5/football.webp'),
                 ],
                 [
@@ -51,8 +53,9 @@ $content = [
         ],
         [
             'key'        => 'go',
+            'sound'      => materialAsset('slider/A1/Intermediate/chapter-1/audio/slide5/go.mp3'),
             'title'      => '🚶 Go',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-5',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-4',
             'items'      => [
                 [
                     'text'  => 'swimming',
@@ -106,8 +109,9 @@ $content = [
         ],
         [
             'key'        => 'do',
+            'sound'      => materialAsset('slider/A1/Intermediate/chapter-1/audio/slide5/do.mp3'),
             'title'      => '💪 Do',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-5',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-5 xl:grid-cols-5',
             'items'      => [
                 [
                     'text'  => 'karate',
@@ -130,7 +134,7 @@ $content = [
                 [
                     'text'  => 'yoga',
                     'emoji' => '🧘',
-                    'sound' => materialAsset('slider/A1/Intermediate/chapter-1/audio/slide-5/yoga.mp3'),
+                    'sound' => materialAsset('slider/A1/Intermediate/chapter-1/audio/slide5/yoga.mp3'),
                     'image' => materialAsset('slider/A1/Intermediate/chapter-1/img/slide-5/yoga.webp'),
                 ],
                 [

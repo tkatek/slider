@@ -10,7 +10,16 @@
     $items = is_array($content['items'] ?? null) ? array_values($content['items']) : [];
     $groups = is_array($content['groups'] ?? null) ? array_values($content['groups']) : [];
     $primaryGradient = trim((string) ($theme['primary_color'] ?? 'bg-[image:var(--top-bar-gradient)]'));
+    $buttonGradient = trim((string) ($theme['button_primary_color'] ?? 'bg-[image:var(--top-bar-gradient)]'));
+    $requestedPopup = (string) ($content['popup'] ?? $theme['vocab_popup'] ?? 'text');
+    $popup = in_array($requestedPopup, ['text', 'card'], true)
+        ? $requestedPopup
+        : 'text';
     $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+    $audioButtonClass = 'border-white/20 ' . $buttonGradient . ' text-white shadow-lg shadow-slate-900/10 hover:shadow-xl';
+    $audioButtonIdleClass = $isOrangeTheme
+        ? 'border-orange-100 bg-orange-50 text-orange-600 hover:border-orange-300 hover:bg-orange-100 dark:border-orange-400/20 dark:bg-orange-950/35 dark:text-orange-200'
+        : 'border-indigo-100 bg-indigo-50 text-indigo-600 hover:border-indigo-300 hover:bg-indigo-100 dark:border-indigo-400/20 dark:bg-indigo-950/35 dark:text-indigo-200';
     $groupTitleShellClass = $isOrangeTheme
         ? 'border-orange-100 bg-orange-50/85 ring-orange-100/80 dark:border-orange-400/20 dark:bg-orange-950/25 dark:ring-orange-400/20'
         : 'border-indigo-100 bg-indigo-50/85 ring-indigo-100/80 dark:border-indigo-400/20 dark:bg-indigo-950/25 dark:ring-indigo-400/20';
@@ -36,6 +45,7 @@
         $groupSections[] = [
             'key' => 'sentence-group',
             'title' => trim((string) ($content['sentence_group_title'] ?? $content['sentences_title'] ?? '')),
+            'sound' => trim((string) ($content['sentence_group_sound'] ?? $content['sentences_sound'] ?? '')),
             'grid_class' => $sentenceGridClass,
             'items' => $sentences,
         ];
@@ -53,9 +63,10 @@
         }
 
         $groupSections[] = [
-            'key' => (string) ($group['key'] ?? ('group-' . $index)),  
+            'key' => (string) ($group['key'] ?? ('group-' . $index)),
             'title' => trim((string) ($group['title'] ?? '')),
-            'grid_class' => trim((string) ($group['grid_class'] ?? $gridClass)), 
+            'sound' => trim((string) ($group['sound'] ?? $group['audio'] ?? '')),
+            'grid_class' => trim((string) ($group['grid_class'] ?? $gridClass)),
             'items' => $groupItems,
         ];
     }
@@ -64,17 +75,18 @@
         $groupSections[] = [
             'key' => 'group-0',
             'title' => '',
+            'sound' => '',
             'grid_class' => $gridClass,
             'items' => $items,
         ];
     }
 @endphp
 
-@section('title', $pageTitle) 
+@section('title', $pageTitle)
 
 @section('content')
     <div class="relative flex min-h-[100dvh] w-full items-center overflow-x-hidden overflow-y-auto">
-        <main class="mx-auto w-full max-w-[1320px] px-4 py-10 sm:px-8 sm:py-12">
+        <main class="mx-auto -mt-4 w-full max-w-[1320px] px-4 pb-20 pt-10 sm:-mt-8 sm:px-8 sm:pb-20 sm:pt-12 lg:-mt-10">
             @include('slider.components.title-subtitle')
 
             <div class="mt-6 flex flex-col gap-7 sm:mt-8 sm:gap-8">
@@ -96,13 +108,18 @@
                                 <span class="min-w-0 bg-clip-text text-transparent {{ $primaryGradient }}">
                                     {{ $groupTitleText }}
                                 </span>
-                            </h2> 
+                            </h2>
                         @endif
 
                         <div class="mx-auto grid w-full justify-center gap-3 sm:gap-4 {{ $group['grid_class'] }}">
                             @foreach($group['items'] as $item)
                                 @php
                                     $item = is_array($item) ? $item : [];
+                                    $popupGroupTitle = trim((string) ($group['title'] ?? ''));
+                                    $popupGroupSound = trim((string) ($group['sound'] ?? ''));
+                                    $popupGroupParts = $splitLeadingEmoji($popupGroupTitle);
+                                    $popupGroupEmoji = $popupGroupParts['emoji'];
+                                    $popupGroupText = $popupGroupParts['text'];
                                     $text = trim((string) ($item['text_html'] ?? $item['html'] ?? $item['text'] ?? $item['label'] ?? $item['title'] ?? $item['name'] ?? ''));
                                     $plainText = trim(html_entity_decode(strip_tags($text), ENT_QUOTES, 'UTF-8'));
                                     $subtitle = trim((string) ($item['subtitle'] ?? $item['description'] ?? ''));
@@ -133,9 +150,16 @@
                                     class="vocab-card group relative flex w-full max-w-[26rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[2rem] border border-white/70 bg-white/75 shadow-[0_15px_30px_-10px_rgba(0,0,0,0.05)] outline-none backdrop-blur-2xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:border-slate-700 hover:shadow-[0_30px_60px_-15px_rgba(2,6,23,0.28)] focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/80 {{ $image === '' ? 'min-h-[5rem]' : '' }}"
                                     data-title="{{ $plainText }}"
                                     data-title-html="{{ $text }}"
+                                    data-subtitle="{{ $subtitle }}"
                                     data-script="{{ $script }}"
                                     data-example="{{ $example }}"
                                     data-audio="{{ $sound }}"
+                                    data-image="{{ $image }}"
+                                    data-emoji="{{ $emoji }}"
+                                    data-group-title="{{ $popupGroupTitle }}"
+                                    data-group-emoji="{{ $popupGroupEmoji }}"
+                                    data-group-text="{{ $popupGroupText }}"
+                                    data-group-audio="{{ $popupGroupSound }}"
                                 >
                                     @if($image !== '')
                                         <div class="relative flex aspect-[5/4] items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-800">
@@ -148,36 +172,50 @@
                                         </div>
                                     @endif
 
-                                    <div class="flex {{ $image === '' ? 'min-h-[4.5rem]' : 'min-h-[4rem]' }} items-center justify-between gap-2 bg-white px-3.5 py-3.5 transition-colors duration-300 dark:bg-slate-900 sm:px-4 sm:py-4">
-                                        <span class="min-w-0 break-words {{ $image === '' ? 'text-base sm:text-lg' : 'text-sm sm:text-base' }} font-extrabold leading-tight text-slate-900 dark:text-slate-100">
-                                            @if($emoji !== '')
-                                                <span class="mr-1.5 inline-block leading-none align-[-0.08em]">{{ $emoji }}</span>
-                                            @elseif($image === '')
-                                                <span class="mr-1.5 inline-block leading-none align-[-0.08em]">{{ $fallbackLetter }}</span>
+                                    @if($sound !== '')
+                                        <button
+                                            type="button"
+                                            class="speak-btn absolute right-3 top-3 z-10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 dark:bg-slate-900/85 sm:h-9 sm:w-9 {{ $audioButtonIdleClass }}"
+                                            aria-label="Play audio"
+                                        >
+                                            <svg class="js-static-icon h-4 w-4 sm:h-[1.05rem] sm:w-[1.05rem]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                            </svg>
+
+                                            <span class="js-wave-wrap hidden items-center gap-0.5" aria-hidden="true">
+                                                <span class="h-1.5 w-[2px] animate-pulse rounded-full bg-current"></span>
+                                                <span class="h-3 w-[2px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
+                                                <span class="h-2 w-[2px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
+                                            </span>
+                                        </button>
+                                    @endif
+
+                                    <div class="{{ $image === '' ? 'min-h-[4.75rem] pr-11 sm:pr-12' : 'min-h-[4.25rem]' }} bg-white px-3.5 py-3.5 transition-colors duration-300 dark:bg-slate-900 sm:px-4 sm:py-4">
+                                        <div class="min-w-0 flex-1">
+                                            <p class="min-w-0 break-words {{ $image === '' ? 'text-base sm:text-lg' : 'text-sm sm:text-base' }} font-extrabold leading-tight text-slate-950 dark:text-slate-100">
+                                                @if($emoji !== '')
+                                                    <span class="mr-1.5 inline-block leading-none align-[-0.08em]">{{ $emoji }}</span>
+                                                @elseif($image === '')
+                                                    <span class="mr-1.5 inline-block leading-none align-[-0.08em]">{{ $fallbackLetter }}</span>
+                                                @endif
+                                                {!! $text !!}
+                                            </p>
+
+                                            @if($subtitle !== '')
+                                                <p class="mt-1.5 break-words text-xs font-bold leading-snug text-slate-500 dark:text-slate-300 sm:text-sm">
+                                                    {!! $subtitle !!}
+                                                </p>
                                             @endif
-                                            {!! $text !!}
-                                        </span>
 
-                                        @if($sound !== '')
-                                            <button
-                                                type="button"
-                                                class="speak-btn inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-500 transition-all duration-300 hover:-rotate-6 hover:border-slate-700 hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 sm:h-8 sm:w-8"
-                                                aria-label="Play audio"
-                                            >
-                                                <svg class="js-static-icon h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                                    <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-                                                </svg>
-
-                                                <span class="js-wave-wrap hidden items-center gap-0.5" aria-hidden="true">
-                                                    <span class="h-1.5 w-[2px] animate-pulse rounded-full bg-current"></span>
-                                                    <span class="h-3 w-[2px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
-                                                    <span class="h-2 w-[2px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
-                                                </span>
-                                            </button>
-                                        @endif
+                                            @if($example !== '')
+                                                <p class="mt-2 break-words rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-1.5 text-[11px] font-bold leading-snug text-slate-500 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300 sm:text-xs">
+                                                    {!! $example !!}
+                                                </p>
+                                            @endif
+                                        </div>
                                     </div>
 
-                                    <div class="playing-indicator absolute bottom-0 left-0 h-1 w-0 bg-[linear-gradient(135deg,#57534e,#3f3f46,#0f172a)] transition-[width] duration-100"></div>
+                                    <div class="playing-indicator absolute bottom-0 left-0 h-1 w-0 {{ $buttonGradient }} transition-[width] duration-100"></div>
                                 </article>
                             @endforeach
                         </div>
@@ -188,9 +226,68 @@
 
         <div
             id="imageCardSubtitleOverlay"
-            class="pointer-events-none fixed left-1/2 top-1/2 z-[100] max-h-[42dvh] w-[calc(100%-1rem)] -translate-x-1/2 -translate-y-[42%] scale-95 overflow-y-auto rounded-2xl border border-white/60 bg-white/75 px-3.5 py-2.5 text-center opacity-0 backdrop-blur-2xl transition-all duration-500 sm:w-auto sm:min-w-[48rem] sm:max-w-[82vw] sm:rounded-[1.5rem] sm:px-7 sm:py-4 dark:border-white/10 dark:bg-slate-900/80"
+            class="pointer-events-none fixed bottom-7 left-1/2 z-[100] max-h-[34dvh] w-[calc(100%-1rem)] -translate-x-1/2 translate-y-4 scale-95 overflow-y-auto rounded-2xl border border-white/60 bg-white/85 px-3.5 py-2.5 text-center opacity-0 shadow-2xl shadow-slate-900/10 backdrop-blur-2xl transition-all duration-300 sm:bottom-9 sm:w-auto sm:min-w-[42rem] sm:max-w-[82vw] sm:rounded-[1.5rem] sm:px-7 sm:py-4 dark:border-white/10 dark:bg-slate-900/85"
         >
             <p id="imageCardSubtitleText" class="text-sm font-bold leading-snug text-slate-900 dark:text-slate-100 sm:text-2xl sm:leading-[1.35]"></p>
+        </div>
+
+        <div
+            id="imageCardDetailOverlay"
+            class="pointer-events-none invisible fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/45 px-4 py-6 opacity-0 backdrop-blur-sm transition-opacity duration-200"
+            aria-hidden="true"
+        >
+            <article class="relative w-full max-w-[35rem] translate-y-3 scale-95 overflow-hidden rounded-[1.85rem] border border-white/80 bg-white p-2.5 shadow-2xl shadow-slate-950/25 transition-all duration-200 dark:border-white/10 dark:bg-slate-950 sm:p-3 md:max-w-[48rem] md:rounded-[2rem]">
+                <button
+                    id="imageCardDetailClose"
+                    type="button"
+                    class="absolute right-4 top-4 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-500 shadow-sm ring-1 ring-slate-200/80 backdrop-blur transition hover:bg-slate-950 hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/30 dark:bg-slate-900/90 dark:text-slate-300 dark:ring-slate-700/80 dark:hover:bg-white dark:hover:text-slate-950"
+                    aria-label="Close"
+                >
+                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6L6 18"/>
+                    </svg>
+                </button>
+
+                <div class="max-h-[86dvh] overflow-y-auto pr-1 md:max-h-none md:overflow-visible md:pr-0">
+                    <div class="grid gap-4 md:grid-cols-2 md:items-stretch md:gap-4">
+                        <div id="imageCardDetailImageWrap" class="hidden aspect-[5/4] overflow-hidden rounded-[1.45rem] bg-slate-100 dark:bg-slate-800 md:max-h-[17.5rem]">
+                            <img id="imageCardDetailImage" src="" alt="" class="h-full w-full object-cover">
+                        </div>
+
+                        <div class="flex min-w-0 flex-col justify-center gap-4 px-1 pb-1 pt-10 md:min-h-[17.5rem] md:px-3 md:pb-3 md:pl-2 md:pr-9 md:pt-8">
+                            <div class="min-w-0">
+                                <div id="imageCardDetailGroupWrap" class="mb-3 hidden">
+                                    <div class="inline-flex w-fit max-w-full items-center gap-2 rounded-2xl border px-3 py-1.5 text-left text-sm font-black leading-tight shadow-sm ring-1 sm:text-base {{ $groupTitleShellClass }}">
+                                        <span id="imageCardDetailGroupEmoji" class="hidden shrink-0 text-base leading-none sm:text-lg"></span>
+                                        <span id="imageCardDetailGroupDot" class="h-2.5 w-2.5 shrink-0 rounded-full {{ $primaryGradient }}"></span>
+                                        <span id="imageCardDetailGroupText" class="min-w-0 bg-clip-text text-transparent {{ $primaryGradient }}"></span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 flex min-w-0 items-start gap-2.5">
+                                    <span id="imageCardDetailEmoji" class="hidden shrink-0 text-2xl leading-none sm:text-3xl"></span>
+                                    <h2 id="imageCardDetailTitle" class="min-w-0 text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl"></h2>
+                                </div>
+
+                                <div id="imageCardDetailSubtitleWrap" class="hidden">
+                                    <div id="imageCardDetailSubtitle" class="text-base font-bold leading-snug text-slate-500 dark:text-slate-300 sm:text-lg"></div>
+                                </div>
+
+                                <div id="imageCardDetailExampleWrap" class="mt-3 hidden rounded-2xl border border-slate-200 bg-slate-50/90 px-4 py-3 dark:border-slate-700 dark:bg-slate-900/70">
+                                    <div id="imageCardDetailExample" class="text-sm font-bold leading-snug text-slate-600 dark:text-slate-200 sm:text-base"></div>
+                                </div>
+                            </div>
+
+                            <button
+                                id="imageCardDetailAudio"
+                                type="button"
+                                class="speak-btn hidden"
+                                aria-label="Play audio"
+                            ></button>
+                        </div>
+                    </div>
+                </div>
+            </article>
         </div>
     </div>
 @endsection
@@ -201,7 +298,26 @@
             const cards = Array.from(document.querySelectorAll(".vocab-card"));
             const overlay = document.getElementById("imageCardSubtitleOverlay");
             const subtitleText = document.getElementById("imageCardSubtitleText");
+            const detailOverlay = document.getElementById("imageCardDetailOverlay");
+            const detailPanel = detailOverlay?.querySelector("article");
+            const detailClose = document.getElementById("imageCardDetailClose");
+            const detailImageWrap = document.getElementById("imageCardDetailImageWrap");
+            const detailImage = document.getElementById("imageCardDetailImage");
+            const detailGroupWrap = document.getElementById("imageCardDetailGroupWrap");
+            const detailGroupEmoji = document.getElementById("imageCardDetailGroupEmoji");
+            const detailGroupDot = document.getElementById("imageCardDetailGroupDot");
+            const detailGroupText = document.getElementById("imageCardDetailGroupText");
+            const detailEmoji = document.getElementById("imageCardDetailEmoji");
+            const detailTitle = document.getElementById("imageCardDetailTitle");
+            const detailSubtitleWrap = document.getElementById("imageCardDetailSubtitleWrap");
+            const detailSubtitle = document.getElementById("imageCardDetailSubtitle");
+            const detailExampleWrap = document.getElementById("imageCardDetailExampleWrap");
+            const detailExample = document.getElementById("imageCardDetailExample");
+            const detailAudio = document.getElementById("imageCardDetailAudio");
             const audio = new Audio();
+            const popupMode = @json($popup);
+            const idleAudioClasses = @json(preg_split('/\s+/', trim($audioButtonIdleClass)));
+            const activeAudioClasses = @json(preg_split('/\s+/', trim($audioButtonClass)));
 
             audio.preload = "auto";
 
@@ -210,6 +326,10 @@
             let currentSrc = "";
             let currentObjectUrl = "";
             let syncAnimationFrame = null;
+            let detailCard = null;
+            let currentAudioQueue = [];
+            let currentAudioQueueIndex = 0;
+            let currentSubtitleWords = [];
 
             const activeWordClasses = ["bg-slate-900", "text-white", "opacity-100", "scale-105", "dark:bg-slate-100", "dark:text-slate-950"];
 
@@ -332,23 +452,141 @@
             function showOverlay() {
                 if (!overlay) return;
 
-                overlay.classList.remove("opacity-0", "-translate-y-[42%]", "scale-95");
-                overlay.classList.add("opacity-100", "-translate-y-1/2", "scale-100");
+                overlay.classList.remove("opacity-0", "translate-y-4", "scale-95");
+                overlay.classList.add("opacity-100", "translate-y-0", "scale-100");
             }
 
             function hideOverlay() {
                 if (!overlay) return;
 
-                overlay.classList.add("opacity-0", "-translate-y-[42%]", "scale-95");
-                overlay.classList.remove("opacity-100", "-translate-y-1/2", "scale-100");
+                overlay.classList.add("opacity-0", "translate-y-4", "scale-95");
+                overlay.classList.remove("opacity-100", "translate-y-0", "scale-100");
+            }
+
+            function setVisible(element, shouldShow, visibleDisplay = "block") {
+                if (!element) return;
+
+                element.classList.toggle("hidden", !shouldShow);
+
+                if (shouldShow && visibleDisplay !== "block") {
+                    element.classList.add(visibleDisplay);
+                } else if (!shouldShow && visibleDisplay !== "block") {
+                    element.classList.remove(visibleDisplay);
+                }
+            }
+
+            function setAdaptiveTextSize(element, text, shortClasses, mediumClasses, longClasses) {
+                if (!element) return;
+
+                element.classList.remove(...shortClasses, ...mediumClasses, ...longClasses);
+
+                const length = stripHtml(text).length;
+                const classes = length > 90 ? longClasses : (length > 38 ? mediumClasses : shortClasses);
+
+                element.classList.add(...classes);
+            }
+
+            function openDetail(card) {
+                if (!card || !detailOverlay) return;
+
+                detailCard = card;
+                const titleHtml = card.dataset.titleHtml || card.dataset.title || "";
+                const title = card.dataset.title || "";
+                const script = card.dataset.script || "";
+                const subtitle = card.dataset.subtitle || (normalizeText(script) === normalizeText(title) ? "" : script);
+                const example = card.dataset.example || "";
+                const image = card.dataset.image || "";
+                const sound = card.dataset.audio || "";
+                const emoji = card.dataset.emoji || "";
+                const groupTitle = card.dataset.groupTitle || "";
+                const groupEmoji = card.dataset.groupEmoji || "";
+                const groupText = card.dataset.groupText || groupTitle;
+
+                fillHtmlOrText(detailTitle, titleHtml || title);
+                fillHtmlOrText(detailGroupEmoji, groupEmoji);
+                fillHtmlOrText(detailGroupText, groupText);
+                fillHtmlOrText(detailEmoji, emoji);
+                fillHtmlOrText(detailSubtitle, subtitle);
+                fillHtmlOrText(detailExample, example);
+
+                setAdaptiveTextSize(
+                    detailTitle,
+                    titleHtml || title,
+                    ["text-3xl", "sm:text-4xl"],
+                    ["text-2xl", "sm:text-3xl"],
+                    ["text-xl", "sm:text-2xl"]
+                );
+
+                setAdaptiveTextSize(
+                    detailSubtitle,
+                    subtitle,
+                    ["text-lg", "sm:text-xl"],
+                    ["text-base", "sm:text-lg"],
+                    ["text-sm", "sm:text-base"]
+                );
+
+                setAdaptiveTextSize(
+                    detailExample,
+                    example,
+                    ["text-sm", "sm:text-base"],
+                    ["text-xs", "sm:text-sm"],
+                    ["text-xs", "sm:text-xs"]
+                );
+
+                if (detailImage && image) {
+                    detailImage.src = image;
+                    detailImage.alt = title;
+                }
+
+                setVisible(detailImageWrap, image !== "");
+                setVisible(detailGroupWrap, groupTitle !== "");
+                setVisible(detailGroupEmoji, groupTitle !== "" && groupEmoji !== "");
+                setVisible(detailGroupDot, groupTitle !== "" && groupEmoji === "");
+                setVisible(detailEmoji, emoji !== "");
+                setVisible(detailSubtitleWrap, subtitle !== "");
+                setVisible(detailExampleWrap, example !== "");
+                setVisible(detailAudio, sound !== "", "inline-flex");
+
+                detailOverlay.classList.remove("invisible", "pointer-events-none");
+                detailOverlay.setAttribute("aria-hidden", "false");
+
+                requestAnimationFrame(() => {
+                    detailOverlay.classList.remove("opacity-0");
+                    detailOverlay.classList.add("opacity-100");
+                    detailPanel?.classList.remove("translate-y-3", "scale-95");
+                    detailPanel?.classList.add("translate-y-0", "scale-100");
+                });
+            }
+
+            function closeDetail() {
+                if (!detailOverlay) return;
+
+                if (currentButton === detailAudio) {
+                    stopAll();
+                }
+
+                detailOverlay.classList.add("opacity-0");
+                detailOverlay.classList.remove("opacity-100");
+                detailOverlay.classList.add("pointer-events-none");
+                detailPanel?.classList.add("translate-y-3", "scale-95");
+                detailPanel?.classList.remove("translate-y-0", "scale-100");
+                detailOverlay.setAttribute("aria-hidden", "true");
+
+                window.setTimeout(() => {
+                    detailOverlay.classList.add("invisible");
+                    detailCard = null;
+                }, 180);
             }
 
             function setButtonState(button, isPlaying) {
                 if (!button) return;
 
-                button.classList.toggle("border-slate-700", isPlaying);
-                button.classList.toggle("bg-slate-800", isPlaying);
-                button.classList.toggle("text-white", isPlaying);
+                idleAudioClasses.forEach((className) => {
+                    if (className) button.classList.toggle(className, !isPlaying);
+                });
+                activeAudioClasses.forEach((className) => {
+                    if (className) button.classList.toggle(className, isPlaying);
+                });
                 button.querySelector(".js-static-icon")?.classList.toggle("hidden", isPlaying);
                 button.querySelector(".js-wave-wrap")?.classList.toggle("hidden", !isPlaying);
                 button.querySelector(".js-wave-wrap")?.classList.toggle("flex", isPlaying);
@@ -455,6 +693,9 @@
                 currentCard = null;
                 currentButton = null;
                 currentSrc = "";
+                currentAudioQueue = [];
+                currentAudioQueueIndex = 0;
+                currentSubtitleWords = [];
                 clearWordHighlights();
                 cancelSync();
             }
@@ -491,42 +732,27 @@
                 update();
             }
 
-            async function playCard(card) {
-                if (!card) return;
+            async function playQueuedAudio() {
+                if (!currentCard || currentAudioQueue.length === 0) return;
 
-                const src = card.dataset.audio || "";
-                const script = card.dataset.script || card.dataset.title || "";
-                const title = card.dataset.title || "";
-                const titleHtml = card.dataset.titleHtml || title;
-                const example = card.dataset.example || "";
-                const button = card.querySelector(".speak-btn");
-                const popupText = normalizeText(script) === normalizeText(title) ? "" : script;
+                currentSrc = currentAudioQueue[currentAudioQueueIndex] || "";
 
-                if (currentCard === card && !audio.paused) {
+                if (!currentSrc) {
                     stopAll();
                     return;
                 }
 
-                stopAll();
-
-                const words = renderSubtitle(title, titleHtml, popupText, example);
-                showOverlay();
-
-                if (!src) {
-                    return;
-                }
-
-                currentCard = card;
-                currentButton = button; 
-                currentSrc = src;
-
-                setButtonState(currentButton, true);
-                setCardState(currentCard, true);
-
                 try {
                     audio.src = await getPlayableAudioSrc(currentSrc);
                     audio.currentTime = 0;
-                    audio.onplay = () => syncSubtitles(words);
+                    audio.onplay = () => {
+                        if (currentAudioQueueIndex === currentAudioQueue.length - 1) {
+                            syncSubtitles(currentSubtitleWords);
+                        } else {
+                            cancelSync();
+                            clearWordHighlights();
+                        }
+                    };
 
                     const playPromise = audio.play();
                     if (playPromise && typeof playPromise.catch === "function") {
@@ -537,17 +763,127 @@
                 }
             }
 
+            function playNextQueuedAudio() {
+                cancelSync();
+                clearWordHighlights();
+
+                if (currentAudioQueueIndex < currentAudioQueue.length - 1) {
+                    currentAudioQueueIndex += 1;
+                    playQueuedAudio();
+                    return;
+                }
+
+                stopAll();
+            }
+
+            async function playCard(card, buttonOverride = null) {
+                if (!card) return;
+
+                const src = card.dataset.audio || "";
+                const groupSrc = card.dataset.groupAudio || "";
+                const script = card.dataset.script || card.dataset.title || "";
+                const title = card.dataset.title || "";
+                const titleHtml = card.dataset.titleHtml || title;
+                const example = card.dataset.example || "";
+                const button = buttonOverride || card.querySelector(".speak-btn");
+                const popupText = normalizeText(script) === normalizeText(title) ? "" : script;
+
+                if (currentCard === card && !audio.paused) {
+                    if (popupMode === "card") {
+                        openDetail(card);
+                    }
+                    stopAll();
+                    return;
+                }
+
+                stopAll();
+
+                const words = popupMode === "text"
+                    ? renderSubtitle(title, titleHtml, popupText, example)
+                    : [];
+
+                if (popupMode === "text") {
+                    showOverlay();
+                }
+
+                if (!src) {
+                    return;
+                }
+
+                currentCard = card;
+                currentButton = button;
+                currentSubtitleWords = words;
+                currentAudioQueue = [groupSrc, src].filter((value, index, list) => value && list.indexOf(value) === index);
+                currentAudioQueueIndex = 0;
+
+                setButtonState(currentButton, true);
+                setCardState(currentCard, true);
+
+                playQueuedAudio();
+            }
+
             cards.forEach((card) => {
-                card.addEventListener("click", () => playCard(card));
+                card.addEventListener("click", (event) => {
+                    const audioButton = event.target.closest(".speak-btn");
+
+                    if (audioButton) {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        if (popupMode === "card") {
+                            openDetail(card);
+                            playCard(card, audioButton);
+                            return;
+                        }
+
+                        playCard(card, audioButton);
+                        return;
+                    }
+
+                    if (popupMode === "card") {
+                        openDetail(card);
+                        playCard(card, card.querySelector(".speak-btn"));
+                        return;
+                    }
+
+                    playCard(card);
+                });
                 card.addEventListener("keydown", (event) => {
                     if (event.target?.closest?.(".speak-btn")) return;
                     if (event.key !== "Enter" && event.key !== " ") return;
                     event.preventDefault();
+
+                    if (popupMode === "card") {
+                        openDetail(card);
+                        playCard(card, card.querySelector(".speak-btn"));
+                        return;
+                    }
+
                     playCard(card);
                 });
             });
 
-            audio.addEventListener("ended", stopAll);
+            detailAudio?.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                if (detailCard) playCard(detailCard, detailAudio);
+            });
+
+            detailClose?.addEventListener("click", closeDetail);
+
+            detailOverlay?.addEventListener("click", (event) => {
+                if (event.target === detailOverlay) {
+                    closeDetail();
+                }
+            });
+
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape") {
+                    closeDetail();
+                }
+            });
+
+            audio.addEventListener("ended", playNextQueuedAudio);
             audio.addEventListener("error", stopAll);
 
             document.addEventListener("visibilitychange", () => {
@@ -563,7 +899,7 @@
                 }
             });
 
-            observer.observe(document.body, { 
+            observer.observe(document.body, {  
                 childList: true,
                 subtree: true
             });
