@@ -38,6 +38,13 @@
             'text' => $value,
         ];
     };
+    $makeGridComfortable = static function (string $value): string {
+        $value = trim($value);
+        $value = str_replace('xl:grid-cols-6', 'xl:grid-cols-5 min-[1500px]:grid-cols-6', $value);
+        $value = str_replace('lg:grid-cols-6', 'lg:grid-cols-5 min-[1500px]:grid-cols-6', $value);
+
+        return $value;
+    };
 
     $groupSections = [];
 
@@ -86,32 +93,33 @@
 
 @section('content')
     <div class="relative flex min-h-[100dvh] w-full items-center overflow-x-hidden overflow-y-auto">
-        <main class="mx-auto -mt-4 w-full max-w-[1320px] px-4 pb-20 pt-10 sm:-mt-8 sm:px-8 sm:pb-20 sm:pt-12 lg:-mt-10">
+        <main class="mx-auto -mt-3 w-full max-w-[1440px] px-4 pb-20 pt-10 sm:-mt-5 sm:px-8 sm:pb-20 sm:pt-12 lg:-mt-6">
             @include('slider.components.title-subtitle')
 
-            <div class="mt-6 flex flex-col gap-7 sm:mt-8 sm:gap-8">
+            <div class="mt-8 flex flex-col gap-8 sm:mt-10 sm:gap-10">
                 @foreach($groupSections as $group)
                     <section class="w-full" data-group-key="{{ $group['key'] }}">
-                        @if($group['title'] !== '')
-                            @php
-                                $groupTitleParts = $splitLeadingEmoji($group['title']);
-                                $groupTitleEmoji = $groupTitleParts['emoji'];
-                                $groupTitleText = $groupTitleParts['text'];
-                            @endphp
-                            <h2 class="mb-3 inline-flex w-fit max-w-full items-center gap-2 rounded-2xl border px-3 py-1.5 text-left text-lg font-black leading-tight shadow-sm ring-1 sm:text-xl {{ $groupTitleShellClass }}">
-                                @if($groupTitleEmoji !== '')
-                                    <span class="shrink-0 text-lg leading-none sm:text-xl">{{ $groupTitleEmoji }}</span>
-                                @else
-                                    <span class="h-2.5 w-2.5 shrink-0 rounded-full {{ $primaryGradient }}"></span>
-                                @endif
+                        <div class="mx-auto w-full max-w-[92rem]">
+                            @if($group['title'] !== '')
+                                @php
+                                    $groupTitleParts = $splitLeadingEmoji($group['title']);
+                                    $groupTitleEmoji = $groupTitleParts['emoji'];
+                                    $groupTitleText = $groupTitleParts['text'];
+                                @endphp
+                                <h2 class="mb-4 inline-flex w-fit max-w-full items-center gap-2 rounded-2xl border px-3 py-1.5 text-left text-base font-black leading-tight shadow-sm ring-1 sm:text-lg {{ $groupTitleShellClass }}">
+                                    @if($groupTitleEmoji !== '')
+                                        <span class="shrink-0 text-base leading-none sm:text-lg">{{ $groupTitleEmoji }}</span>
+                                    @else
+                                        <span class="h-2.5 w-2.5 shrink-0 rounded-full {{ $primaryGradient }}"></span>
+                                    @endif
 
-                                <span class="min-w-0 bg-clip-text text-transparent {{ $primaryGradient }}">
-                                    {{ $groupTitleText }}
-                                </span>
-                            </h2>
-                        @endif
+                                    <span class="min-w-0 bg-clip-text text-transparent {{ $primaryGradient }}">
+                                        {{ $groupTitleText }}
+                                    </span>
+                                </h2>
+                            @endif
 
-                        <div class="mx-auto grid w-full justify-center gap-3 sm:gap-4 {{ $group['grid_class'] }}">
+                            <div class="mx-auto grid w-full justify-center gap-3.5 sm:gap-5 {{ $makeGridComfortable($group['grid_class']) }}">
                             @foreach($group['items'] as $item)
                                 @php
                                     $item = is_array($item) ? $item : [];
@@ -127,6 +135,7 @@
                                     $example = trim((string) ($item['example_subtitle'] ?? $item['example'] ?? $item['sentence'] ?? ''));
                                     $emoji = trim((string) ($item['emoji'] ?? ''));
                                     $image = trim((string) ($item['image'] ?? ''));
+                                    $hasImage = $image !== '';
                                     $sound = trim((string) ($item['sound'] ?? $item['audio'] ?? ''));
                                     $script = trim((string) ($item['script'] ?? ''));
                                     $fallbackLetter = mb_substr($plainText !== '' ? $plainText : '?', 0, 1);
@@ -147,7 +156,7 @@
                                 <article
                                     role="button"
                                     tabindex="0"
-                                    class="vocab-card group relative flex w-full max-w-[26rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[2rem] border border-white/70 bg-white/75 shadow-[0_15px_30px_-10px_rgba(0,0,0,0.05)] outline-none backdrop-blur-2xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:border-slate-700 hover:shadow-[0_30px_60px_-15px_rgba(2,6,23,0.28)] focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/80 {{ $image === '' ? 'min-h-[5rem]' : '' }}"
+                                    class="vocab-card group relative flex w-full justify-self-center min-w-0 cursor-pointer select-none overflow-hidden border border-white/70 bg-white/75 outline-none backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.015] hover:border-slate-700 hover:shadow-[0_26px_52px_-18px_rgba(2,6,23,0.24)] focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/80 {{ $hasImage ? 'max-w-[28rem] flex-col rounded-[1.75rem] shadow-[0_15px_30px_-10px_rgba(0,0,0,0.05)]' : 'min-h-[7.25rem] max-w-[38rem] flex-col items-start justify-between rounded-[1.35rem] px-4 py-4 shadow-[0_20px_42px_-20px_rgba(15,23,42,0.5)] sm:min-h-[7.75rem] sm:px-5 sm:py-[1.125rem]' }}"
                                     data-title="{{ $plainText }}"
                                     data-title-html="{{ $text }}"
                                     data-subtitle="{{ $subtitle }}"
@@ -161,7 +170,7 @@
                                     data-group-text="{{ $popupGroupText }}"
                                     data-group-audio="{{ $popupGroupSound }}"
                                 >
-                                    @if($image !== '')
+                                    @if($hasImage)
                                         <div class="relative flex aspect-[5/4] items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-800">
                                             <img
                                                 src="{{ $image }}"
@@ -172,13 +181,14 @@
                                         </div>
                                     @endif
 
-                                    @if($sound !== '')
+                                    @if($sound !== '' && $hasImage)
                                         <button
                                             type="button"
-                                            class="speak-btn absolute right-3 top-3 z-10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 dark:bg-slate-900/85 sm:h-9 sm:w-9 {{ $audioButtonIdleClass }}"
+                                            class="speak-btn absolute right-2.5 top-2.5 z-10 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 dark:bg-slate-900/85 sm:right-3 sm:top-3 sm:h-8 sm:w-8 {{ $audioButtonIdleClass }}"
+                                            data-audio-style="image"
                                             aria-label="Play audio"
                                         >
-                                            <svg class="js-static-icon h-4 w-4 sm:h-[1.05rem] sm:w-[1.05rem]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                            <svg class="js-static-icon h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                                 <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
                                             </svg>
 
@@ -190,14 +200,57 @@
                                         </button>
                                     @endif
 
-                                    <div class="{{ $image === '' ? 'min-h-[4.75rem] pr-11 sm:pr-12' : 'min-h-[4.25rem]' }} bg-white px-3.5 py-3.5 transition-colors duration-300 dark:bg-slate-900 sm:px-4 sm:py-4">
-                                        <div class="min-w-0 flex-1">
-                                            <p class="min-w-0 break-words {{ $image === '' ? 'text-base sm:text-lg' : 'text-sm sm:text-base' }} font-extrabold leading-tight text-slate-950 dark:text-slate-100">
-                                                @if($emoji !== '')
-                                                    <span class="mr-1.5 inline-block leading-none align-[-0.08em]">{{ $emoji }}</span>
-                                                @elseif($image === '')
-                                                    <span class="mr-1.5 inline-block leading-none align-[-0.08em]">{{ $fallbackLetter }}</span>
+                                    @if($hasImage)
+                                        <div class="min-h-[3rem] bg-white px-3 py-2.5 transition-colors duration-300 dark:bg-slate-900 sm:px-3.5 sm:py-3 lg:px-4">
+                                            <div class="min-w-0 flex-1">
+                                                <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-slate-950 dark:text-slate-100 sm:text-[0.95rem] lg:text-base">
+                                                    {!! $text !!}
+                                                    @if($emoji !== '')
+                                                        <span class="ml-1.5 inline-block text-[0.82em] leading-none align-[-0.04em]">{{ $emoji }}</span>
+                                                    @endif
+                                                </p>
+
+                                                @if($subtitle !== '')
+                                                    <p class="mt-1.5 break-words text-xs font-bold leading-snug text-slate-500 dark:text-slate-300 sm:text-sm">
+                                                        {!! $subtitle !!}
+                                                    </p>
                                                 @endif
+
+                                                @if($example !== '')
+                                                    <p class="mt-2 break-words rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-1.5 text-[11px] font-bold leading-snug text-slate-500 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300 sm:text-xs">
+                                                        {!! $example !!}
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="flex w-full items-start justify-between gap-3">
+                                            <div class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xl leading-none shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-800 dark:ring-slate-700 sm:h-10 sm:w-10 sm:text-[1.35rem]">
+                                                {{ $emoji !== '' ? $emoji : $fallbackLetter }}
+                                            </div>
+
+                                            @if($sound !== '')
+                                                <button
+                                                    type="button"
+                                                    class="speak-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-lg shadow-slate-900/10 transition-all duration-300 hover:-rotate-3 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-9 sm:w-9 {{ $audioButtonClass }}"
+                                                    data-audio-style="sentence"
+                                                    aria-label="Play audio"
+                                                >
+                                                    <svg class="js-static-icon h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                        <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                                    </svg>
+
+                                                    <span class="js-wave-wrap hidden items-center gap-0.5" aria-hidden="true">
+                                                        <span class="h-1.5 w-[2px] animate-pulse rounded-full bg-current"></span>
+                                                        <span class="h-3 w-[2px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
+                                                        <span class="h-2 w-[2px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
+                                                    </span>
+                                                </button>
+                                            @endif
+                                        </div>
+
+                                        <div class="mt-3 min-w-0 flex-1">
+                                            <p class="min-w-0 break-words text-[0.95rem] font-extrabold leading-tight text-slate-950 dark:text-slate-100 sm:text-base lg:text-[1.05rem]">
                                                 {!! $text !!}
                                             </p>
 
@@ -213,11 +266,12 @@
                                                 </p>
                                             @endif
                                         </div>
-                                    </div>
+                                    @endif
 
                                     <div class="playing-indicator absolute bottom-0 left-0 h-1 w-0 {{ $buttonGradient }} transition-[width] duration-100"></div>
                                 </article>
                             @endforeach
+                            </div>
                         </div>
                     </section>
                 @endforeach
@@ -264,9 +318,9 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3 flex min-w-0 items-start gap-2.5">
-                                    <span id="imageCardDetailEmoji" class="hidden shrink-0 text-2xl leading-none sm:text-3xl"></span>
+                                <div class="mb-3 flex min-w-0 items-baseline gap-2">
                                     <h2 id="imageCardDetailTitle" class="min-w-0 text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl"></h2>
+                                    <span id="imageCardDetailEmoji" class="relative top-[0.03em] hidden shrink-0 text-[1.15rem] leading-none sm:text-[1.35rem]"></span>
                                 </div>
 
                                 <div id="imageCardDetailSubtitleWrap" class="hidden">
@@ -287,6 +341,8 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="imageCardDetailProgress" class="absolute bottom-0 left-0 h-1 w-0 {{ $buttonGradient }} transition-[width] duration-100"></div>
             </article>
         </div>
     </div>
@@ -314,6 +370,7 @@
             const detailExampleWrap = document.getElementById("imageCardDetailExampleWrap");
             const detailExample = document.getElementById("imageCardDetailExample");
             const detailAudio = document.getElementById("imageCardDetailAudio");
+            const detailProgress = document.getElementById("imageCardDetailProgress");
             const audio = new Audio();
             const popupMode = @json($popup);
             const idleAudioClasses = @json(preg_split('/\s+/', trim($audioButtonIdleClass)));
@@ -549,6 +606,9 @@
 
                 detailOverlay.classList.remove("invisible", "pointer-events-none");
                 detailOverlay.setAttribute("aria-hidden", "false");
+                if (detailProgress) {
+                    detailProgress.style.width = currentCard === card && !audio.paused ? card.querySelector(".playing-indicator")?.style.width || "0%" : "0%";
+                }
 
                 requestAnimationFrame(() => {
                     detailOverlay.classList.remove("opacity-0");
@@ -571,6 +631,9 @@
                 detailPanel?.classList.add("translate-y-3", "scale-95");
                 detailPanel?.classList.remove("translate-y-0", "scale-100");
                 detailOverlay.setAttribute("aria-hidden", "true");
+                if (detailProgress) {
+                    detailProgress.style.width = "0%";
+                }
 
                 window.setTimeout(() => {
                     detailOverlay.classList.add("invisible");
@@ -581,12 +644,17 @@
             function setButtonState(button, isPlaying) {
                 if (!button) return;
 
-                idleAudioClasses.forEach((className) => {
-                    if (className) button.classList.toggle(className, !isPlaying);
-                });
-                activeAudioClasses.forEach((className) => {
-                    if (className) button.classList.toggle(className, isPlaying);
-                });
+                const isSentenceButton = button.dataset.audioStyle === "sentence";
+
+                if (!isSentenceButton) {
+                    idleAudioClasses.forEach((className) => {
+                        if (className) button.classList.toggle(className, !isPlaying);
+                    });
+                    activeAudioClasses.forEach((className) => {
+                        if (className) button.classList.toggle(className, isPlaying);
+                    });
+                }
+
                 button.querySelector(".js-static-icon")?.classList.toggle("hidden", isPlaying);
                 button.querySelector(".js-wave-wrap")?.classList.toggle("hidden", !isPlaying);
                 button.querySelector(".js-wave-wrap")?.classList.toggle("flex", isPlaying);
@@ -603,6 +671,10 @@
             function setProgress(card, width) {
                 const indicator = card?.querySelector(".playing-indicator");
                 if (indicator) indicator.style.width = width;
+
+                if (detailProgress && detailCard === card) {
+                    detailProgress.style.width = width;
+                }
             }
 
             function clearWordHighlights() {
@@ -787,9 +859,10 @@
                 const example = card.dataset.example || "";
                 const button = buttonOverride || card.querySelector(".speak-btn");
                 const popupText = normalizeText(script) === normalizeText(title) ? "" : script;
+                const hasImage = (card.dataset.image || "") !== "";
 
                 if (currentCard === card && !audio.paused) {
-                    if (popupMode === "card") {
+                    if (popupMode === "card" && hasImage) {
                         openDetail(card);
                     }
                     stopAll();
@@ -798,11 +871,11 @@
 
                 stopAll();
 
-                const words = popupMode === "text"
+                const words = popupMode === "text" && hasImage
                     ? renderSubtitle(title, titleHtml, popupText, example)
                     : [];
 
-                if (popupMode === "text") {
+                if (popupMode === "text" && hasImage) {
                     showOverlay();
                 }
 
@@ -825,12 +898,13 @@
             cards.forEach((card) => {
                 card.addEventListener("click", (event) => {
                     const audioButton = event.target.closest(".speak-btn");
+                    const hasImage = (card.dataset.image || "") !== "";
 
                     if (audioButton) {
                         event.preventDefault();
                         event.stopPropagation();
 
-                        if (popupMode === "card") {
+                        if (popupMode === "card" && hasImage) {
                             openDetail(card);
                             playCard(card, audioButton);
                             return;
@@ -840,7 +914,7 @@
                         return;
                     }
 
-                    if (popupMode === "card") {
+                    if (popupMode === "card" && hasImage) {
                         openDetail(card);
                         playCard(card, card.querySelector(".speak-btn"));
                         return;
@@ -852,8 +926,9 @@
                     if (event.target?.closest?.(".speak-btn")) return;
                     if (event.key !== "Enter" && event.key !== " ") return;
                     event.preventDefault();
+                    const hasImage = (card.dataset.image || "") !== "";
 
-                    if (popupMode === "card") {
+                    if (popupMode === "card" && hasImage) {
                         openDetail(card);
                         playCard(card, card.querySelector(".speak-btn"));
                         return;
@@ -886,7 +961,7 @@
             audio.addEventListener("ended", playNextQueuedAudio);
             audio.addEventListener("error", stopAll);
 
-            document.addEventListener("visibilitychange", () => {
+            document.addEventListener("visibilitychange", () => { 
                 if (document.hidden) stopAll();
             });
 
@@ -904,9 +979,9 @@
                 subtree: true
             });
 
-            window.stopAll = stopAll;
-            window.stopSlideAudio = stopAll;
-            window.resetSlide = stopAll;
+            window.stopAll = stopAll;   
+            window.stopSlideAudio = stopAll;   
+            window.resetSlide = stopAll; 
         });
     </script>
 @endsection
