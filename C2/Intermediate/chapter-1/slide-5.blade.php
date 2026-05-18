@@ -1,16 +1,13 @@
 <?php
 
 $content = [
-    'page_title' => 'Useful Language',
     'title' => 'Useful Language',
     'subtitle' => '',
-    'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3',
-
     'groups' => [
         [
             'key' => 'shipping-service-expressions',
             'title' => '',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3',
+            'grid_class' => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
             'items' => [
                 [
                     'text' => 'Could you tell me about the options?',

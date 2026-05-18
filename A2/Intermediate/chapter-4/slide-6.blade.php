@@ -1,9 +1,9 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
+
     'title'      => 'New Vocabulary',
     'subtitle'   => 'Base verb, past simple, and example',
-    'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-6',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-5 xl:grid-cols-6',
 
     'items' => [
         [

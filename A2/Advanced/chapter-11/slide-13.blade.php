@@ -4,6 +4,7 @@ $content = [
     'title'         => 'Practice 4',
     'subtitle'      => '',
     'type'          => 'sentence',
+
     'sentences'=>[
         "{{1}}",
         "{{2}}",

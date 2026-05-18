@@ -1,13 +1,13 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
+
     'title' => 'New Vocabulary',
     'subtitle' => '',
     'groups' => [
         [
             'key' => 'weekend-activities',
             'title' => 'Weekend Activities',
-            'grid_class' => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 ',
             'items' => [
                 [
                     'text' => 'Go shopping',
@@ -29,7 +29,7 @@ $content = [
         [
             'key' => 'chores',
             'title' => 'Chores',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-4',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 ',
             'items' => [
                 [
                     'text' => 'Wash dishes',

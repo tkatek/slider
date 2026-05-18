@@ -3,7 +3,7 @@ $content = [
     'page_title' => 'Grammar 2',
     'title' => 'Grammar 2',
     'subtitle' => 'Verb to “be” in the present & past',
-    'cards_grid_class' => 'mt-7 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2',
+    'cards_grid_class' => 'mt-7 grid grid-cols-1 gap-4 xl:grid-cols-2',
 
     'cards' => [
         [
@@ -11,6 +11,7 @@ $content = [
             'title' => 'Present form of verb to “be”',
             'title_plain' => true,
             'tone' => 'from-teal-500 to-cyan-600',
+            'mobile_cards' => true,
             'table_headers' => ['Pronoun', 'Affirmative', 'Negative', 'Question'],
             'table_rows' => [
                 ['I', 'I am happy', 'I am not (amn’t ❌)', 'Am I happy?'],
@@ -27,6 +28,7 @@ $content = [
             'title' => 'Past form of verb to “be”',
             'title_plain' => true,
             'tone' => 'from-rose-400 to-red-500',
+            'mobile_cards' => true,
             'table_headers' => ['Pronoun', 'Affirmative', 'Negative', 'Question'],
             'table_rows' => [
                 ['I', 'I was happy', 'I was not (wasn’t)', 'Was I happy?'],

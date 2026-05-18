@@ -5,6 +5,7 @@ $content = [
     'title'      => 'Practice 4',
     'subtitle'   => 'Match the arrangements and how they were organised',
     'type'       => 'reading',
+    'blank_width_mode' => 'full',
 
     'sentences' => [
         "<span class=\"mr-2 inline-flex items-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 px-3 py-1 text-sm font-black text-white\">1</span>I'm flying to Spain for a holiday soon. {{1}}",

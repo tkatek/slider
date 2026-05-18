@@ -3,7 +3,7 @@ $content = [
     'page_title' => 'New Vocabulary',
     'title'      => 'New Vocabulary',
     'subtitle'   => 'Useful Language',
-    'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-3',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-3 ',
 
     'items' => [
         [

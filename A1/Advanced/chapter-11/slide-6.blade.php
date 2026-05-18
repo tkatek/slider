@@ -4,7 +4,7 @@ $content = [
     'title'      => 'New Vocabulary',
     'subtitle'   => 'Key Vocabulary at the Gas Station',
 
-    'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-5',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-5',
 
     'items' => [
 

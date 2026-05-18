@@ -4,11 +4,9 @@
     $isReadingType = $gameType === 'reading';
 
     $desktopLayoutBreakpoint = 1024;
-    $tileClass = trim((string) ($content['tile_class'] ?? '!px-3 !py-2 !text-sm !min-h-[42px] sm:!px-2 sm:!py-1 sm:!text-sm sm:!min-h-[36px]'));
+    $tileClass = trim((string) ($content['tile_class'] ?? '!px-3 !py-2.5 !text-[11px] !min-h-[46px] sm:!px-3 sm:!py-2 sm:!text-sm sm:!min-h-[44px]'));
     $sentences = array_values($content['sentences'] ?? []);
     $answers = array_values($content['answers'] ?? []);
-    $writingTitle = trim((string) ($content['writing_title'] ?? ''));
-    $writingSubtitle = trim((string) ($content['writing_subtitle'] ?? ''));
     $playerAudio = !empty($content['audio']) ? $content['audio'] : (!empty($content['audio_src']) ? $content['audio_src'] : null);
     $normalizeScriptLines = static function ($rawScript) {
         if (is_array($rawScript)) {
@@ -25,26 +23,21 @@
     };
     $scriptLines = $normalizeScriptLines($content['script'] ?? $content['transcript'] ?? []);
     $hasScript = $scriptLines !== []; 
-    $writingExamples = array_values(array_filter(
-        array_map(static fn ($example) => trim((string) $example), $content['writing_examples'] ?? []),
-        static fn ($example) => $example !== ''
-    ));
-    $writingInputCount = max(0, (int) ($content['writing_input_count'] ?? 0));
-    $mobileWordVisibleCap = max(1, (int) ($content['mobile_word_visible_cap'] ?? 5));
-    $tabletWordVisibleCap = max(1, (int) ($content['tablet_word_visible_cap'] ?? 9));
+    $mobileWordVisibleCap = max(1, (int) ($content['mobile_word_visible_cap'] ?? 3));
+    $tabletWordVisibleCap = max(1, (int) ($content['tablet_word_visible_cap'] ?? 4));
+    $desktopWordVisibleCap = max(1, (int) ($content['desktop_word_visible_cap'] ?? 4));
     $mobilePlacedTileFullWidth = (bool) ($content['mobile_placed_tile_full_width'] ?? false);
     $configuredBlankWidthMode = trim((string) ($content['blank_width_mode'] ?? ''));
     $blankWidthMode = in_array($configuredBlankWidthMode, ['compact', 'full'], true)
         ? $configuredBlankWidthMode
         : ($isReadingType ? 'compact' : 'full');
     $useFullWidthBlanks = $blankWidthMode === 'full';
-    $hasWritingPanel = $writingTitle !== '' || $writingSubtitle !== '' || !empty($writingExamples) || $writingInputCount > 0;
     $sentenceRowClass = $isReadingType
-        ? 'flex w-full max-w-full flex-wrap items-center gap-2 px-1.5 py-0.5 text-base font-semibold leading-[1.6] text-slate-900 sm:gap-3 sm:text-lg lg:text-[1.15rem] dark:text-slate-100'
-        : 'flex w-full max-w-full flex-wrap items-center gap-2 px-1.5 py-0.5 text-base font-semibold leading-[1.6] text-slate-900 sm:gap-3 sm:text-lg lg:text-[1.15rem] dark:text-slate-100';
+        ? 'flex w-full max-w-full flex-wrap items-center gap-2 px-0 py-0 text-sm font-semibold leading-[1.45] text-slate-900 sm:gap-2.5 sm:text-base lg:text-lg dark:text-slate-100'
+        : 'flex w-full max-w-full flex-wrap items-center gap-2 px-0 py-0 text-sm font-semibold leading-[1.45] text-slate-900 sm:gap-2.5 sm:text-base lg:text-lg dark:text-slate-100';
     $blankClass = !$useFullWidthBlanks
-        ? 'ddb-blank-slot inline-flex min-h-[42px] min-w-[96px] w-auto max-w-full flex-none items-center justify-center rounded-xl border border-dashed border-slate-300/90 bg-white/80 px-3 py-1.5 text-slate-700 transition-colors duration-200 dark:border-slate-600/70 dark:bg-slate-900/30 dark:text-slate-200 sm:min-w-[118px]'
-        : 'ddb-blank-slot inline-flex min-h-[44px] min-w-[110px] w-auto max-w-full flex-none items-center justify-center rounded-xl border border-dashed border-slate-300/90 bg-white/70 px-3 py-2 text-slate-700 transition-colors duration-200 dark:border-slate-600/70 dark:bg-slate-900/25 dark:text-slate-200 sm:flex sm:min-h-[50px] sm:w-full sm:flex-1';
+        ? 'ddb-blank-slot inline-flex min-h-[46px] min-w-[112px] w-auto max-w-full flex-none items-center justify-center rounded-2xl border-2 border-dashed border-slate-300/90 bg-white/80 px-3 py-2 text-slate-700 transition-colors duration-200 dark:border-slate-600/70 dark:bg-slate-900/30 dark:text-slate-200 sm:min-w-[136px]'
+        : 'ddb-blank-slot inline-flex min-h-[48px] min-w-0 max-w-full flex-1 basis-[18rem] items-center justify-center rounded-2xl border-2 border-dashed border-slate-300/90 bg-slate-50/80 px-3 py-2 text-slate-700 transition-colors duration-200 dark:border-slate-600/70 dark:bg-slate-900/25 dark:text-slate-200 sm:min-h-[52px] sm:basis-[24rem]';
     $textTokenClass = 'inline min-w-0 break-words whitespace-normal';
 
     $sentenceItems = [];
@@ -107,10 +100,10 @@
             </div>
 
 
-        <div id="ticketBoothContent" class="mx-auto flex w-full max-w-6xl flex-none flex-col justify-start gap-4 px-4 pb-4 sm:px-6 lg:px-8">
+        <div id="ticketBoothContent" class="mx-auto flex w-full max-w-6xl flex-none flex-col justify-start gap-5 px-4 pb-4 sm:px-6 lg:px-8">
             <section id="ddbPoolRail" class="order-[-1] w-full max-w-full flex-none self-stretch">
                 <div id="ddbPoolBar" class="relative w-full max-w-full p-0">
-                    <div class="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/90 shadow-[0_18px_45px_rgba(2,6,23,0.10)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/75">
+                    <div data-pool-panel class="relative max-h-[40dvh] overflow-hidden rounded-[1.7rem] border border-slate-200/70 bg-white/92 shadow-[0_18px_45px_rgba(2,6,23,0.10)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/75">
                         <div class="pointer-events-none absolute inset-0 opacity-80 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(99,102,241,0.16)_0%,transparent_55%),radial-gradient(120%_120%_at_100%_0%,rgba(59,130,246,0.12)_0%,transparent_55%)]"></div>
 
                         <div class="relative px-3 pt-3 pb-4 sm:px-4 sm:py-4 xl:px-6">
@@ -120,13 +113,13 @@
 
                         <div class="mt-3 flex items-center justify-between gap-1.5 sm:gap-2">
                             <div class="flex shrink-0 items-center gap-1 sm:gap-2">
-                                <button id="ddbPrevWordsBtn" type="button" class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] sm:h-8 sm:w-8 xl:hidden" aria-label="Previous words">
+                                <button id="ddbPrevWordsBtn" type="button" class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] sm:h-8 sm:w-8" aria-label="Previous words">
                                     <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4"><path fill-rule="evenodd" d="M12.79 4.23a.75.75 0 0 1-.02 1.06L8.06 10l4.71 4.71a.75.75 0 1 1-1.06 1.06l-5.24-5.24a.75.75 0 0 1 0-1.06l5.24-5.24a.75.75 0 0 1 1.08-.02Z" clip-rule="evenodd"/></svg>
                                 </button>
 
                                 <div id="ddbPoolCount" class="inline-flex items-center gap-1 rounded-full border border-slate-200/70 bg-white/80 px-2 py-1 text-[10px] font-black text-slate-700 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/50 dark:text-slate-100 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs">0/0</div>
 
-                                <button id="ddbNextWordsBtn" type="button" class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] sm:h-8 sm:w-8 xl:hidden" aria-label="Next words">
+                                <button id="ddbNextWordsBtn" type="button" class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] sm:h-8 sm:w-8" aria-label="Next words">
                                     <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4"><path fill-rule="evenodd" d="M7.21 15.77a.75.75 0 0 1 .02-1.06L11.94 10 7.23 5.29a.75.75 0 1 1 1.06-1.06l5.24 5.24c.3.3.3.77 0 1.06l-5.24 5.24a.75.75 0 0 1-1.08.02Z" clip-rule="evenodd"/></svg>
                                 </button>
                             </div>
@@ -150,21 +143,21 @@
                         </div>
 
                         <div class="mt-3 h-px w-full bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent dark:via-indigo-400/15"></div>
-                        <div id="ddbPoolContent" class="mt-3 flex w-full max-w-full flex-wrap items-start justify-center gap-2 sm:w-fit sm:justify-start sm:gap-2.5 xl:w-full"></div>
+                        <div id="ddbPoolContent" class="mt-3 flex w-full max-w-full flex-wrap items-stretch justify-center gap-2.5 sm:gap-3"></div>
                     </div>
                 </div>
                 </div>
             </section>
 
-            <section class="grid gap-4 {{ $hasWritingPanel ? 'lg:grid-cols-2' : 'lg:grid-cols-1' }} lg:items-start">
+            <section class="w-full">
                 <div id="ticketBoothDialogueCard" class="overflow-hidden rounded-[1.6rem] border border-slate-200/70 bg-white/80 shadow-[0_18px_55px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/70">
-                    <div class="space-y-4 px-3 py-3 sm:px-4 sm:py-3.5">
+                    <div class="space-y-2.5 px-3 py-3 sm:px-4 sm:py-3">
                         @include('slider.components.audio-player')
 
-                        <div class="px-0 py-0 sm:rounded-[1.2rem] sm:border sm:border-slate-200/70 sm:bg-white/70 sm:px-3 sm:py-3 sm:shadow-sm dark:sm:border-slate-700/60 dark:sm:bg-slate-900/25">
-                            <div class="flex flex-col gap-2.5">
+                        <div class="rounded-[1.2rem] border border-slate-200/70 bg-white/70 px-3 py-3 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/25 sm:px-4 sm:py-3">
+                            <div class="flex flex-col gap-2 sm:gap-2.5">
                                 @foreach($sentenceItems as $item)
-                                    <div class="w-full max-w-full">
+                                    <div class="w-full max-w-full rounded-2xl border border-slate-200/70 bg-white/55 px-3 py-2 dark:border-slate-700/55 dark:bg-slate-950/20 sm:px-3.5 sm:py-2.5">
                                         <div class="{{ $sentenceRowClass }}">
                                             @foreach($item['tokens'] as $token)
                                                 @if($token['type'] === 'html')
@@ -186,34 +179,6 @@
                         </div>
                     </div>
                 </div>
-
-                @if($hasWritingPanel)
-                    <div class="rounded-[1.2rem] border border-slate-200/80 bg-gradient-to-br from-stone-50 via-white to-slate-100 px-4 py-4 shadow-sm dark:border-slate-700/70 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-900 dark:to-slate-800">
-                        @if($writingTitle !== '')
-                            <h3 class="text-base font-black leading-snug text-slate-900 dark:text-slate-50 sm:text-lg">{{ $writingTitle }}</h3>
-                        @endif
-
-                        @if($writingSubtitle !== '' || !empty($writingExamples))
-                            <div class="mt-3 rounded-2xl border border-slate-200/80 bg-white/85 px-3 py-3 text-sm leading-6 text-slate-700 shadow-inner dark:border-slate-700/70 dark:bg-slate-950/70 dark:text-slate-200">
-                                @if($writingSubtitle !== '')
-                                    <p class="font-black text-slate-800 dark:text-slate-100">{{ $writingSubtitle }}</p>
-                                @endif
-
-                                @foreach($writingExamples as $example)
-                                    <p>{{ $example }}</p>
-                                @endforeach
-                            </div>
-                        @endif
-
-                        @if($writingInputCount > 0)
-                            <div class="mt-4 space-y-3">
-                                @foreach(range(1, $writingInputCount) as $inputIndex)
-                                    <input type="text" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 dark:border-slate-600 dark:bg-slate-950/90 dark:text-slate-100 dark:focus:border-slate-500 dark:focus:ring-slate-500/20">
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
-                @endif
             </section>
 
             @include('slider.components.game-win-modal', ['modalActions' => $modalActions])
@@ -230,6 +195,7 @@
             var TILE_CLASS = @json($tileClass);
             var MOBILE_WORD_VISIBLE_CAP = Number(@json($mobileWordVisibleCap));
             var TABLET_WORD_VISIBLE_CAP = Number(@json($tabletWordVisibleCap));
+            var DESKTOP_WORD_VISIBLE_CAP = Number(@json($desktopWordVisibleCap));
             var MOBILE_PLACED_TILE_FULL_WIDTH = Boolean(@json($mobilePlacedTileFullWidth));
             var SFX = {
                 enabled: true,
@@ -529,7 +495,7 @@
 
             TicketBoothGame.prototype.getVisibleWordLimit = function() {
                 var width = window.innerWidth || document.documentElement.clientWidth || 0;
-                if (width >= DESKTOP_LAYOUT_BREAKPOINT) return Number.MAX_SAFE_INTEGER;
+                if (width >= DESKTOP_LAYOUT_BREAKPOINT) return DESKTOP_WORD_VISIBLE_CAP;
                 if (width < 640) return MOBILE_WORD_VISIBLE_CAP;
                 return TABLET_WORD_VISIBLE_CAP;
             };
@@ -561,11 +527,11 @@
                     'select-none',
                     'touch-none',
                     'cursor-grab',
-                    'rounded-xl',
+                    'rounded-2xl',
                     'border',
                     'border-white/20',
                     'text-white',
-                    'shadow-[0_10px_20px_rgba(2,6,23,0.16)]',
+                    'shadow-[0_12px_24px_rgba(2,6,23,0.18)]',
                     'transition-transform',
                     'duration-150',
                     'hover:-translate-y-0.5',
@@ -573,14 +539,18 @@
                     'inline-flex',
                     'min-h-[42px]',
                     'w-auto',
+                    'min-w-0',
                     'max-w-full',
-                    'shrink-0',
+                    'max-w-[20rem]',
+                    'sm:max-w-[28rem]',
+                    'lg:max-w-[34rem]',
                     'items-center',
                     'justify-center',
                     'text-center',
                     'break-words',
                     'whitespace-normal',
-                    'leading-snug',
+                    'hyphens-auto',
+                    'leading-tight',
                     'font-black',
                     TILE_CLASS
                 ].join(' ');
@@ -618,10 +588,29 @@
                     self.poolContent.appendChild(self.createTileNode(itemData, index));
                 });
 
+                this.fitActiveTilesToBank();
                 this.updateNavButtons();
                 this.updatePoolCount();
                 this.updatePoolSticky();
                 this.schedulePoolStickyUpdate();
+            };
+
+            TicketBoothGame.prototype.fitActiveTilesToBank = function() {
+                var panel = this.poolBar ? this.poolBar.querySelector('[data-pool-panel]') : null;
+                var moved;
+
+                if (!panel || !this.poolContent || !panel.clientHeight) return;
+
+                while (this.tileDeck.active.length > 1 && panel.scrollHeight > panel.clientHeight + 2) {
+                    moved = this.tileDeck.active.pop();
+                    this.tileDeck.waiting.unshift(moved);
+
+                    if (this.poolContent.lastElementChild) {
+                        this.poolContent.lastElementChild.remove();
+                    } else {
+                        break;
+                    }
+                }
             };
 
             TicketBoothGame.prototype.loadTiles = function() {
@@ -718,10 +707,13 @@
                     'dark:border-rose-900/40',
                     'dark:text-rose-200',
                     'w-fit',
-                    'w-full'
+                    'w-full',
+                    'max-w-[20rem]',
+                    'sm:max-w-[28rem]',
+                    'lg:max-w-[34rem]'
                 );
 
-                tile.classList.add('inline-flex', 'max-w-full', 'items-center', 'justify-center', 'text-center', 'break-words', 'whitespace-normal', 'px-2', 'py-1.5', 'leading-tight', 'rounded-lg');
+                tile.classList.add('inline-flex', 'max-w-full', 'min-h-[46px]', 'items-center', 'justify-center', 'text-center', 'break-words', 'whitespace-normal', 'hyphens-auto', 'px-3', 'py-2', 'leading-tight', 'rounded-2xl');
                 tile.classList.add((shouldFillWidth || shouldFillMobileLine) ? 'w-full' : 'w-fit');
                 tile.style.cursor = this.gameCompleted || this.hasUsedReveal ? 'default' : 'grab';
             };
@@ -790,6 +782,7 @@
                 item.style.left = rect.left + 'px';
                 item.style.top = rect.top + 'px';
                 item.style.width = rect.width + 'px';
+                item.style.maxWidth = rect.width + 'px';
                 item.style.zIndex = '9999';
                 item.style.pointerEvents = 'none';
                 item.style.transform = 'scale(1.05) rotate(-2deg)';
@@ -923,6 +916,7 @@
                 item.style.left = '';
                 item.style.top = '';
                 item.style.width = shouldFillMobileLine ? '100%' : '';
+                item.style.maxWidth = '';
                 item.style.zIndex = '';
                 item.style.pointerEvents = '';
                 item.style.transform = '';
@@ -1018,6 +1012,7 @@
                     item.style.left = '';
                     item.style.top = '';
                     item.style.width = '';
+                    item.style.maxWidth = '';
                     item.style.zIndex = '';
                     item.style.pointerEvents = '';
                     item.style.transform = '';

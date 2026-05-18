@@ -1,11 +1,8 @@
 <?php
 
 $content = [
-    'page_title' => '',
     'title' => 'Slang Time!',
     'subtitle' => '',
-    'grid_class' => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
-
     'groups' => [
         [
             'key' => 'shipping-slang-expressions',

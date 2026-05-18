@@ -7,7 +7,7 @@ $content = [
         [
             'key'        => 'communication-problems',
             'title'      => '1 - Communication Problems',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-6',
             'items'      => [
                 [
                     'text'     => 'Signal',

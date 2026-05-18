@@ -6,7 +6,7 @@ $customSubtitle = '
     <span class="font-black text-slate-950 dark:text-slate-50">Goal:</span>
     test spontaneous speech.<br>
     Each student talks for 3 minutes about
-    <span class="font-black text-blue-700 dark:text-blue-300">Describe a time a package got delayed and how you solved it.</span>
+    <span class="font-black text-blue-700 dark:text-blue-300">a time you asked for assistance at a bank</span>.
 ';
 
 $practiceNote = '

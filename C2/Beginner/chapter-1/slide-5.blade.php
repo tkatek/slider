@@ -1,9 +1,9 @@
 <?php
 $content = [
-    'page_title' => 'New Language',
+
     'title' => 'New Language',
     'subtitle' => 'Useful Language',
-    'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3',
+
 
     'groups' => [
         [

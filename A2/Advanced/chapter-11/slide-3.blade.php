@@ -5,10 +5,8 @@ $content = [
     'title'      => 'Warm-Up Revision Activity',
     'subtitle'   => 'Neighbour Complaints: Drag And Drop What The Tenant Said:',
     'type'       => 'reading',
-    'mobile_word_visible_cap' => 3,
-    'tablet_word_visible_cap' => 6,
-    'mobile_placed_tile_full_width' => true,
-    'tile_class' => '!px-2.5 !py-2 !text-[11px] !min-h-[40px] sm:!px-2 sm:!py-1 sm:!text-sm sm:!min-h-[36px]',
+    'blank_width_mode' => 'full',
+
 
     'sentences' => [
         "<span class=\"mr-2 inline-flex items-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 px-3 py-1 text-sm font-black text-white\">1</span>Tenant: {{1}}",
