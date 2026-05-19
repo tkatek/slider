@@ -5,7 +5,7 @@
 
     $pageTitle = $content['page_title'] ?? 'Slide';
     $gridClass = trim((string) ($content['grid_class'] ?? 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-4'));
-    $sentenceGridClass = trim((string) ($content['sentence_grid_class'] ?? $content['sentences_grid_class'] ?? $gridClass));
+    $sentenceGridClass = trim((string) ($content['sentence_grid_class'] ?? $content['sentences_grid_class'] ?? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'));
     $sentences = is_array($content['sentences'] ?? null) ? array_values($content['sentences']) : [];
     $items = is_array($content['items'] ?? null) ? array_values($content['items']) : [];
     $groups = is_array($content['groups'] ?? null) ? array_values($content['groups']) : [];
@@ -15,6 +15,7 @@
     $popup = in_array($requestedPopup, ['text', 'card'], true)
         ? $requestedPopup
         : 'text';
+    $hideCardSubtitle = (bool) ($content['hide_card_subtitle'] ?? false);
     $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
     $audioButtonClass = 'border-white/20 ' . $buttonGradient . ' text-white shadow-lg shadow-slate-900/10 hover:shadow-xl';
     $audioButtonIdleClass = $isOrangeTheme
@@ -92,11 +93,11 @@
 @section('title', $pageTitle)
 
 @section('content')
-    <div class="relative flex min-h-[100dvh] w-full items-center overflow-x-hidden overflow-y-auto">
-        <main class="mx-auto -mt-3 w-full max-w-[1440px] px-4 pb-20 pt-10 sm:-mt-5 sm:px-8 sm:pb-20 sm:pt-12 lg:-mt-6">
+    <div class="relative flex min-h-[100dvh] w-full items-start overflow-x-hidden overflow-y-auto lg:items-center">
+        <main class="mx-auto w-full max-w-[1440px] px-4 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-10 lg:-mt-2 lg:pt-12">
             @include('slider.components.title-subtitle')
 
-            <div class="mt-8 flex flex-col gap-8 sm:mt-10 sm:gap-10">
+            <div class="mt-6 flex flex-col gap-6 sm:mt-8 sm:gap-8 lg:gap-9">
                 @foreach($groupSections as $group)
                     <section class="w-full" data-group-key="{{ $group['key'] }}">
                         <div class="mx-auto w-full max-w-[92rem]">
@@ -119,98 +120,142 @@
                                 </h2>
                             @endif
 
-                            <div class="mx-auto grid w-full justify-center gap-3.5 sm:gap-5 {{ $makeGridComfortable($group['grid_class']) }}">
-                            @foreach($group['items'] as $item)
-                                @php
-                                    $item = is_array($item) ? $item : [];
-                                    $popupGroupTitle = trim((string) ($group['title'] ?? ''));
-                                    $popupGroupSound = trim((string) ($group['sound'] ?? ''));
-                                    $popupGroupParts = $splitLeadingEmoji($popupGroupTitle);
-                                    $popupGroupEmoji = $popupGroupParts['emoji'];
-                                    $popupGroupText = $popupGroupParts['text'];
-                                    $text = trim((string) ($item['text_html'] ?? $item['html'] ?? $item['text'] ?? $item['label'] ?? $item['title'] ?? $item['name'] ?? ''));
-                                    $plainText = trim(html_entity_decode(strip_tags($text), ENT_QUOTES, 'UTF-8'));
-                                    $subtitle = trim((string) ($item['subtitle'] ?? $item['description'] ?? ''));
-                                    $description = trim((string) ($item['description'] ?? ''));
-                                    $example = trim((string) ($item['example_subtitle'] ?? $item['example'] ?? $item['sentence'] ?? ''));
-                                    $emoji = trim((string) ($item['emoji'] ?? ''));
-                                    $image = trim((string) ($item['image'] ?? ''));
-                                    $hasImage = $image !== '';
-                                    $sound = trim((string) ($item['sound'] ?? $item['audio'] ?? ''));
-                                    $script = trim((string) ($item['script'] ?? ''));
-                                    $fallbackLetter = mb_substr($plainText !== '' ? $plainText : '?', 0, 1);
-                                    $detailParts = array_values(array_filter([
-                                        $subtitle,
-                                        $description !== $subtitle ? $description : '',
-                                    ]));
+                            <div class="mx-auto grid w-full auto-rows-fr justify-center gap-3 sm:gap-4 lg:gap-5 {{ $makeGridComfortable($group['grid_class']) }}">
+                                @foreach($group['items'] as $item)
+                                    @php
+                                        $item = is_array($item) ? $item : [];
+                                        $popupGroupTitle = trim((string) ($group['title'] ?? ''));
+                                        $popupGroupSound = trim((string) ($group['sound'] ?? ''));
+                                        $popupGroupParts = $splitLeadingEmoji($popupGroupTitle);
+                                        $popupGroupEmoji = $popupGroupParts['emoji'];
+                                        $popupGroupText = $popupGroupParts['text'];
+                                        $text = trim((string) ($item['text_html'] ?? $item['html'] ?? $item['text'] ?? $item['label'] ?? $item['title'] ?? $item['name'] ?? ''));
+                                        $plainText = trim(html_entity_decode(strip_tags($text), ENT_QUOTES, 'UTF-8'));
+                                        $subtitle = trim((string) ($item['subtitle'] ?? $item['description'] ?? ''));
+                                        $description = trim((string) ($item['description'] ?? ''));
+                                        $example = trim((string) ($item['example_subtitle'] ?? $item['example'] ?? $item['sentence'] ?? ''));
+                                        $emoji = trim((string) ($item['emoji'] ?? ''));
+                                        $image = trim((string) ($item['image'] ?? ''));
+                                        $hasImage = $image !== '';
+                                        $sound = trim((string) ($item['sound'] ?? $item['audio'] ?? ''));
+                                        $script = trim((string) ($item['script'] ?? ''));
+                                        $fallbackLetter = mb_substr($plainText !== '' ? $plainText : '?', 0, 1);
+                                        $detailParts = array_values(array_filter([
+                                            $subtitle,
+                                            $description !== $subtitle ? $description : '',
+                                        ]));
 
-                                    if ($script === '') {
-                                        $script = trim(implode(' ', $detailParts));
-                                    }
+                                        if ($script === '') {
+                                            $script = trim(implode(' ', $detailParts));
+                                        }
 
-                                    if ($script === '') {
-                                        $script = $text;
-                                    }
-                                @endphp
+                                        if ($script === '') {
+                                            $script = $text;
+                                        }
+                                    @endphp
 
-                                <article
-                                    role="button"
-                                    tabindex="0"
-                                    class="vocab-card group relative flex w-full justify-self-center min-w-0 cursor-pointer select-none overflow-hidden border border-white/70 bg-white/75 outline-none backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.015] hover:border-slate-700 hover:shadow-[0_26px_52px_-18px_rgba(2,6,23,0.24)] focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/80 {{ $hasImage ? 'max-w-[28rem] flex-col rounded-[1.75rem] shadow-[0_15px_30px_-10px_rgba(0,0,0,0.05)]' : 'min-h-[7.25rem] max-w-[38rem] flex-col items-start justify-between rounded-[1.35rem] px-4 py-4 shadow-[0_20px_42px_-20px_rgba(15,23,42,0.5)] sm:min-h-[7.75rem] sm:px-5 sm:py-[1.125rem]' }}"
-                                    data-title="{{ $plainText }}"
-                                    data-title-html="{{ $text }}"
-                                    data-subtitle="{{ $subtitle }}"
-                                    data-script="{{ $script }}"
-                                    data-example="{{ $example }}"
-                                    data-audio="{{ $sound }}"
-                                    data-image="{{ $image }}"
-                                    data-emoji="{{ $emoji }}"
-                                    data-group-title="{{ $popupGroupTitle }}"
-                                    data-group-emoji="{{ $popupGroupEmoji }}"
-                                    data-group-text="{{ $popupGroupText }}"
-                                    data-group-audio="{{ $popupGroupSound }}"
-                                >
-                                    @if($hasImage)
-                                        <div class="relative flex aspect-[5/4] items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-800">
-                                            <img
-                                                src="{{ $image }}"
-                                                alt="{{ $plainText }}"
-                                                loading="lazy"
-                                                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    <article
+                                            role="button"
+                                            tabindex="0"
+                                            class="vocab-card group relative flex w-full max-w-[28rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/75 shadow-[0_18px_38px_-24px_rgba(15,23,42,0.38)] outline-none backdrop-blur-2xl transition-all duration-300 sm:hover:-translate-y-1 sm:hover:scale-[1.01] sm:hover:border-slate-700 sm:hover:shadow-[0_26px_54px_-28px_rgba(2,6,23,0.30)] focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/80 dark:shadow-[0_18px_40px_-26px_rgba(0,0,0,0.68)] {{ $hasImage ? '' : 'min-h-[6.5rem] px-3.5 py-3.5 sm:min-h-[7.2rem] sm:px-5 sm:py-5' }}"
+                                            data-title="{{ $plainText }}"
+                                            data-title-html="{{ $text }}"
+                                            data-subtitle="{{ $subtitle }}"
+                                            data-script="{{ $script }}"
+                                            data-example="{{ $example }}"
+                                            data-audio="{{ $sound }}"
+                                            data-image="{{ $image }}"
+                                            data-emoji="{{ $emoji }}"
+                                            data-group-title="{{ $popupGroupTitle }}"
+                                            data-group-emoji="{{ $popupGroupEmoji }}"
+                                            data-group-text="{{ $popupGroupText }}"
+                                            data-group-audio="{{ $popupGroupSound }}"
+                                    >
+                                        @if($hasImage)
+                                            <div class="relative flex aspect-[5/4] items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                                <img
+                                                        src="{{ $image }}"
+                                                        alt="{{ $plainText }}"
+                                                        loading="lazy"
+                                                        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                >
+                                            </div>
+                                        @endif
+
+                                        @if($sound !== '' && $hasImage)
+                                            <button
+                                                    type="button"
+                                                    class="speak-btn absolute right-2.5 top-2.5 z-10 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 dark:bg-slate-900/85 sm:right-3 sm:top-3 sm:h-8 sm:w-8 {{ $audioButtonIdleClass }}"
+                                                    data-audio-style="image"
+                                                    aria-label="Play audio"
                                             >
-                                        </div>
-                                    @endif
+                                                <svg class="js-static-icon h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                    <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                                </svg>
 
-                                    @if($sound !== '' && $hasImage)
-                                        <button
-                                            type="button"
-                                            class="speak-btn absolute right-2.5 top-2.5 z-10 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 dark:bg-slate-900/85 sm:right-3 sm:top-3 sm:h-8 sm:w-8 {{ $audioButtonIdleClass }}"
-                                            data-audio-style="image"
-                                            aria-label="Play audio"
-                                        >
-                                            <svg class="js-static-icon h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                                <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-                                            </svg>
-
-                                            <span class="js-wave-wrap hidden items-center gap-0.5" aria-hidden="true">
+                                                <span class="js-wave-wrap hidden items-center gap-0.5" aria-hidden="true">
                                                 <span class="h-1.5 w-[2px] animate-pulse rounded-full bg-current"></span>
                                                 <span class="h-3 w-[2px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
                                                 <span class="h-2 w-[2px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
                                             </span>
-                                        </button>
-                                    @endif
+                                            </button>
+                                        @endif
 
-                                    @if($hasImage)
-                                        <div class="min-h-[3rem] bg-white px-3 py-2.5 transition-colors duration-300 dark:bg-slate-900 sm:px-3.5 sm:py-3 lg:px-4">
-                                            <div class="min-w-0 flex-1">
-                                                <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-slate-950 dark:text-slate-100 sm:text-[0.95rem] lg:text-base">
-                                                    {!! $text !!}
-                                                    @if($emoji !== '')
-                                                        <span class="ml-1.5 inline-block text-[0.82em] leading-none align-[-0.04em]">{{ $emoji }}</span>
+                                        @if($hasImage)
+                                            <div class="min-h-[2.75rem] bg-white px-2.5 py-2 transition-colors duration-300 dark:bg-slate-900 sm:min-h-[3rem] sm:px-3.5 sm:py-3 lg:px-4">
+                                                <div class="min-w-0 flex-1">
+                                                    <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-slate-900 dark:text-slate-100 sm:text-[0.95rem] lg:text-base">
+                                                        {!! $text !!}
+                                                        @if($emoji !== '')
+                                                            <span class="relative -top-[0.06em] ml-1.5 inline-block text-[0.98em] leading-none align-middle">{{ $emoji }}</span>
+                                                        @endif
+                                                    </p>
+
+                                                    @if(!$hideCardSubtitle && $subtitle !== '')
+                                                        <p class="mt-1.5 break-words text-xs font-bold leading-snug text-slate-500 dark:text-slate-300 sm:text-sm">
+                                                            {!! $subtitle !!}
+                                                        </p>
                                                     @endif
+
+                                                    @if($example !== '')
+                                                        <p class="mt-2 break-words rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-1.5 text-[11px] font-bold leading-snug text-slate-500 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300 sm:text-xs">
+                                                            {!! $example !!}
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="flex w-full items-center justify-between gap-3">
+                                                <div class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-base leading-none shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-800 dark:ring-slate-700 sm:h-8 sm:w-8 sm:text-lg">
+                                                    {{ $emoji !== '' ? $emoji : $fallbackLetter }}
+                                                </div>
+
+                                                @if($sound !== '')
+                                                    <button
+                                                            type="button"
+                                                            class="speak-btn inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-8 sm:w-8 {{ $audioButtonClass }}"
+                                                            data-audio-style="sentence"
+                                                            aria-label="Play audio"
+                                                    >
+                                                        <svg class="js-static-icon h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                            <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                                        </svg>
+
+                                                        <span class="js-wave-wrap hidden items-center gap-0.5" aria-hidden="true">
+                                                        <span class="h-1.5 w-[2px] animate-pulse rounded-full bg-current"></span>
+                                                        <span class="h-3 w-[2px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
+                                                        <span class="h-2 w-[2px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
+                                                    </span>
+                                                    </button>
+                                                @endif
+                                            </div>
+
+                                            <div class="mt-3 min-w-0 flex-1">
+                                                <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-slate-900 dark:text-slate-100 sm:text-[0.95rem] lg:text-base">
+                                                    {!! $text !!}
                                                 </p>
 
-                                                @if($subtitle !== '')
+                                                @if(!$hideCardSubtitle && $subtitle !== '')
                                                     <p class="mt-1.5 break-words text-xs font-bold leading-snug text-slate-500 dark:text-slate-300 sm:text-sm">
                                                         {!! $subtitle !!}
                                                     </p>
@@ -222,55 +267,11 @@
                                                     </p>
                                                 @endif
                                             </div>
-                                        </div>
-                                    @else
-                                        <div class="flex w-full items-start justify-between gap-3">
-                                            <div class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xl leading-none shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-800 dark:ring-slate-700 sm:h-10 sm:w-10 sm:text-[1.35rem]">
-                                                {{ $emoji !== '' ? $emoji : $fallbackLetter }}
-                                            </div>
+                                        @endif
 
-                                            @if($sound !== '')
-                                                <button
-                                                    type="button"
-                                                    class="speak-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-lg shadow-slate-900/10 transition-all duration-300 hover:-rotate-3 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-9 sm:w-9 {{ $audioButtonClass }}"
-                                                    data-audio-style="sentence"
-                                                    aria-label="Play audio"
-                                                >
-                                                    <svg class="js-static-icon h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                                        <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-                                                    </svg>
-
-                                                    <span class="js-wave-wrap hidden items-center gap-0.5" aria-hidden="true">
-                                                        <span class="h-1.5 w-[2px] animate-pulse rounded-full bg-current"></span>
-                                                        <span class="h-3 w-[2px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
-                                                        <span class="h-2 w-[2px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
-                                                    </span>
-                                                </button>
-                                            @endif
-                                        </div>
-
-                                        <div class="mt-3 min-w-0 flex-1">
-                                            <p class="min-w-0 break-words text-[0.95rem] font-extrabold leading-tight text-slate-950 dark:text-slate-100 sm:text-base lg:text-[1.05rem]">
-                                                {!! $text !!}
-                                            </p>
-
-                                            @if($subtitle !== '')
-                                                <p class="mt-1.5 break-words text-xs font-bold leading-snug text-slate-500 dark:text-slate-300 sm:text-sm">
-                                                    {!! $subtitle !!}
-                                                </p>
-                                            @endif
-
-                                            @if($example !== '')
-                                                <p class="mt-2 break-words rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-1.5 text-[11px] font-bold leading-snug text-slate-500 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300 sm:text-xs">
-                                                    {!! $example !!}
-                                                </p>
-                                            @endif
-                                        </div>
-                                    @endif
-
-                                    <div class="playing-indicator absolute bottom-0 left-0 h-1 w-0 {{ $buttonGradient }} transition-[width] duration-100"></div>
-                                </article>
-                            @endforeach
+                                        <div class="playing-indicator absolute bottom-0 left-0 h-1 w-0 {{ $buttonGradient }} transition-[width] duration-100"></div>
+                                    </article>
+                                @endforeach
                             </div>
                         </div>
                     </section>
@@ -279,36 +280,36 @@
         </main>
 
         <div
-            id="imageCardSubtitleOverlay"
-            class="pointer-events-none fixed bottom-7 left-1/2 z-[100] max-h-[34dvh] w-[calc(100%-1rem)] -translate-x-1/2 translate-y-4 scale-95 overflow-y-auto rounded-2xl border border-white/60 bg-white/85 px-3.5 py-2.5 text-center opacity-0 shadow-2xl shadow-slate-900/10 backdrop-blur-2xl transition-all duration-300 sm:bottom-9 sm:w-auto sm:min-w-[42rem] sm:max-w-[82vw] sm:rounded-[1.5rem] sm:px-7 sm:py-4 dark:border-white/10 dark:bg-slate-900/85"
+                id="imageCardSubtitleOverlay"
+                class="pointer-events-none fixed bottom-4 left-1/2 z-[100] max-h-[30dvh] w-[calc(100%-1.5rem)] -translate-x-1/2 translate-y-4 scale-95 overflow-y-auto rounded-2xl border border-white/60 bg-white/85 px-3 py-2.5 text-center opacity-0 shadow-2xl shadow-slate-900/10 backdrop-blur-2xl transition-all duration-300 sm:bottom-9 sm:max-h-[34dvh] sm:w-auto sm:min-w-[42rem] sm:max-w-[82vw] sm:rounded-[1.5rem] sm:px-7 sm:py-4 dark:border-white/10 dark:bg-slate-900/85"
         >
             <p id="imageCardSubtitleText" class="text-sm font-bold leading-snug text-slate-900 dark:text-slate-100 sm:text-2xl sm:leading-[1.35]"></p>
         </div>
 
         <div
-            id="imageCardDetailOverlay"
-            class="pointer-events-none invisible fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/45 px-4 py-6 opacity-0 backdrop-blur-sm transition-opacity duration-200"
-            aria-hidden="true"
+                id="imageCardDetailOverlay"
+                class="pointer-events-none invisible fixed inset-0 z-[110] flex items-end justify-center bg-slate-950/45 px-3 py-3 opacity-0 backdrop-blur-sm transition-opacity duration-200 sm:items-center sm:px-4 sm:py-6"
+                aria-hidden="true"
         >
             <article class="relative w-full max-w-[35rem] translate-y-3 scale-95 overflow-hidden rounded-[1.85rem] border border-white/80 bg-white p-2.5 shadow-2xl shadow-slate-950/25 transition-all duration-200 dark:border-white/10 dark:bg-slate-950 sm:p-3 md:max-w-[48rem] md:rounded-[2rem]">
                 <button
-                    id="imageCardDetailClose"
-                    type="button"
-                    class="absolute right-4 top-4 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-500 shadow-sm ring-1 ring-slate-200/80 backdrop-blur transition hover:bg-slate-950 hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/30 dark:bg-slate-900/90 dark:text-slate-300 dark:ring-slate-700/80 dark:hover:bg-white dark:hover:text-slate-950"
-                    aria-label="Close"
+                        id="imageCardDetailClose"
+                        type="button"
+                        class="absolute right-3 top-3 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-500 shadow-sm ring-1 ring-slate-200/80 backdrop-blur transition hover:bg-slate-950 hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/30 dark:bg-slate-900/90 dark:text-slate-300 dark:ring-slate-700/80 dark:hover:bg-white dark:hover:text-slate-950 sm:right-4 sm:top-4"
+                        aria-label="Close"
                 >
                     <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M6 6l12 12M18 6L6 18"/>
                     </svg>
                 </button>
 
-                <div class="max-h-[86dvh] overflow-y-auto pr-1 md:max-h-none md:overflow-visible md:pr-0">
+                <div class="max-h-[82dvh] overflow-y-auto pr-1 sm:max-h-[86dvh] md:max-h-none md:overflow-visible md:pr-0">
                     <div class="grid gap-4 md:grid-cols-2 md:items-stretch md:gap-4">
-                        <div id="imageCardDetailImageWrap" class="hidden aspect-[5/4] overflow-hidden rounded-[1.45rem] bg-slate-100 dark:bg-slate-800 md:max-h-[17.5rem]">
+                        <div id="imageCardDetailImageWrap" class="hidden aspect-[5/4] max-h-[38dvh] overflow-hidden rounded-[1.45rem] bg-slate-100 dark:bg-slate-800 md:max-h-[17.5rem]">
                             <img id="imageCardDetailImage" src="" alt="" class="h-full w-full object-cover">
                         </div>
 
-                        <div class="flex min-w-0 flex-col justify-center gap-4 px-1 pb-1 pt-10 md:min-h-[17.5rem] md:px-3 md:pb-3 md:pl-2 md:pr-9 md:pt-8">
+                        <div class="flex min-w-0 flex-col justify-center gap-3 px-1 pb-1 pt-9 sm:gap-4 md:min-h-[17.5rem] md:px-3 md:pb-3 md:pl-2 md:pr-9 md:pt-8">
                             <div class="min-w-0">
                                 <div id="imageCardDetailGroupWrap" class="mb-3 hidden">
                                     <div class="inline-flex w-fit max-w-full items-center gap-2 rounded-2xl border px-3 py-1.5 text-left text-sm font-black leading-tight shadow-sm ring-1 sm:text-base {{ $groupTitleShellClass }}">
@@ -318,9 +319,9 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3 flex min-w-0 items-baseline gap-2">
-                                    <h2 id="imageCardDetailTitle" class="min-w-0 text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl"></h2>
-                                    <span id="imageCardDetailEmoji" class="relative top-[0.03em] hidden shrink-0 text-[1.15rem] leading-none sm:text-[1.35rem]"></span>
+                                <div class="mb-3 flex min-w-0 items-center gap-2">
+                                    <h2 id="imageCardDetailTitle" class="min-w-0 text-2xl font-black leading-tight text-slate-900 dark:text-white sm:text-3xl"></h2>
+                                    <span id="imageCardDetailEmoji" class="relative -top-[0.04em] hidden shrink-0 text-[1.45rem] leading-none sm:text-[1.75rem]"></span>
                                 </div>
 
                                 <div id="imageCardDetailSubtitleWrap" class="hidden">
@@ -333,10 +334,10 @@
                             </div>
 
                             <button
-                                id="imageCardDetailAudio"
-                                type="button"
-                                class="speak-btn hidden"
-                                aria-label="Play audio"
+                                    id="imageCardDetailAudio"
+                                    type="button"
+                                    class="speak-btn hidden"
+                                    aria-label="Play audio"
                             ></button>
                         </div>
                     </div>
@@ -961,7 +962,7 @@
             audio.addEventListener("ended", playNextQueuedAudio);
             audio.addEventListener("error", stopAll);
 
-            document.addEventListener("visibilitychange", () => { 
+            document.addEventListener("visibilitychange", () => {
                 if (document.hidden) stopAll();
             });
 
@@ -974,14 +975,14 @@
                 }
             });
 
-            observer.observe(document.body, {  
+            observer.observe(document.body, {
                 childList: true,
                 subtree: true
             });
 
-            window.stopAll = stopAll;   
-            window.stopSlideAudio = stopAll;   
-            window.resetSlide = stopAll; 
+            window.stopAll = stopAll;
+            window.stopSlideAudio = stopAll;
+            window.resetSlide = stopAll;
         });
     </script>
 @endsection

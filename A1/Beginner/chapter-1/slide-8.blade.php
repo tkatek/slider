@@ -4,6 +4,7 @@ $content = [
     'title'      => 'New Vocabulary',
     'subtitle'   => 'Explore common professions and practice their pronunciation.',
     'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-6',
+    'hide_card_subtitle' => true,
 
     'items' => [
         [
