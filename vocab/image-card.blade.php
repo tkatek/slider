@@ -22,7 +22,7 @@
     $requestedThemePopup = strtolower(trim((string) ($theme['vocab_popup'] ?? '')));
     $imagePopupDefault = in_array($requestedThemePopup, ['text', 'card'], true)
         ? $requestedThemePopup
-        : 'text';
+        : 'card';
     $hideCardSubtitle = (bool) ($content['hide_card_subtitle'] ?? false);
     $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
     $audioButtonClass = 'border-white/20 ' . $buttonGradient . ' text-white shadow-lg shadow-slate-900/10 hover:shadow-xl';
@@ -53,6 +53,22 @@
         $value = str_replace('lg:grid-cols-6', 'lg:grid-cols-5 min-[1500px]:grid-cols-6', $value);
 
         return $value;
+    };
+    $capitalizeFirst = static function (string $value): string {
+        $value = trim($value);
+
+        if ($value === '') {
+            return '';
+        }
+
+        if (preg_match('/^(<[^>]+>\s*)+/u', $value, $match)) {
+            $prefix = $match[0];
+            $rest = mb_substr($value, mb_strlen($prefix));
+
+            return $prefix . mb_strtoupper(mb_substr($rest, 0, 1)) . mb_substr($rest, 1);
+        }
+
+        return mb_strtoupper(mb_substr($value, 0, 1)) . mb_substr($value, 1);
     };
 
     $groupSections = [];
@@ -138,10 +154,13 @@
                                         $popupGroupEmoji = $popupGroupParts['emoji'];
                                         $popupGroupText = $popupGroupParts['text'];
                                         $text = trim((string) ($item['text_html'] ?? $item['html'] ?? $item['text'] ?? $item['label'] ?? $item['title'] ?? $item['name'] ?? ''));
+                                        $displayText = $capitalizeFirst($text);
                                         $plainText = trim(html_entity_decode(strip_tags($text), ENT_QUOTES, 'UTF-8'));
                                         $subtitle = trim((string) ($item['subtitle'] ?? $item['description'] ?? ''));
+                                        $displaySubtitle = $capitalizeFirst($subtitle);
                                         $description = trim((string) ($item['description'] ?? ''));
                                         $example = trim((string) ($item['example_subtitle'] ?? $item['example'] ?? $item['sentence'] ?? ''));
+                                        $displayExample = $capitalizeFirst($example);
                                         $emoji = trim((string) ($item['emoji'] ?? ''));
                                         $image = trim((string) ($item['image'] ?? ''));
                                         $hasImage = $image !== '';
@@ -178,10 +197,10 @@
                                             data-popup="{{ $itemPopup }}"
                                             data-image-layout="{{ $usesImageLayout ? '1' : '0' }}"
                                             data-title="{{ $plainText }}"
-                                            data-title-html="{{ $text }}"
-                                            data-subtitle="{{ $subtitle }}"
+                                            data-title-html="{{ $displayText }}"
+                                            data-subtitle="{{ $displaySubtitle }}"
                                             data-script="{{ $script }}"
-                                            data-example="{{ $example }}"
+                                            data-example="{{ $displayExample }}"
                                             data-audio="{{ $sound }}"
                                             data-image="{{ $image }}"
                                             data-emoji="{{ $emoji }}"
@@ -204,7 +223,7 @@
                                         @if($sound !== '' && $usesImageLayout)
                                             <button
                                                     type="button"
-                                                    class="speak-btn absolute right-2.5 top-2.5 z-10 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 dark:bg-slate-900/85 sm:right-3 sm:top-3 sm:h-8 sm:w-8 {{ $audioButtonIdleClass }}"
+                                                    class="speak-btn absolute right-2.5 top-2.5 z-10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 hover:scale-[1.06] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 dark:bg-slate-900/85 sm:right-3 sm:top-3 sm:h-9 sm:w-9 {{ $audioButtonIdleClass }}"
                                                     data-audio-style="image"
                                                     aria-label="Play audio"
                                             >
@@ -224,7 +243,7 @@
                                             <div class="min-h-[2.75rem] bg-white px-2.5 py-2 transition-colors duration-300 dark:bg-slate-900 sm:min-h-[3rem] sm:px-3.5 sm:py-3 lg:px-4">
                                                 <div class="min-w-0 flex-1">
                                                     <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-slate-900 dark:text-slate-100 sm:text-[0.95rem] lg:text-base">
-                                                        {!! $text !!}
+                                                        {!! $displayText !!}
                                                         @if($emoji !== '')
                                                             <span class="relative -top-[0.06em] ml-1.5 inline-block text-[0.98em] leading-none align-middle">{{ $emoji }}</span>
                                                         @endif
@@ -232,13 +251,13 @@
 
                                                     @if(!$hideCardSubtitle && $subtitle !== '')
                                                         <p class="mt-1.5 break-words text-xs font-bold leading-snug text-slate-500 dark:text-slate-300 sm:text-sm">
-                                                            {!! $subtitle !!}
+                                                            {!! $displaySubtitle !!}
                                                         </p>
                                                     @endif
 
                                                     @if($example !== '')
                                                         <p class="mt-2 break-words rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-1.5 text-[11px] font-bold leading-snug text-slate-500 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300 sm:text-xs">
-                                                            {!! $example !!}
+                                                            {!! $displayExample !!}
                                                         </p>
                                                     @endif
                                                 </div>
@@ -252,7 +271,7 @@
                                                 @if($sound !== '')
                                                     <button
                                                             type="button"
-                                                            class="speak-btn inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-8 sm:w-8 {{ $audioButtonClass }}"
+                                                            class="speak-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 hover:scale-[1.06] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-9 sm:w-9 {{ $audioButtonClass }}"
                                                             data-audio-style="sentence"
                                                             aria-label="Play audio"
                                                     >
@@ -271,24 +290,24 @@
 
                                             <div class="mt-3 min-w-0 flex-1">
                                                 <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-slate-900 dark:text-slate-100 sm:text-[0.95rem] lg:text-base">
-                                                    {!! $text !!}
+                                                    {!! $displayText !!}
                                                 </p>
 
                                                 @if(!$hideCardSubtitle && $subtitle !== '')
                                                     <p class="mt-1.5 break-words text-xs font-bold leading-snug text-slate-500 dark:text-slate-300 sm:text-sm">
-                                                        {!! $subtitle !!}
+                                                        {!! $displaySubtitle !!}
                                                     </p>
                                                 @endif
 
                                                 @if($example !== '')
                                                     <p class="mt-2 break-words rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-1.5 text-[11px] font-bold leading-snug text-slate-500 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300 sm:text-xs">
-                                                        {!! $example !!}
+                                                        {!! $displayExample !!}
                                                     </p>
                                                 @endif
                                             </div>
                                         @endif
 
-                                        <div class="playing-indicator absolute bottom-0 left-0 h-1 w-0 {{ $buttonGradient }} transition-[width] duration-100"></div>
+                                        <div class="playing-indicator absolute bottom-0 left-0 h-1 w-full origin-left scale-x-0 {{ $buttonGradient }}"></div>
                                     </article>
                                 @endforeach
                             </div>
@@ -338,9 +357,13 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3 flex min-w-0 items-center gap-2">
-                                    <h2 id="imageCardDetailTitle" class="min-w-0 text-2xl font-black leading-tight text-slate-900 dark:text-white sm:text-3xl"></h2>
-                                    <span id="imageCardDetailEmoji" class="relative -top-[0.04em] hidden shrink-0 text-[1.45rem] leading-none sm:text-[1.75rem]"></span>
+                                <span id="imageCardDetailEmoji" class="mb-3 hidden h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-2xl leading-none shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-900 dark:ring-slate-700 sm:h-12 sm:w-12 sm:text-[1.7rem]"></span>
+
+                                <div class="mb-3 min-w-0">
+                                    <h2 class="min-w-0 text-2xl font-black leading-tight text-slate-900 dark:text-white sm:text-3xl">
+                                        <span id="imageCardDetailTitle"></span>
+                                        <span id="imageCardDetailInlineEmoji" class="relative -top-[0.04em] ml-1.5 hidden text-[0.8em] leading-none align-middle"></span>
+                                    </h2>
                                 </div>
 
                                 <div id="imageCardDetailSubtitleWrap" class="hidden">
@@ -355,14 +378,25 @@
                             <button
                                     id="imageCardDetailAudio"
                                     type="button"
-                                    class="speak-btn hidden"
+                                    class="speak-btn hidden h-10 w-10 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 hover:scale-[1.06] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-11 sm:w-11 {{ $audioButtonClass }}"
+                                    data-audio-style="sentence"
                                     aria-label="Play audio"
-                            ></button>
+                            >
+                                <svg class="js-static-icon h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                </svg>
+
+                                <span class="js-wave-wrap hidden items-center gap-0.5" aria-hidden="true">
+                                    <span class="h-2 w-[2px] animate-pulse rounded-full bg-current"></span>
+                                    <span class="h-4 w-[2px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
+                                    <span class="h-3 w-[2px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
+                                </span>
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <div id="imageCardDetailProgress" class="absolute bottom-0 left-0 h-1 w-0 {{ $buttonGradient }} transition-[width] duration-100"></div>
+                <div id="imageCardDetailProgress" class="absolute bottom-0 left-0 h-1 w-full origin-left scale-x-0 {{ $buttonGradient }}"></div>
             </article>
         </div>
 
@@ -408,7 +442,7 @@
                     <button
                             id="imageCardFocusAudio"
                             type="button"
-                            class="speak-btn hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-11 sm:w-11 {{ $audioButtonClass }}"
+                            class="speak-btn hidden h-10 w-10 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 hover:scale-[1.06] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-11 sm:w-11 {{ $audioButtonClass }}"
                             data-audio-style="sentence"
                             aria-label="Play audio"
                     >
@@ -424,7 +458,7 @@
                     </button>
                 </div>
 
-                <div id="imageCardFocusProgress" class="absolute bottom-0 left-0 h-1 w-0 {{ $buttonGradient }} transition-[width] duration-100"></div>
+                <div id="imageCardFocusProgress" class="absolute bottom-0 left-0 h-1 w-full origin-left scale-x-0 {{ $buttonGradient }}"></div>
             </article>
         </div>
     </div>
@@ -446,6 +480,7 @@
             const detailGroupDot = document.getElementById("imageCardDetailGroupDot");
             const detailGroupText = document.getElementById("imageCardDetailGroupText");
             const detailEmoji = document.getElementById("imageCardDetailEmoji");
+            const detailInlineEmoji = document.getElementById("imageCardDetailInlineEmoji");
             const detailTitle = document.getElementById("imageCardDetailTitle");
             const detailSubtitleWrap = document.getElementById("imageCardDetailSubtitleWrap");
             const detailSubtitle = document.getElementById("imageCardDetailSubtitle");
@@ -661,6 +696,7 @@
                 fillHtmlOrText(detailGroupEmoji, groupEmoji);
                 fillHtmlOrText(detailGroupText, groupText);
                 fillHtmlOrText(detailEmoji, emoji);
+                fillHtmlOrText(detailInlineEmoji, emoji);
                 fillHtmlOrText(detailSubtitle, subtitle);
                 fillHtmlOrText(detailExample, example);
 
@@ -697,7 +733,8 @@
                 setVisible(detailGroupWrap, groupTitle !== "");
                 setVisible(detailGroupEmoji, groupTitle !== "" && groupEmoji !== "");
                 setVisible(detailGroupDot, groupTitle !== "" && groupEmoji === "");
-                setVisible(detailEmoji, emoji !== "");
+                setVisible(detailEmoji, emoji !== "" && groupTitle === "", "inline-flex");
+                setVisible(detailInlineEmoji, emoji !== "" && groupTitle !== "", "inline");
                 setVisible(detailSubtitleWrap, subtitle !== "");
                 setVisible(detailExampleWrap, example !== "");
                 setVisible(detailAudio, sound !== "", "inline-flex");
@@ -705,7 +742,7 @@
                 detailOverlay.classList.remove("invisible", "pointer-events-none");
                 detailOverlay.setAttribute("aria-hidden", "false");
                 if (detailProgress) {
-                    detailProgress.style.width = currentCard === card && !audio.paused ? card.querySelector(".playing-indicator")?.style.width || "0%" : "0%";
+                    detailProgress.style.transform = currentCard === card && !audio.paused ? card.querySelector(".playing-indicator")?.style.transform || "scaleX(0)" : "scaleX(0)";
                 }
 
                 requestAnimationFrame(() => {
@@ -730,7 +767,7 @@
                 detailPanel?.classList.remove("translate-y-0", "scale-100");
                 detailOverlay.setAttribute("aria-hidden", "true");
                 if (detailProgress) {
-                    detailProgress.style.width = "0%";
+                    detailProgress.style.transform = "scaleX(0)";
                 }
 
                 window.setTimeout(() => {
@@ -796,7 +833,7 @@
                 focusOverlay.classList.remove("invisible", "pointer-events-none");
                 focusOverlay.setAttribute("aria-hidden", "false");
                 if (focusProgress) {
-                    focusProgress.style.width = currentCard === card && !audio.paused ? card.querySelector(".playing-indicator")?.style.width || "0%" : "0%";
+                    focusProgress.style.transform = currentCard === card && !audio.paused ? card.querySelector(".playing-indicator")?.style.transform || "scaleX(0)" : "scaleX(0)";
                 }
 
                 requestAnimationFrame(() => {
@@ -821,7 +858,7 @@
                 focusPanel?.classList.remove("translate-y-0", "scale-100");
                 focusOverlay.setAttribute("aria-hidden", "true");
                 if (focusProgress) {
-                    focusProgress.style.width = "0%";
+                    focusProgress.style.transform = "scaleX(0)";
                 }
 
                 window.setTimeout(() => {
@@ -857,16 +894,18 @@
                 card.classList.toggle("ring-cyan-400/25", isPlaying);
             }
 
-            function setProgress(card, width) {
+            function setProgress(card, progress) {
+                const safeProgress = Math.min(Math.max(Number(progress) || 0, 0), 1);
+                const transform = `scaleX(${safeProgress})`;
                 const indicator = card?.querySelector(".playing-indicator");
-                if (indicator) indicator.style.width = width;
+                if (indicator) indicator.style.transform = transform;
 
                 if (detailProgress && detailCard === card) {
-                    detailProgress.style.width = width;
+                    detailProgress.style.transform = transform;
                 }
 
                 if (focusProgress && focusCard === card) {
-                    focusProgress.style.width = width;
+                    focusProgress.style.transform = transform;
                 }
             }
 
@@ -954,7 +993,7 @@
             function resetCurrent() {
                 setButtonState(currentButton, false);
                 setCardState(currentCard, false);
-                setProgress(currentCard, "0%");
+                setProgress(currentCard, 0);
                 currentCard = null;
                 currentButton = null;
                 currentSrc = "";
@@ -988,7 +1027,7 @@
                     const safeProgress = Math.min(Math.max(progress || 0, 0), 1);
                     const currentWordIndex = Math.min(words.length - 1, Math.floor(safeProgress * words.length));
 
-                    setProgress(currentCard, `${safeProgress * 100}%`);
+                    setProgress(currentCard, safeProgress);
                     highlightWord(currentWordIndex);
 
                     syncAnimationFrame = requestAnimationFrame(update);
@@ -1213,9 +1252,9 @@
                 subtree: true
             });
 
-            window.stopAll = stopAll; 
+            window.stopAll = stopAll;  
             window.stopSlideAudio = stopAll; 
-            window.resetSlide = stopAll; 
+            window.resetSlide = stopAll;   
         });
     </script>
 @endsection
