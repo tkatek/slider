@@ -1,9 +1,10 @@
 <?php
 
 $content = [
-    'page_title' => 'New Vocabulary',
+
     'title'      => 'New Vocabulary',
     'subtitle'   => '',
+    'image_text_style' => 'overlay',
 
     'groups' => [
         [

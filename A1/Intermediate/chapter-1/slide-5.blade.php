@@ -5,6 +5,7 @@ $content = [
     'title'      => 'New Vocabulary',
     'subtitle'   => '',
     'popup' => 'card',
+    'image_text_style' => 'overlay',
 
     'groups' => [
         [

@@ -6,6 +6,8 @@ $content = [
     'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-6',
     'hide_card_subtitle' => true,
     'popup' => 'text',
+    'image_text_style' => 'overlay',
+
 
     'items' => [
         [

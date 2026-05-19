@@ -23,6 +23,10 @@
     $imagePopupDefault = in_array($requestedThemePopup, ['text', 'card'], true)
         ? $requestedThemePopup
         : 'card';
+    $requestedImageTextStyle = strtolower(trim((string) ($content['image_text_style'] ?? $content['image_card_style'] ?? 'default')));
+    $imageTextStyle = in_array($requestedImageTextStyle, ['default', 'overlay'], true)
+        ? $requestedImageTextStyle
+        : 'default';
     $hideCardSubtitle = (bool) ($content['hide_card_subtitle'] ?? false);
     $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
     $audioButtonClass = 'border-white/20 ' . $buttonGradient . ' text-white shadow-lg shadow-slate-900/10 hover:shadow-xl';
@@ -166,6 +170,7 @@
                                         $hasImage = $image !== '';
                                         $itemCardType = $cardType === 'auto' ? ($hasImage ? 'image' : 'text') : $cardType;
                                         $usesImageLayout = $itemCardType === 'image' && $hasImage;
+                                        $usesImageOverlay = $usesImageLayout && $imageTextStyle === 'overlay';
                                         $itemPopup = $popup !== '' ? $popup : ($itemCardType === 'text' ? 'focus' : $imagePopupDefault);
 
                                         if (!$usesImageLayout && $itemPopup === 'card') {
@@ -192,10 +197,11 @@
                                     <article
                                             role="button"
                                             tabindex="0"
-                                            class="vocab-card group relative flex w-full max-w-[28rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/75 shadow-[0_18px_38px_-24px_rgba(15,23,42,0.38)] outline-none backdrop-blur-2xl transition-all duration-300 sm:hover:-translate-y-1 sm:hover:scale-[1.01] sm:hover:border-slate-700 sm:hover:shadow-[0_26px_54px_-28px_rgba(2,6,23,0.30)] focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/80 dark:shadow-[0_18px_40px_-26px_rgba(0,0,0,0.68)] {{ $usesImageLayout ? '' : 'min-h-[6.5rem] px-3.5 py-3.5 sm:min-h-[7.2rem] sm:px-5 sm:py-5' }}"
+                                            class="vocab-card group relative flex w-full max-w-[28rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/75 shadow-[0_18px_38px_-24px_rgba(15,23,42,0.38)] outline-none backdrop-blur-2xl transition-all duration-300 sm:hover:-translate-y-1 sm:hover:scale-[1.01] sm:hover:border-slate-700 sm:hover:shadow-[0_26px_54px_-28px_rgba(2,6,23,0.30)] focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/80 dark:shadow-[0_18px_40px_-26px_rgba(0,0,0,0.68)] {{ $usesImageLayout ? ($usesImageOverlay ? 'aspect-[5/4]' : '') : 'min-h-[6.5rem] px-3.5 py-3.5 sm:min-h-[7.2rem] sm:px-5 sm:py-5' }}"
                                             data-card-type="{{ $itemCardType }}"
                                             data-popup="{{ $itemPopup }}"
                                             data-image-layout="{{ $usesImageLayout ? '1' : '0' }}"
+                                            data-image-text-style="{{ $usesImageOverlay ? 'overlay' : 'default' }}"
                                             data-title="{{ $plainText }}"
                                             data-title-html="{{ $displayText }}"
                                             data-subtitle="{{ $displaySubtitle }}"
@@ -210,13 +216,30 @@
                                             data-group-audio="{{ $popupGroupSound }}"
                                     >
                                         @if($usesImageLayout)
-                                            <div class="relative flex aspect-[5/4] items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                            <div class="relative flex {{ $usesImageOverlay ? 'h-full' : 'aspect-[5/4]' }} items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-800">
                                                 <img
                                                         src="{{ $image }}"
                                                         alt="{{ $plainText }}"
                                                         loading="lazy"
                                                         class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                                 >
+
+                                                @if($usesImageOverlay)
+                                                    <div class="absolute inset-x-0 bottom-0 z-[1] bg-gradient-to-t from-white/95 via-white/70 to-transparent px-3 pb-3 pt-14 dark:from-slate-950/95 dark:via-slate-950/70 sm:px-3.5 sm:pb-3.5 sm:pt-16">
+                                                        <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-slate-900 dark:text-slate-100 sm:text-base">
+                                                            {!! $displayText !!}
+                                                            @if($emoji !== '')
+                                                                <span class="relative -top-[0.06em] ml-1.5 inline-block text-[0.98em] leading-none align-middle">{{ $emoji }}</span>
+                                                            @endif
+                                                        </p>
+
+                                                        @if(!$hideCardSubtitle && $subtitle !== '')
+                                                            <p class="mt-1 line-clamp-2 text-xs font-bold leading-snug text-slate-600 dark:text-slate-300 sm:text-sm">
+                                                                {!! $displaySubtitle !!}
+                                                            </p>
+                                                        @endif
+                                                    </div>
+                                                @endif
                                             </div>
                                         @endif
 
@@ -240,28 +263,30 @@
                                         @endif
 
                                         @if($usesImageLayout)
-                                            <div class="min-h-[2.75rem] bg-white px-2.5 py-2 transition-colors duration-300 dark:bg-slate-900 sm:min-h-[3rem] sm:px-3.5 sm:py-3 lg:px-4">
-                                                <div class="min-w-0 flex-1">
-                                                    <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-slate-900 dark:text-slate-100 sm:text-[0.95rem] lg:text-base">
-                                                        {!! $displayText !!}
-                                                        @if($emoji !== '')
-                                                            <span class="relative -top-[0.06em] ml-1.5 inline-block text-[0.98em] leading-none align-middle">{{ $emoji }}</span>
+                                            @if(!$usesImageOverlay)
+                                                <div class="min-h-[2.75rem] bg-white px-2.5 py-2 transition-colors duration-300 dark:bg-slate-900 sm:min-h-[3rem] sm:px-3.5 sm:py-3 lg:px-4">
+                                                    <div class="min-w-0 flex-1">
+                                                        <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-slate-900 dark:text-slate-100 sm:text-[0.95rem] lg:text-base">
+                                                            {!! $displayText !!}
+                                                            @if($emoji !== '')
+                                                                <span class="relative -top-[0.06em] ml-1.5 inline-block text-[0.98em] leading-none align-middle">{{ $emoji }}</span>
+                                                            @endif
+                                                        </p>
+
+                                                        @if(!$hideCardSubtitle && $subtitle !== '')
+                                                            <p class="mt-1.5 break-words text-xs font-bold leading-snug text-slate-500 dark:text-slate-300 sm:text-sm">
+                                                                {!! $displaySubtitle !!}
+                                                            </p>
                                                         @endif
-                                                    </p>
 
-                                                    @if(!$hideCardSubtitle && $subtitle !== '')
-                                                        <p class="mt-1.5 break-words text-xs font-bold leading-snug text-slate-500 dark:text-slate-300 sm:text-sm">
-                                                            {!! $displaySubtitle !!}
-                                                        </p>
-                                                    @endif
-
-                                                    @if($example !== '')
-                                                        <p class="mt-2 break-words rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-1.5 text-[11px] font-bold leading-snug text-slate-500 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300 sm:text-xs">
-                                                            {!! $displayExample !!}
-                                                        </p>
-                                                    @endif
+                                                        @if($example !== '')
+                                                            <p class="mt-2 break-words rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-1.5 text-[11px] font-bold leading-snug text-slate-500 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300 sm:text-xs">
+                                                                {!! $displayExample !!}
+                                                            </p>
+                                                        @endif
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @endif
                                         @else
                                             <div class="flex w-full items-center justify-between gap-3">
                                                 <div class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-base leading-none shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-800 dark:ring-slate-700 sm:h-8 sm:w-8 sm:text-lg">
@@ -1225,8 +1250,8 @@
             });
 
             document.addEventListener("keydown", (event) => {
-                if (event.key === "Escape") {
-                    closeDetail();
+                if (event.key === "Escape") { 
+                    closeDetail(); 
                     closeFocus();
                 }
             });
@@ -1252,9 +1277,9 @@
                 subtree: true
             });
 
-            window.stopAll = stopAll;  
-            window.stopSlideAudio = stopAll; 
-            window.resetSlide = stopAll;   
+            window.stopAll = stopAll;
+            window.stopSlideAudio = stopAll;
+            window.resetSlide = stopAll;
         });
     </script>
 @endsection
