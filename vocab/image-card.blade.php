@@ -197,7 +197,7 @@
                                     <article
                                             role="button"
                                             tabindex="0"
-                                            class="vocab-card group relative flex w-full max-w-[28rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/75 shadow-[0_18px_38px_-24px_rgba(15,23,42,0.38)] outline-none backdrop-blur-2xl transition-all duration-300 sm:hover:-translate-y-1 sm:hover:scale-[1.01] sm:hover:border-slate-700 sm:hover:shadow-[0_26px_54px_-28px_rgba(2,6,23,0.30)] focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/80 dark:shadow-[0_18px_40px_-26px_rgba(0,0,0,0.68)] {{ $usesImageLayout ? ($usesImageOverlay ? 'aspect-[5/4]' : '') : 'min-h-[6.5rem] px-3.5 py-3.5 sm:min-h-[7.2rem] sm:px-5 sm:py-5' }}"
+                                            class="vocab-card group relative flex w-full max-w-[28rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[1.75rem] border border-white/80 bg-white/75 shadow-[0_18px_38px_-24px_rgba(15,23,42,0.38)] ring-2 ring-slate-200/75 outline-none backdrop-blur-2xl transition-all duration-300 sm:hover:-translate-y-1 sm:hover:scale-[1.01] sm:hover:border-slate-300/90 sm:hover:ring-slate-300/90 sm:hover:shadow-[0_26px_54px_-28px_rgba(2,6,23,0.30)] focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/80 dark:ring-white/10 dark:shadow-[0_18px_40px_-26px_rgba(0,0,0,0.68)] dark:hover:ring-white/20 {{ $usesImageLayout ? ($usesImageOverlay ? 'aspect-[5/4]' : '') : 'min-h-[6.5rem] px-3.5 py-3.5 sm:min-h-[7.2rem] sm:px-5 sm:py-5' }}"
                                             data-card-type="{{ $itemCardType }}"
                                             data-popup="{{ $itemPopup }}"
                                             data-image-layout="{{ $usesImageLayout ? '1' : '0' }}"
@@ -226,7 +226,7 @@
 
                                                 @if($usesImageOverlay)
                                                     <div class="absolute inset-x-0 bottom-0 z-[1] bg-gradient-to-t from-white/95 via-white/70 to-transparent px-3 pb-3 pt-14 dark:from-slate-950/95 dark:via-slate-950/70 sm:px-3.5 sm:pb-3.5 sm:pt-16">
-                                                        <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-slate-900 dark:text-slate-100 sm:text-base">
+                                                        <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-neutral-900 dark:text-slate-100 sm:text-base">
                                                             {!! $displayText !!}
                                                             @if($emoji !== '')
                                                                 <span class="relative -top-[0.06em] ml-1.5 inline-block text-[0.98em] leading-none align-middle">{{ $emoji }}</span>
@@ -266,7 +266,7 @@
                                             @if(!$usesImageOverlay)
                                                 <div class="min-h-[2.75rem] bg-white px-2.5 py-2 transition-colors duration-300 dark:bg-slate-900 sm:min-h-[3rem] sm:px-3.5 sm:py-3 lg:px-4">
                                                     <div class="min-w-0 flex-1">
-                                                        <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-slate-900 dark:text-slate-100 sm:text-[0.95rem] lg:text-base">
+                                                        <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-neutral-900 dark:text-slate-100 sm:text-[0.95rem] lg:text-base">
                                                             {!! $displayText !!}
                                                             @if($emoji !== '')
                                                                 <span class="relative -top-[0.06em] ml-1.5 inline-block text-[0.98em] leading-none align-middle">{{ $emoji }}</span>
@@ -915,8 +915,10 @@
                 if (!card) return;
 
                 card.classList.toggle("speaking", isPlaying);
-                card.classList.toggle("ring-4", isPlaying);
-                card.classList.toggle("ring-cyan-400/25", isPlaying);
+                card.classList.toggle("ring-slate-200/75", !isPlaying);
+                card.classList.toggle("dark:ring-white/10", !isPlaying);
+                card.classList.toggle("ring-cyan-400/40", isPlaying);
+                card.classList.toggle("dark:ring-cyan-300/30", isPlaying);
             }
 
             function setProgress(card, progress) {
@@ -1251,7 +1253,7 @@
 
             document.addEventListener("keydown", (event) => {
                 if (event.key === "Escape") { 
-                    closeDetail(); 
+                    closeDetail();  
                     closeFocus();
                 }
             });
