@@ -11,9 +11,17 @@
     $groups = is_array($content['groups'] ?? null) ? array_values($content['groups']) : [];
     $primaryGradient = trim((string) ($theme['primary_color'] ?? 'bg-[image:var(--top-bar-gradient)]'));
     $buttonGradient = trim((string) ($theme['button_primary_color'] ?? 'bg-[image:var(--top-bar-gradient)]'));
-    $requestedPopup = (string) ($content['popup'] ?? $theme['vocab_popup'] ?? 'text');
-    $popup = in_array($requestedPopup, ['text', 'card'], true)
+    $requestedCardType = strtolower(trim((string) ($content['card_type'] ?? $content['type'] ?? 'auto')));
+    $cardType = in_array($requestedCardType, ['auto', 'image', 'text'], true)
+        ? $requestedCardType
+        : 'auto';
+    $requestedPopup = strtolower(trim((string) ($content['popup'] ?? '')));
+    $popup = in_array($requestedPopup, ['text', 'card', 'focus'], true)
         ? $requestedPopup
+        : '';
+    $requestedThemePopup = strtolower(trim((string) ($theme['vocab_popup'] ?? '')));
+    $imagePopupDefault = in_array($requestedThemePopup, ['text', 'card'], true)
+        ? $requestedThemePopup
         : 'text';
     $hideCardSubtitle = (bool) ($content['hide_card_subtitle'] ?? false);
     $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
@@ -137,6 +145,14 @@
                                         $emoji = trim((string) ($item['emoji'] ?? ''));
                                         $image = trim((string) ($item['image'] ?? ''));
                                         $hasImage = $image !== '';
+                                        $itemCardType = $cardType === 'auto' ? ($hasImage ? 'image' : 'text') : $cardType;
+                                        $usesImageLayout = $itemCardType === 'image' && $hasImage;
+                                        $itemPopup = $popup !== '' ? $popup : ($itemCardType === 'text' ? 'focus' : $imagePopupDefault);
+
+                                        if (!$usesImageLayout && $itemPopup === 'card') {
+                                            $itemPopup = 'focus';
+                                        }
+
                                         $sound = trim((string) ($item['sound'] ?? $item['audio'] ?? ''));
                                         $script = trim((string) ($item['script'] ?? ''));
                                         $fallbackLetter = mb_substr($plainText !== '' ? $plainText : '?', 0, 1);
@@ -157,7 +173,10 @@
                                     <article
                                             role="button"
                                             tabindex="0"
-                                            class="vocab-card group relative flex w-full max-w-[28rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/75 shadow-[0_18px_38px_-24px_rgba(15,23,42,0.38)] outline-none backdrop-blur-2xl transition-all duration-300 sm:hover:-translate-y-1 sm:hover:scale-[1.01] sm:hover:border-slate-700 sm:hover:shadow-[0_26px_54px_-28px_rgba(2,6,23,0.30)] focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/80 dark:shadow-[0_18px_40px_-26px_rgba(0,0,0,0.68)] {{ $hasImage ? '' : 'min-h-[6.5rem] px-3.5 py-3.5 sm:min-h-[7.2rem] sm:px-5 sm:py-5' }}"
+                                            class="vocab-card group relative flex w-full max-w-[28rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/75 shadow-[0_18px_38px_-24px_rgba(15,23,42,0.38)] outline-none backdrop-blur-2xl transition-all duration-300 sm:hover:-translate-y-1 sm:hover:scale-[1.01] sm:hover:border-slate-700 sm:hover:shadow-[0_26px_54px_-28px_rgba(2,6,23,0.30)] focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/80 dark:shadow-[0_18px_40px_-26px_rgba(0,0,0,0.68)] {{ $usesImageLayout ? '' : 'min-h-[6.5rem] px-3.5 py-3.5 sm:min-h-[7.2rem] sm:px-5 sm:py-5' }}"
+                                            data-card-type="{{ $itemCardType }}"
+                                            data-popup="{{ $itemPopup }}"
+                                            data-image-layout="{{ $usesImageLayout ? '1' : '0' }}"
                                             data-title="{{ $plainText }}"
                                             data-title-html="{{ $text }}"
                                             data-subtitle="{{ $subtitle }}"
@@ -171,7 +190,7 @@
                                             data-group-text="{{ $popupGroupText }}"
                                             data-group-audio="{{ $popupGroupSound }}"
                                     >
-                                        @if($hasImage)
+                                        @if($usesImageLayout)
                                             <div class="relative flex aspect-[5/4] items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-800">
                                                 <img
                                                         src="{{ $image }}"
@@ -182,7 +201,7 @@
                                             </div>
                                         @endif
 
-                                        @if($sound !== '' && $hasImage)
+                                        @if($sound !== '' && $usesImageLayout)
                                             <button
                                                     type="button"
                                                     class="speak-btn absolute right-2.5 top-2.5 z-10 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 dark:bg-slate-900/85 sm:right-3 sm:top-3 sm:h-8 sm:w-8 {{ $audioButtonIdleClass }}"
@@ -201,7 +220,7 @@
                                             </button>
                                         @endif
 
-                                        @if($hasImage)
+                                        @if($usesImageLayout)
                                             <div class="min-h-[2.75rem] bg-white px-2.5 py-2 transition-colors duration-300 dark:bg-slate-900 sm:min-h-[3rem] sm:px-3.5 sm:py-3 lg:px-4">
                                                 <div class="min-w-0 flex-1">
                                                     <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-slate-900 dark:text-slate-100 sm:text-[0.95rem] lg:text-base">
@@ -346,6 +365,68 @@
                 <div id="imageCardDetailProgress" class="absolute bottom-0 left-0 h-1 w-0 {{ $buttonGradient }} transition-[width] duration-100"></div>
             </article>
         </div>
+
+        <div
+                id="imageCardFocusOverlay"
+                class="pointer-events-none invisible fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/75 px-4 py-6 opacity-0 backdrop-blur-xl transition-opacity duration-200 sm:px-8 sm:py-8"
+                aria-hidden="true"
+        >
+            <article class="relative max-h-[82dvh] w-full max-w-[38rem] translate-y-4 scale-95 overflow-y-auto rounded-[2rem] border border-white/80 bg-white px-5 pb-5 pt-6 shadow-2xl shadow-slate-950/30 transition-all duration-200 dark:border-white/10 dark:bg-slate-950 sm:max-w-[50rem] sm:p-8 lg:max-w-[48rem] lg:p-9">
+                <button
+                        id="imageCardFocusClose"
+                        type="button"
+                        class="absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-slate-600 shadow-lg ring-1 ring-slate-200 transition hover:bg-slate-950 hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/30 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-white dark:hover:text-slate-950 sm:right-4 sm:top-4"
+                        aria-label="Close"
+                >
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6L6 18"/>
+                    </svg>
+                </button>
+
+                <div id="imageCardFocusGroupWrap" class="mb-4 hidden pr-10 sm:mb-5 sm:pr-12">
+                    <div class="inline-flex w-fit max-w-full items-center gap-2 rounded-2xl border px-3 py-1.5 text-left text-sm font-black leading-tight shadow-sm ring-1 sm:text-base {{ $groupTitleShellClass }}">
+                        <span id="imageCardFocusGroupEmoji" class="hidden shrink-0 text-base leading-none sm:text-lg"></span>
+                        <span id="imageCardFocusGroupDot" class="h-2.5 w-2.5 shrink-0 rounded-full {{ $primaryGradient }}"></span>
+                        <span id="imageCardFocusGroupText" class="min-w-0 bg-clip-text text-transparent {{ $primaryGradient }}"></span>
+                    </div>
+                </div>
+
+                <div class="flex min-w-0 flex-col gap-4 sm:gap-5">
+                    <div class="min-w-0 pr-8 sm:pr-12">
+                        <span id="imageCardFocusEmoji" class="mb-3 hidden h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-2xl leading-none shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-900 dark:ring-slate-700 sm:mb-4 sm:h-14 sm:w-14 sm:text-3xl"></span>
+                        <h2 id="imageCardFocusTitle" class="min-w-0 break-words font-black leading-[1.08] text-slate-900 dark:text-white sm:leading-tight"></h2>
+                    </div>
+
+                    <div id="imageCardFocusSubtitleWrap" class="hidden">
+                        <div id="imageCardFocusSubtitle" class="max-w-[48rem] text-base font-bold leading-snug text-slate-500 dark:text-slate-300 sm:text-2xl"></div>
+                    </div>
+
+                    <div id="imageCardFocusExampleWrap" class="hidden max-w-[44rem] rounded-2xl border border-slate-200 bg-slate-50/90 px-4 py-3 dark:border-slate-700 dark:bg-slate-900/70 sm:px-5 sm:py-4">
+                        <div id="imageCardFocusExample" class="text-sm font-bold leading-snug text-slate-600 dark:text-slate-200 sm:text-lg"></div>
+                    </div>
+
+                    <button
+                            id="imageCardFocusAudio"
+                            type="button"
+                            class="speak-btn hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-11 sm:w-11 {{ $audioButtonClass }}"
+                            data-audio-style="sentence"
+                            aria-label="Play audio"
+                    >
+                        <svg class="js-static-icon h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                        </svg>
+
+                        <span class="js-wave-wrap hidden items-center gap-0.5" aria-hidden="true">
+                            <span class="h-2 w-[2px] animate-pulse rounded-full bg-current"></span>
+                            <span class="h-4 w-[2px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
+                            <span class="h-3 w-[2px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
+                        </span>
+                    </button>
+                </div>
+
+                <div id="imageCardFocusProgress" class="absolute bottom-0 left-0 h-1 w-0 {{ $buttonGradient }} transition-[width] duration-100"></div>
+            </article>
+        </div>
     </div>
 @endsection
 
@@ -372,6 +453,21 @@
             const detailExample = document.getElementById("imageCardDetailExample");
             const detailAudio = document.getElementById("imageCardDetailAudio");
             const detailProgress = document.getElementById("imageCardDetailProgress");
+            const focusOverlay = document.getElementById("imageCardFocusOverlay");
+            const focusPanel = focusOverlay?.querySelector("article");
+            const focusClose = document.getElementById("imageCardFocusClose");
+            const focusGroupWrap = document.getElementById("imageCardFocusGroupWrap");
+            const focusGroupEmoji = document.getElementById("imageCardFocusGroupEmoji");
+            const focusGroupDot = document.getElementById("imageCardFocusGroupDot");
+            const focusGroupText = document.getElementById("imageCardFocusGroupText");
+            const focusTitle = document.getElementById("imageCardFocusTitle");
+            const focusEmoji = document.getElementById("imageCardFocusEmoji");
+            const focusSubtitleWrap = document.getElementById("imageCardFocusSubtitleWrap");
+            const focusSubtitle = document.getElementById("imageCardFocusSubtitle");
+            const focusExampleWrap = document.getElementById("imageCardFocusExampleWrap");
+            const focusExample = document.getElementById("imageCardFocusExample");
+            const focusAudio = document.getElementById("imageCardFocusAudio");
+            const focusProgress = document.getElementById("imageCardFocusProgress");
             const audio = new Audio();
             const popupMode = @json($popup);
             const idleAudioClasses = @json(preg_split('/\s+/', trim($audioButtonIdleClass)));
@@ -385,6 +481,7 @@
             let currentObjectUrl = "";
             let syncAnimationFrame = null;
             let detailCard = null;
+            let focusCard = null;
             let currentAudioQueue = [];
             let currentAudioQueueIndex = 0;
             let currentSubtitleWords = [];
@@ -642,6 +739,97 @@
                 }, 180);
             }
 
+            function openFocus(card) {
+                if (!card || !focusOverlay) return;
+
+                focusCard = card;
+                const titleHtml = card.dataset.titleHtml || card.dataset.title || "";
+                const title = card.dataset.title || "";
+                const script = card.dataset.script || "";
+                const subtitle = card.dataset.subtitle || (normalizeText(script) === normalizeText(title) ? "" : script);
+                const example = card.dataset.example || "";
+                const sound = card.dataset.audio || "";
+                const emoji = card.dataset.emoji || "";
+                const groupTitle = card.dataset.groupTitle || "";
+                const groupEmoji = card.dataset.groupEmoji || "";
+                const groupText = card.dataset.groupText || groupTitle;
+
+                fillHtmlOrText(focusTitle, titleHtml || title);
+                fillHtmlOrText(focusEmoji, emoji);
+                fillHtmlOrText(focusSubtitle, subtitle);
+                fillHtmlOrText(focusExample, example);
+                fillHtmlOrText(focusGroupEmoji, groupEmoji);
+                fillHtmlOrText(focusGroupText, groupText);
+
+                setAdaptiveTextSize(
+                    focusTitle,
+                    titleHtml || title,
+                    ["text-3xl", "sm:text-5xl"],
+                    ["text-[1.7rem]", "sm:text-4xl"],
+                    ["text-2xl", "sm:text-3xl"]
+                );
+
+                setAdaptiveTextSize(
+                    focusSubtitle,
+                    subtitle,
+                    ["text-xl", "sm:text-2xl"],
+                    ["text-lg", "sm:text-xl"],
+                    ["text-base", "sm:text-lg"]
+                );
+
+                setAdaptiveTextSize(
+                    focusExample,
+                    example,
+                    ["text-base", "sm:text-lg"],
+                    ["text-sm", "sm:text-base"],
+                    ["text-xs", "sm:text-sm"]
+                );
+
+                setVisible(focusGroupWrap, groupTitle !== "");
+                setVisible(focusGroupEmoji, groupTitle !== "" && groupEmoji !== "");
+                setVisible(focusGroupDot, groupTitle !== "" && groupEmoji === "");
+                setVisible(focusEmoji, emoji !== "", "inline-flex");
+                setVisible(focusSubtitleWrap, subtitle !== "");
+                setVisible(focusExampleWrap, example !== "");
+                setVisible(focusAudio, sound !== "", "inline-flex");
+
+                focusOverlay.classList.remove("invisible", "pointer-events-none");
+                focusOverlay.setAttribute("aria-hidden", "false");
+                if (focusProgress) {
+                    focusProgress.style.width = currentCard === card && !audio.paused ? card.querySelector(".playing-indicator")?.style.width || "0%" : "0%";
+                }
+
+                requestAnimationFrame(() => {
+                    focusOverlay.classList.remove("opacity-0");
+                    focusOverlay.classList.add("opacity-100");
+                    focusPanel?.classList.remove("translate-y-4", "scale-95");
+                    focusPanel?.classList.add("translate-y-0", "scale-100");
+                });
+            }
+
+            function closeFocus() {
+                if (!focusOverlay) return;
+
+                if (currentButton === focusAudio) {
+                    stopAll();
+                }
+
+                focusOverlay.classList.add("opacity-0");
+                focusOverlay.classList.remove("opacity-100");
+                focusOverlay.classList.add("pointer-events-none");
+                focusPanel?.classList.add("translate-y-4", "scale-95");
+                focusPanel?.classList.remove("translate-y-0", "scale-100");
+                focusOverlay.setAttribute("aria-hidden", "true");
+                if (focusProgress) {
+                    focusProgress.style.width = "0%";
+                }
+
+                window.setTimeout(() => {
+                    focusOverlay.classList.add("invisible");
+                    focusCard = null;
+                }, 180);
+            }
+
             function setButtonState(button, isPlaying) {
                 if (!button) return;
 
@@ -675,6 +863,10 @@
 
                 if (detailProgress && detailCard === card) {
                     detailProgress.style.width = width;
+                }
+
+                if (focusProgress && focusCard === card) {
+                    focusProgress.style.width = width;
                 }
             }
 
@@ -860,11 +1052,16 @@
                 const example = card.dataset.example || "";
                 const button = buttonOverride || card.querySelector(".speak-btn");
                 const popupText = normalizeText(script) === normalizeText(title) ? "" : script;
-                const hasImage = (card.dataset.image || "") !== "";
+                const hasImage = card.dataset.imageLayout === "1";
+                const cardPopup = card.dataset.popup || popupMode || "text";
+                const isFocusPopup = cardPopup === "focus" && !hasImage;
 
                 if (currentCard === card && !audio.paused) {
-                    if (popupMode === "card" && hasImage) {
+                    if (cardPopup === "card" && hasImage) {
                         openDetail(card);
+                    }
+                    if (isFocusPopup) {
+                        openFocus(card);
                     }
                     stopAll();
                     return;
@@ -872,11 +1069,11 @@
 
                 stopAll();
 
-                const words = popupMode === "text" && hasImage
+                const words = cardPopup === "text" && hasImage
                     ? renderSubtitle(title, titleHtml, popupText, example)
                     : [];
 
-                if (popupMode === "text" && hasImage) {
+                if (cardPopup === "text" && hasImage) {
                     showOverlay();
                 }
 
@@ -899,14 +1096,22 @@
             cards.forEach((card) => {
                 card.addEventListener("click", (event) => {
                     const audioButton = event.target.closest(".speak-btn");
-                    const hasImage = (card.dataset.image || "") !== "";
+                    const hasImage = card.dataset.imageLayout === "1";
+                    const cardPopup = card.dataset.popup || popupMode || "text";
+                    const isFocusPopup = cardPopup === "focus" && !hasImage;
 
                     if (audioButton) {
                         event.preventDefault();
                         event.stopPropagation();
 
-                        if (popupMode === "card" && hasImage) {
+                        if (cardPopup === "card" && hasImage) {
                             openDetail(card);
+                            playCard(card, audioButton);
+                            return;
+                        }
+
+                        if (isFocusPopup) {
+                            openFocus(card);
                             playCard(card, audioButton);
                             return;
                         }
@@ -915,9 +1120,15 @@
                         return;
                     }
 
-                    if (popupMode === "card" && hasImage) {
+                    if (cardPopup === "card" && hasImage) {
                         openDetail(card);
                         playCard(card, card.querySelector(".speak-btn"));
+                        return;
+                    }
+
+                    if (isFocusPopup) {
+                        openFocus(card);
+                        playCard(card, focusAudio);
                         return;
                     }
 
@@ -927,11 +1138,19 @@
                     if (event.target?.closest?.(".speak-btn")) return;
                     if (event.key !== "Enter" && event.key !== " ") return;
                     event.preventDefault();
-                    const hasImage = (card.dataset.image || "") !== "";
+                    const hasImage = card.dataset.imageLayout === "1";
+                    const cardPopup = card.dataset.popup || popupMode || "text";
+                    const isFocusPopup = cardPopup === "focus" && !hasImage;
 
-                    if (popupMode === "card" && hasImage) {
+                    if (cardPopup === "card" && hasImage) {
                         openDetail(card);
                         playCard(card, card.querySelector(".speak-btn"));
+                        return;
+                    }
+
+                    if (isFocusPopup) {
+                        openFocus(card);
+                        playCard(card, focusAudio);
                         return;
                     }
 
@@ -945,7 +1164,14 @@
                 if (detailCard) playCard(detailCard, detailAudio);
             });
 
+            focusAudio?.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                if (focusCard) playCard(focusCard, focusAudio);
+            });
+
             detailClose?.addEventListener("click", closeDetail);
+            focusClose?.addEventListener("click", closeFocus);
 
             detailOverlay?.addEventListener("click", (event) => {
                 if (event.target === detailOverlay) {
@@ -953,9 +1179,16 @@
                 }
             });
 
+            focusOverlay?.addEventListener("click", (event) => {
+                if (event.target === focusOverlay) {
+                    closeFocus();
+                }
+            });
+
             document.addEventListener("keydown", (event) => {
                 if (event.key === "Escape") {
                     closeDetail();
+                    closeFocus();
                 }
             });
 
@@ -980,9 +1213,9 @@
                 subtree: true
             });
 
-            window.stopAll = stopAll;
-            window.stopSlideAudio = stopAll;
-            window.resetSlide = stopAll;
+            window.stopAll = stopAll; 
+            window.stopSlideAudio = stopAll; 
+            window.resetSlide = stopAll; 
         });
     </script>
 @endsection
