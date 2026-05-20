@@ -51,13 +51,6 @@
             'text' => $value,
         ];
     };
-    $makeGridComfortable = static function (string $value): string {
-        $value = trim($value);
-        $value = str_replace('xl:grid-cols-6', 'xl:grid-cols-5 min-[1500px]:grid-cols-6', $value);
-        $value = str_replace('lg:grid-cols-6', 'lg:grid-cols-5 min-[1500px]:grid-cols-6', $value);
-
-        return $value;
-    };
     $capitalizeFirst = static function (string $value): string {
         $value = trim($value);
 
@@ -122,10 +115,10 @@
 
 @section('content')
     <div class="relative flex min-h-[100dvh] w-full items-start overflow-x-hidden overflow-y-auto lg:items-center">
-        <main class="mx-auto w-full max-w-[1440px] px-4 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-10 lg:-mt-2 lg:pt-12">
+        <main class="mx-auto w-full max-w-[1440px] px-4 pb-14 pt-7 sm:px-6 sm:pb-16 sm:pt-9 lg:-mt-2 lg:px-8 lg:pt-10">
             @include('slider.components.title-subtitle')
 
-            <div class="mt-6 flex flex-col gap-6 sm:mt-8 sm:gap-8 lg:gap-9">
+            <div class="mt-5 flex flex-col gap-5 sm:mt-7 sm:gap-7 lg:gap-8">
                 @foreach($groupSections as $group)
                     <section class="w-full" data-group-key="{{ $group['key'] }}">
                         <div class="mx-auto w-full max-w-[92rem]">
@@ -148,7 +141,7 @@
                                 </h2>
                             @endif
 
-                            <div class="mx-auto grid w-full auto-rows-fr justify-center gap-3 sm:gap-4 lg:gap-5 {{ $makeGridComfortable($group['grid_class']) }}">
+                            <div class="mx-auto grid w-full auto-rows-fr justify-center gap-3 sm:gap-4 lg:gap-4 {{ $group['grid_class'] }}">
                                 @foreach($group['items'] as $item)
                                     @php
                                         $item = is_array($item) ? $item : [];
@@ -197,7 +190,7 @@
                                     <article
                                             role="button"
                                             tabindex="0"
-                                            class="vocab-card group relative flex w-full max-w-[28rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[1.75rem] border border-white/80 bg-white/75 shadow-[0_18px_38px_-24px_rgba(15,23,42,0.38)] ring-2 ring-slate-200/75 outline-none backdrop-blur-2xl transition-all duration-300 sm:hover:-translate-y-1 sm:hover:scale-[1.01] sm:hover:border-slate-300/90 sm:hover:ring-slate-300/90 sm:hover:shadow-[0_26px_54px_-28px_rgba(2,6,23,0.30)] focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/80 dark:ring-white/10 dark:shadow-[0_18px_40px_-26px_rgba(0,0,0,0.68)] dark:hover:ring-white/20 {{ $usesImageLayout ? ($usesImageOverlay ? 'aspect-[5/4]' : '') : 'min-h-[6.5rem] px-3.5 py-3.5 sm:min-h-[7.2rem] sm:px-5 sm:py-5' }}"
+                                            class="vocab-card group relative flex w-full max-w-[28rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[1.6rem] border border-white/75 bg-white/85 shadow-[0_10px_28px_-24px_rgba(15,23,42,0.45)] ring-1 ring-slate-200/70 outline-none transform-gpu will-change-transform transition-[transform,border-color,background-color] duration-200 ease-out sm:hover:-translate-y-0.5 sm:hover:border-slate-300/80 sm:hover:bg-white/95 focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/85 dark:ring-white/10 dark:shadow-[0_14px_34px_-28px_rgba(0,0,0,0.72)] dark:hover:bg-slate-900/95 {{ $usesImageLayout ? ($usesImageOverlay ? 'aspect-[5/4]' : '') : 'min-h-[6.25rem] px-3.5 py-3.5 sm:min-h-[7rem] sm:px-4 sm:py-4 lg:px-5 lg:py-5' }}"
                                             data-card-type="{{ $itemCardType }}"
                                             data-popup="{{ $itemPopup }}"
                                             data-image-layout="{{ $usesImageLayout ? '1' : '0' }}"
@@ -216,16 +209,16 @@
                                             data-group-audio="{{ $popupGroupSound }}"
                                     >
                                         @if($usesImageLayout)
-                                            <div class="relative flex {{ $usesImageOverlay ? 'h-full' : 'aspect-[5/4]' }} items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                            <div class="relative flex {{ $usesImageOverlay ? 'h-full' : 'aspect-[5/4]' }} items-center justify-center overflow-hidden bg-slate-100 ring-1 ring-inset ring-slate-200/70 dark:bg-slate-800 dark:ring-white/10">
                                                 <img
                                                         src="{{ $image }}"
                                                         alt="{{ $plainText }}"
                                                         loading="lazy"
-                                                        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                        class="h-full w-full transform-gpu object-cover transition-transform duration-300 ease-out will-change-transform group-hover:scale-[1.03]"
                                                 >
 
                                                 @if($usesImageOverlay)
-                                                    <div class="absolute inset-x-0 bottom-0 z-[1] bg-gradient-to-t from-white/95 via-white/70 to-transparent px-3 pb-3 pt-14 dark:from-slate-950/95 dark:via-slate-950/70 sm:px-3.5 sm:pb-3.5 sm:pt-16">
+                                                    <div class="absolute inset-x-0 bottom-0 z-[1] bg-gradient-to-t from-white/95 via-white/75 to-transparent px-3 pb-3 pt-14 dark:from-slate-950/95 dark:via-slate-950/75 sm:px-3.5 sm:pb-3.5 sm:pt-16">
                                                         <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-neutral-900 dark:text-slate-100 sm:text-base">
                                                             {!! $displayText !!}
                                                             @if($emoji !== '')
@@ -246,7 +239,7 @@
                                         @if($sound !== '' && $usesImageLayout)
                                             <button
                                                     type="button"
-                                                    class="speak-btn absolute right-2.5 top-2.5 z-10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 hover:scale-[1.06] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 dark:bg-slate-900/85 sm:right-3 sm:top-3 sm:h-9 sm:w-9 {{ $audioButtonIdleClass }}"
+                                                    class="speak-btn absolute right-2.5 top-2.5 z-10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-sm backdrop-blur-sm transform-gpu transition-[transform,background-color,border-color,color] duration-200 ease-out hover:-rotate-3 hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 dark:bg-slate-900/85 sm:right-3 sm:top-3 sm:h-9 sm:w-9 {{ $audioButtonIdleClass }}"
                                                     data-audio-style="image"
                                                     aria-label="Play audio"
                                             >
@@ -264,7 +257,7 @@
 
                                         @if($usesImageLayout)
                                             @if(!$usesImageOverlay)
-                                                <div class="min-h-[2.75rem] bg-white px-2.5 py-2 transition-colors duration-300 dark:bg-slate-900 sm:min-h-[3rem] sm:px-3.5 sm:py-3 lg:px-4">
+                                                <div class="min-h-[2.75rem] bg-white/95 px-3 py-2.5 transition-colors duration-300 dark:bg-slate-900/95 sm:min-h-[3rem] sm:px-3.5 sm:py-3 lg:px-4">
                                                     <div class="min-w-0 flex-1">
                                                         <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-neutral-900 dark:text-slate-100 sm:text-[0.95rem] lg:text-base">
                                                             {!! $displayText !!}
@@ -289,14 +282,14 @@
                                             @endif
                                         @else
                                             <div class="flex w-full items-center justify-between gap-3">
-                                                <div class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-base leading-none shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-800 dark:ring-slate-700 sm:h-8 sm:w-8 sm:text-lg">
+                                                <div class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-base leading-none shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-800 dark:ring-slate-700 sm:h-9 sm:w-9 sm:text-lg">
                                                     {{ $emoji !== '' ? $emoji : $fallbackLetter }}
                                                 </div>
 
                                                 @if($sound !== '')
                                                     <button
                                                             type="button"
-                                                            class="speak-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 hover:scale-[1.06] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-9 sm:w-9 {{ $audioButtonClass }}"
+                                                            class="speak-btn inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-sm backdrop-blur-sm transform-gpu transition-[transform,background-color,border-color,color] duration-200 ease-out hover:-rotate-3 hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-9 sm:w-9 {{ $audioButtonClass }}"
                                                             data-audio-style="sentence"
                                                             aria-label="Play audio"
                                                     >
@@ -344,17 +337,17 @@
 
         <div
                 id="imageCardSubtitleOverlay"
-                class="pointer-events-none fixed bottom-4 left-1/2 z-[100] max-h-[30dvh] w-[calc(100%-1.5rem)] -translate-x-1/2 translate-y-4 scale-95 overflow-y-auto rounded-2xl border border-white/60 bg-white/85 px-3 py-2.5 text-center opacity-0 shadow-2xl shadow-slate-900/10 backdrop-blur-2xl transition-all duration-300 sm:bottom-9 sm:max-h-[34dvh] sm:w-auto sm:min-w-[42rem] sm:max-w-[82vw] sm:rounded-[1.5rem] sm:px-7 sm:py-4 dark:border-white/10 dark:bg-slate-900/85"
+                class="pointer-events-none fixed bottom-4 left-1/2 z-[100] max-h-[30dvh] w-[calc(100%-1.5rem)] -translate-x-1/2 translate-y-4 scale-95 overflow-y-auto rounded-2xl border border-white/60 bg-white/85 px-3 py-2.5 text-center opacity-0 shadow-2xl shadow-slate-900/10 backdrop-blur-md transition-[opacity,transform] duration-200 ease-out sm:bottom-9 sm:max-h-[34dvh] sm:w-auto sm:min-w-[42rem] sm:max-w-[82vw] sm:rounded-[1.5rem] sm:px-7 sm:py-4 dark:border-white/10 dark:bg-slate-900/85"
         >
             <p id="imageCardSubtitleText" class="text-sm font-bold leading-snug text-slate-900 dark:text-slate-100 sm:text-2xl sm:leading-[1.35]"></p>
         </div>
 
         <div
                 id="imageCardDetailOverlay"
-                class="pointer-events-none invisible fixed inset-0 z-[110] flex items-end justify-center bg-slate-950/45 px-3 py-3 opacity-0 backdrop-blur-sm transition-opacity duration-200 sm:items-center sm:px-4 sm:py-6"
+                class="pointer-events-none invisible fixed inset-0 z-[110] flex items-end justify-center bg-slate-950/45 px-3 py-3 opacity-0 backdrop-blur-sm transition-opacity duration-200 ease-out sm:items-center sm:px-4 sm:py-6"
                 aria-hidden="true"
         >
-            <article class="relative w-full max-w-[35rem] translate-y-3 scale-95 overflow-hidden rounded-[1.85rem] border border-white/80 bg-white p-2.5 shadow-2xl shadow-slate-950/25 transition-all duration-200 dark:border-white/10 dark:bg-slate-950 sm:p-3 md:max-w-[48rem] md:rounded-[2rem]">
+            <article class="relative w-full max-w-[35rem] translate-y-3 scale-95 overflow-hidden rounded-[1.85rem] border border-white/80 bg-white p-2.5 shadow-2xl shadow-slate-950/25 transform-gpu transition-transform duration-200 ease-out will-change-transform dark:border-white/10 dark:bg-slate-950 sm:p-3 md:max-w-[48rem] md:rounded-[2rem]">
                 <button
                         id="imageCardDetailClose"
                         type="button"
@@ -367,12 +360,12 @@
                 </button>
 
                 <div class="max-h-[82dvh] overflow-y-auto pr-1 sm:max-h-[86dvh] md:max-h-none md:overflow-visible md:pr-0">
-                    <div class="grid gap-4 md:grid-cols-2 md:items-stretch md:gap-4">
+                    <div class="grid gap-4 md:grid-cols-2 md:items-center md:gap-4">
                         <div id="imageCardDetailImageWrap" class="hidden aspect-[5/4] max-h-[38dvh] overflow-hidden rounded-[1.45rem] bg-slate-100 dark:bg-slate-800 md:max-h-[17.5rem]">
                             <img id="imageCardDetailImage" src="" alt="" class="h-full w-full object-cover">
                         </div>
 
-                        <div class="flex min-w-0 flex-col justify-center gap-3 px-1 pb-1 pt-9 sm:gap-4 md:min-h-[17.5rem] md:px-3 md:pb-3 md:pl-2 md:pr-9 md:pt-8">
+                        <div class="flex min-w-0 flex-col items-start gap-3 px-1 pb-1 pt-9 sm:gap-4 md:px-3 md:pb-2 md:pl-2 md:pr-9 md:pt-7">
                             <div class="min-w-0">
                                 <div id="imageCardDetailGroupWrap" class="mb-3 hidden">
                                     <div class="inline-flex w-fit max-w-full items-center gap-2 rounded-2xl border px-3 py-1.5 text-left text-sm font-black leading-tight shadow-sm ring-1 sm:text-base {{ $groupTitleShellClass }}">
@@ -403,7 +396,7 @@
                             <button
                                     id="imageCardDetailAudio"
                                     type="button"
-                                    class="speak-btn hidden h-10 w-10 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 hover:scale-[1.06] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-11 sm:w-11 {{ $audioButtonClass }}"
+                                    class="speak-btn hidden h-10 w-10 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-sm backdrop-blur-sm transform-gpu transition-[transform,background-color,border-color,color] duration-200 ease-out hover:-rotate-3 hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-11 sm:w-11 {{ $audioButtonClass }}"
                                     data-audio-style="sentence"
                                     aria-label="Play audio"
                             >
@@ -427,10 +420,10 @@
 
         <div
                 id="imageCardFocusOverlay"
-                class="pointer-events-none invisible fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/75 px-4 py-6 opacity-0 backdrop-blur-xl transition-opacity duration-200 sm:px-8 sm:py-8"
+                class="pointer-events-none invisible fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/75 px-4 py-6 opacity-0 backdrop-blur-md transition-opacity duration-200 ease-out sm:px-8 sm:py-8"
                 aria-hidden="true"
         >
-            <article class="relative max-h-[82dvh] w-full max-w-[38rem] translate-y-4 scale-95 overflow-y-auto rounded-[2rem] border border-white/80 bg-white px-5 pb-5 pt-6 shadow-2xl shadow-slate-950/30 transition-all duration-200 dark:border-white/10 dark:bg-slate-950 sm:max-w-[50rem] sm:p-8 lg:max-w-[48rem] lg:p-9">
+            <article class="relative max-h-[82dvh] w-full max-w-[38rem] translate-y-4 scale-95 overflow-y-auto rounded-[2rem] border border-white/80 bg-white px-5 pb-5 pt-6 shadow-2xl shadow-slate-950/30 transform-gpu transition-transform duration-200 ease-out will-change-transform dark:border-white/10 dark:bg-slate-950 sm:max-w-[50rem] sm:p-8 lg:max-w-[48rem] lg:p-9">
                 <button
                         id="imageCardFocusClose"
                         type="button"
@@ -467,7 +460,7 @@
                     <button
                             id="imageCardFocusAudio"
                             type="button"
-                            class="speak-btn hidden h-10 w-10 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-sm backdrop-blur transition-all duration-300 hover:-rotate-6 hover:scale-[1.06] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-11 sm:w-11 {{ $audioButtonClass }}"
+                            class="speak-btn hidden h-10 w-10 shrink-0 items-center justify-center rounded-full border bg-white/90 shadow-sm backdrop-blur-sm transform-gpu transition-[transform,background-color,border-color,color] duration-200 ease-out hover:-rotate-3 hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/35 sm:h-11 sm:w-11 {{ $audioButtonClass }}"
                             data-audio-style="sentence"
                             aria-label="Play audio"
                     >
@@ -545,6 +538,8 @@
             let currentAudioQueue = [];
             let currentAudioQueueIndex = 0;
             let currentSubtitleWords = [];
+            let currentSubtitleWordSpans = [];
+            let lastHighlightedWordIndex = -1;
 
             const activeWordClasses = ["bg-slate-900", "text-white", "opacity-100", "scale-105", "dark:bg-slate-100", "dark:text-slate-950"];
 
@@ -562,13 +557,6 @@
                 return (template.content.textContent || "").trim();
             }
 
-            function escapeHtml(value) {
-                return String(value || "")
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/"/g, "&quot;");
-            }
 
             function wrapSyncWords(root) {
                 if (!root) return [];
@@ -598,7 +586,7 @@
                         }
 
                         const span = document.createElement("span");
-                        span.className = "word-span mx-[0.12rem] inline-block rounded-lg px-1.5 py-0.5 opacity-60 transition-all duration-200";
+                        span.className = "word-span mx-[0.12rem] inline-block transform-gpu rounded-lg px-1.5 py-0.5 opacity-60 transition-[opacity,transform,background-color,color] duration-150 ease-out will-change-transform";
                         span.dataset.syncWord = "1";
                         span.dataset.index = String(words.length);
                         span.textContent = part;
@@ -661,7 +649,11 @@
                     fillHtmlOrText(exampleHost, rawExample);
                 }
 
-                return wrapSyncWords(scriptHost);
+                const words = wrapSyncWords(scriptHost);
+                currentSubtitleWordSpans = Array.from(subtitleText.querySelectorAll("[data-sync-word='1']"));
+                lastHighlightedWordIndex = -1;
+
+                return words;
             }
 
             function showOverlay() {
@@ -937,21 +929,40 @@
             }
 
             function clearWordHighlights() {
-                document.querySelectorAll("#imageCardSubtitleText [data-sync-word='1']").forEach((span) => {
+                const wordSpans = currentSubtitleWordSpans.length
+                    ? currentSubtitleWordSpans
+                    : Array.from(document.querySelectorAll("#imageCardSubtitleText [data-sync-word='1']"));
+
+                wordSpans.forEach((span) => {
                     span.classList.remove(...activeWordClasses);
+                    span.classList.add("opacity-60");
+                    span.classList.remove("opacity-100");
                 });
+
+                lastHighlightedWordIndex = -1;
             }
 
             function highlightWord(index) {
-                const wordSpans = Array.from(document.querySelectorAll("#imageCardSubtitleText [data-sync-word='1']"));
+                if (index === lastHighlightedWordIndex) return;
 
-                wordSpans.forEach((span, spanIndex) => {
-                    span.classList.toggle("opacity-60", spanIndex !== index);
-                    span.classList.toggle("opacity-100", spanIndex === index);
-                    activeWordClasses.forEach((className) => {
-                        span.classList.toggle(className, spanIndex === index);
-                    });
-                });
+                const wordSpans = currentSubtitleWordSpans.length
+                    ? currentSubtitleWordSpans
+                    : Array.from(document.querySelectorAll("#imageCardSubtitleText [data-sync-word='1']"));
+
+                const previousSpan = wordSpans[lastHighlightedWordIndex];
+                const activeSpan = wordSpans[index];
+
+                if (previousSpan) {
+                    previousSpan.classList.add("opacity-60");
+                    previousSpan.classList.remove("opacity-100", ...activeWordClasses);
+                }
+
+                if (activeSpan) {
+                    activeSpan.classList.remove("opacity-60");
+                    activeSpan.classList.add(...activeWordClasses);
+                }
+
+                lastHighlightedWordIndex = index;
             }
 
             function cancelSync() {
@@ -1027,6 +1038,8 @@
                 currentAudioQueue = [];
                 currentAudioQueueIndex = 0;
                 currentSubtitleWords = [];
+                currentSubtitleWordSpans = [];
+                lastHighlightedWordIndex = -1;
                 clearWordHighlights();
                 cancelSync();
             }
@@ -1252,8 +1265,8 @@
             });
 
             document.addEventListener("keydown", (event) => {
-                if (event.key === "Escape") { 
-                    closeDetail();  
+                if (event.key === "Escape") {
+                    closeDetail();
                     closeFocus();
                 }
             });

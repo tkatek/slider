@@ -1,11 +1,11 @@
 <?php
 
 $content = [
-    'page_title' => 'New Vocabulary',
+
     'title'      => 'New Vocabulary',
     'subtitle'   => 'Types of Houses',
 
-    'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-4',
 
     'items' => [
         [

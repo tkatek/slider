@@ -2,26 +2,31 @@
 
 @php
     $content['theme'] = $content['theme'] ?? '#6366f1';
-    $content['grid'] = array_replace_recursive([
+    $grid = array_replace_recursive([
         'cols' => [
-            'base' => 1,
-            'sm' => 1,
-            'md' => 2,
+            'base' => 2,
+            'sm' => 2,
+            'md' => 3,
             'lg' => 3,
         ],
         'gap' => 'gap-3 sm:gap-4 lg:gap-5',
     ], $content['grid'] ?? []);
-    $content['sounds'] = array_replace([
+
+    $sounds = array_replace([
         'click' => materialAsset('slider/sounds/tap.wav'),
         'done' => materialAsset('slider/sounds/correct.wav'),
         'skip' => materialAsset('slider/sounds/click.wav'),
     ], $content['sounds'] ?? []);
 
-    $cols = $content['grid']['cols'];
-    $gridCols = "grid-cols-{$cols['base']} sm:grid-cols-{$cols['sm']} md:grid-cols-{$cols['md']} lg:grid-cols-{$cols['lg']}";
+    $cols = $grid['cols'];
+    $gridCols = trim((string)($content['grid_class'] ?? ''));
+
+    if ($gridCols === '') {
+        $gridCols = "grid-cols-{$cols['base']} sm:grid-cols-{$cols['sm']} md:grid-cols-{$cols['md']} lg:grid-cols-{$cols['lg']}";
+    }
 @endphp
 
-@section('title', $content['page_title'])
+@section('title', $content['title'] ?? '')
 
 @section('style')
     <style>
@@ -161,7 +166,7 @@
                                     <span>Pick a Number</span>
                                 </div>
                             </div>
-                            <div id="quizGrid" class="grid {{ $gridCols }} {{ $content['grid']['gap'] }}">
+                            <div id="quizGrid" class="grid {{ $gridCols }} {{ $grid['gap'] }}">
                                 @foreach($content['items'] as $idx => $item)
                                     <button
                                             type="button"
@@ -299,7 +304,7 @@
             if (!root) return;
 
             const ITEMS = @json($content['items']);
-            const SOUNDS = @json($content['sounds'] ?? []);
+            const SOUNDS = @json($sounds);
 
             const state = {
                 done: Array(ITEMS.length).fill(null),

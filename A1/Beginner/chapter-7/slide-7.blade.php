@@ -1,9 +1,10 @@
 <?php
 
 $content = [
-    'page_title' => 'Key Vocabulary',
+
     'title'      => 'Key Vocabulary',
     'subtitle'   => '',
+    'image_text_style' => 'overlay',
 
     'grid_class' => 'grid-cols-2 sm:grid-cols-4 ',
 

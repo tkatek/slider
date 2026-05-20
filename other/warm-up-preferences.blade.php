@@ -1,410 +1,259 @@
 @extends('slider.simple-layout')
 
 @php
-    $uid = $content['uid'] ?? ('holiday_' . substr(md5(uniqid('', true)), 0, 10));
-    $cols = $content['grid']['cols'];
-    $gridCols = "grid-cols-{$cols['base']} sm:grid-cols-{$cols['sm']} md:grid-cols-{$cols['md']} lg:grid-cols-{$cols['lg']}";
-    $headerWrapClass = $content['header_wrap_class'] ?? 'space-y-3 w-full max-w-3xl';
-    $titleClass = $content['title_class'] ?? 'font-black tracking-tight text-2xl sm:text-3xl lg:text-5xl leading-tight';
-    $subtitleClass = $content['subtitle_class'] ?? 'font-bold text-sm sm:text-base text-slate-600 dark:text-slate-400';
-    $resultModalVariant = $content['result_modal_variant'] ?? 'default';
+    $uid = 'holiday_preferences_' . substr(md5($content['page_title'] ?? 'holiday-preferences'), 0, 8);
+    $buttonGradient = trim((string) ($theme['button_primary_color'] ?? 'bg-[image:var(--top-bar-gradient)]'));
 
-    $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
-    $themeRootClass = $isOrangeTheme ? 'theme-orange' : 'theme-indigo';
+    $gridClass = 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3';
+    $cardClass = 'h-32 sm:h-36 md:h-40 lg:h-44 xl:h-48';
 
-    $titleGradientClass = $isOrangeTheme
-        ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent'
-        : 'bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 bg-clip-text text-transparent';
-
-    $resultEyebrowClass = $isOrangeTheme
-        ? 'text-orange-500'
-        : 'text-indigo-500';
-
-    $continueBtnShadowClass = $isOrangeTheme
-        ? 'shadow-[0_16px_40px_rgba(249,115,22,0.22)]'
-        : 'shadow-[0_16px_40px_rgba(79,70,229,0.22)]';
-
-    $isGameModal = $resultModalVariant === 'game';
-    $resultOverlayClass = $isGameModal
-        ? 'absolute inset-0 bg-slate-950/40 dark:bg-black/70 backdrop-blur-sm'
-        : 'absolute inset-0 bg-slate-950/70 backdrop-blur-md';
-    $resultCardClass = $isGameModal
-        ? 'modal-pop relative w-full max-w-3xl max-h-[88dvh] overflow-y-auto rounded-3xl border border-slate-200/70 bg-white/95 shadow-2xl dark:border-slate-700/70 dark:bg-slate-900/95'
-        : 'modal-pop relative w-full max-w-xl overflow-hidden rounded-[3rem] border border-white/10 bg-white dark:bg-slate-900 shadow-2xl';
-    $resultInnerClass = $isGameModal
-        ? 'relative p-6 sm:p-8 lg:p-10 text-center'
-        : 'relative p-8 sm:p-10 text-center';
-    $resultTitleClass = $isGameModal
-        ? 'mt-5 text-3xl sm:text-4xl lg:text-[2.6rem] leading-none font-black text-slate-900 dark:text-white'
-        : 'mt-2 text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-slate-50';
-    $resultTextClass = $isGameModal
-        ? 'mt-3 mx-auto max-w-xl text-sm sm:text-base font-semibold leading-[1.7] text-slate-500 dark:text-slate-400'
-        : 'mt-4 text-sm sm:text-base font-semibold text-slate-600 dark:text-slate-300';
-    $restartBtnClass = $isGameModal
-        ? 'inline-flex w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-8 py-4 font-black text-slate-900 shadow-lg transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700'
-        : 'inline-flex w-full items-center justify-center rounded-2xl border border-slate-200/80 bg-white/85 px-6 py-4 text-sm font-black uppercase tracking-[0.12em] text-slate-800 shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-white active:translate-y-0 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-100 dark:hover:bg-slate-900/70';
-    $continueBtnClass = $isGameModal
-        ? "inline-flex w-full items-center justify-center rounded-2xl px-8 py-4 font-black text-white {$continueBtnShadowClass} transition-colors hover:brightness-110 dark:text-slate-900"
-        : "inline-flex w-full items-center justify-center rounded-2xl px-6 py-4 text-sm font-black uppercase tracking-[0.12em] text-white {$continueBtnShadowClass} transition-transform hover:-translate-y-0.5 active:translate-y-0";
+    $soundUrls = [
+        'click' => (string) materialAsset('slider/sounds/tap.wav'),
+        'done'  => (string) materialAsset('slider/sounds/correct.wav'),
+        'skip'  => (string) materialAsset('slider/sounds/click.wav'),
+    ];
 @endphp
 
 @section('title', $content['page_title'])
 
-@section('style')
-    <style>
-        #{{ $uid }}.theme-indigo {
-            --p: #6366f1;
-            --p-ring: rgba(99, 102, 241, 0.14);
-            --p-shadow: rgba(99, 102, 241, 0.12);
-            --p-check-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            --p-chip-text: #312e81;
-            --p-chip-text-dark: #c7d2fe;
-            --p-pill-bg: rgba(99, 102, 241, 0.10);
-            --p-pill-bg-dark: rgba(99, 102, 241, 0.14);
-            --p-pill-text: #4f46e5;
-            --p-pill-text-dark: #a5b4fc;
-            --p-glow-one: rgba(99, 102, 241, 0.16);
-            --p-glow-two: rgba(59, 130, 246, 0.16);
-            --p-orb-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 52%, #3b82f6 100%);
-        }
-
-        #{{ $uid }}.theme-orange {
-             --p: #f97316;
-             --p-ring: rgba(249, 115, 22, 0.14);
-             --p-shadow: rgba(249, 115, 22, 0.12);
-             --p-check-gradient: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
-             --p-chip-text: #9a3412;
-             --p-chip-text-dark: #fed7aa;
-             --p-pill-bg: rgba(249, 115, 22, 0.10);
-             --p-pill-bg-dark: rgba(249, 115, 22, 0.16);
-             --p-pill-text: #ea580c;
-             --p-pill-text-dark: #fdba74;
-             --p-glow-one: rgba(249, 115, 22, 0.16);
-             --p-glow-two: rgba(245, 158, 11, 0.16);
-             --p-orb-gradient: linear-gradient(135deg, #fb923c 0%, #f97316 52%, #f59e0b 100%);
-         }
-
-        @keyframes pop {
-            0% { transform: translateY(10px) scale(.98); opacity: 0; }
-            100% { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        @keyframes cardIn {
-            0% { transform: translateY(16px) scale(.96); opacity: 0; }
-            100% { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        @keyframes glowPop {
-            0% { transform: scale(.7); opacity: 0; }
-            70% { transform: scale(1.12); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes floatOrb {
-            0%,100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        #{{ $uid }} .modal-pop { animation: pop .3s cubic-bezier(.34,1.56,.64,1); }
-        #{{ $uid }} .card-in { animation: cardIn .45s cubic-bezier(.2,.8,.2,1) both; }
-        #{{ $uid }} .status-icon { animation: glowPop .28s cubic-bezier(.34,1.56,.64,1); }
-        #{{ $uid }} .finish-orb { animation: floatOrb 2.6s ease-in-out infinite; }
-
-        #{{ $uid }} .glass-panel {
-             background: rgba(255, 255, 255, 0.6);
-             backdrop-filter: blur(10px);
-             border: 1px solid rgba(0, 0, 0, 0.05);
-         }
-
-        .dark #{{ $uid }} .glass-panel {
-                   background: rgba(30, 41, 59, 0.5);
-                   border: 1px solid rgba(255, 255, 255, 0.1);
-               }
-
-        #{{ $uid }} .option-card {
-             background: #ffffff;
-             border: 2px solid #f1f5f9;
-             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-             transition: all .28s ease;
-         }
-
-        .dark #{{ $uid }} .option-card {
-                   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-                   border: 2px solid rgba(255,255,255,0.06);
-                   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
-               }
-
-        #{{ $uid }} .option-card:hover {
-             transform: translateY(-4px);
-             border-color: color-mix(in srgb, var(--p) 35%, transparent);
-         }
-
-        #{{ $uid }} .option-check:checked + .option-label .option-card {
-             border-color: color-mix(in srgb, var(--p) 68%, white 32%);
-             box-shadow: 0 0 0 4px var(--p-ring), 0 18px 30px var(--p-shadow);
-             transform: translateY(-4px);
-         }
-
-        #{{ $uid }} .option-check:checked + .option-label .check-badge {
-             background: var(--p-check-gradient);
-             border-color: transparent;
-             color: white;
-             transform: scale(1.06);
-         }
-
-        #{{ $uid }} .option-check:checked + .option-label .image-overlay {
-             opacity: .82;
-         }
-
-        #{{ $uid }} .option-check:checked + .option-label .label-chip {
-             background: rgba(255,255,255,.96);
-             color: var(--p-chip-text);
-         }
-
-        .dark #{{ $uid }} .option-check:checked + .option-label .label-chip {
-                   background: rgba(15, 23, 42, .92);
-                   color: var(--p-chip-text-dark);
-               }
-
-        #{{ $uid }} .check-badge {
-             transition: all .25s ease;
-         }
-
-        #{{ $uid }} .image-overlay {
-             background: linear-gradient(to top, rgba(2, 6, 23, .78), rgba(2, 6, 23, .12), transparent);
-             transition: opacity .25s ease;
-         }
-
-        #{{ $uid }} .selection-pill {
-             background: var(--p-pill-bg);
-             color: var(--p-pill-text);
-         }
-
-        .dark #{{ $uid }} .selection-pill {
-                   background: var(--p-pill-bg-dark);
-                   color: var(--p-pill-text-dark);
-               }
-
-        #{{ $uid }} .result-chip {
-             background: var(--p-pill-bg);
-             color: var(--p-pill-text);
-         }
-
-        .dark #{{ $uid }} .result-chip {
-                   background: var(--p-pill-bg-dark);
-                   color: var(--p-chip-text-dark);
-               }
-
-        #{{ $uid }} .result-aurora {
-             background:
-                     radial-gradient(120% 120% at 0% 0%, var(--p-glow-one) 0%, transparent 55%),
-                     radial-gradient(120% 120% at 100% 0%, var(--p-glow-two) 0%, transparent 55%);
-         }
-
-        #{{ $uid }} .finish-orb,
-        #{{ $uid }} .finish-core {
-             background: var(--p-orb-gradient);
-         }
-    </style>
-@endsection
-
 @section('content')
-    <main id="{{ $uid }}" class="{{ $themeRootClass }} w-full min-h-screen transition-colors duration-500">
-        <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 py-6 lg:min-h-[100dvh] lg:flex lg:items-center">
+    <main id="{{ $uid }}" class="min-h-[100dvh] w-full overflow-y-auto">
+        <div class="mx-auto flex min-h-[100dvh] w-full max-w-6xl items-center px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
             <section class="w-full">
-                <div class="grid place-items-center text-center gap-6">
+                <div class="grid w-full place-items-center gap-4 text-center sm:gap-5 lg:gap-6">
+                    <div class="w-full">
+                        @include('slider.components.title-subtitle')
+                    </div>
 
-                    @include('slider.components.title-subtitle')
-
-                    <section class="w-full max-w-6xl">
-                        <form id="holidayForm">
-                            <div class="grid {{ $gridCols }} {{ $content['grid']['gap'] }}">
-                                @foreach($content['items'] as $idx => $item)
-                                    <div class="card-in" style="animation-delay: {{ $idx * 0.04 }}s;">
-                                        <input
-                                                id="{{ $uid }}_option_{{ $idx }}"
-                                                type="checkbox"
-                                                class="option-check sr-only"
-                                                value="{{ $item['label'] }}"
-                                        >
-
-                                        <label for="{{ $uid }}_option_{{ $idx }}" class="option-label block cursor-pointer">
-                                            <div class="option-card {{ $content['grid']['card_height'] }} group relative overflow-hidden rounded-[2.2rem]">
-                                                <img
-                                                        src="{{ $item['image'] }}"
-                                                        alt="{{ $item['label'] }}"
-                                                        class="h-full w-full object-cover"
-                                                >
-
-                                                <div class="image-overlay absolute inset-0"></div>
-
-                                                <div class="check-badge absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/80 bg-white/90 text-slate-400 shadow-lg backdrop-blur-sm">
-                                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                                                    </svg>
-                                                </div>
-
-                                                <div class="absolute inset-x-0 bottom-0 z-10 p-3 sm:p-4">
-                                                    <div class="label-chip inline-flex items-center rounded-full bg-white/90 px-3 py-1.5 text-xs sm:text-sm font-black text-slate-900 shadow-lg backdrop-blur-sm transition-all">
-                                                        {{ $item['label'] }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </label>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <div class="mt-5">
-                                <button
-                                        type="button"
-                                        id="confirmBtn"
-                                        class="w-full py-4 rounded-[1.4rem] font-black text-white text-base sm:text-lg tracking-wide transition-all active:scale-95 shadow-xl hover:brightness-110"
-                                        style="background-color: var(--p)"
+                    <form id="holidayForm" class="w-full max-w-sm sm:max-w-3xl lg:max-w-5xl">
+                        <div class="grid {{ $gridClass }} gap-2.5 sm:gap-3.5 lg:gap-4">
+                            @foreach($content['items'] as $index => $item)
+                                <label
+                                        for="{{ $uid }}_option_{{ $index }}"
+                                        class="group relative block cursor-pointer overflow-hidden rounded-[1.35rem] outline-none sm:rounded-[1.65rem] lg:rounded-[1.9rem]"
                                 >
-                                    CONFIRM
-                                </button>
-                            </div>
-                        </form>
-                    </section>
+                                    <input
+                                            id="{{ $uid }}_option_{{ $index }}"
+                                            type="checkbox"
+                                            value="{{ $item['label'] }}"
+                                            class="holiday-option peer sr-only"
+                                    >
+
+                                    <div
+                                            class="{{ $cardClass }} relative overflow-hidden rounded-[1.35rem] border-2 border-white/80 bg-white shadow-[0_18px_44px_-30px_rgba(15,23,42,0.65)] ring-1 ring-slate-200/70 transition-all duration-200 ease-out peer-focus-visible:ring-4 peer-focus-visible:ring-indigo-300/35 peer-checked:-translate-y-0.5 peer-checked:border-indigo-400 peer-checked:ring-4 peer-checked:ring-indigo-400/25 dark:border-white/10 dark:bg-slate-900 dark:ring-white/10 dark:peer-checked:border-indigo-300/70 dark:peer-checked:ring-indigo-300/20 sm:rounded-[1.65rem] lg:rounded-[1.9rem]"
+                                    >
+                                        <img
+                                                src="{{ $item['image'] }}"
+                                                alt="{{ $item['label'] }}"
+                                                class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                loading="lazy"
+                                                decoding="async"
+                                        >
+                                    </div>
+
+                                    <div class="pointer-events-none absolute inset-0 rounded-[1.35rem] bg-gradient-to-t from-slate-950/80 via-slate-950/15 to-transparent opacity-75 transition-opacity duration-200 peer-checked:opacity-95 sm:rounded-[1.65rem] lg:rounded-[1.9rem]"></div>
+
+                                    <span
+                                            class="pointer-events-none absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full border border-white/80 bg-white/90 text-slate-400 shadow-lg backdrop-blur-md transition-all duration-200 peer-checked:scale-105 peer-checked:border-white/20 peer-checked:bg-[image:var(--top-bar-gradient)] peer-checked:text-white dark:border-white/15 dark:bg-slate-950/80 dark:text-slate-500 sm:right-3 sm:top-3 sm:h-9 sm:w-9"
+                                            aria-hidden="true"
+                                    >
+                                        <svg class="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                    </span>
+
+                                    <span class="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center p-2 sm:p-3">
+                                        <span class="max-w-[92%] rounded-full bg-white/95 px-3 py-1.5 text-xs font-black leading-tight text-slate-900 shadow-lg backdrop-blur-md transition-all duration-200 peer-checked:bg-white peer-checked:text-indigo-700 dark:bg-slate-950/85 dark:text-slate-100 dark:peer-checked:bg-slate-950 sm:px-4 sm:text-sm">
+                                            {{ $item['label'] }}
+                                        </span>
+                                    </span>
+                                </label>
+                            @endforeach
+                        </div>
+
+                        <div class="mt-4 flex flex-col items-stretch gap-2.5 sm:mt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                            <p id="selectionCount" class="order-2 text-center text-xs font-black uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 sm:order-1 sm:text-left">
+                                0 selected
+                            </p>
+
+                            <button
+                                    type="button"
+                                    id="confirmBtn"
+                                    class="order-1 inline-flex w-full items-center justify-center rounded-2xl {{ $buttonGradient }} px-7 py-3.5 text-sm font-black uppercase tracking-[0.16em] text-white shadow-[0_20px_46px_-24px_rgba(79,70,229,0.75)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 sm:order-2 sm:w-auto sm:min-w-44 sm:px-9 sm:py-4 sm:text-base"
+                            >
+                                Confirm
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </section>
         </div>
 
-        <div id="resultModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-            <div class="{{ $resultOverlayClass }}" id="resultBg"></div>
+        <div id="resultModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-4">
+            <button
+                    type="button"
+                    id="resultBg"
+                    class="absolute inset-0 bg-slate-950/55 backdrop-blur-sm dark:bg-black/75"
+                    aria-label="Close result"
+            ></button>
 
-            <div class="{{ $resultCardClass }}">
-                @unless($isGameModal)
-                    <div class="result-aurora absolute inset-0 pointer-events-none opacity-80"></div>
-                @endunless
+            <section class="relative w-full max-w-[22rem] max-h-[88dvh] overflow-y-auto rounded-[1.75rem] border border-white/70 bg-white/95 p-5 text-center shadow-2xl ring-1 ring-slate-200/80 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/95 dark:ring-white/10 sm:max-w-xl sm:rounded-[2rem] sm:p-7 lg:max-w-2xl lg:p-8">
+                <div id="resultEmoji" class="text-4xl sm:text-5xl" aria-hidden="true">🎉</div>
 
-                <div class="{{ $resultInnerClass }}">
-                    @if($isGameModal)
-                        <div class="text-5xl sm:text-6xl">🎉</div>
-                    @else
-                        <div class="mx-auto relative mb-6 h-20 w-20">
-                            <div class="finish-orb absolute inset-0 rounded-full opacity-20 blur-2xl"></div>
-                            <div class="finish-core absolute inset-0 grid place-items-center rounded-full text-white shadow-xl">
-                                <svg id="resultMainIcon" viewBox="0 0 24 24" class="h-10 w-10" fill="none" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6" d="M3 7h18M5 7l1.5 10.5A2 2 0 0 0 8.48 19h7.04a2 2 0 0 0 1.98-1.5L19 7M9 11h6"/>
-                                </svg>
-                            </div>
-                        </div>
-                    @endif
+                <p id="resultEyebrow" class="mt-4 text-[0.68rem] font-black uppercase tracking-[0.24em] text-indigo-500 dark:text-indigo-300">
+                    Your choices
+                </p>
 
-                    @unless($isGameModal)
-                        <p id="resultEyebrow" class="text-[11px] font-black uppercase tracking-[0.25em] {{ $resultEyebrowClass }}">
-                            Your choices
-                        </p>
-                    @endunless
+                <h2 id="resultTitle" class="mt-2 text-2xl font-black leading-tight tracking-[-0.03em] text-slate-900 dark:text-white sm:text-3xl lg:text-4xl">
+                    Holiday preferences
+                </h2>
 
-                    <h2 id="resultTitle" class="{{ $resultTitleClass }}">
-                        Holiday preferences
-                    </h2>
-
-                    <div id="resultText" class="{{ $resultTextClass }}">
-                        No places selected yet.
-                    </div>
-
-                    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <button id="restartBtn"
-                                type="button"
-                                class="{{ $restartBtnClass }}">
-                            Restart
-                        </button>
-
-                        <button id="continueBtn"
-                                type="button"
-                                class="{{ $continueBtnClass }}"
-                                style="background-color: var(--p)">
-                            Continue
-                        </button>
-                    </div>
+                <div id="resultText" class="mx-auto mt-3 max-w-xl text-sm font-bold leading-[1.65] text-slate-600 dark:text-slate-300 sm:text-base">
+                    No places selected yet.
                 </div>
-            </div>
+
+                <div class="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3">
+                    <button
+                            id="restartBtn"
+                            type="button"
+                            class="inline-flex w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-3.5 text-sm font-black uppercase tracking-[0.13em] text-slate-900 shadow-sm transition-colors hover:bg-slate-50 dark:border-white/10 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 sm:py-4"
+                    >
+                        Restart
+                    </button>
+
+                    <button
+                            id="continueBtn"
+                            type="button"
+                            class="inline-flex w-full items-center justify-center rounded-2xl {{ $buttonGradient }} px-6 py-3.5 text-sm font-black uppercase tracking-[0.13em] text-white shadow-[0_20px_46px_-24px_rgba(79,70,229,0.75)] transition-all hover:brightness-110 sm:py-4"
+                    >
+                        Continue
+                    </button>
+                </div>
+            </section>
         </div>
     </main>
 @endsection
 
 @section('script')
+    @parent
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const root = document.getElementById(@json($uid));
-            const SOUNDS = @json($content['sounds'] ?? []);
+            if (!root) return;
 
-            const sfx = new Audio();
+            const SOUND_URLS = @json($soundUrls);
+            let activeSounds = [];
+
+            const soundPlayers = Object.entries(SOUND_URLS).reduce((players, [key, src]) => {
+                if (!src) return players;
+
+                const audio = new Audio(src);
+                audio.preload = 'auto';
+                players[key] = audio;
+
+                return players;
+            }, {});
 
             const elements = {
-                checkboxes: Array.from(root.querySelectorAll('.option-check')),
+                checkboxes: Array.from(root.querySelectorAll('.holiday-option')),
                 selectionCount: root.querySelector('#selectionCount'),
                 confirmBtn: root.querySelector('#confirmBtn'),
-
                 resultModal: root.querySelector('#resultModal'),
                 resultBg: root.querySelector('#resultBg'),
+                resultEmoji: root.querySelector('#resultEmoji'),
                 resultText: root.querySelector('#resultText'),
                 resultTitle: root.querySelector('#resultTitle'),
                 resultEyebrow: root.querySelector('#resultEyebrow'),
-                resultMainIcon: root.querySelector('#resultMainIcon'),
                 restartBtn: root.querySelector('#restartBtn'),
                 continueBtn: root.querySelector('#continueBtn'),
             };
 
             function stopAllAudio() {
-                try {
-                    sfx.pause();
-                    sfx.currentTime = 0;
-                } catch (e) {}
+                activeSounds.forEach((sound) => {
+                    try {
+                        sound.pause();
+                        sound.currentTime = 0;
+                    } catch (e) {}
+                });
+
+                activeSounds = [];
             }
 
-            window.stopSlideAudio = stopAllAudio;
-
             function playSound(key) {
-                if (!SOUNDS?.[key]) return;
+                const baseSound = soundPlayers[key];
+                if (!baseSound) return;
+
                 try {
-                    sfx.pause();
-                    sfx.currentTime = 0;
-                    sfx.src = SOUNDS[key];
-                    sfx.play().catch(() => {});
+                    const sound = baseSound.cloneNode(true);
+                    sound.currentTime = 0;
+
+                    activeSounds.push(sound);
+
+                    const removeSound = () => {
+                        activeSounds = activeSounds.filter((item) => item !== sound);
+                    };
+
+                    sound.addEventListener('ended', removeSound, { once: true });
+                    sound.addEventListener('error', removeSound, { once: true });
+
+                    const playPromise = sound.play();
+                    if (playPromise && typeof playPromise.catch === 'function') {
+                        playPromise.catch(removeSound);
+                    }
                 } catch (e) {}
             }
 
             function getSelectedValues() {
                 return elements.checkboxes
-                    .filter(cb => cb.checked)
-                    .map(cb => cb.value);
+                    .filter((checkbox) => checkbox.checked)
+                    .map((checkbox) => checkbox.value);
+            }
+
+            function escapeHtml(value) {
+                const div = document.createElement('div');
+                div.textContent = value;
+                return div.innerHTML;
             }
 
             function updateCount() {
                 const count = getSelectedValues().length;
+
                 if (elements.selectionCount) {
                     elements.selectionCount.textContent = `${count} selected`;
                 }
             }
 
             function openResultModal() {
-                elements.resultModal.classList.remove('hidden');
-                elements.resultModal.classList.add('flex');
+                elements.resultModal?.classList.remove('hidden');
+                elements.resultModal?.classList.add('flex');
             }
 
             function closeResultModal() {
-                elements.resultModal.classList.add('hidden');
-                elements.resultModal.classList.remove('flex');
+                elements.resultModal?.classList.add('hidden');
+                elements.resultModal?.classList.remove('flex');
             }
 
             function resetSelections() {
-                elements.checkboxes.forEach(cb => cb.checked = false);
+                elements.checkboxes.forEach((checkbox) => {
+                    checkbox.checked = false;
+                });
+
                 updateCount();
                 closeResultModal();
                 stopAllAudio();
             }
 
             function isEmbedded() {
-                try { return window.top !== window.self; }
-                catch (e) { return true; }
+                try {
+                    return window.top !== window.self;
+                } catch (e) {
+                    return true;
+                }
             }
 
             function goToNextSlide() {
+                stopAllAudio();
+
                 if (isEmbedded()) {
                     try {
                         if (window.parent && typeof window.parent.nextSlide === 'function') {
@@ -418,70 +267,78 @@
                         return;
                     } catch (e) {}
                 }
-            }
 
-            function escapeHtml(value) {
-                const div = document.createElement('div');
-                div.textContent = value;
-                return div.innerHTML;
+                const nextLink = document.querySelector('[data-next-slide-url]');
+                const nextUrl = nextLink?.getAttribute('data-next-slide-url');
+
+                if (nextUrl) {
+                    window.location.href = nextUrl;
+                }
             }
 
             function showResult() {
                 const selected = getSelectedValues();
 
                 if (selected.length === 0) {
-                    if (elements.resultEyebrow) {
-                        elements.resultEyebrow.textContent = 'Nothing selected';
-                    }
-                    elements.resultTitle.textContent = 'Choose at least one place';
-                    elements.resultText.innerHTML = `
-                        <p class="font-semibold text-rose-500">Please select at least one place before continuing.</p>
-                    `;
-                    if (elements.resultMainIcon) {
-                        elements.resultMainIcon.innerHTML = `
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.8" d="M12 9v4m0 4h.01M10.29 3.86l-7.5 13A2 2 0 0 0 4.5 20h15a2 2 0 0 0 1.71-3.14l-7.5-13a2 2 0 0 0-3.42 0z"/>
+                    if (elements.resultEmoji) elements.resultEmoji.textContent = '⚠️';
+                    if (elements.resultEyebrow) elements.resultEyebrow.textContent = 'Nothing selected';
+                    if (elements.resultTitle) elements.resultTitle.textContent = 'Choose at least one place';
+
+                    if (elements.resultText) {
+                        elements.resultText.innerHTML = `
+                            <p class="font-bold text-rose-500 dark:text-rose-300">
+                                Please select at least one place before continuing.
+                            </p>
                         `;
                     }
+
                     playSound('skip');
-                } else {
-                    if (elements.resultEyebrow) {
-                        elements.resultEyebrow.textContent = 'Your choices';
-                    }
-                    elements.resultTitle.textContent = 'Holiday preferences';
+                    openResultModal();
+                    return;
+                }
+
+                if (elements.resultEmoji) elements.resultEmoji.textContent = '🎉';
+                if (elements.resultEyebrow) elements.resultEyebrow.textContent = 'Your choices';
+                if (elements.resultTitle) elements.resultTitle.textContent = 'Holiday preferences';
+
+                if (elements.resultText) {
                     elements.resultText.innerHTML = `
-                        <p class="mb-4 font-semibold text-slate-800 dark:text-slate-100">You like:</p>
+                        <p class="mb-3 font-bold text-slate-800 dark:text-slate-100">You like:</p>
                         <div class="flex flex-wrap justify-center gap-2">
-                            ${selected.map(item => `
-                                <span class="result-chip rounded-full px-3 py-1 text-xs sm:text-sm font-black">
+                            ${selected.map((item) => `
+                                <span class="rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 dark:bg-indigo-400/10 dark:text-indigo-200 dark:ring-indigo-300/10 sm:text-sm">
                                     ${escapeHtml(item)}
                                 </span>
                             `).join('')}
                         </div>
                     `;
-                    if (elements.resultMainIcon) {
-                        elements.resultMainIcon.innerHTML = `
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6" d="M3 7h18M5 7l1.5 10.5A2 2 0 0 0 8.48 19h7.04a2 2 0 0 0 1.98-1.5L19 7M9 11h6"/>
-                        `;
-                    }
-                    playSound('done');
                 }
 
+                playSound('done');
                 openResultModal();
             }
 
-            window.resetSlide = resetSelections;
-
-            elements.checkboxes.forEach(cb => {
-                cb.addEventListener('change', () => {
+            elements.checkboxes.forEach((checkbox) => {
+                checkbox.addEventListener('change', () => {
                     updateCount();
                     playSound('click');
                 });
             });
 
-            elements.confirmBtn.addEventListener('click', showResult);
-            elements.restartBtn.addEventListener('click', resetSelections);
-            elements.continueBtn.addEventListener('click', goToNextSlide);
-            elements.resultBg.addEventListener('click', closeResultModal);
+            elements.confirmBtn?.addEventListener('click', showResult);
+            elements.restartBtn?.addEventListener('click', resetSelections);
+            elements.continueBtn?.addEventListener('click', goToNextSlide);
+            elements.resultBg?.addEventListener('click', closeResultModal);
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stopAllAudio();
+            });
+
+            window.addEventListener('beforeunload', stopAllAudio);
+            window.addEventListener('pagehide', stopAllAudio);
+
+            window.stopSlideAudio = stopAllAudio;
+            window.resetSlide = resetSelections;
 
             updateCount();
         });

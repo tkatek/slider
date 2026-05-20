@@ -1,548 +1,403 @@
-@extends('slider.simple-layout')
+﻿@extends('slider.simple-layout')
 
 @php
+    $content = is_array($content ?? null) ? $content : [];
     $uid = $content['uid'] ?? ('listen_match_' . substr(md5(uniqid('', true)), 0, 10));
-    $scriptLines = is_array($content['script'] ?? null)
-        ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $content['script']), static fn ($line) => $line !== ''))
-        : (is_array($content['transcript'] ?? null)
-            ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $content['transcript']), static fn ($line) => $line !== ''))
-            : []);
-    $hasScript = $scriptLines !== [];
+    $speakers = array_values($content['speakers'] ?? []);
+    $choices = array_values($content['choices'] ?? []);
+    $speakerCount = count($speakers);
+
+    $sfx = [
+        'click'   => materialAsset('slider/sounds/tap.wav'),
+        'correct' => materialAsset('slider/sounds/correct.wav'),
+        'wrong'   => materialAsset('slider/sounds/wrong.wav'),
+        'success' => materialAsset('slider/sounds/success.wav'),
+    ];
 @endphp
 
-@section('title', $content['page_title'])
-
-@section('style')
-    <style>
-        #{{ $uid }}{
-            --p: {{ $content['theme'] ?? '#6366f1' }};
-            --ok: #10b981;
-            --bad: #ef4444;
-            font-family: "Plus Jakarta Sans", sans-serif;
-            background:
-                radial-gradient(980px 560px at 8% 10%, rgba(103,63,231,.14), transparent 55%),
-                radial-gradient(900px 560px at 92% 14%, rgba(59,130,246,.12), transparent 56%),
-                radial-gradient(880px 640px at 50% 100%, rgba(16,185,129,.08), transparent 60%);
-        }
-
-        .dark #{{ $uid }}{
-            background:
-                radial-gradient(980px 560px at 8% 10%, rgba(96,165,250,.18), transparent 55%),
-                radial-gradient(900px 560px at 92% 14%, rgba(192,132,252,.16), transparent 56%),
-                radial-gradient(880px 640px at 50% 100%, rgba(99,102,241,.12), transparent 60%),
-                linear-gradient(180deg, #020617 0%, #0f172a 100%);
-        }
-
-        @keyframes pop {
-            0% { transform: translateY(10px) scale(.98); opacity: 0; }
-            100% { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        @keyframes cardIn {
-            0% { transform: translateY(16px) scale(.96); opacity: 0; }
-            100% { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        @keyframes floatOrb {
-            0%,100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        #{{ $uid }} .modal-pop { animation: pop .3s cubic-bezier(.34,1.56,.64,1); }
-        #{{ $uid }} .card-in { animation: cardIn .45s cubic-bezier(.2,.8,.2,1) both; }
-        #{{ $uid }} .finish-orb { animation: floatOrb 2.6s ease-in-out infinite; }
-
-        #{{ $uid }} .glass-panel{
-             background: rgba(255,255,255,.72);
-             backdrop-filter: blur(12px);
-             -webkit-backdrop-filter: blur(12px);
-             border: 1px solid rgba(255,255,255,.72);
-             box-shadow: 0 16px 34px -24px rgba(15,23,42,.18);
-         }
-
-        .dark #{{ $uid }} .glass-panel{
-                   background: rgba(15,23,42,.72);
-                   border: 1px solid rgba(148,163,184,.18);
-                   box-shadow: 0 18px 44px -24px rgba(2,6,23,.72);
-               }
-
-        #{{ $uid }} .speaker-card{
-             background: #fff;
-             border: 2px solid #eef2ff;
-             box-shadow: 0 8px 20px rgba(15,23,42,.05);
-             transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
-         }
-
-        .dark #{{ $uid }} .speaker-card{
-                   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-                   border-color: rgba(255,255,255,.07);
-                   box-shadow: 0 12px 28px rgba(0,0,0,.22);
-               }
-
-        #{{ $uid }} .speaker-card.is-wrong{
-             border-color: rgba(239,68,68,.45);
-             box-shadow: 0 0 0 4px rgba(239,68,68,.12), 0 12px 26px rgba(239,68,68,.12);
-         }
-
-        #{{ $uid }} .speaker-card.is-correct{
-             border-color: rgba(16,185,129,.45);
-             box-shadow: 0 0 0 4px rgba(16,185,129,.12), 0 14px 28px rgba(16,185,129,.12);
-         }
-
-        #{{ $uid }} .speaker-avatar{
-             border: 2px solid rgba(99,102,241,.10);
-             background: #eef2ff;
-         }
-
-        .dark #{{ $uid }} .speaker-avatar{
-                   background: rgba(99,102,241,.12);
-                   border-color: rgba(255,255,255,.08);
-               }
-
-        #{{ $uid }} .answer-zone{
-             border: 2px dashed rgba(99,102,241,.24);
-             background: rgba(99,102,241,.06);
-             transition: all .18s ease;
-         }
-
-        .dark #{{ $uid }} .answer-zone{
-                   background: rgba(99,102,241,.08);
-               }
-
-        #{{ $uid }} .answer-zone.can-drop{
-             border-color: var(--p);
-             transform: translateY(-2px);
-             background: rgba(99,102,241,.12);
-         }
-
-        #{{ $uid }} .answer-zone.correct{
-             border-color: rgba(16,185,129,.6);
-             background: rgba(16,185,129,.08);
-         }
-
-        #{{ $uid }} .answer-zone.wrong{
-             border-color: rgba(239,68,68,.6);
-             background: rgba(239,68,68,.08);
-         }
-
-        #{{ $uid }} .answer-zone-square{
-             width: 74px;
-             aspect-ratio: 1 / 1;
-             min-height: 0;
-             padding: 6px;
-             justify-self: center;
-         }
-
-        @media (min-width: 640px){
-            #{{ $uid }} .answer-zone-square{
-            width: 84px;
-        }
-        }
-
-        @media (min-width: 1024px){
-            #{{ $uid }} .answer-zone-square{
-            width: 92px;
-        }
-        }
-
-        #{{ $uid }} .choice-card{
-             background: #fff;
-             border: 2px solid #eef2ff;
-             box-shadow: 0 8px 20px rgba(15,23,42,.05);
-             transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, opacity .2s ease;
-             cursor: grab;
-             user-select: none;
-             -webkit-user-drag: element;
-         }
-
-        .dark #{{ $uid }} .choice-card{
-                   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-                   border-color: rgba(255,255,255,.07);
-               }
-
-        #{{ $uid }} .choice-card:hover{
-             transform: translateY(-3px);
-             border-color: color-mix(in srgb, var(--p) 38%, transparent);
-             box-shadow: 0 14px 28px rgba(79,70,229,.12);
-         }
-
-        #{{ $uid }} .choice-thumb{
-             aspect-ratio: 4 / 3;
-             overflow: hidden;
-         }
-
-        #{{ $uid }} .choice-thumb img,
-        #{{ $uid }} .assigned-thumb img{
-             width: 100%;
-             height: 100%;
-             object-fit: cover;
-             display: block;
-             pointer-events: none;
-         }
-
-        #{{ $uid }} .assigned-thumb{
-             width: 100%;
-             height: 100%;
-             min-height: 0;
-             aspect-ratio: 1 / 1;
-             overflow: hidden;
-             border-radius: 14px;
-             position: relative;
-         }
-
-        #{{ $uid }} .assigned-thumb::after{
-             content: "✓";
-             position: absolute;
-             top: 6px;
-             right: 6px;
-             width: 22px;
-             height: 22px;
-             border-radius: 999px;
-             display: grid;
-             place-items: center;
-             background: var(--ok);
-             color: #fff;
-             font-weight: 900;
-             font-size: .8rem;
-             box-shadow: 0 8px 18px rgba(16,185,129,.24);
-         }
-
-        #{{ $uid }} .bank-empty{
-             border: 2px dashed rgba(99,102,241,.18);
-             background: rgba(99,102,241,.06);
-             color: #64748b;
-         }
-
-        .dark #{{ $uid }} .bank-empty{
-                   color: #94a3b8;
-               }
-
-        #{{ $uid }} audio{
-            height: 36px;
-            width: 100%;
-        }
-
-        @media (min-width: 1024px){
-            #{{ $uid }} .desktop-bank{
-            max-width: 180px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-            #{{ $uid }} .choice-thumb{
-            aspect-ratio: 1 / 1;
-        }
-        }
-
-        @media (max-width: 900px){
-            #{{ $uid }} .mobile-bank-space{
-            padding-bottom: 170px;
-        }
-        }
-
-        @media (max-width: 640px){
-            #{{ $uid }} audio{
-                height: 34px;
-            }
-
-            #{{ $uid }} .choice-thumb{
-            aspect-ratio: 1 / 1;
-        }
-        }
-    </style>
-@endsection
+@section('title', $content['page_title'] ?? $content['title'] ?? '')
 
 @section('content')
-    <main id="{{ $uid }}" class="w-full min-h-screen overflow-x-hidden transition-colors duration-500">
-        <div class="mx-auto w-full max-w-7xl px-3 sm:px-6 py-4 sm:py-6 lg:min-h-[100dvh] lg:flex lg:items-center">
-            <section class="w-full mobile-bank-space">
-                <div class="grid place-items-center text-center gap-4 sm:gap-6">
-
+    <main id="{{ $uid }}" class="min-h-[100dvh] w-full overflow-x-hidden pb-32 sm:pb-36 md:pb-0">
+        <div class="mx-auto flex min-h-[100dvh] w-full max-w-7xl items-start px-3 py-4 sm:px-5 sm:py-5 md:px-6 lg:items-center lg:px-8 lg:py-6">
+            <section class="w-full">
+                <div class="mx-auto w-full max-w-4xl text-center">
                     @include('slider.components.title-subtitle')
+                </div>
 
-                    <div class="w-full grid grid-cols-1 lg:grid-cols-[minmax(0,1.6fr)_220px] gap-4 lg:gap-5 items-start">
-                        <section class="glass-panel rounded-[2rem] sm:rounded-[2.25rem] p-3 sm:p-4 lg:p-5">
-                            <div class="flex items-center justify-between gap-3 mb-3 sm:mb-4 text-left">
-                                <div>
-                                    <h2 class="text-sm sm:text-base font-black text-slate-900 dark:text-white">Speakers</h2>
-                                    <p class="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400">Listen and match</p>
+                <div class="mx-auto mt-3 grid w-full max-w-7xl grid-cols-1 gap-3 sm:mt-4 md:grid-cols-[9rem_minmax(0,1fr)] md:items-start md:gap-4 lg:grid-cols-[10rem_minmax(0,1fr)] lg:gap-5 xl:grid-cols-[11rem_minmax(0,1fr)]">
+                    <aside class="fixed inset-x-0 bottom-0 z-40 px-3 pb-2 sm:px-5 sm:pb-3 md:sticky md:inset-auto md:top-4 md:z-20 md:self-start md:px-0 md:pb-0">
+                        <section class="mx-auto w-full max-w-[22rem] rounded-t-[1.35rem] border border-slate-200/80 bg-white/96 p-2 shadow-[0_-16px_42px_rgba(15,23,42,0.14)] ring-1 ring-white/80 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/94 dark:ring-white/10 sm:max-w-[28rem] sm:rounded-[1.5rem] sm:p-2.5 md:max-w-none md:rounded-[1.6rem] md:p-3 md:shadow-[0_18px_48px_rgba(15,23,42,0.10)] lg:p-3.5">
+                            <div class="mb-1.5 flex items-center justify-between gap-2 px-0.5 sm:mb-2 md:flex-col md:items-stretch md:px-0">
+                                <div class="min-w-0 text-left md:text-center">
+                                    <p class="text-[9px] font-black uppercase tracking-[0.16em] text-indigo-600 dark:text-indigo-300 sm:text-[10px]">
+                                        Pictures
+                                    </p>
+                                    <p class="truncate text-[9px] font-bold text-slate-500 dark:text-slate-400 sm:text-[10px] md:mt-0.5">
+                                        Square images
+                                    </p>
                                 </div>
 
-                                <div id="progressText" class="rounded-full bg-indigo-50 px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-[0.14em] text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
-                                    0 / {{ count($content['speakers']) }} done
-                                </div>
+                                <button
+                                        id="resetInlineBtn"
+                                        type="button"
+                                        class="inline-flex shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 sm:px-3 sm:text-[10px] md:w-full md:py-1.5"
+                                >
+                                    Reset
+                                </button>
                             </div>
 
-                            <div id="speakerList" class="grid grid-cols-1 gap-3 sm:gap-4">
-                                @foreach($content['speakers'] as $index => $speaker)
-                                    <div
-                                            class="speaker-card card-in rounded-[1.6rem] sm:rounded-[1.9rem] p-3 sm:p-4 grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_120px] gap-3 sm:gap-4 items-center"
-                                            style="animation-delay: {{ $index * 0.05 }}s;"
-                                            data-speaker-id="{{ $speaker['id'] }}"
-                                            data-answer="{{ $speaker['answer'] }}"
-                                            data-locked="false"
-                                    >
-                                        <div class="min-w-0 flex items-center gap-3 sm:gap-4 text-left">
-                                            <div class="speaker-avatar h-14 w-14 sm:h-16 sm:w-16 rounded-[1rem] sm:rounded-[1.2rem] overflow-hidden shrink-0">
-                                                <img src="{{ $speaker['photo'] }}" alt="{{ $speaker['name'] }}" class="w-full h-full object-cover">
-                                            </div>
-
-                                            <div class="min-w-0 flex-1">
-                                                <h3 class="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-slate-50">
-                                                    {{ $index + 1 }}. {{ $speaker['name'] }}
-                                                </h3>
-
-                                                @if(!empty($speaker['audio']))
-                                                    <div class="mt-2">
-                                                        @include('slider.components.audio-player', [
-                                                            'playerAudio' => $speaker['audio'],
-                                                            'scriptLines' => [],
-                                                            'hasScript' => false,
-                                                            'audioPlayerFloating' => false,
-                                                        ])
-                                                    </div>
-                                                @elseif(!empty($speaker['note']))
-                                                    <p class="mt-1 text-xs font-bold text-slate-500 dark:text-slate-400 sm:text-sm">
-                                                        {{ $speaker['note'] }}
-                                                    </p>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="answer-zone answer-zone-square rounded-[1.2rem] sm:rounded-[1.4rem] flex items-center justify-center overflow-hidden"
-                                             data-answer-zone
-                                             data-speaker-id="{{ $speaker['id'] }}">
-                                            <div class="text-center text-slate-500 dark:text-slate-400 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.08em] leading-tight">
-                                                Drop<br>image
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </section>
-
-                        <aside class="glass-panel rounded-[1.8rem] sm:rounded-[2rem] p-2.5 sm:p-3 lg:p-4 fixed lg:static bottom-0 left-0 right-0 z-30 rounded-b-none lg:rounded-b-[2rem] border-t border-white/50 dark:border-slate-700/70">
-                            <div id="choicesBank" class="desktop-bank grid grid-cols-3 lg:grid-cols-1 gap-2 sm:gap-3">
-                                @foreach($content['choices'] as $choice)
-                                    <div
-                                            class="choice-card rounded-[1rem] sm:rounded-[1.2rem] overflow-hidden"
+                            <div id="choicesBank" class="grid grid-cols-3 place-items-center gap-2 sm:gap-2.5 md:grid-cols-1 md:gap-3 lg:gap-3.5">
+                                @foreach($choices as $choice)
+                                    <button
+                                            type="button"
+                                            class="choice-card group relative aspect-square w-[4.25rem] overflow-hidden rounded-[0.9rem] border-2 border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.10)] transition duration-200 hover:-translate-y-0.5 hover:border-indigo-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-300/35 dark:border-white/10 dark:bg-slate-900 sm:w-20 sm:rounded-[1rem] md:w-28 md:rounded-[1.15rem] lg:w-32 xl:w-36"
                                             data-choice-id="{{ $choice['id'] }}"
                                             data-choice-label="{{ $choice['label'] }}"
                                             data-choice-title="{{ $choice['title'] }}"
                                             data-choice-image="{{ $choice['image'] }}"
+                                            aria-label="{{ $choice['label'] }}. {{ $choice['title'] }}"
                                     >
-                                        <div class="choice-thumb">
-                                            <img src="{{ $choice['image'] }}" alt="{{ $choice['title'] }}">
-                                        </div>
-                                    </div>
+                                        <img
+                                                src="{{ $choice['image'] }}"
+                                                alt="{{ $choice['title'] }}"
+                                                class="h-full w-full object-cover transition duration-200 group-hover:scale-105"
+                                                loading="lazy"
+                                                decoding="async"
+                                        >
+                                        <span class="absolute left-1.5 top-1.5 grid h-5 w-5 place-items-center rounded-full bg-white/95 text-[9px] font-black text-slate-900 shadow-md backdrop-blur-sm dark:bg-slate-950/85 dark:text-white sm:h-6 sm:w-6 sm:text-[10px] md:h-7 md:w-7 md:text-xs">
+                                            {{ $choice['label'] }}
+                                        </span>
+                                    </button>
                                 @endforeach
                             </div>
-                        </aside>
-                    </div>
+                        </section>
+                    </aside>
+
+                    <section class="w-full rounded-[1.45rem] border border-slate-200/70 bg-white/85 p-3 shadow-[0_18px_48px_rgba(15,23,42,0.08)] ring-1 ring-white/80 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/75 dark:ring-white/10 sm:rounded-[1.8rem] sm:p-4 lg:p-5">
+                        <div class="flex flex-col gap-2 text-left sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                            <div class="min-w-0">
+                                <h2 class="text-sm font-black tracking-[-0.02em] text-slate-900 dark:text-white sm:text-base">
+                                    Listen And Match
+                                </h2>
+                                <p class="mt-0.5 text-xs font-bold leading-snug text-slate-500 dark:text-slate-400 sm:text-sm">
+                                    Tap a picture, then tap a drop box. You can also drag the pictures.
+                                </p>
+                            </div>
+
+                            <div id="progressText" class="inline-flex w-fit shrink-0 items-center rounded-full bg-indigo-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300 sm:text-xs">
+                                0 / {{ $speakerCount }} Done
+                            </div>
+                        </div>
+
+                        <div id="speakerList" class="mt-3 grid grid-cols-1 gap-2.5 sm:mt-4 sm:gap-3 lg:gap-4">
+                            @foreach($speakers as $index => $speaker)
+                                <article
+                                        class="speaker-card grid grid-cols-[3.75rem_minmax(0,1fr)_4.75rem] items-center gap-2.5 rounded-[1.25rem] border-2 border-slate-200/85 bg-white p-2.5 shadow-[0_12px_30px_rgba(15,23,42,0.07)] transition duration-200 dark:border-white/10 dark:bg-slate-950/50 sm:grid-cols-[4.5rem_minmax(0,1fr)_5.5rem] sm:gap-3 sm:rounded-[1.45rem] sm:p-3 md:grid-cols-[5rem_minmax(0,1fr)_6.25rem] lg:p-3.5"
+                                        data-speaker-id="{{ $speaker['id'] }}"
+                                        data-answer="{{ $speaker['answer'] }}"
+                                        data-locked="false"
+                                >
+                                    <div class="relative aspect-square overflow-hidden rounded-[1rem] bg-slate-100 ring-1 ring-slate-200/80 dark:bg-slate-800 dark:ring-white/10 sm:rounded-[1.15rem]">
+                                        <img
+                                                src="{{ $speaker['photo'] }}"
+                                                alt="{{ $speaker['name'] }}"
+                                                class="h-full w-full object-cover"
+                                                loading="lazy"
+                                                decoding="async"
+                                        >
+                                        <div class="absolute left-1.5 top-1.5 grid h-6 w-6 place-items-center rounded-full bg-white/95 text-[10px] font-black text-slate-900 shadow-md backdrop-blur-sm dark:bg-slate-950/85 dark:text-white sm:h-7 sm:w-7 sm:text-xs">
+                                            {{ $index + 1 }}
+                                        </div>
+                                    </div>
+
+                                    <div class="min-w-0 text-left">
+                                        <h3 class="truncate text-base font-black tracking-[-0.02em] text-slate-900 dark:text-slate-50 sm:text-lg lg:text-xl">
+                                            {{ $speaker['name'] }}
+                                        </h3>
+
+                                        @if(!empty($speaker['audio']))
+                                            <div class="mt-1.5 max-w-full sm:mt-2">
+                                                @php
+                                                    $scriptLines = array_values($speaker['script'] ?? $speaker['transcript'] ?? []);
+
+                                                    if ($scriptLines === [] && $speakerCount === 1 && is_array($content['transcript'] ?? null)) {
+                                                        $scriptLines = array_values($content['transcript']);
+                                                    }
+                                                @endphp
+
+                                                @include('slider.components.audio-player', [
+                                                    'playerAudio' => $speaker['audio'],
+                                                    'scriptLines' => $scriptLines,
+                                                    'hasScript' => count($scriptLines) > 0,
+                                                    'audioPlayerFloating' => false,
+                                                ])
+                                            </div>
+                                        @elseif(!empty($speaker['note']))
+                                            <p class="mt-1 text-xs font-bold text-slate-500 dark:text-slate-400 sm:text-sm">
+                                                {{ $speaker['note'] }}
+                                            </p>
+                                        @endif
+                                    </div>
+
+                                    <button
+                                            type="button"
+                                            class="answer-zone grid aspect-square w-full place-items-center overflow-hidden rounded-[1rem] border-2 border-dashed border-indigo-300/70 bg-indigo-50/70 p-1.5 text-center transition duration-200 dark:border-indigo-400/30 dark:bg-indigo-500/10 sm:rounded-[1.15rem] sm:p-2"
+                                            data-answer-zone
+                                            data-speaker-id="{{ $speaker['id'] }}"
+                                            aria-label="Drop image for {{ $speaker['name'] }}"
+                                    >
+                                        <span class="pointer-events-none text-[9px] font-black uppercase leading-tight tracking-[0.1em] text-slate-500 dark:text-slate-400 sm:text-[10px]">
+                                            Drop<br>Image
+                                        </span>
+                                    </button>
+                                </article>
+                            @endforeach
+                        </div>
+                    </section>
                 </div>
             </section>
         </div>
 
         <div id="finishModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-            <div class="absolute inset-0 bg-slate-950/70 backdrop-blur-md" id="finishBg"></div>
+            <button id="finishBg" type="button" class="absolute inset-0 bg-slate-950/70 backdrop-blur-md" aria-label="Close result"></button>
 
-            <div class="modal-pop relative w-full max-w-xl overflow-hidden rounded-[3rem] border border-white/10 bg-white dark:bg-slate-900 shadow-2xl">
-                <div class="absolute inset-0 pointer-events-none opacity-80 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(99,102,241,0.16)_0%,transparent_55%),radial-gradient(120%_120%_at_100%_0%,rgba(59,130,246,0.16)_0%,transparent_55%)]"></div>
+            <section class="relative w-full max-w-xl overflow-hidden rounded-[2rem] border border-white/10 bg-white shadow-2xl dark:bg-slate-900 sm:rounded-[3rem]">
+                <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(99,102,241,0.16)_0%,transparent_55%),radial-gradient(120%_120%_at_100%_0%,rgba(59,130,246,0.16)_0%,transparent_55%)] opacity-80"></div>
 
-                <div class="relative p-8 sm:p-10 text-center">
-                    <div class="mx-auto relative mb-6 h-20 w-20 sm:h-24 sm:w-24">
-                        <div class="finish-orb absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-blue-500 opacity-20 blur-2xl"></div>
-                        <div class="absolute inset-0 grid place-items-center rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-blue-500 text-white shadow-xl">
-                            <svg viewBox="0 0 24 24" class="h-10 w-10 sm:h-12 sm:w-12" fill="none" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.8" d="M5 13l4 4L19 7"/>
-                            </svg>
-                        </div>
+                <div class="relative p-7 text-center sm:p-10">
+                    <div class="mx-auto grid h-20 w-20 place-items-center rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-blue-500 text-white shadow-xl shadow-indigo-500/20 sm:h-24 sm:w-24">
+                        <svg viewBox="0 0 24 24" class="h-10 w-10 sm:h-12 sm:w-12" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.8" d="M5 13l4 4L19 7"/>
+                        </svg>
                     </div>
 
-                    <p class="text-[11px] font-black uppercase tracking-[0.25em] text-indigo-500">Completed</p>
-                    <h2 class="mt-2 text-2xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-slate-50">
+                    <p class="mt-6 text-[11px] font-black uppercase tracking-[0.25em] text-indigo-500">
+                        Completed
+                    </p>
+                    <h2 class="mt-2 text-2xl font-black tracking-tight text-slate-900 dark:text-slate-50 sm:text-4xl">
                         Great job!
                     </h2>
-                    <p class="mt-3 text-sm sm:text-lg font-semibold text-slate-600 dark:text-slate-300">
+                    <p class="mx-auto mt-3 max-w-md text-sm font-semibold leading-[1.7] text-slate-600 dark:text-slate-300 sm:text-lg">
                         You matched all the speakers with the correct pictures.
                     </p>
 
-                    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <button id="restartBtn"
+                    <div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <button
+                                id="restartBtn"
                                 type="button"
-                                class="inline-flex w-full items-center justify-center rounded-2xl border border-slate-200/80 bg-white/85 px-6 py-4 text-sm font-black uppercase tracking-[0.12em] text-slate-800 shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-white active:translate-y-0 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-100 dark:hover:bg-slate-900/70">
+                                class="inline-flex w-full items-center justify-center rounded-2xl border border-slate-200/80 bg-white/85 px-6 py-4 text-sm font-black uppercase tracking-[0.12em] text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-white active:translate-y-0 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-100 dark:hover:bg-slate-900/70"
+                        >
                             Restart
                         </button>
 
-                        <button id="continueBtn"
+                        <button
+                                id="continueBtn"
                                 type="button"
-                                class="inline-flex w-full items-center justify-center rounded-2xl px-6 py-4 text-sm font-black uppercase tracking-[0.12em] text-white shadow-[0_16px_40px_rgba(79,70,229,0.22)] transition-transform hover:-translate-y-0.5 active:translate-y-0"
-                                style="background-color: var(--p)">
+                                class="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 px-6 py-4 text-sm font-black uppercase tracking-[0.12em] text-white shadow-[0_16px_40px_rgba(79,70,229,0.22)] transition hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0"
+                        >
                             Continue
                         </button>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
     </main>
 @endsection
 
 @section('script')
+    @parent
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const root = document.getElementById(@json($uid));
-            const CHOICES = @json($content['choices']);
-            const SFX = {
-                enabled: true,
-                sources: {
-                    correct: @json($content['sfx']['correct'] ?? '/slider/sounds/correct.wav'),
-                    wrong: @json($content['sfx']['wrong'] ?? '/slider/sounds/wrong.wav'),
-                    success: @json($content['sfx']['success'] ?? '/slider/sounds/success.wav')
-                },
-                volume: { correct: 1, wrong: 1, success: 1 }
-            };
+            var root = document.getElementById(@json($uid));
+            if (!root) return;
 
-            const audio = {
-                correct: new Audio(SFX.sources.correct),
-                wrong: new Audio(SFX.sources.wrong),
-                success: new Audio(SFX.sources.success)
-            };
+            var CHOICES = @json($choices);
+            var SFX_SOURCES = @json($sfx);
 
-            const choicesBank = root.querySelector('#choicesBank');
-            const speakerCards = Array.from(root.querySelectorAll('.speaker-card'));
-            const answerZones = Array.from(root.querySelectorAll('[data-answer-zone]'));
-            const finishModal = root.querySelector('#finishModal');
-            const finishBg = root.querySelector('#finishBg');
-            const restartBtn = root.querySelector('#restartBtn');
-            const continueBtn = root.querySelector('#continueBtn');
-            const progressText = root.querySelector('#progressText');
-            const allAudioElements = Array.from(root.querySelectorAll('.speaker-audio'));
+            var choicesBank = root.querySelector('#choicesBank');
+            var speakerCards = Array.prototype.slice.call(root.querySelectorAll('.speaker-card'));
+            var answerZones = Array.prototype.slice.call(root.querySelectorAll('[data-answer-zone]'));
+            var finishModal = root.querySelector('#finishModal');
+            var finishBg = root.querySelector('#finishBg');
+            var restartBtn = root.querySelector('#restartBtn');
+            var continueBtn = root.querySelector('#continueBtn');
+            var resetInlineBtn = root.querySelector('#resetInlineBtn');
+            var progressText = root.querySelector('#progressText');
 
-            let sortableInstances = [];
+            var selectedChoiceId = null;
+            var sortableInstances = [];
+            var soundPlayers = {};
 
-            function clamp01(value) {
-                value = Number(value);
-                if (!Number.isFinite(value)) return 0.5;
-                return Math.max(0, Math.min(1, value));
-            }
+            Object.keys(SFX_SOURCES || {}).forEach(function (key) {
+                if (!SFX_SOURCES[key]) return;
+                soundPlayers[key] = new Audio(SFX_SOURCES[key]);
+                soundPlayers[key].preload = 'auto';
+            });
 
-            function applyVolumes() {
-                audio.correct.volume = clamp01(SFX.volume.correct);
-                audio.wrong.volume = clamp01(SFX.volume.wrong);
-                audio.success.volume = clamp01(SFX.volume.success);
-            }
+            function playSound(key) {
+                var player = soundPlayers[key];
+                if (!player) return;
 
-            function play(sound) {
-                if (!SFX.enabled || !sound) return;
-                sound.pause();
-                sound.currentTime = 0;
-                sound.play().catch(function(){});
-            }
-
-            function playCorrect() { play(audio.correct); }
-            function playWrong() { play(audio.wrong); }
-            function playWin() { play(audio.success); }
-
-            function renderChoiceCard(choice) {
-                return `
-                    <div
-                        class="choice-card rounded-[1rem] sm:rounded-[1.2rem] overflow-hidden"
-                        data-choice-id="${choice.id}"
-                        data-choice-label="${choice.label}"
-                        data-choice-title="${choice.title}"
-                        data-choice-image="${choice.image}"
-                    >
-                        <div class="choice-thumb">
-                            <img src="${choice.image}" alt="${choice.title}">
-                        </div>
-                    </div>
-                `;
-            }
-
-            function updateProgress() {
-                const done = speakerCards.filter(card => card.getAttribute('data-locked') === 'true').length;
-                progressText.textContent = `${done} / ${speakerCards.length} done`;
+                try {
+                    player.pause();
+                    player.currentTime = 0;
+                    player.play().catch(function () {});
+                } catch (error) {}
             }
 
             function stopAllAudio() {
-                allAudioElements.forEach(audio => {
+                Object.keys(soundPlayers).forEach(function (key) {
+                    try {
+                        soundPlayers[key].pause();
+                        soundPlayers[key].currentTime = 0;
+                    } catch (error) {}
+                });
+
+                Array.prototype.slice.call(root.querySelectorAll('audio')).forEach(function (audio) {
                     try {
                         audio.pause();
                         audio.currentTime = 0;
-                    } catch (e) {}
+                    } catch (error) {}
                 });
 
-                window.stopAudioPlayer?.();
+                if (typeof window.stopAudioPlayer === 'function') {
+                    window.stopAudioPlayer();
+                }
             }
 
             window.stopSlideAudio = stopAllAudio;
 
-            allAudioElements.forEach(audio => {
-                audio.addEventListener('play', function() {
-                    allAudioElements.forEach(otherAudio => {
-                        if (otherAudio !== audio && !otherAudio.paused) {
-                            otherAudio.pause();
-                            otherAudio.currentTime = 0;
-                        }
-                    });
-                });
-            });
-
-            function destroySortableInstances() {
-                sortableInstances.forEach(instance => {
-                    if (instance && typeof instance.destroy === 'function') {
-                        instance.destroy();
-                    }
-                });
-                sortableInstances = [];
+            function escapeHtml(value) {
+                var div = document.createElement('div');
+                div.textContent = String(value || '');
+                return div.innerHTML;
             }
 
-            function clearHighlights() {
-                answerZones.forEach(zone => zone.classList.remove('can-drop'));
+            function getChoiceData(choiceId) {
+                for (var i = 0; i < CHOICES.length; i += 1) {
+                    if (String(CHOICES[i].id) === String(choiceId)) return CHOICES[i];
+                }
+
+                return null;
+            }
+
+            function getChoiceCard(choiceId) {
+                var cards = Array.prototype.slice.call(choicesBank.querySelectorAll('.choice-card'));
+
+                for (var i = 0; i < cards.length; i += 1) {
+                    if (String(cards[i].dataset.choiceId) === String(choiceId)) return cards[i];
+                }
+
+                return null;
             }
 
             function getSpeakerCardById(speakerId) {
-                return root.querySelector(`.speaker-card[data-speaker-id="${speakerId}"]`);
+                for (var i = 0; i < speakerCards.length; i += 1) {
+                    if (String(speakerCards[i].dataset.speakerId) === String(speakerId)) return speakerCards[i];
+                }
+
+                return null;
             }
 
-            function flashWrong(card, zone) {
-                playWrong();
-                card.classList.add('is-wrong');
-                zone.classList.add('wrong');
+            function createChoiceCard(choice) {
+                var button = document.createElement('button');
 
-                setTimeout(function () {
-                    card.classList.remove('is-wrong');
-                    zone.classList.remove('wrong');
-                }, 650);
+                button.type = 'button';
+                button.className = 'choice-card group relative aspect-square w-[4.25rem] overflow-hidden rounded-[0.9rem] border-2 border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.10)] transition duration-200 hover:-translate-y-0.5 hover:border-indigo-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-300/35 dark:border-white/10 dark:bg-slate-900 sm:w-20 sm:rounded-[1rem] md:w-28 md:rounded-[1.15rem] lg:w-32 xl:w-36';
+                button.dataset.choiceId = choice.id;
+                button.dataset.choiceLabel = choice.label;
+                button.dataset.choiceTitle = choice.title;
+                button.dataset.choiceImage = choice.image;
+                button.setAttribute('aria-label', (choice.label || '') + '. ' + (choice.title || ''));
+                button.innerHTML = '' +
+                    '<img src="' + escapeHtml(choice.image) + '" alt="' + escapeHtml(choice.title) + '" class="h-full w-full object-cover transition duration-200 group-hover:scale-105" loading="lazy" decoding="async">' +
+                    '<span class="absolute left-1.5 top-1.5 grid h-5 w-5 place-items-center rounded-full bg-white/95 text-[9px] font-black text-slate-900 shadow-md backdrop-blur-sm dark:bg-slate-950/85 dark:text-white sm:h-6 sm:w-6 sm:text-[10px] md:h-7 md:w-7 md:text-xs">' + escapeHtml(choice.label) + '</span>';
+
+                return button;
             }
 
-            function setCorrect(card, zone, choiceCard) {
-                playCorrect();
-                const choiceId = choiceCard.getAttribute('data-choice-id');
-                const image = choiceCard.getAttribute('data-choice-image');
-                const title = choiceCard.getAttribute('data-choice-title');
+            function clearSelectedChoice() {
+                selectedChoiceId = null;
 
-                card.classList.add('is-correct');
-                card.setAttribute('data-locked', 'true');
-                zone.classList.add('correct');
-                zone.innerHTML = `
-                    <div class="assigned-thumb">
-                        <img src="${image}" alt="${title}">
-                    </div>
-                `;
+                Array.prototype.slice.call(choicesBank.querySelectorAll('.choice-card')).forEach(function (card) {
+                    card.classList.remove('border-indigo-500', 'ring-4', 'ring-indigo-300/35', '-translate-y-1');
+                    card.classList.add('border-slate-200', 'dark:border-white/10');
+                });
+            }
 
-                const originalChoice = choicesBank.querySelector(`[data-choice-id="${choiceId}"]`);
-                if (originalChoice) {
-                    originalChoice.remove();
+            function selectChoice(card) {
+                if (!card || !card.dataset.choiceId) return;
+
+                if (selectedChoiceId === card.dataset.choiceId) {
+                    clearSelectedChoice();
+                    return;
+                }
+
+                clearSelectedChoice();
+                selectedChoiceId = card.dataset.choiceId;
+                card.classList.remove('border-slate-200', 'dark:border-white/10');
+                card.classList.add('border-indigo-500', 'ring-4', 'ring-indigo-300/35', '-translate-y-1');
+                playSound('click');
+            }
+
+            function clearDropHighlights() {
+                answerZones.forEach(function (zone) {
+                    zone.classList.remove('scale-[1.02]', 'border-indigo-500', 'bg-indigo-100', 'dark:bg-indigo-500/20');
+                });
+            }
+
+            function updateProgress() {
+                var done = speakerCards.filter(function (card) {
+                    return card.dataset.locked === 'true';
+                }).length;
+
+                if (progressText) {
+                    progressText.textContent = done + ' / ' + speakerCards.length + ' Done';
                 }
             }
 
             function allMatched() {
-                return speakerCards.every(card => card.getAttribute('data-locked') === 'true');
+                return speakerCards.every(function (card) {
+                    return card.dataset.locked === 'true';
+                });
+            }
+
+            function setWrongFeedback(card, zone) {
+                playSound('wrong');
+                card.classList.add('border-rose-400', 'ring-4', 'ring-rose-300/25');
+                zone.classList.add('border-rose-500', 'bg-rose-50', 'dark:bg-rose-950/30');
+
+                window.setTimeout(function () {
+                    card.classList.remove('border-rose-400', 'ring-4', 'ring-rose-300/25');
+                    zone.classList.remove('border-rose-500', 'bg-rose-50', 'dark:bg-rose-950/30');
+                }, 650);
+            }
+
+            function setCorrectFeedback(card, zone, choiceData) {
+                playSound('correct');
+
+                card.dataset.locked = 'true';
+                card.classList.remove('border-slate-200/85', 'dark:border-white/10');
+                card.classList.add('border-emerald-400/70', 'ring-4', 'ring-emerald-300/20');
+
+                zone.classList.remove('border-indigo-300/70', 'bg-indigo-50/70', 'dark:border-indigo-400/30', 'dark:bg-indigo-500/10');
+                zone.classList.add('border-emerald-400/70', 'bg-emerald-50/80', 'dark:border-emerald-400/40', 'dark:bg-emerald-500/10');
+                zone.innerHTML = '' +
+                    '<span class="relative block aspect-square h-full w-full overflow-hidden rounded-[0.8rem] sm:rounded-[0.95rem]">' +
+                    '<img src="' + escapeHtml(choiceData.image) + '" alt="' + escapeHtml(choiceData.title) + '" class="h-full w-full object-cover">' +
+                    '<span class="absolute right-1.5 top-1.5 grid h-5 w-5 place-items-center rounded-full bg-emerald-500 text-[10px] font-black text-white shadow-lg">âœ“</span>' +
+                    '<span class="absolute left-1.5 top-1.5 grid h-5 w-5 place-items-center rounded-full bg-white/95 text-[9px] font-black text-slate-900 shadow-md backdrop-blur-sm dark:bg-slate-950/85 dark:text-white">' + escapeHtml(choiceData.label) + '</span>' +
+                    '</span>';
+
+                var originalChoice = getChoiceCard(choiceData.id);
+                if (originalChoice) originalChoice.remove();
+                if (selectedChoiceId === choiceData.id) selectedChoiceId = null;
             }
 
             function showFinishModal() {
+                playSound('success');
                 finishModal.classList.remove('hidden');
                 finishModal.classList.add('flex');
             }
@@ -552,79 +407,75 @@
                 finishModal.classList.remove('flex');
             }
 
-            function checkIfBankEmpty() {
-                const activeChoices = choicesBank.querySelectorAll('.choice-card');
-                if (!activeChoices.length) {
-                    choicesBank.innerHTML = `
-                        <div class="bank-empty col-span-3 lg:col-span-1 rounded-[1rem] sm:rounded-[1.2rem] min-h-[78px] grid place-items-center text-center px-3 text-xs sm:text-sm font-black uppercase tracking-[0.12em]">
-                            All done
-                        </div>
-                    `;
-                }
+            function showBankEmpty() {
+                if (choicesBank.querySelector('.choice-card')) return;
+
+                choicesBank.innerHTML = '' +
+                    '<div class="col-span-3 grid h-16 w-full place-items-center rounded-[0.9rem] border-2 border-dashed border-indigo-200 bg-indigo-50/60 px-4 text-center text-[10px] font-black uppercase tracking-[0.16em] text-indigo-600 dark:border-indigo-400/25 dark:bg-indigo-500/10 dark:text-indigo-300 sm:h-20 md:col-span-1 md:h-24">' +
+                    'All Done' +
+                    '</div>';
             }
 
-            function tryMatch(speakerId, draggedEl) {
-                const card = getSpeakerCardById(speakerId);
-                if (!card) return;
+            function tryMatch(speakerId, choiceId) {
+                var card = getSpeakerCardById(speakerId);
+                var choiceData = getChoiceData(choiceId);
+                if (!card || !choiceData) return;
 
-                const zone = card.querySelector('[data-answer-zone]');
-                const correctAnswer = card.getAttribute('data-answer');
-                const locked = card.getAttribute('data-locked') === 'true';
-                const droppedChoiceId = draggedEl.getAttribute('data-choice-id');
+                var zone = card.querySelector('[data-answer-zone]');
+                var expectedAnswer = card.dataset.answer;
 
-                if (locked) return;
+                if (card.dataset.locked === 'true' || !zone) return;
 
-                if (correctAnswer !== droppedChoiceId) {
-                    flashWrong(card, zone);
+                if (expectedAnswer !== choiceData.id) {
+                    setWrongFeedback(card, zone);
                     return;
                 }
 
-                setCorrect(card, zone, draggedEl);
+                setCorrectFeedback(card, zone, choiceData);
+                clearSelectedChoice();
                 updateProgress();
-                checkIfBankEmpty();
+                showBankEmpty();
 
                 if (allMatched()) {
-                    setTimeout(function () {
-                        playWin();
-                        showFinishModal();
-                    }, 280);
+                    window.setTimeout(showFinishModal, 260);
                 }
+            }
+
+            function destroySortableInstances() {
+                sortableInstances.forEach(function (instance) {
+                    if (instance && typeof instance.destroy === 'function') instance.destroy();
+                });
+
+                sortableInstances = [];
             }
 
             function initializeSortable() {
                 destroySortableInstances();
 
-                if (choicesBank.querySelector('.choice-card')) {
-                    const bankSortable = new Sortable(choicesBank, {
-                        group: {
-                            name: 'listen-match',
-                            pull: 'clone',
-                            put: false
-                        },
-                        sort: false,
-                        animation: 150,
-                        draggable: '.choice-card',
-                        fallbackOnBody: true,
-                        swapThreshold: 0.65,
-                    });
+                if (!window.Sortable || !choicesBank.querySelector('.choice-card')) return;
 
-                    sortableInstances.push(bankSortable);
-                }
+                sortableInstances.push(new Sortable(choicesBank, {
+                    group: { name: 'listen-match', pull: 'clone', put: false },
+                    sort: false,
+                    animation: 150,
+                    draggable: '.choice-card',
+                    fallbackOnBody: true,
+                    swapThreshold: 0.65,
+                    onStart: clearSelectedChoice
+                }));
 
-                answerZones.forEach(zone => {
-                    const speakerId = zone.getAttribute('data-speaker-id');
-                    const card = getSpeakerCardById(speakerId);
+                answerZones.forEach(function (zone) {
+                    var speakerId = zone.dataset.speakerId;
+                    var card = getSpeakerCardById(speakerId);
 
-                    if (!card || card.getAttribute('data-locked') === 'true') return;
+                    if (!card || card.dataset.locked === 'true') return;
 
-                    const zoneSortable = new Sortable(zone, {
+                    sortableInstances.push(new Sortable(zone, {
                         group: {
                             name: 'listen-match',
                             pull: false,
                             put: function (to, from, dragEl) {
-                                if (!dragEl) return false;
-                                if (card.getAttribute('data-locked') === 'true') return false;
-                                return dragEl.classList.contains('choice-card');
+                                return !!dragEl && dragEl.classList.contains('choice-card') && card.dataset.locked !== 'true';
                             }
                         },
                         sort: false,
@@ -632,76 +483,108 @@
                         fallbackOnBody: true,
                         swapThreshold: 0.65,
                         onMove: function () {
-                            clearHighlights();
-                            zone.classList.add('can-drop');
+                            clearDropHighlights();
+                            zone.classList.add('scale-[1.02]', 'border-indigo-500', 'bg-indigo-100', 'dark:bg-indigo-500/20');
                             return true;
                         },
-                        onAdd: function (evt) {
-                            clearHighlights();
-                            const draggedEl = evt.item.cloneNode(true);
-                            evt.item.remove();
-                            tryMatch(speakerId, draggedEl);
+                        onAdd: function (event) {
+                            clearDropHighlights();
+                            var choiceId = event.item ? event.item.dataset.choiceId : '';
+                            if (event.item) event.item.remove();
+                            tryMatch(speakerId, choiceId);
                         },
-                        onEnd: function () {
-                            clearHighlights();
-                        }
-                    });
+                        onEnd: clearDropHighlights
+                    }));
+                });
+            }
 
-                    sortableInstances.push(zoneSortable);
+            function renderChoicesBank() {
+                choicesBank.innerHTML = '';
+                CHOICES.forEach(function (choice) {
+                    choicesBank.appendChild(createChoiceCard(choice));
                 });
             }
 
             function resetGame() {
                 stopAllAudio();
+                hideFinishModal();
+                clearSelectedChoice();
 
-                speakerCards.forEach(card => {
-                    const zone = card.querySelector('[data-answer-zone]');
-                    card.classList.remove('is-correct', 'is-wrong');
-                    card.setAttribute('data-locked', 'false');
+                speakerCards.forEach(function (card) {
+                    var zone = card.querySelector('[data-answer-zone]');
 
-                    zone.classList.remove('correct', 'wrong', 'can-drop');
-                    zone.innerHTML = `
-                        <div class="text-center text-slate-500 dark:text-slate-400 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.08em] leading-tight">
-                            Drop<br>image
-                        </div>
-                    `;
+                    card.dataset.locked = 'false';
+                    card.classList.remove('border-emerald-400/70', 'ring-4', 'ring-emerald-300/20', 'border-rose-400', 'ring-rose-300/25');
+                    card.classList.add('border-slate-200/85', 'dark:border-white/10');
+
+                    if (!zone) return;
+
+                    zone.className = 'answer-zone grid aspect-square w-full place-items-center overflow-hidden rounded-[1rem] border-2 border-dashed border-indigo-300/70 bg-indigo-50/70 p-1.5 text-center transition duration-200 dark:border-indigo-400/30 dark:bg-indigo-500/10 sm:rounded-[1.15rem] sm:p-2';
+                    zone.innerHTML = '<span class="pointer-events-none text-[9px] font-black uppercase leading-tight tracking-[0.1em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Drop<br>Image</span>';
                 });
 
-                choicesBank.innerHTML = CHOICES.map(renderChoiceCard).join('');
-                hideFinishModal();
+                renderChoicesBank();
                 updateProgress();
                 initializeSortable();
             }
 
             function isEmbedded() {
-                try { return window.top !== window.self; }
-                catch (e) { return true; }
+                try {
+                    return window.top !== window.self;
+                } catch (error) {
+                    return true;
+                }
             }
 
             function goToNextSlide() {
-                if (isEmbedded()) {
-                    try {
-                        if (window.parent && typeof window.parent.nextSlide === 'function') {
-                            window.parent.nextSlide();
-                            return;
-                        }
-                    } catch (e) {}
+                stopAllAudio();
 
-                    try {
-                        window.parent.postMessage({ type: 'BEC_NAV', action: 'next' }, '*');
+                if (!isEmbedded()) return;
+
+                try {
+                    if (window.parent && typeof window.parent.nextSlide === 'function') {
+                        window.parent.nextSlide();
                         return;
-                    } catch (e) {}
-                }
+                    }
+                } catch (error) {}
 
+                try {
+                    window.parent.postMessage({ type: 'BEC_NAV', action: 'next' }, '*');
+                } catch (error) {}
             }
 
+            choicesBank.addEventListener('click', function (event) {
+                var card = event.target.closest('.choice-card');
+                if (!card || !choicesBank.contains(card)) return;
+                selectChoice(card);
+            });
+
+            answerZones.forEach(function (zone) {
+                zone.addEventListener('click', function () {
+                    if (!selectedChoiceId) return;
+                    tryMatch(zone.dataset.speakerId, selectedChoiceId);
+                });
+            });
+
+            Array.prototype.slice.call(root.querySelectorAll('audio')).forEach(function (audio) {
+                audio.addEventListener('play', function () {
+                    Array.prototype.slice.call(root.querySelectorAll('audio')).forEach(function (otherAudio) {
+                        if (otherAudio !== audio && !otherAudio.paused) {
+                            otherAudio.pause();
+                            otherAudio.currentTime = 0;
+                        }
+                    });
+                });
+            });
+
+            if (restartBtn) restartBtn.addEventListener('click', resetGame);
+            if (resetInlineBtn) resetInlineBtn.addEventListener('click', resetGame);
+            if (continueBtn) continueBtn.addEventListener('click', goToNextSlide);
+            if (finishBg) finishBg.addEventListener('click', hideFinishModal);
+
             window.resetSlide = resetGame;
+            window.listenMatchReset = resetGame;
 
-            restartBtn.addEventListener('click', resetGame);
-            continueBtn.addEventListener('click', goToNextSlide);
-            finishBg.addEventListener('click', hideFinishModal);
-
-            applyVolumes();
             updateProgress();
             initializeSortable();
         });

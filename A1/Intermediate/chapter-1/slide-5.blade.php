@@ -12,7 +12,7 @@ $content = [
             'key'        => 'play',
             'sound'      => materialAsset('slider/A1/Intermediate/chapter-1/audio/slide5/play.mp3'),
             'title'      => '🏟️ Play',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-6 xl:grid-cols-6',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-6',
             'items'      => [
                 [
                     'text'  => 'football',

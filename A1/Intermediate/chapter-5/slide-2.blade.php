@@ -4,6 +4,7 @@ $content = array_replace_recursive([
     'page_title' => 'Warm-up',
     'title'      => 'Warm-up',
     'subtitle'   => '',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-4',
     'items' => [
         [
             'question' => 'What is this?',

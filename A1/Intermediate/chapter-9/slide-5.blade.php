@@ -1,10 +1,9 @@
 <?php
 
 $content = [
-    'page_title' => 'Key Vocabulary',
     'title'      => 'Key Vocabulary',
     'subtitle'   => 'What is the MOST important thing on your list?',
-
+    'image_text_style' => 'overlay',
     'grid_class' => 'grid-cols-2 sm:grid-cols-5',
 
     'items' => [

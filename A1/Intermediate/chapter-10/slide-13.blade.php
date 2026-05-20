@@ -1,10 +1,15 @@
 <?php
-$content = [
 
-    'page_title' => 'Writing',
-    'title'      => 'Writing',
-    'subtitle'      => 'Fill-in with the missing words',
-     'audio'      => materialAsset('slider/A1/Intermediate/chapter-10/audios/slide13.mp3'),
+$content = [
+    'title'    => 'Writing',
+    'subtitle' => '',
+
+    'instruction'      => 'Fill-in with the missing words',
+    'instruction_note' => 'Listen and complete the answers',
+
+    'card_class' => '[&_.lp-dialogue]:grid-cols-1 sm:[&_.lp-dialogue]:grid-cols-2 [&_.lp-input]:!w-[8.5rem] [&_.lp-input]:!min-w-[7rem]',
+
+    'audio' => materialAsset('slider/A1/Intermediate/chapter-10/audios/slide13.mp3'),
 
     'transcript' => [
         'Check-in agent: Good morning. Can I have your ticket, please?',
@@ -21,87 +26,92 @@ $content = [
         'Passenger: Thank you.',
     ],
 
-    'questions' => [
+    'lines' => [
         [
-            'number' => 1,
-            'prompt' => 'Good morning. Can I have your ticket, please?',
-            'type' => 'missing_words',
-            'sentence' => 'Here {{1}}.',
-            'blanks' => [
-                [
-                    'answer' => 'you are',
-                    'placeholder' => '',
-                    'label' => 'Answer phrase',
-                ],
+            'speaker' => 'A',
+            'parts' => [
+                ['text' => 'Good morning. Can I have your ticket, please?'],
             ],
         ],
         [
-            'number' => 2,
-            'prompt' => 'May I see your passport, please?',
-            'type' => 'missing_words',
-            'sentence' => '{{1}} you are.',
-            'blanks' => [
-                [
-                    'answer' => 'Here',
-                    'placeholder' => '',
-                    'label' => 'Answer word',
-                ],
+            'speaker' => 'B',
+            'parts' => [
+                ['text' => 'Here '],
+                ['blank' => true, 'answer' => 'you are'],
+                ['text' => '.'],
             ],
         ],
         [
-            'number' => 3,
-            'prompt' => 'Would you like a window or an aisle seat?',
-            'type' => 'missing_words',
-            'sentence' => 'An {{1}}, please.',
-            'blanks' => [
-                [
-                    'answer' => 'aisle seat',
-                    'placeholder' => '',
-                    'label' => 'Seat type',
-                ],
+            'speaker' => 'A',
+            'parts' => [
+                ['text' => 'May I see your passport, please?'],
             ],
         ],
         [
-            'number' => 4,
-            'prompt' => 'Would you like to upgrade to first class?',
-            'type' => 'missing_words',
-            'sentence' => 'No, {{1}}.',
-            'blanks' => [
-                [
-                    'answer' => 'thank you',
-                    'placeholder' => '',
-                    'label' => 'Polite refusal',
-                ],
+            'speaker' => 'B',
+            'parts' => [
+                ['blank' => true, 'answer' => 'Here'],
+                ['text' => ' you are.'],
             ],
         ],
         [
-            'number' => 5,
-            'prompt' => 'Do you have any baggage?',
-            'type' => 'missing_words',
-            'sentence' => 'Yes, this {{1}} and this carry-on bag.',
-            'blanks' => [
-                [
-                    'answer' => 'suitcase',
-                    'placeholder' => '',
-                    'label' => 'Baggage item',
-                ],
+            'speaker' => 'A',
+            'parts' => [
+                ['text' => 'Would you like a window or an aisle seat?'],
             ],
         ],
         [
-            'number' => 6,
-            'prompt' => "Here's your boarding pass. Have a nice flight.",
-            'type' => 'missing_words',
-            'sentence' => '{{1}}.',
-            'blanks' => [
-                [
-                    'answer' => 'Thank you',
-                    'placeholder' => '',
-                    'label' => 'Closing response',
-                ],
+            'speaker' => 'B',
+            'parts' => [
+                ['text' => 'An '],
+                ['blank' => true, 'answer' => 'aisle seat'],
+                ['text' => ', please.'],
+            ],
+        ],
+        [
+            'speaker' => 'A',
+            'parts' => [
+                ['text' => 'Would you like to upgrade to first class?'],
+            ],
+        ],
+        [
+            'speaker' => 'B',
+            'parts' => [
+                ['text' => 'No, '],
+                ['blank' => true, 'answer' => 'thank you'],
+                ['text' => '.'],
+            ],
+        ],
+        [
+            'speaker' => 'A',
+            'parts' => [
+                ['text' => 'Do you have any baggage?'],
+            ],
+        ],
+        [
+            'speaker' => 'B',
+            'parts' => [
+                ['text' => 'Yes, this '],
+                ['blank' => true, 'answer' => 'suitcase'],
+                ['text' => ' and this carry-on bag.'],
+            ],
+        ],
+        [
+            'speaker' => 'A',
+            'parts' => [
+                ['text' => "Here's your boarding pass. Have a nice flight."],
+            ],
+        ],
+        [
+            'speaker' => 'B',
+            'parts' => [
+                ['blank' => true, 'answer' => 'Thank you'],
+                ['text' => '.'],
             ],
         ],
     ],
 ];
+
 ?>
 
-@include('slider.listening.listening-type-answer', ['content' => $content])
+@include('slider.game.listening-missing-word', ['content' => $content])

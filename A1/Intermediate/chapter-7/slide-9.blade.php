@@ -1,13 +1,10 @@
 <?php
-$content = [
-    'page_title' => 'Speaking',
-    'title'      => 'Speaking',
-    'subtitle'   => 'What about you?',
-    'header_wrap_class' => 'header-spacing text-center flex flex-col items-center gap-[0.55rem] my-8 mx-auto max-w-4xl',
-    'title_class' => 'hero-title fade-up w-full tracking-[-0.04em] text-4xl md:text-5xl lg:text-6xl leading-[1.08] pb-[0.08em] font-black',
-    'subtitle_class' => 'hero-subtitle fade-up fade-up-delay-1 max-w-2xl mx-auto text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100',
 
-    'questions' => [
+$content = [
+    'title'    => 'Speaking',
+    'subtitle' => 'What about you?',
+    'image'    => materialAsset('slider/A1/Intermediate/chapter-7/img/slide-5/cultural-Holiday.webp'),
+    'cards' => [
         [
             'label' => 'Question 1',
             'emoji' => '☀️',
@@ -34,5 +31,7 @@ $content = [
         ],
     ],
 ];
+
 ?>
-@include("slider.other.speaking-discussion", ['content' => $content])
+
+@include('slider.other.discussion', ['content' => $content])

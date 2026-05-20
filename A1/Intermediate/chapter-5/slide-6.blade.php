@@ -10,7 +10,7 @@ $content = [
         [
             'key'        => 'useful-phrases',
             'title'      => '',
-            'grid_class' => 'grid-cols-1 sm:grid-cols-3 ',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-6 ',
             'items'      => [
                 [
                     'text'  => 'That will be $1',
@@ -47,7 +47,7 @@ $content = [
         [
             'key'        => 'people-places',
             'title'      => '🧑‍⚕️ People & Places',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4 ',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-5 ',
             'items'      => [
                 [
                     'text'  => 'Customer',
@@ -109,7 +109,7 @@ $content = [
         [
             'key'        => 'instructions',
             'title'      => '📋 Instructions',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-5',
             'items'      => [
                 [
                     'text'  => 'Dosage',

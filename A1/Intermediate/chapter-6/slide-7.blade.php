@@ -1,9 +1,9 @@
 <?php
 
 $content = [
-    'page_title' => 'New Vocabulary',
     'title'      => 'Emergency Calls',
     'subtitle'   => 'New Vocabulary',
+    'image_text_style' => 'overlay',
 
     'groups' => [
         [
@@ -52,7 +52,7 @@ $content = [
         [
             'key'        => 'emergency-vocabulary',
             'title'      => '',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 ',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-6 ',
             'items'      => [
                 [
                     'text'  => 'Emergency',

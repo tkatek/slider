@@ -1,10 +1,11 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
+
     'title'      => 'Travel Activities',
     'subtitle'   => 'What can you do when you go on holiday?',
 
-    'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-5',
+    'image_text_style' => 'overlay',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-5 lg:grid-cols-5',
 
     'items' => [
 

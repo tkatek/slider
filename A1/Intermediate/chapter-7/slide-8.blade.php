@@ -1,9 +1,9 @@
 <?php
+
 $content = array_replace_recursive([
-    'page_title'    => 'Practice 3: Listening',
-    'title'         => 'Practice 3: Listening',
-    'subtitle'      => 'Listen to Amira, Amir and Ali  talk about their holiday plans this summer, Match them with pictures',
-    'theme'         => '#6366f1',
+    'page_title' => 'Practice 3: Listening',
+    'title'      => 'Practice 3: Listening',
+    'subtitle'   => 'Listen to Amira, Amir and Ali  talk about their holiday plans this summer, Match them with pictures',
 
     'speakers' => [
         [
@@ -49,7 +49,8 @@ $content = array_replace_recursive([
             'image' => materialAsset('slider/A1/Intermediate/chapter-7/img/slide-10/kitchen.webp'),
         ],
     ],
-], $content ?? []);
+], is_array($content ?? null) ? $content : []);
+
 ?>
 
-@include("slider.game.drag-and-drop-audio-image", ['content' => $content])
+@include('slider.game.drag-and-drop-audio-image', ['content' => $content])

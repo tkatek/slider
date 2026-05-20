@@ -1,9 +1,9 @@
 <?php
 
 $content = [
-    'page_title' => 'New Vocabulary',
     'title'      => 'Emergency Calls',
     'subtitle'   => 'New Vocabulary',
+    'image_text_style' => 'overlay',
 
     'groups' => [
         [
