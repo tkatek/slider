@@ -13,37 +13,37 @@ $content = [
     'questions' => [
         [
             'image'   => materialAsset('slider/A1/Advanced/chapter-5/img/chapter3/1.webp'),
-            'prompt'  => 'He ________ a bike on the street.',
+            'prompt'  => 'He . . . . . . . a bike on the street.',
             'correct' => 'rides',
             'options' => ['ride', 'rides'],
         ],
         [
             'image'   => materialAsset('slider/A1/Advanced/chapter-5/img/chapter3/2.webp'),
-            'prompt'  => 'They ________ the train to work.',
+            'prompt'  => 'They . . . . . . . the train to work.',
             'correct' => 'take',
             'options' => ['take', 'takes'],
         ],
         [
             'image'   => materialAsset('slider/A1/Advanced/chapter-5/img/chapter3/3.webp'),
-            'prompt'  => 'I ________ to the library every morning.',
+            'prompt'  => 'I . . . . . . . to the library every morning.',
             'correct' => 'go',
             'options' => ['go', 'goes'],
         ],
         [
             'image'   => materialAsset('slider/A1/Advanced/chapter-5/img/chapter3/4.webp'),
-            'prompt'  => 'My brother Taylor ________ to the mall every weekend.',
+            'prompt'  => 'My brother Taylor . . . . . . . to the mall every weekend.',
             'correct' => 'drives',
             'options' => ['drive', 'drives'],
         ],
         [
             'image'   => materialAsset('slider/A1/Advanced/chapter-5/img/chapter3/5.webp'),
-            'prompt'  => 'She ________ a motorcycle.',
+            'prompt'  => 'She . . . . . . . a motorcycle.',
             'correct' => 'rides',
             'options' => ['ride', 'rides'],
         ],
         [
             'image'   => materialAsset('slider/A1/Advanced/chapter-5/img/chapter3/6.webp'),
-            'prompt'  => 'Tourists usually ________ taxis in New York.',
+            'prompt'  => 'Tourists usually . . . . . . . taxis in New York.',
             'correct' => 'take',
             'options' => ['take', 'takes'],
         ],

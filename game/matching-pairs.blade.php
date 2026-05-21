@@ -41,6 +41,15 @@
             })->values();
         }
 
+        if (filter_var($content['shuffle_right'] ?? false, FILTER_VALIDATE_BOOLEAN) && $rightItems->count() > 1) {
+            $originalRightOrder = $rightItems->pluck('id')->values()->all();
+            $rightItems = $rightItems->shuffle()->values();
+
+            if ($rightItems->pluck('id')->values()->all() === $originalRightOrder) {
+                $rightItems = $rightItems->slice(1)->concat($rightItems->slice(0, 1))->values();
+            }
+        }
+
         $activityTitle = $content['activity_title'] ?? $content['directions'] ?? 'Match the items.';
         $leftLabel = $content['left_label'] ?? 'A. Items';
         $rightLabel = $content['right_label'] ?? 'B. Matches';

@@ -118,12 +118,22 @@
 
                         <article class="word-card flex min-h-full flex-col rounded-2xl border border-slate-200/90 bg-gradient-to-b from-white/95 to-slate-50/95 p-2.5 shadow-[0_12px_28px_-24px_rgba(15,23,42,0.22)] transition duration-200 hover:-translate-y-0.5 hover:border-indigo-300/60 hover:shadow-[0_18px_40px_-28px_rgba(37,99,235,0.35)] dark:border-slate-700/80 dark:from-slate-900/95 dark:to-slate-950/90 sm:p-3">
                             @if(!empty($item['image']))
-                                <div class="relative flex items-center justify-center overflow-hidden rounded-2xl border border-indigo-200/70 bg-indigo-50/70 dark:border-indigo-400/20 dark:bg-slate-800/70 {{ $imageAspectClass }}">
+                                <div class="relative flex items-center justify-center overflow-hidden rounded-2xl border border-indigo-200/70 bg-slate-100 dark:border-indigo-400/20 dark:bg-slate-800/70 {{ $imageAspectClass }}">
+                                    <img
+                                            src="{{ $item['image'] }}"
+                                            alt=""
+                                            aria-hidden="true"
+                                            loading="lazy"
+                                            class="absolute inset-0 h-full w-full scale-105 object-cover opacity-45 blur-md dark:opacity-35"
+                                    />
+
+                                    <div class="absolute inset-0 bg-white/30 dark:bg-slate-950/25"></div>
+
                                     <img
                                             src="{{ $item['image'] }}"
                                             alt="{{ $item['name'] ?? ('Item ' . ($item['number'] ?? ($index + 1))) }}"
                                             loading="lazy"
-                                            class="h-full w-full object-contain"
+                                            class="relative z-[1] h-full w-full object-contain"
                                     />
 
                                     @if(!empty($item['sound']))

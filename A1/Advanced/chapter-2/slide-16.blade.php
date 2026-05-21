@@ -1,11 +1,21 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Writing: A Short Message to the hotel manager";
-$customSubtitle = "You are staying at a hotel. Write a short message (5–6 sentences) to reception. Use the model provided";
 
+$customSubtitle = "You are staying at a hotel. Write a short message (5–6 sentences) to reception.";
+
+$customCalloutText = "
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Use the model provided:</span><br>
+Hello,<br>
+I am in room . . . .<br>
+There is a problem with . . . . / I need . . . .<br>
+The . . . . is not working.<br>
+Could you please . . . .?<br>
+Thank you.<br>
+Best regards,";
 
 // Use \n for line breaks in the placeholder
-$customPlaceholder = "Hello,\nI am in room ______.\nThere is a problem with ______. / I need ______.\nThe ______ is not working.\nCould you please ______?\nThank you.\nBest regards,";
+$customPlaceholder = ".....";
 
 if (auth()->check()){
     $user = auth()->user();
@@ -40,6 +50,7 @@ $content = [
     'user_avatar' => $userAvatar,
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
+    'callout_text' => $customCalloutText,
     'page_title' => $finalTitle,
     'placeholder' => $customPlaceholder
 ];

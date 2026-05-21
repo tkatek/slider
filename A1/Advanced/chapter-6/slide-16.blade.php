@@ -1,7 +1,7 @@
 @php
     $content = [
-        'page_title'    => 'Practice 8',
-        'title'         => 'Practice 8',
+        'page_title'    => 'Practice 7',
+        'title'         => 'Practice 7',
         'subtitle'      => 'Complete the conversation using the words in the box.',
         'audio'         => '',
         'script'        => [

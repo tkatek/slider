@@ -1,8 +1,8 @@
 <?php
 
 $content = [
-    'page_title' => 'Listening Practice',
-    'title'      => 'Listening again',
+    'page_title' => '',
+    'title'      => 'Listen again',
     'subtitle'   => 'Complete the sentences using the words from the box.',
     'type'       => 'reading',
 

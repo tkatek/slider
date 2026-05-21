@@ -28,46 +28,38 @@ $content = [
                                             <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-teal-500 text-xl font-black text-white shadow-lg shadow-teal-500/25">
                                                 &#10003;
                                             </span>
-                                            <h3 class="text-lg font-black leading-tight text-slate-950 dark:text-white sm:text-xl">
-                                                Structure 3: Polite Complaints / Requests
-                                            </h3>
+                                            <div>
+                                                <h4 class="text-lg font-black leading-tight text-slate-950 dark:text-white sm:text-xl">
+                                                    Structure 1: Describing the Problem
+                                                </h4>
+                                            </div>
                                         </div>
 
                                         <div class="mt-5 rounded-2xl border border-teal-100 bg-teal-50/70 p-4 dark:border-teal-400/20 dark:bg-teal-950/25">
-                                            <p class="text-lg font-black leading-tight text-cyan-600 dark:text-cyan-200 sm:text-xl">
-                                                Patterns:
+                                            <p class="text-xs font-black uppercase tracking-[0.16em] text-teal-700 dark:text-teal-200">
+                                                Pattern
                                             </p>
-
-                                            <ul class="mt-3 space-y-2.5 text-base font-black leading-snug sm:text-lg">
-                                                <li class="flex gap-3 text-sky-500 dark:text-sky-300">
-                                                    <span class="mt-2.5 h-2.5 w-2.5 shrink-0 rounded-full bg-sky-500 dark:bg-sky-300"></span>
-                                                    <span>Could you + verb...?</span>
-                                                </li>
-                                                <li class="flex gap-3 text-sky-500 dark:text-sky-300">
-                                                    <span class="mt-2.5 h-2.5 w-2.5 shrink-0 rounded-full bg-sky-500 dark:bg-sky-300"></span>
-                                                    <span>Can you + verb...?</span>
-                                                </li>
-                                                <li class="flex gap-3 text-sky-500 dark:text-sky-300">
-                                                    <span class="mt-2.5 h-2.5 w-2.5 shrink-0 rounded-full bg-sky-500 dark:bg-sky-300"></span>
-                                                    <span>Would you mind + verb-ing...?</span>
-                                                </li>
-                                            </ul>
+                                            <p class="mt-2 text-lg font-black leading-tight text-slate-950 dark:text-white sm:text-xl">
+                                                Subject + be +
+                                                <span class="rounded-xl bg-white px-2 py-1 text-teal-600 shadow-sm ring-1 ring-teal-100 dark:bg-slate-950/70 dark:text-teal-200 dark:ring-teal-400/20">too</span>
+                                                + adjective
+                                            </p>
                                         </div>
 
                                         <div class="mt-5 space-y-3">
-                                            <p class="text-lg font-black leading-tight text-slate-950 underline dark:text-white sm:text-xl">
-                                                Examples:
+                                            <p class="text-xs font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                                                Examples
                                             </p>
 
                                             <div class="space-y-2.5">
                                                 <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base font-black leading-snug text-slate-900 dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-100">
-                                                    <span class="text-cyan-600 dark:text-cyan-300">Could you</span> <span class="underline">turn</span> the music down?
+                                                    The music is <span class="text-teal-600 dark:text-teal-300">too</span> loud.
                                                 </div>
                                                 <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base font-black leading-snug text-slate-900 dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-100">
-                                                    <span class="text-cyan-600 dark:text-cyan-300">Can you</span> <span class="underline">be</span> quieter?
+                                                    The room is <span class="text-teal-600 dark:text-teal-300">too</span> dirty.
                                                 </div>
                                                 <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base font-black leading-snug text-slate-900 dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-100">
-                                                    <span class="text-cyan-600 dark:text-cyan-300">Would you mind</span> <span class="underline">closing</span> the window?
+                                                    The neighbors are <span class="text-teal-600 dark:text-teal-300">too</span> noisy.
                                                 </div>
                                             </div>
                                         </div>
@@ -82,36 +74,39 @@ $content = [
                                             <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-blue-500 text-xl font-black text-white shadow-lg shadow-blue-500/25">
                                                 &#10003;
                                             </span>
-                                            <h3 class="text-lg font-black leading-tight text-slate-950 dark:text-white sm:text-xl">
-                                                Structure 4: Responding to a complaint:
-                                            </h3>
+                                            <div>
+                                                <h4 class="text-lg font-black leading-tight text-slate-950 dark:text-white sm:text-xl">
+                                                    Structure 2: Complaining About Repeated Actions
+                                                </h4>
+                                            </div>
                                         </div>
 
                                         <div class="mt-5 rounded-2xl border border-blue-100 bg-blue-50/70 p-4 dark:border-blue-400/20 dark:bg-blue-950/25">
-                                            <p class="text-lg font-black leading-tight text-cyan-600 dark:text-cyan-200 sm:text-xl">
-                                                Patterns:
+                                            <p class="text-xs font-black uppercase tracking-[0.16em] text-blue-700 dark:text-blue-200">
+                                                Pattern
                                             </p>
-
-                                            <ul class="mt-3 space-y-2.5 text-base font-black leading-snug sm:text-lg">
-                                                <li class="flex gap-3 text-sky-500 dark:text-sky-300">
-                                                    <span class="mt-2.5 h-2.5 w-2.5 shrink-0 rounded-full bg-sky-500 dark:bg-sky-300"></span>
-                                                    <span>I&rsquo;ll + verb</span>
-                                                </li>
-                                            </ul>
+                                            <p class="mt-2 text-lg font-black leading-tight text-slate-950 dark:text-white sm:text-xl">
+                                                Subject +
+                                                <span class="rounded-xl bg-white px-2 py-1 text-blue-600 shadow-sm ring-1 ring-blue-100 dark:bg-slate-950/70 dark:text-blue-200 dark:ring-blue-400/20">keeps</span>
+                                                + verb-ing
+                                            </p>
                                         </div>
 
-                                        <div class="mt-5 space-y-2.5">
-                                            <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base font-black leading-snug text-slate-900 dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-100">
-                                                <span class="text-cyan-600 dark:text-cyan-300">I&rsquo;ll speak</span> with him.
-                                            </div>
-                                            <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base font-black leading-snug text-slate-900 dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-100">
-                                                <span class="text-cyan-600 dark:text-cyan-300">I&rsquo;ll look into</span> the smell issue.
-                                            </div>
-                                            <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base font-black leading-snug text-slate-900 dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-100">
-                                                <span class="text-cyan-600 dark:text-cyan-300">I&rsquo;ll do</span> my best to help.
-                                            </div>
-                                            <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base font-black leading-snug text-slate-900 dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-100">
-                                                <span class="text-cyan-600 dark:text-cyan-300">I will</span> check the problem.
+                                        <div class="mt-5 space-y-3">
+                                            <p class="text-xs font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                                                Examples
+                                            </p>
+
+                                            <div class="space-y-2.5">
+                                                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base font-black leading-snug text-slate-900 dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-100">
+                                                    The dog <span class="text-blue-600 dark:text-blue-300">keeps barking</span>.
+                                                </div>
+                                                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base font-black leading-snug text-slate-900 dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-100">
+                                                    My neighbor <span class="text-blue-600 dark:text-blue-300">keeps shouting</span>.
+                                                </div>
+                                                <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-base font-black leading-snug text-slate-900 dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-100">
+                                                    They <span class="text-blue-600 dark:text-blue-300">keep playing</span> loud music.
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -12,8 +12,8 @@ $content = [
         [
             'emoji'  => '🏠',
             'badge'  => 'from-blue-500 to-blue-600',
-            'title'  => 'Neighbor Problems',
-            'description' => 'Describe common problems with neighbors.',
+            'title'  => 'Neighbour Problems',
+            'description' => 'Describe common problems with neighbours.',
         ],
         [
             'emoji'  => '💬',
@@ -30,20 +30,20 @@ $content = [
         [
             'emoji'  => '✋',
             'badge'  => 'from-amber-500 to-orange-500',
-            'title'  => 'Annoying Behavior',
-            'description' => 'Ask someone to stop or change annoying behavior.',
+            'title'  => 'Annoying Behaviour',
+            'description' => 'Ask someone to stop or change annoying behaviour.',
         ],
         [
             'emoji'  => '🛠️',
             'badge'  => 'from-rose-500 to-pink-500',
             'title'  => 'Simple Solutions',
-            'description' => 'Suggest simple solutions to neighborhood problems.',
+            'description' => 'Suggest simple solutions to neighbourhood problems.',
         ],
         [
             'emoji'  => '✍️',
             'badge'  => 'from-indigo-500 to-sky-500',
             'title'  => 'Complaint Note',
-            'description' => 'Write a short note to a neighbor complaining about an issue.',
+            'description' => 'Write a short note to a neighbour complaining about an issue.',
         ],
     ],
 ];

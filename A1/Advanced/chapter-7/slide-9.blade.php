@@ -1,9 +1,9 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
+
     'title'      => 'New Vocabulary',
     'subtitle'   => 'Most Important signs',
-
+    'image_text_style' => 'overlay',
     'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-6',
 
     'items' => [

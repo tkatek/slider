@@ -20,13 +20,13 @@ $content = [
         [
             'label' => 'Answer 1',
             'emoji' => '🧳',
-            'text'  => 'I’m going to ____.',
+            'text'  => 'I’m going to . . . . . . .',
             'theme' => 'blue',
         ],
         [
             'label' => 'Answer 2',
             'emoji' => '🚌',
-            'text'  => 'I will travel by ____.',
+            'text'  => 'I will travel by . . . . . . .',
             'theme' => 'sky',
         ],
     ],

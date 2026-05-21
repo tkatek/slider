@@ -1179,6 +1179,52 @@
                 return normalizeScriptLines(GLOBAL_SCRIPT_LINES);
             }
 
+            function buildSafeScriptFragment(value) {
+                const template = document.createElement('template');
+                template.innerHTML = String(value ?? '');
+
+                const allowedClass = /^[a-zA-Z0-9:_\-/\[\].!%]+$/;
+
+                function cleanNode(node) {
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        return document.createTextNode(node.textContent || '');
+                    }
+
+                    if (node.nodeType !== Node.ELEMENT_NODE) {
+                        return document.createDocumentFragment();
+                    }
+
+                    const tagName = node.tagName.toLowerCase();
+
+                    if (tagName === 'br') {
+                        return document.createElement('br');
+                    }
+
+                    if (tagName !== 'span') {
+                        const fragment = document.createDocumentFragment();
+                        node.childNodes.forEach((child) => fragment.appendChild(cleanNode(child)));
+                        return fragment;
+                    }
+
+                    const span = document.createElement('span');
+                    const safeClasses = String(node.getAttribute('class') || '')
+                        .split(/\s+/)
+                        .filter((className) => className !== '' && allowedClass.test(className));
+
+                    if (safeClasses.length > 0) {
+                        span.className = safeClasses.join(' ');
+                    }
+
+                    node.childNodes.forEach((child) => span.appendChild(cleanNode(child)));
+                    return span;
+                }
+
+                const fragment = document.createDocumentFragment();
+                template.content.childNodes.forEach((child) => fragment.appendChild(cleanNode(child)));
+
+                return fragment;
+            }
+
             function renderAudioPlayerScriptContent(lines) {
                 if (!sharedAudioPlayerScriptList) return 0;
 
@@ -1200,7 +1246,7 @@
 
                     const text = document.createElement('div');
                     text.className = 'text-xs font-semibold text-slate-700 dark:text-slate-200 sm:text-sm';
-                    text.textContent = line;
+                    text.appendChild(buildSafeScriptFragment(line));
 
                     textWrap.appendChild(text);
                     row.appendChild(badge);

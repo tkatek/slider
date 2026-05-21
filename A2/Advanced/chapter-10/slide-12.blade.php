@@ -1,82 +1,90 @@
 <?php
-
 $content = [
-    'type' => 'reading',
-    'page_title'         => 'Reading Comprehension',
-    'title'              => 'Reading Comprehension',
-    'subtitle'           => 'Answer the following questions about the text',
-    'reading_title'      => 'Noisy Neighbours',
-    'reading_align'      => 'left',
-    'reading_plain'      => true,
-    'reading_compact'    => true,
-    'reading_allow_html' => true,
+    'type' => 'emoji',
 
-    'passage' => [
-        '<div class="text-[0.9rem] font-semibold leading-snug text-slate-600 dark:text-slate-300 sm:text-[0.95rem] lg:text-[1rem]">Emma lives in an apartment building. Her neighbours upstairs are very noisy. They play loud music at night and sometimes move furniture after midnight. Emma cannot sleep well, and she feels tired every morning.</div>',
-
-        '<div class="text-[0.9rem] font-semibold leading-snug text-slate-600 dark:text-slate-300 sm:text-[0.95rem] lg:text-[1rem]">One evening, Emma knocked on her neighbours&rsquo; door and spoke politely to them. She said, “Excuse me, could you please lower the music at night?” The neighbours apologized and promised to be quieter.</div>',
-
-        '<div class="text-[0.9rem] font-semibold leading-snug text-slate-600 dark:text-slate-300 sm:text-[0.95rem] lg:text-[1rem]">After that, the building became much calmer, and Emma could sleep better.</div>',
-    ],
+    'title'    => 'Practice 4',
+    'subtitle' => 'Choose the correct answer',
 
     'questions' => [
         [
-            'prompt'  => 'Why was Emma unhappy?',
-            'correct' => 'Her neighbours were noisy',
+            'emoji' => '🐶🔊',
+            'prompt' => 'Which sentence uses keeps + verb-ing correctly?',
+            'correct' => 'The dog keeps barking.',
             'options' => [
-                'Her apartment was too small',
-                'Her neighbours were noisy',
-                'She lost her keys',
-                'She did not like the building',
+                'The dog keeps barking.',
+                'The dog keep bark.',
+                'The dog keeps barked.',
+                'The dog is keep.',
             ],
         ],
         [
-            'prompt'  => 'What did the neighbours do at night?',
-            'correct' => 'Played loud music',
+            'emoji' => '🙏💬',
+            'prompt' => 'Which are polite request starters?',
+            'correct' => 'Could you / Would you mind',
             'options' => [
-                'Cooked food',
-                'Watched TV quietly',
-                'Played loud music',
-                'Cleaned the apartment',
+                'Could you / Would you mind',
+                'Do it now',
+                'You must',
+                'Do that now',
             ],
         ],
         [
-            'prompt'  => 'What happened after Emma spoke to her neighbours?',
-            'correct' => 'They became quieter',
+            'emoji' => '🎵😣',
+            'prompt' => 'Which sentence is a complaint?',
+            'correct' => 'The music is too loud.',
             'options' => [
-                'They moved away',
-                'They became quieter',
-                'They argued with Emma',
-                'They called the police',
+                'Turn the music down.',
+                'The music is too loud.',
+                'Music is louding.',
+                'The music loudly.',
             ],
         ],
         [
-            'prompt'  => 'Emma lived in a house.',
-            'correct' => 'False',
+            'emoji' => '🤝✅',
+            'prompt' => 'Which is a response?',
+            'correct' => 'I’ll do my best to help.',
             'options' => [
-                'True',
-                'False',
+                'Can you be quieter?',
+                'I’ll do my best to help.',
+                'Could you turn the music down?',
+                'You are annoying.',
             ],
         ],
         [
-            'prompt'  => 'Emma spoke politely to her neighbours.',
-            'correct' => 'True',
+            'emoji' => '🙂🙏',
+            'prompt' => 'Which option is the most polite?',
+            'correct' => 'Would you mind waiting?',
             'options' => [
-                'True',
-                'False',
+                'Would you mind waiting?',
+                'Wait, I said.',
+                'Just wait outside.',
+                'Wait there, okay.',
             ],
         ],
         [
-            'prompt'  => 'Emma could sleep better after talking to them.',
-            'correct' => 'True',
+            'emoji' => '📢🏠',
+            'prompt' => 'Which is a complaint?',
+            'correct' => 'The music is too loud.',
             'options' => [
-                'True',
-                'False',
+                'The music is too loud.',
+                'I’ll speak with him.',
+                'I will check the problem.',
+                'I’ll look into the smell issue.',
+            ],
+        ],
+        [
+            'emoji' => '🚰💧',
+            'prompt' => 'Which is grammatically correct?',
+            'correct' => 'The tap keeps dripping.',
+            'options' => [
+                'The tap is keep.',
+                'The tap keeps dripping.',
+                'The tap keeps drip.',
+                'The tap keep dripping.',
             ],
         ],
     ],
 ];
-
 ?>
 
 @include('slider.game.multi-choice-all-in-one', ['content' => $content])

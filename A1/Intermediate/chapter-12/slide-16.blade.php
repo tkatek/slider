@@ -1,21 +1,25 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "My Boarding Experience";
-$customSubtitle = "Write 5–6 simple sentences about boarding the plane, Include:<br>
-1. Where you wait<br>
-2. Who you speak to<br>
-3. Your seat number<br>
-4. One instruction you hear<br>
-5. What you do before takeoff";
 
+$customSubtitle = "Write 5–6 simple sentences about boarding the plane.";
 
+$customCalloutText = "
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Include:</span><br>
+&bull; Where you wait<br>
+&bull; Who you speak to<br>
+&bull; Your seat number<br>
+&bull; One instruction you hear<br>
+&bull; What you do before takeoff";
+
+// Use \n for line breaks in the placeholder
 $customPlaceholder =
-    "I wait in the ______ lounge.\n" .
-    "The flight attendant says, \"_______.\"\n" .
-    "My seat number is ______.\n" .
-    "I put my bag in the ______.\n" .
-    "I fasten my ______.\n" .
-    "The plane ______ (takes off / lands).";
+    "I wait in the . . . . lounge.\n" .
+    "The flight attendant says, \". . . .\"\n" .
+    "My seat number is . . . .\n" .
+    "I put my bag in the . . . .\n" .
+    "I fasten my . . . .\n" .
+    "The plane . . . . (takes off / lands).";
 
 if (auth()->check()){
     $user = auth()->user();
@@ -50,6 +54,7 @@ $content = [
     'user_avatar' => $userAvatar,
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
+    'callout_text' => $customCalloutText,
     'page_title' => $finalTitle,
     'placeholder' => $customPlaceholder
 ];

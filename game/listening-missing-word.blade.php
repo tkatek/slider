@@ -12,15 +12,26 @@
     $lines = is_array($content['lines'] ?? null) ? $content['lines'] : [];
     $sounds = is_array($content['sounds'] ?? null) ? $content['sounds'] : [];
     $cardClass = trim((string) ($content['card_class'] ?? ''));
+    $gridClass = trim((string) ($content['grid_class'] ?? 'grid-cols-1'));
+    $speakerClasses = [
+        'A' => 'lp-speaker-blue',
+        'B' => 'lp-speaker-emerald',
+    ];
+    $fallbackSpeakerClasses = [
+        'lp-speaker-violet',
+        'lp-speaker-rose',
+        'lp-speaker-sky',
+        'lp-speaker-amber',
+    ];
 @endphp
 
 @section('style')
     <style>
         .lt-card {
             border-radius: 24px;
-            border: 1px solid rgba(226, 232, 240, .9);
-            background: rgba(255, 255, 255, .92);
-            box-shadow: 0 18px 45px rgba(2, 6, 23, .08);
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: rgba(255, 255, 255, .94);
+            box-shadow: 0 20px 50px rgba(15, 23, 42, .08);
         }
 
         .dark .lt-card {
@@ -30,14 +41,14 @@
 
         .lt-title-panel {
             border-radius: 20px;
-            border: 1px solid rgba(251, 146, 60, .22);
-            background: linear-gradient(135deg, rgba(255, 247, 237, .92), rgba(255, 255, 255, .82));
+            border: 1px solid rgba(226, 232, 240, .95);
+            background: linear-gradient(135deg, rgba(248, 250, 252, .96), rgba(255, 255, 255, .86));
             padding: .9rem 1rem;
         }
 
         .dark .lt-title-panel {
-            border-color: rgba(251, 146, 60, .18);
-            background: linear-gradient(135deg, rgba(67, 20, 7, .34), rgba(15, 23, 42, .66));
+            border-color: rgba(51, 65, 85, .75);
+            background: linear-gradient(135deg, rgba(30, 41, 59, .72), rgba(15, 23, 42, .66));
         }
 
         .lt-btn {
@@ -54,9 +65,9 @@
 
         .lt-btn-primary {
             border: 1px solid rgba(255, 255, 255, .14);
-            background: linear-gradient(135deg, #fdba74, #f97316);
+            background: linear-gradient(135deg, #475569, #111827);
             color: #fff;
-            box-shadow: 0 10px 22px rgba(234, 88, 12, .16);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, .16);
         }
 
         .lt-btn-soft {
@@ -84,8 +95,9 @@
             align-items: start;
             border-radius: 20px;
             border: 1px solid rgba(226, 232, 240, .88);
-            background: rgba(248, 250, 252, .72);
+            background: rgba(248, 250, 252, .78);
             padding: .85rem;
+            box-shadow: 0 10px 26px rgba(15, 23, 42, .04);
         }
 
         .dark .lp-line {
@@ -100,11 +112,34 @@
             align-items: center;
             justify-content: center;
             border-radius: 16px;
-            background: linear-gradient(135deg, #fdba74, #f97316);
             color: #fff;
             font-size: .95rem;
             font-weight: 1000;
-            box-shadow: 0 10px 20px rgba(234, 88, 12, .16);
+            box-shadow: 0 10px 20px rgba(15, 23, 42, .12);
+        }
+
+        .lp-speaker-blue {
+            background: linear-gradient(135deg, #6366f1, #2563eb);
+        }
+
+        .lp-speaker-emerald {
+            background: linear-gradient(135deg, #10b981, #0d9488);
+        }
+
+        .lp-speaker-violet {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .lp-speaker-rose {
+            background: linear-gradient(135deg, #fb7185, #e11d48);
+        }
+
+        .lp-speaker-sky {
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
+        }
+
+        .lp-speaker-amber {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
         }
 
         .lp-text {
@@ -119,9 +154,10 @@
         }
 
         .lp-input {
-            display: inline-flex;
-            width: 6.8rem;
+            display: inline-block;
+            width: auto;
             min-width: 5.8rem;
+            max-width: 100%;
             height: 2.1rem;
             margin: 0 .16rem;
             border-radius: 12px;
@@ -132,15 +168,15 @@
             font-size: .88rem;
             font-weight: 900;
             line-height: 1;
-            text-align: center;
+            text-align: left;
             outline: none;
             transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
             vertical-align: middle;
         }
 
         .lp-input:focus {
-            border-color: rgba(249, 115, 22, .72);
-            box-shadow: 0 0 0 4px rgba(249, 115, 22, .16);
+            border-color: rgba(99, 102, 241, .76);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, .16);
         }
 
         .lp-input.is-correct {
@@ -174,19 +210,19 @@
         .lp-transcript {
             margin-top: 1rem;
             border-radius: 20px;
-            border: 1px dashed rgba(251, 146, 60, .35);
-            background: rgba(255, 247, 237, .52);
+            border: 1px dashed rgba(148, 163, 184, .48);
+            background: rgba(248, 250, 252, .76);
             padding: .9rem;
         }
 
         .dark .lp-transcript {
-            border-color: rgba(251, 146, 60, .22);
-            background: rgba(67, 20, 7, .18);
+            border-color: rgba(100, 116, 139, .34);
+            background: rgba(15, 23, 42, .34);
         }
 
         .lp-transcript-title {
             margin-bottom: .45rem;
-            color: #9a3412;
+            color: #475569;
             font-size: .78rem;
             font-weight: 1000;
             text-transform: uppercase;
@@ -194,7 +230,7 @@
         }
 
         .dark .lp-transcript-title {
-            color: #fed7aa;
+            color: #cbd5e1;
         }
 
         .lp-transcript p {
@@ -220,13 +256,17 @@
             }
 
             .lt-btn {
-                flex: 1 1 100%;
-                padding: .72rem .85rem;
+                flex: 1 1 0;
+                min-width: 0;
+                padding: .62rem .45rem;
+                font-size: .74rem;
+                border-radius: 12px;
+                white-space: nowrap;
             }
 
             .lp-line {
-                grid-template-columns: 1fr;
-                gap: .55rem;
+                grid-template-columns: auto 1fr;
+                gap: .65rem;
                 padding: .8rem;
             }
 
@@ -238,12 +278,12 @@
 
             .lp-text {
                 font-size: .92rem;
-                line-height: 2.2;
+                line-height: 2.05;
             }
 
             .lp-input {
-                width: 5.9rem;
                 min-width: 5.2rem;
+                max-width: 100%;
                 height: 2rem;
                 font-size: .82rem;
             }
@@ -277,19 +317,32 @@
                     </div>
 
                     <div class="flex flex-wrap items-center justify-end gap-2">
-                        <button id="checkAnswersBtn" type="button" class="lt-btn lt-btn-primary">Check Answers</button>
-                        <button id="revealAnswersBtn" type="button" class="lt-btn lt-btn-soft">Reveal answers</button>
+                        <button id="checkAnswersBtn" type="button" class="lt-btn lt-btn-primary">
+                            <span class="sm:hidden">Check</span>
+                            <span class="hidden sm:inline">Check Answers</span>
+                        </button>
+                        <button id="revealAnswersBtn" type="button" class="lt-btn lt-btn-soft">
+                            <span class="sm:hidden">Reveal</span>
+                            <span class="hidden sm:inline">Reveal answers</span>
+                        </button>
                         <button id="retakeBtn" type="button" class="lt-btn lt-btn-soft">Retake</button>
                     </div>
                 </div>
 
-                <div class="lp-dialogue">
+                <div class="lp-dialogue {{ $gridClass }}">
                     @php $blankIndex = 0; @endphp
 
                     @foreach($lines as $line)
+                        @php
+                            $speaker = (string) ($line['speaker'] ?? '');
+                            $speakerKey = strtoupper(trim($speaker));
+                            $speakerClass = $speakerClasses[$speakerKey]
+                                ?? $fallbackSpeakerClasses[$loop->index % count($fallbackSpeakerClasses)];
+                        @endphp
+
                         <article class="lp-line">
-                            <div class="lp-speaker">
-                                {{ $line['speaker'] ?? '' }}
+                            <div class="lp-speaker {{ $speakerClass }}">
+                                {{ $speaker }}
                             </div>
 
                             <div class="lp-text">
@@ -300,11 +353,19 @@
                                             $answers = is_array($part['answers'] ?? null)
                                                 ? implode('|', $part['answers'])
                                                 : $answer;
+                                            $answerOptions = is_array($part['answers'] ?? null)
+                                                ? array_map(static fn ($option) => (string) $option, $part['answers'])
+                                                : [$answer];
+                                            $placeholder = (string) ($part['placeholder'] ?? '');
+                                            $longestInputText = max(array_map('strlen', array_merge($answerOptions, [$placeholder])));
+                                            $inputSize = max(8, min(28, $longestInputText + 2));
                                         @endphp
 
                                         <input
                                                 type="text"
                                                 class="lp-input answer-input"
+                                                size="{{ $inputSize }}"
+                                                placeholder="{{ $placeholder }}"
                                                 data-answer="{{ $answers }}"
                                                 data-key="{{ $blankIndex }}"
                                                 autocomplete="off"

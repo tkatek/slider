@@ -4,7 +4,7 @@ $content = [
     'title'      => 'Practice 4',
     'subtitle'   => 'Look at the pictures. Do you know the English words for these signs? Write the missing letters in the gaps.',
 
-    'grid_class' => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-4',
 
     'items' => [
         [

@@ -1,7 +1,14 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Wrap-up";
-$customSubtitle = "1. What can you say when you want to pay your bill?\n2. How can you say you want to open a bank account?\n3. What does \"Cut your coat according to your cloth\" mean?";
+
+$customSubtitle = "Answer the questions below.";
+
+$customCalloutText = "
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Questions:</span><br>
+1. What can you say when you want to pay your bill?<br>
+2. How can you say you want to open a bank account?<br>
+3. What does &quot;Cut your coat according to your cloth&quot; mean?";
 
 // Use \n for line breaks in the placeholder
 $customPlaceholder = "Type here";
@@ -39,9 +46,10 @@ $content = [
     'user_avatar' => $userAvatar,
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
+    'callout_text' => $customCalloutText,
     'title_margin_class' => 'mb-2',
     'page_title' => $finalTitle,
-    'placeholder' => $customPlaceholder // Added this line
+    'placeholder' => $customPlaceholder
 ];
 ?>
 

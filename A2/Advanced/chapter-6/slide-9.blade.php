@@ -6,6 +6,7 @@ $content = [
     'activity_title' => 'Match each word with the correct definition.',
     'left_label'     => 'Words',
     'right_label'    => 'Definitions',
+    'shuffle_right'  => true,
 
     'pairs' => [
         [

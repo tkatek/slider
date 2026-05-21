@@ -1,11 +1,16 @@
 <?php
+
 $content = [
-    'page_title' => 'Listen again and answer these questions',
-    'title'      => 'Listen again and answer these questions',
-    'subtitle'   => '',
+    'title'       => 'Listen again and answer these questions',
+    'subtitle'    => '',
     'title_class' => 'text-3xl md:text-4xl lg:text-5xl',
 
-    'audio'      => materialAsset('slider/A1/Intermediate/chapter-10/audios/slide10.mp3'),
+    'instruction'      => '',
+    'instruction_note' => 'Complete the answers from the conversation',
+
+    'grid_class' => 'grid-cols-1 sm:grid-cols-2',
+
+    'audio' => materialAsset('slider/A1/Intermediate/chapter-10/audios/slide10.mp3'),
 
     'transcript' => [
         "Check-in clerk: Can I have your ticket and passport, please?",
@@ -22,28 +27,46 @@ $content = [
         "Daan: Thank you.",
     ],
 
-    'questions' => [
+    'lines' => [
         [
-            'number'      => 1,
-            'prompt'      => 'When does the flight leave?',
-            'answer'      => '1.20',
-            'placeholder' => 'Write your answer...',
+            'speaker' => 'A',
+            'parts' => [
+                ['text' => 'When does the flight leave?'],
+            ],
         ],
         [
-            'number'      => 2,
-            'prompt'      => 'What Gate does Daan need to go to?',
-            'answer'      => 'Gate 17',
-            'placeholder' => 'Write your answer...',
+            'speaker' => 'B',
+            'parts' => [
+                ['blank' => true, 'answer' => '1.20'],
+            ],
         ],
         [
-            'number'      => 3,
-            'prompt'      => 'What time should he go to the gate?',
-            'answer'      => '12.30',
-            'placeholder' => 'Write your answer...',
+            'speaker' => 'A',
+            'parts' => [
+                ['text' => 'What Gate does Daan need to go to?'],
+            ],
         ],
-
+        [
+            'speaker' => 'B',
+            'parts' => [
+                ['blank' => true, 'answer' => 'Gate 17'],
+            ],
+        ],
+        [
+            'speaker' => 'A',
+            'parts' => [
+                ['text' => 'What time should he go to the gate?'],
+            ],
+        ],
+        [
+            'speaker' => 'B',
+            'parts' => [
+                ['blank' => true, 'answer' => '12.30'],
+            ],
+        ],
     ],
 ];
+
 ?>
 
-@include('slider.listening.listening-type-answer', ['content' => $content])
+@include('slider.game.listening-missing-word', ['content' => $content])

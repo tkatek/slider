@@ -1,6 +1,6 @@
 <?php
 $content = [
-    'title'  => 'Practice 6',
+    'title'  => 'Practice 8',
     'type'   => 'audio',
     'subtitle' => 'Listen carefully to the announcement. Choose the correct answer.',
     'audio'  => materialAsset('slider/A1/Advanced/chapter-6/audios/slide17.mp3'),

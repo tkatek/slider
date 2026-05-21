@@ -248,12 +248,35 @@
                                                 $titleCell = $row[0] ?? '';
                                                 $isTitleAudioCell = is_array($titleCell);
                                                 $titleText = $isTitleAudioCell ? (string) ($titleCell['text'] ?? '') : e((string) $titleCell);
+                                                $titleSound = $isTitleAudioCell ? trim((string) ($titleCell['sound'] ?? $titleCell['audio'] ?? '')) : '';
+                                                $titleSpeech = $isTitleAudioCell ? trim((string) ($titleCell['speech'] ?? '')) : '';
                                             @endphp
 
                                             <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">
-                                                <p class="rounded-xl bg-gradient-to-r {{ $card['tone'] ?? 'from-sky-400 to-blue-500' }} px-4 py-3 text-base font-black leading-[1.25] text-white">
-                                                    {!! $titleText !!}
-                                                </p>
+                                                <div class="rounded-xl bg-gradient-to-r {{ $card['tone'] ?? 'from-sky-400 to-blue-500' }} px-4 py-3 text-white">
+                                                    <div class="flex items-start justify-between gap-3">
+                                                        <p class="min-w-0 flex-1 text-base font-black leading-[1.25]">
+                                                            {!! $titleText !!}
+                                                        </p>
+
+                                                        @if($titleSound !== '' || $titleSpeech !== '')
+                                                            <button
+                                                                    type="button"
+                                                                    class="grammar-audio-btn bg-white/20 text-white shadow-lg shadow-slate-900/10 ring-1 ring-white/30 backdrop-blur-md focus-visible:ring-4 focus-visible:ring-white/35"
+                                                                    aria-label="{{ $content['play_label'] ?? 'Play audio' }}"
+                                                                    @if($titleSound !== '') data-sound="{{ $titleSound }}" @endif
+                                                                    @if($titleSpeech !== '') data-speech="{{ $titleSpeech }}" @endif
+                                                            >
+                                                                <svg class="static-icon h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                                                                    <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                                                </svg>
+                                                                <span class="wave-bar" style="animation-delay:.1s" aria-hidden="true"></span>
+                                                                <span class="wave-bar" style="animation-delay:.2s" aria-hidden="true"></span>
+                                                                <span class="wave-bar" style="animation-delay:.3s" aria-hidden="true"></span>
+                                                            </button>
+                                                        @endif
+                                                    </div>
+                                                </div>
 
                                                 <div class="mt-3 space-y-2">
                                                     @foreach($row as $cellIndex => $cell)

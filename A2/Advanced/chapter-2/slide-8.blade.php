@@ -8,17 +8,17 @@ $content = [
     'items'      => [
         [
             'emoji' => "\u{1F914}",
-            'text'  => 'think <span class="text-red-500 dark:text-red-300 font-black">about</span> your job',
+            'text'  => 'Think <span class="text-red-500 dark:text-red-300 font-black">about</span> your job',
             'sound' => materialAsset('slider/A2/Advanced/chapter-2/audios/slide8/1.mp3'),
         ],
         [
             'emoji' => "\u{1F504}",
-            'text'  => 'try something different for your job',
+            'text'  => 'Try something different for your job',
             'sound' => materialAsset('slider/A2/Advanced/chapter-2/audios/slide8/2.mp3'),
         ],
         [
             'emoji' => "\u{1F4B5}",
-            'text'  => 'get paid <span class="text-slate-500 dark:text-slate-300">(simplified: people pay you)</span>',
+            'text'  => 'Get paid <span class="text-slate-500 dark:text-slate-300">(People pay you)</span>',
             'sound' => materialAsset('slider/A2/Advanced/chapter-2/audios/slide8/3.mp3'),
         ],
     ],

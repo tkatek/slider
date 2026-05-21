@@ -2,7 +2,7 @@
 $content = [
     'page_title' => 'Discussion',
     'title'      => 'Discussion',
-    'subtitle'   => '',
+    'subtitle'   => 'What is a gadget?',
     'image'      => materialAsset('slider/A2/Advanced/chapter-3/img/slide4.webp'),
 
     'cards' => [

@@ -24,7 +24,7 @@ $content = [
             'emoji' => '🙋',
             'items' => [
                 'I’d like to order something else, please.',
-                'Would you possibly mind waiting?',
+                'Would you mind waiting?',
                 'Could you possibly bring me a cloth?',
             ],
         ],

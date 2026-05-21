@@ -1,18 +1,31 @@
 <?php
-$content = [
-    'title' => 'Quick Wrap up!',
-    'subtitle' => 'Complete the sentence',
-    'hide_hints' => true,
 
-    'questions' => [
+$content = [
+    'title'    => 'Quick Wrap up!',
+    'subtitle' => 'Complete the sentence',
+
+    'instruction'      => 'Complete the sentence',
+    'instruction_note' => '',
+
+    'grid_class' => 'grid-cols-1',
+
+    'lines' => [
         [
-            'prefix' => 'If you exercise and eat well, you will be',
-            'suffix' => '',
-            'hint' => 'healthy',
-            'answers' => ['healthy'],
+            'speaker' => '1',
+            'parts' => [
+                ['text' => 'If you exercise and eat well, you will be '],
+                [
+                    'blank' => true,
+                    'answer' => 'healthy',
+                    'placeholder' => '',
+                    'answers' => ['healthy'],
+                ],
+                ['text' => '.'],
+            ],
         ],
     ],
 ];
+
 ?>
 
-@include('slider.game.type-correct-format', ['content' => $content])
+@include('slider.game.listening-missing-word', ['content' => $content])

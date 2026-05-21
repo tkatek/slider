@@ -16,7 +16,7 @@ $content = [
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'e. checks patients',
+                'text' => 'Checks patients',
             ],
         ],
         [
@@ -27,7 +27,7 @@ $content = [
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'h. cares for sick people',
+                'text' => 'Cares for sick people',
             ],
         ],
         [
@@ -38,7 +38,7 @@ $content = [
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'a. teaches students',
+                'text' => 'Teaches students',
             ],
         ],
         [
@@ -49,7 +49,7 @@ $content = [
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'i. keeps people safe',
+                'text' => 'Keeps people safe',
             ],
         ],
         [
@@ -60,7 +60,7 @@ $content = [
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'g. puts out fires',
+                'text' => 'Puts out fires',
             ],
         ],
         [
@@ -71,7 +71,7 @@ $content = [
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'f. grows crops',
+                'text' => 'Grows crops',
             ],
         ],
         [
@@ -82,7 +82,7 @@ $content = [
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'c. builds houses',
+                'text' => 'Builds houses',
             ],
         ],
         [
@@ -93,7 +93,7 @@ $content = [
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'b. delivers letters',
+                'text' => 'Delivers letters',
             ],
         ],
         [
@@ -104,7 +104,7 @@ $content = [
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'd. cooks meals',
+                'text' => 'Cooks meals',
             ],
         ],
     ],

@@ -1,10 +1,10 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
+
     'title'      => 'Airport Locations',
     'subtitle'   => 'New Vocabulary',
-
-    'grid_class' => 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-4',
+    'image_text_style' => 'overlay',
+    'grid_class' => 'grid-cols-2 sm:grid-cols-4',
 
     'items' => [
 

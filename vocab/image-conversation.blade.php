@@ -46,10 +46,22 @@
 @endsection
 
 @section("content")
+    @php
+        $conversationNote = trim((string) ($content['note'] ?? $content['instruction'] ?? ''));
+    @endphp
+
     <main class="w-full max-w-6xl min-h-[100dvh] px-4 sm:px-8 mx-auto py-4 sm:py-6 flex flex-col justify-center">
         <section class="w-full p-2 sm:p-4 lg:p-0">
 
             @include('slider.components.title-subtitle')
+
+            @if($conversationNote !== '')
+                <div class="mx-auto mt-3 max-w-3xl rounded-2xl border-2 border-slate-900 bg-white px-4 py-3 text-center shadow-[6px_6px_0_rgba(2,6,23,0.10)] dark:border-slate-100 dark:bg-slate-900">
+                    <p class="text-sm font-extrabold leading-snug text-slate-800 dark:text-slate-100 sm:text-base">
+                        {!! $conversationNote !!}
+                    </p>
+                </div>
+            @endif
 
             {{-- Mobile: speaker cards side-by-side | Desktop: left | center | right --}}
             <div class="mt-4 grid grid-cols-2 items-start gap-3 lg:flex lg:flex-nowrap lg:items-center lg:justify-center lg:gap-8">

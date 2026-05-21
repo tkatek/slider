@@ -2,7 +2,8 @@
 
 $content = [
     'title' => 'Listening',
-    'subtitle' => 'People are talking about their roommates. Listen and choose the two words that best describe each person.',
+    'subtitle' => 'People are talking about their roommates',
+    'instruction' => 'Listen and choose the two words that best describe each person.',
     'mode' => 'choice_table',
 
     'audio' => materialAsset('slider/A2/Advanced/chapter-12/audios/slide9.mp3'),

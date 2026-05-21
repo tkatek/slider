@@ -1,13 +1,14 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
+
     'title'      => 'New Vocabulary',
     'subtitle'   => '',
+    'image_text_style' => 'overlay',
     'groups'     => [
         [
             'key'        => 'food-items',
             'title'      => 'Food Items (Common Breakfast Foods)',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-5 ',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4',
             'items'      => [
                 [
                     'text'  => 'Pancakes',

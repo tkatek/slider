@@ -3,8 +3,8 @@ $content = [
     'mode' => 'type_table',
     'page_title' => 'Listening',
     'title' => 'Listening',
-    'subtitle' => '',
-    'instruction' => 'People are describing their favorite gadgets and machines. Which gadget is each person describing? Listen and write the correct letter.',
+    'subtitle' => 'People are describing their favorite gadgets and machines. <br>Which gadget is each person describing? Listen and write the correct letter.',
+    'instruction' => '',
     'instruction_note' => 'Write the correct letter.',
     'audio' => materialAsset('slider/A2/Advanced/chapter-3/audios/listening.mp3'),
 

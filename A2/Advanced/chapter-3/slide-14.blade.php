@@ -1,8 +1,29 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle    = "Speaking Practice";
-$customSubtitle = "Which gadget do you own?<br>
-How often do you use it?<br>What do you use it for?";
+$customSubtitle = "";
+$practiceNote = '
+    <span class="block text-left">
+        <span class="mb-2 block text-sm font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+            Questions
+        </span>
+
+        <span class="block space-y-2 text-slate-800 dark:text-slate-100">
+            <span class="block">
+                <span class="font-black text-blue-700 dark:text-blue-300">1.</span>
+                Which gadget do you own?
+            </span>
+            <span class="block">
+                <span class="font-black text-fuchsia-700 dark:text-fuchsia-300">2.</span>
+                How often do you use it?
+            </span>
+            <span class="block">
+                <span class="font-black text-emerald-700 dark:text-emerald-300">3.</span>
+                What do you use it for?
+            </span>
+        </span>
+    </span>
+';
 
 $user = auth()->user();
 

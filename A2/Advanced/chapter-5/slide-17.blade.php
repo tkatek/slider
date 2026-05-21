@@ -1,7 +1,7 @@
 <?php
 $content = [
     'title'    => 'Thank you',
-    'subtitle' => "Have you ever climbed a mountain?",
+    'subtitle' => "What can you do if you are homesick?",
     'image'    => materialAsset('slider/A2/Advanced/chapter-5/img/thankyou.webp'),
     'button'   => 'Start Again',
 ];

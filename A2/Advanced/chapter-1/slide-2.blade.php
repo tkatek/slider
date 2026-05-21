@@ -18,9 +18,7 @@ $content = [
         [
             'label' => 'Express opinions about jobs',
             'text'  => 'Use: <br>
-                • like / love / hate / don’t mind <br>
-                • because to give reasons <br>
-                • but to show contrast',
+                • like / love / hate / don’t mind ',
         ],
         [
             'label' => 'Listening',

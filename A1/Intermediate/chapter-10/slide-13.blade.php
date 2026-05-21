@@ -2,9 +2,9 @@
 
 $content = [
     'title'    => 'Writing',
-    'subtitle' => '',
+    'subtitle' => 'Fill-in with the missing words',
 
-    'instruction'      => 'Fill-in with the missing words',
+    'instruction'      => '',
     'instruction_note' => 'Listen and complete the answers',
 
     'card_class' => '[&_.lp-dialogue]:grid-cols-1 sm:[&_.lp-dialogue]:grid-cols-2 [&_.lp-input]:!w-[8.5rem] [&_.lp-input]:!min-w-[7rem]',

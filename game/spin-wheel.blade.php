@@ -65,20 +65,39 @@
             pointer-events: auto;
         }
 
+        .popout-card {
+            border: 1px solid rgba(255, 255, 255, .72);
+            background:
+                radial-gradient(900px 420px at 10% 0%, rgba(191, 219, 254, .46), transparent 58%),
+                radial-gradient(820px 420px at 100% 0%, rgba(254, 215, 170, .38), transparent 56%),
+                rgba(255, 255, 255, .88);
+            box-shadow: 0 30px 80px -46px rgba(15, 23, 42, .55);
+            backdrop-filter: blur(22px);
+        }
+
+        .dark .popout-card {
+            border-color: rgba(148, 163, 184, .2);
+            background:
+                radial-gradient(900px 420px at 10% 0%, rgba(59, 130, 246, .18), transparent 58%),
+                radial-gradient(820px 420px at 100% 0%, rgba(249, 115, 22, .14), transparent 56%),
+                rgba(15, 23, 42, .82);
+        }
+
         .popout-question::before {
             content: '';
             position: absolute;
-            inset: -20px;
-            background: linear-gradient(135deg, #22d3ee, #a855f7, #f43f5e);
-            filter: blur(80px);
-            opacity: 0.4;
+            inset: -12px -18px;
+            border-radius: 2rem;
+            background: linear-gradient(135deg, rgba(14, 165, 233, .16), rgba(249, 115, 22, .14));
+            filter: blur(32px);
+            opacity: 0.85;
             z-index: -1;
             animation: pulse-aura 4s infinite alternate;
         }
 
         @keyframes pulse-aura {
-            0% { opacity: 0.3; transform: scale(1); }
-            100% { opacity: 0.6; transform: scale(1.1); }
+            0% { opacity: 0.45; transform: scale(1); }
+            100% { opacity: 0.85; transform: scale(1.03); }
         }
 
         .btn-pro::before {
@@ -151,25 +170,25 @@
         </div>
     </div>
 
-    <div id="popout-reveal" class="popout-overlay fixed inset-0 z-[1000] flex items-center justify-center bg-[radial-gradient(circle_at_center,rgba(15,23,42,0.85)_0%,rgba(2,6,23,0.98)_100%)] backdrop-blur-2xl saturate-150">
-        <div class="popout-card relative w-[90%] max-w-[1000px] px-6 py-12 text-center sm:px-12 sm:py-20">
-            <span class="popout-label mb-8 block translate-y-5 text-[0.85rem] font-extrabold uppercase tracking-[0.5em] text-cyan-300 opacity-0">
+    <div id="popout-reveal" class="popout-overlay fixed inset-0 z-[1000] flex items-center justify-center bg-slate-950/45 px-4 backdrop-blur-xl saturate-125">
+        <div class="popout-card relative w-full max-w-[760px] rounded-[2rem] px-5 py-8 text-center sm:px-10 sm:py-10">
+            <span class="popout-label mb-4 block translate-y-5 text-xs font-extrabold tracking-[0.12em] text-slate-500 opacity-0 dark:text-slate-300 sm:text-sm">
                 {{ $selectedLabel }}
             </span>
 
-            <h1 id="popout-text" class="popout-question relative z-10 mb-12 text-[2.8rem] font-black leading-[1.1] tracking-[-0.04em] opacity-0 blur-[20px] scale-90 text-transparent bg-clip-text bg-gradient-to-br from-cyan-300 via-purple-500 to-rose-500 sm:text-[6.5rem] sm:leading-none sm:mb-20">
+            <h1 id="popout-text" class="popout-question relative z-10 mx-auto mb-7 max-w-3xl text-balance text-[1.65rem] font-extrabold leading-tight tracking-normal text-slate-950 opacity-0 blur-[20px] scale-90 dark:text-white sm:mb-9 sm:text-[2.35rem] lg:text-[2.85rem]">
                 ---
             </h1>
 
-            <div class="popout-actions flex flex-col items-center justify-center gap-4 opacity-0 translate-y-8 sm:flex-row sm:gap-10">
-                <button id="popout-keep-btn" class="btn-pro btn-keep-pro relative flex items-center gap-3 overflow-hidden whitespace-nowrap rounded-xl border-2 border-cyan-300/30 bg-white/5 px-8 py-4 text-xs font-extrabold uppercase tracking-[0.05em] text-white backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/10 hover:border-cyan-300 hover:shadow-[0_0_40px_rgba(34,211,238,0.4)] sm:rounded-2xl sm:px-14 sm:py-6 sm:text-sm sm:tracking-[0.1em] shadow-[0_0_20px_rgba(34,211,238,0.1)]">
+            <div class="popout-actions flex flex-col items-center justify-center gap-3 opacity-0 translate-y-8 sm:flex-row sm:gap-4">
+                <button id="popout-keep-btn" class="btn-pro btn-keep-pro relative flex min-h-12 items-center gap-2 overflow-hidden whitespace-nowrap rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-extrabold text-slate-800 shadow-[0_12px_28px_rgba(15,23,42,0.10)] backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-50 hover:text-sky-800 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-100 dark:hover:border-sky-500/60 dark:hover:bg-sky-950/40 sm:px-7">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 6L9 17L4 12"/>
                     </svg>
                     <span>{{ $keepText }}</span>
                 </button>
 
-                <button id="popout-remove-btn" class="btn-pro btn-remove-pro relative flex items-center gap-3 overflow-hidden whitespace-nowrap rounded-xl border-2 border-rose-500/30 bg-white/5 px-8 py-4 text-xs font-extrabold uppercase tracking-[0.05em] text-white backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/10 hover:border-rose-500 hover:shadow-[0_0_40px_rgba(244,63,94,0.4)] sm:rounded-2xl sm:px-14 sm:py-6 sm:text-sm sm:tracking-[0.1em] shadow-[0_0_20px_rgba(244,63,94,0.1)]">
+                <button id="popout-remove-btn" class="btn-pro btn-remove-pro relative flex min-h-12 items-center gap-2 overflow-hidden whitespace-nowrap rounded-xl border border-rose-200 bg-rose-50 px-5 py-3 text-sm font-extrabold text-rose-700 shadow-[0_12px_28px_rgba(244,63,94,0.12)] backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:border-rose-300 hover:bg-rose-100 dark:border-rose-900/50 dark:bg-rose-950/35 dark:text-rose-200 dark:hover:border-rose-500/70 sm:px-7">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 6h18"/>
                         <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
@@ -425,7 +444,7 @@
             selectedIx = Math.floor(winningAngle / (360 / questions.length));
 
             const question = questions[selectedIx];
-            popoutText.textContent = String(question || '').toUpperCase();
+            popoutText.textContent = String(question || '');
             hubMessage.textContent = "DONE!";
 
             popoutReveal.classList.add('active');

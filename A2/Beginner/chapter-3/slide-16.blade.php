@@ -32,7 +32,7 @@ $content = [
                 [
                     'heading' => '👉 Structure:',
                     'items' => [
-                        '<span class="hl-gold">I like /prefer/ love + noun / verb-ing</span>',
+                        '<span class="hl-red">I like /prefer/ love + noun / verb-ing</span>',
                         '<span class="font-black">Examples:</span>',
                         'I like rainy days 🌧️',
                         'I love drinking tea ☕',
@@ -52,7 +52,7 @@ $content = [
                 [
                     'heading' => '👉 Structure:',
                     'items' => [
-                        '<span class="hl-gold">I don’t like / I hate + noun / verb-ing</span>',
+                        '<span class="hl-red">I don’t like / I hate + noun / verb-ing</span>',
                         '<span class="font-black">Examples:</span>',
                         'I <span class="hl-red">don’t</span> like cold weather ❄️',
                         'I <span class="hl-red">hate</span> walking in the rain',

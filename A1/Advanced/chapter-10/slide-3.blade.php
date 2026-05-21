@@ -1,26 +1,18 @@
 <?php
 
 $content = array_replace_recursive([
-    'page_title' => 'Practice 1',
+
     'title'      => 'Practice 1',
     'subtitle'   => 'Look at the pictures and tell what they are doing.',
-    'theme'      => '#2563eb',
 
     'grid' => [
         'cols' => [
-            'base' => 1,
-            'sm'   => 2,
-            'md'   => 2,
-            'lg'   => 3,
+            'base' => 2,
+            'sm'   => 3,
         ],
-        'gap' => 'gap-3 sm:gap-4 lg:gap-5',
+
     ],
 
-    'sounds' => [
-        'click' => materialAsset('slider/sounds/tap.wav'),
-        'done'  => materialAsset('slider/sounds/correct.wav'),
-        'skip'  => materialAsset('slider/sounds/click.wav'),
-    ],
 
     'items' => [
         [

@@ -15,7 +15,6 @@ $content = [
             'items' => [
                 'Excellent',
                 'Relaxing',
-                'Rewarding',
                 'Exciting',
                 'Interesting',
                 'Successful',

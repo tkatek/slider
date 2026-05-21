@@ -18,14 +18,15 @@
 
         return array_values(array_filter(
             array_map('trim', preg_split('/\R+/', trim((string) $rawScript)) ?: []),
-            static fn ($line) => $line !== '' 
+            static fn ($line) => $line !== ''
         ));
     };
     $scriptLines = $normalizeScriptLines($content['script'] ?? $content['transcript'] ?? []);
-    $hasScript = $scriptLines !== []; 
-    $mobileWordVisibleCap = max(1, (int) ($content['mobile_word_visible_cap'] ?? 3));
-    $tabletWordVisibleCap = max(1, (int) ($content['tablet_word_visible_cap'] ?? 4));
-    $desktopWordVisibleCap = max(1, (int) ($content['desktop_word_visible_cap'] ?? 4));
+    $hasScript = $scriptLines !== [];
+    $answerCount = max(1, count($answers));
+    $mobileWordVisibleCap = max(1, (int) ($content['mobile_word_visible_cap'] ?? $answerCount));
+    $tabletWordVisibleCap = max(1, (int) ($content['tablet_word_visible_cap'] ?? $answerCount));
+    $desktopWordVisibleCap = max(1, (int) ($content['desktop_word_visible_cap'] ?? $answerCount));
     $mobilePlacedTileFullWidth = (bool) ($content['mobile_placed_tile_full_width'] ?? false);
     $configuredBlankWidthMode = trim((string) ($content['blank_width_mode'] ?? ''));
     $blankWidthMode = in_array($configuredBlankWidthMode, ['compact', 'full'], true)
@@ -51,9 +52,9 @@
         foreach ($parts as $partIndex => $part) {
             if ($partIndex % 2 === 0) {
                 if ($part !== '') {
-                    $tokens[] = ['type' => 'html', 'value' => $part]; 
+                    $tokens[] = ['type' => 'html', 'value' => $part];
                 }
-                continue;    
+                continue;
             }
 
             $answerIndex = (int) $part;
@@ -93,6 +94,63 @@
 @extends('slider.simple-layout')
 
 @section('content')
+    <style>
+        #ddbPoolBar.is-sticky [data-pool-handle],
+        #ddbPoolBar.is-sticky [data-pool-divider] {
+            display: none;
+        }
+
+        #ddbPoolBar.is-sticky [data-pool-panel] {
+            border-radius: 1.1rem;
+            box-shadow: 0 14px 34px rgba(2, 6, 23, 0.13);
+        }
+
+        #ddbPoolBar.is-sticky [data-pool-inner] {
+            padding: .65rem .85rem .75rem;
+        }
+
+        #ddbPoolBar.is-sticky [data-pool-actions-row] {
+            margin-top: 0;
+        }
+
+        #ddbPoolBar.is-sticky #ddbPoolContent {
+            margin-top: .55rem;
+            gap: .5rem;
+        }
+
+        .ddb-draggable-item.is-tap-selected {
+            outline: 3px solid rgba(99, 102, 241, .45);
+            outline-offset: 3px;
+            transform: translateY(-1px);
+        }
+
+        .ddb-blank-slot[data-width-mode="compact"] {
+            box-sizing: border-box;
+            height: 46px;
+            width: 112px;
+            max-width: 112px;
+            overflow: hidden;
+            padding: .25rem;
+        }
+
+        .ddb-blank-slot[data-width-mode="compact"] > .ddb-draggable-item {
+            box-shadow: none;
+            height: 100%;
+            min-height: 0 !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            padding: .2rem .45rem !important;
+            width: 100% !important;
+        }
+
+        @media (min-width: 640px) {
+            .ddb-blank-slot[data-width-mode="compact"] {
+                width: 136px;
+                max-width: 136px;
+            }
+        }
+    </style>
+
     <main id="ticketBoothPractice" class="flex min-h-[100dvh] w-full flex-col items-center justify-center py-4">
         <div class="w-full">
             <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -106,20 +164,20 @@
                     <div data-pool-panel class="relative max-h-[40dvh] overflow-hidden rounded-[1.7rem] border border-slate-200/70 bg-white/92 shadow-[0_18px_45px_rgba(2,6,23,0.10)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/75">
                         <div class="pointer-events-none absolute inset-0 opacity-80 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(99,102,241,0.16)_0%,transparent_55%),radial-gradient(120%_120%_at_100%_0%,rgba(59,130,246,0.12)_0%,transparent_55%)]"></div>
 
-                        <div class="relative px-3 pt-3 pb-4 sm:px-4 sm:py-4 xl:px-6">
-                        <div class="flex items-center justify-center">
+                        <div data-pool-inner class="relative px-3 pt-3 pb-4 sm:px-4 sm:py-4 xl:px-6">
+                        <div data-pool-handle class="flex items-center justify-center">
                             <div class="h-1.5 w-14 rounded-full bg-slate-900/10 dark:bg-white/10"></div>
                         </div>
 
-                        <div class="mt-3 flex items-center justify-between gap-1.5 sm:gap-2">
+                        <div data-pool-actions-row class="mt-3 flex items-center justify-between gap-1.5 sm:gap-2">
                             <div class="flex shrink-0 items-center gap-1 sm:gap-2">
-                                <button id="ddbPrevWordsBtn" type="button" class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] sm:h-8 sm:w-8" aria-label="Previous words">
+                                <button id="ddbPrevWordsBtn" type="button" class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] sm:h-8 sm:w-8" aria-label="Show previous words" title="Show previous words">
                                     <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4"><path fill-rule="evenodd" d="M12.79 4.23a.75.75 0 0 1-.02 1.06L8.06 10l4.71 4.71a.75.75 0 1 1-1.06 1.06l-5.24-5.24a.75.75 0 0 1 0-1.06l5.24-5.24a.75.75 0 0 1 1.08-.02Z" clip-rule="evenodd"/></svg>
                                 </button>
 
                                 <div id="ddbPoolCount" class="inline-flex items-center gap-1 rounded-full border border-slate-200/70 bg-white/80 px-2 py-1 text-[10px] font-black text-slate-700 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/50 dark:text-slate-100 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs">0/0</div>
 
-                                <button id="ddbNextWordsBtn" type="button" class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] sm:h-8 sm:w-8" aria-label="Next words">
+                                <button id="ddbNextWordsBtn" type="button" class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,.12)] transition disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_rgba(2,6,23,.35)] sm:h-8 sm:w-8" aria-label="Show more words" title="Show more words">
                                     <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4"><path fill-rule="evenodd" d="M7.21 15.77a.75.75 0 0 1 .02-1.06L11.94 10 7.23 5.29a.75.75 0 1 1 1.06-1.06l5.24 5.24c.3.3.3.77 0 1.06l-5.24 5.24a.75.75 0 0 1-1.08.02Z" clip-rule="evenodd"/></svg>
                                 </button>
                             </div>
@@ -142,7 +200,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-3 h-px w-full bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent dark:via-indigo-400/15"></div>
+                        <div data-pool-divider class="mt-3 h-px w-full bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent dark:via-indigo-400/15"></div>
                         <div id="ddbPoolContent" class="mt-3 flex w-full max-w-full flex-wrap items-stretch justify-center gap-2.5 sm:gap-3"></div>
                     </div>
                 </div>
@@ -289,10 +347,14 @@
                 this.winModal = document.getElementById('winModal');
 
                 this.draggedItem = null;
+                this.selectedTapItem = null;
                 this.placeholder = null;
                 this.originalParent = null;
                 this.offsetX = 0;
                 this.offsetY = 0;
+                this.pointerStartX = 0;
+                this.pointerStartY = 0;
+                this.hasPointerMoved = false;
                 this.dragFrame = null;
                 this.dragX = 0;
                 this.dragY = 0;
@@ -324,6 +386,7 @@
                 this.syncVerticalLayout = this.syncVerticalLayout.bind(this);
                 this.showPrevWords = this.showPrevWords.bind(this);
                 this.showNextWords = this.showNextWords.bind(this);
+                this.handleBlankClick = this.handleBlankClick.bind(this);
                 this.handleCheckAnswers = this.handleCheckAnswers.bind(this);
                 this.handleRevealAnswers = this.handleRevealAnswers.bind(this);
                 this.handleRetakeTest = this.handleRetakeTest.bind(this);
@@ -339,6 +402,9 @@
                 if (this.retakeTestBtn) this.retakeTestBtn.addEventListener('click', this.handleRetakeTest);
                 if (this.restartBtnModal) this.restartBtnModal.addEventListener('click', this.handleRetakeTest);
                 if (this.continueBtnModal) this.continueBtnModal.addEventListener('click', window.dragDropBlanksGoNext);
+                this.getBlanks().forEach(function(blank) {
+                    blank.addEventListener('click', this.handleBlankClick);
+                }, this);
                 window.addEventListener('resize', this.handleResize, { passive: true });
                 window.addEventListener('load', this.handleResize, { passive: true });
                 window.addEventListener('scroll', this.handleScroll, { passive: true });
@@ -415,8 +481,13 @@
             };
 
             TicketBoothGame.prototype.updatePoolCount = function() {
+                var remaining = this.getRemainingTileCount();
+                var shown = Math.min(this.tileDeck.active.length, remaining);
+
                 if (this.poolCount) {
-                    this.poolCount.textContent = this.getRemainingTileCount() + '/' + ANSWERS.length;
+                    this.poolCount.textContent = shown < remaining
+                        ? shown + ' shown / ' + remaining + ' choices left'
+                        : remaining + ' choices left';
                 }
             };
 
@@ -459,6 +530,7 @@
                     this.poolBar.style.removeProperty('top');
                     this.poolBar.style.removeProperty('left');
                     this.poolBar.style.removeProperty('width');
+                    this.poolBar.classList.remove('is-sticky');
                     return;
                 }
 
@@ -468,6 +540,7 @@
                 this.poolBar.style.top = top + 'px';
                 this.poolBar.style.left = Math.round(railRect.left) + 'px';
                 this.poolBar.style.width = Math.round(railRect.width) + 'px';
+                this.poolBar.classList.add('is-sticky');
             };
 
             TicketBoothGame.prototype.updateActionButtons = function() {
@@ -563,6 +636,9 @@
                 node.addEventListener('pointerdown', function(event) {
                     self.handlePointerDown(event, node);
                 });
+                node.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                });
 
                 return node;
             };
@@ -582,6 +658,7 @@
             TicketBoothGame.prototype.renderActiveTiles = function() {
                 var self = this;
 
+                this.clearTapSelection();
                 this.poolContent.innerHTML = '';
 
                 this.tileDeck.active.forEach(function(itemData, index) {
@@ -693,6 +770,7 @@
 
             TicketBoothGame.prototype.normalizeTileForBlank = function(tile, blank) {
                 var shouldFillWidth = blank && blank.dataset.widthMode === 'full';
+                var shouldKeepCompactSlot = blank && blank.dataset.widthMode === 'compact';
                 var shouldFillMobileLine = blank && blank.dataset.mobileFullWidth === 'true' && this.isMobileViewport();
 
                 tile.classList.remove(
@@ -714,7 +792,7 @@
                 );
 
                 tile.classList.add('inline-flex', 'max-w-full', 'min-h-[46px]', 'items-center', 'justify-center', 'text-center', 'break-words', 'whitespace-normal', 'hyphens-auto', 'px-3', 'py-2', 'leading-tight', 'rounded-2xl');
-                tile.classList.add((shouldFillWidth || shouldFillMobileLine) ? 'w-full' : 'w-fit');
+                tile.classList.add((shouldFillWidth || shouldFillMobileLine || shouldKeepCompactSlot) ? 'w-full' : 'w-fit');
                 tile.style.cursor = this.gameCompleted || this.hasUsedReveal ? 'default' : 'grab';
             };
 
@@ -759,6 +837,76 @@
                 this.updateStats();
             };
 
+            TicketBoothGame.prototype.clearTapSelection = function() {
+                if (this.selectedTapItem) {
+                    this.selectedTapItem.classList.remove('is-tap-selected');
+                }
+
+                this.selectedTapItem = null;
+            };
+
+            TicketBoothGame.prototype.selectTileForTap = function(item) {
+                if (!item || this.gameCompleted || this.hasUsedReveal) return;
+
+                if (this.selectedTapItem === item) {
+                    this.clearTapSelection();
+                    return;
+                }
+
+                this.clearTapSelection();
+                this.selectedTapItem = item;
+                item.classList.add('is-tap-selected');
+            };
+
+            TicketBoothGame.prototype.restoreDraggedItemToOriginal = function() {
+                var item = this.draggedItem;
+
+                if (!item) return;
+
+                item.style.transition = '';
+                item.style.position = '';
+                item.style.left = '';
+                item.style.top = '';
+                item.style.width = '';
+                item.style.maxWidth = '';
+                item.style.zIndex = '';
+                item.style.pointerEvents = '';
+                item.style.transform = '';
+
+                if (this.originalParent && this.placeholder) {
+                    this.originalParent.insertBefore(item, this.placeholder);
+                } else if (this.originalParent) {
+                    this.originalParent.appendChild(item);
+                }
+
+                if (this.placeholder && this.placeholder.parentNode) {
+                    this.placeholder.remove();
+                }
+
+                this.placeholder = null;
+                this.getBlanks().forEach(this.resetBlankState.bind(this));
+            };
+
+            TicketBoothGame.prototype.handleBlankClick = function(event) {
+                var blank = event.currentTarget;
+                var item = this.selectedTapItem;
+
+                if (!item || this.draggedItem || this.gameCompleted || this.hasUsedReveal) return;
+                if (!document.body.contains(item)) {
+                    this.clearTapSelection();
+                    return;
+                }
+                if (this.hasCheckedAnswers) this.clearCheckedFeedback();
+
+                this.clearTapSelection();
+                this.draggedItem = item;
+                this.originalParent = item.parentElement;
+                this.placeholder = null;
+                this.handlePlaceDrop(blank);
+                this.draggedItem = null;
+                this.originalParent = null;
+            };
+
             TicketBoothGame.prototype.handlePointerDown = function(event, item) {
                 var rect;
 
@@ -770,6 +918,9 @@
 
                 this.draggedItem = item;
                 this.originalParent = item.parentElement;
+                this.pointerStartX = event.clientX;
+                this.pointerStartY = event.clientY;
+                this.hasPointerMoved = false;
 
                 rect = item.getBoundingClientRect();
                 this.placeholder = document.createElement('div');
@@ -798,10 +949,20 @@
 
             TicketBoothGame.prototype.handlePointerMove = function(event) {
                 var self = this;
+                var distanceX;
+                var distanceY;
 
                 if (!this.draggedItem) return;
 
                 event.preventDefault();
+                distanceX = Math.abs(event.clientX - this.pointerStartX);
+                distanceY = Math.abs(event.clientY - this.pointerStartY);
+
+                if (!this.hasPointerMoved && Math.max(distanceX, distanceY) > 6) {
+                    this.hasPointerMoved = true;
+                    this.clearTapSelection();
+                }
+
                 this.dragX = event.clientX - this.offsetX;
                 this.dragY = event.clientY - this.offsetY;
 
@@ -834,6 +995,15 @@
                 if (this.dragFrame) {
                     cancelAnimationFrame(this.dragFrame);
                     this.dragFrame = null;
+                }
+
+                if (!this.hasPointerMoved) {
+                    var tappedItem = this.draggedItem;
+                    this.restoreDraggedItemToOriginal();
+                    this.selectTileForTap(tappedItem);
+                    this.draggedItem = null;
+                    this.originalParent = null;
+                    return;
                 }
 
                 blank = this.getBlankTarget(event.clientX, event.clientY);
@@ -920,6 +1090,7 @@
                 item.style.zIndex = '';
                 item.style.pointerEvents = '';
                 item.style.transform = '';
+                item.classList.remove('is-tap-selected');
 
                 blank.innerHTML = '';
                 blank.appendChild(item);
@@ -1036,6 +1207,7 @@
 
                 if (!item) return;
 
+                this.clearTapSelection();
                 item.remove();
 
                 if (sourceBlank) {
@@ -1065,6 +1237,7 @@
 
                 if (this.draggedItem || this.gameCompleted || this.hasUsedReveal) return;
                 if (this.getRemainingTileCount() > 0) return;
+                this.clearTapSelection();
 
                 this.correctCount = 0;
 
@@ -1121,6 +1294,7 @@
 
                 if (this.draggedItem || this.gameCompleted || this.hasUsedReveal) return;
 
+                this.clearTapSelection();
                 this.hasUsedReveal = true;
                 this.hasCheckedAnswers = false;
                 this.correctCount = ANSWERS.length;
@@ -1151,6 +1325,7 @@
                 if (this.winModal) this.winModal.classList.add('hidden');
 
                 this.draggedItem = null;
+                this.selectedTapItem = null;
                 this.placeholder = null;
                 this.originalParent = null;
                 this.correctCount = 0;
@@ -1200,6 +1375,6 @@
                 window.ticketBoothGame = new TicketBoothGame();
                 window.ticketBoothGame.handleRetakeTest();
             });
-        })(); 
+        })();
     </script>
 @endsection

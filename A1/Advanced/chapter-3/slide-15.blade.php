@@ -1,7 +1,11 @@
 <?php
 // 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Writing";
-$customSubtitle = "You stayed at a hotel for three nights. Now you are writing a short review online.<br> Write 6–8 sentences. Include:<br>
+
+$customSubtitle = "You stayed at a hotel for three nights. Now you are writing a short review online.";
+
+$customCalloutText = "
+<span class='font-black text-yellow-500 dark:text-yellow-300'>Write 6–8 sentences. Include:</span><br>
 1. Where the hotel is located<br>
 2. Description of the room<br>
 3. Staff service<br>
@@ -9,17 +13,16 @@ $customSubtitle = "You stayed at a hotel for three nights. Now you are writing a
 5. One small problem<br>
 6. Your final opinion (recommend or not)";
 
-
+// Use \n for line breaks in the placeholder
 $customPlaceholder =
     "You may use this structure:\n" .
-    "Last week, I stayed at __________ Hotel for ______ nights.\n" .
-    "The hotel is near __________.\n" .
-    "My room was __________ and __________.\n" .
-    "The staff were __________.\n" .
-    "One positive point was __________.\n" .
-    "One problem was __________.\n" .
-    "Overall, I __________ this hotel.\n";
-
+    "Last week, I stayed at . . . . Hotel for . . . . nights.\n" .
+    "The hotel is near . . . .\n" .
+    "My room was . . . . and . . . .\n" .
+    "The staff were . . . .\n" .
+    "One positive point was . . . .\n" .
+    "One problem was . . . .\n" .
+    "Overall, I . . . . this hotel.\n";
 
 if (auth()->check()){
     $user = auth()->user();
@@ -54,6 +57,7 @@ $content = [
     'user_avatar' => $userAvatar,
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
+    'callout_text' => $customCalloutText,
     'page_title' => $finalTitle,
     'placeholder' => $customPlaceholder
 ];

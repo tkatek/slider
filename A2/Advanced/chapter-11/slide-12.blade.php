@@ -6,7 +6,7 @@ $content = [
         [
             'key' => 'apologizing-expressions',
             'title' => '1. Apologizing',
-            'grid_class' => 'grid-cols-1 sm:grid-cols-3',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-5',
             'items' => [
                 [
                     'text' => 'I’m very sorry for the inconvenience.',
@@ -43,7 +43,7 @@ $content = [
         [
             'key' => 'accepting-an-apology-expressions',
             'title' => '2. Accepting an Apology',
-            'grid_class' => 'grid-cols-1 sm:grid-cols-3 ',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-5',
             'items' => [
                 [
                     'text' => 'That’s okay.',
@@ -80,7 +80,7 @@ $content = [
         [
             'key' => 'refusing-an-apology-expressions',
             'title' => '3. Refusing an Apology',
-            'grid_class' => 'grid-cols-1 sm:grid-cols-3 ',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-5 ',
             'items' => [
                 [
                     'text' => 'I’m still not happy with this.',

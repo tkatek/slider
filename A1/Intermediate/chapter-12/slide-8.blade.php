@@ -1,42 +1,40 @@
 <?php
+
 $content = [
-    'page_title' => 'Grammar Focus',
-    'title'      => 'Grammar Focus',
-    'subtitle'   => 'Asking for Permission : (Can / Could / May)',
+    'title'    => 'Grammar Focus',
+    'subtitle' => 'Asking for Permission : (Can / Could / May)',
 
-    'grid_class' => 'grid-cols-1 md:grid-cols-2',
+    'image'     => materialAsset('slider/A1/Intermediate/chapter-10/img/slide7/window-seat.webp'),
 
-    'examples' => [
+
+    'cards' => [
         [
-            'label'     => 'Example 1',
-            'emoji'     => '💺',
-            'text'      => 'Could you please help me find my seat?',
-            'highlight' => ['Could', 'help'],
-            'theme'     => 'indigo',
+            'label' => 'Example 1',
+            'emoji' => '💺',
+            'text'  => '<span class="text-indigo-600 font-black">Could</span> you please <span class="text-indigo-600 font-black">help</span> me find my seat?',
+            'theme' => 'indigo',
         ],
         [
-            'label'     => 'Example 2',
-            'emoji'     => '🪪',
-            'text'      => 'May I see your boarding pass, please?',
-            'highlight' => ['May', 'see'],
-            'theme'     => 'violet',
+            'label' => 'Example 2',
+            'emoji' => '🪪',
+            'text'  => '<span class="text-violet-600 font-black">May</span> I <span class="text-violet-600 font-black">see</span> your boarding pass, please?',
+            'theme' => 'violet',
         ],
         [
-            'label'     => 'Example 3',
-            'emoji'     => '🛫',
-            'text'      => 'May I recline my seat?',
-            'highlight' => ['May', 'recline'],
-            'theme'     => 'blue',
+            'label' => 'Example 3',
+            'emoji' => '🛫',
+            'text'  => '<span class="text-blue-600 font-black">May</span> I <span class="text-blue-600 font-black">recline</span> my seat?',
+            'theme' => 'blue',
         ],
         [
-            'label'     => 'Example 4',
-            'emoji'     => '🛏️',
-            'text'      => 'Can I have a blanket?',
-            'highlight' => ['Can', 'have'],
-            'theme'     => 'sky',
+            'label' => 'Example 4',
+            'emoji' => '🛏️',
+            'text'  => '<span class="text-sky-600 font-black">Can</span> I <span class="text-sky-600 font-black">have</span> a blanket?',
+            'theme' => 'sky',
         ],
     ],
 ];
+
 ?>
 
-@include("slider.other.speaking-discussion", ['content' => $content])
+@include('slider.other.discussion', ['content' => $content])

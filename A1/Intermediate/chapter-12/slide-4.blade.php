@@ -1,10 +1,10 @@
 <?php
-$content = [
-    'page_title' => 'Discussion',
-    'title'      => 'Discussion',
-    'subtitle'   => 'Let’s talk about flying',
 
-    'questions' => [
+$content = [
+    'title'    => 'Discussion',
+    'subtitle' => 'Let’s talk about flying',
+    'image'    => materialAsset('slider/A1/Intermediate/chapter-10/img/slide7/boarding-gate.webp'),
+    'cards' => [
         [
             'label' => 'Question 1',
             'emoji' => '🛫',
@@ -31,5 +31,7 @@ $content = [
         ],
     ],
 ];
+
 ?>
-@include("slider.other.speaking-discussion", ['content' => $content])
+
+@include('slider.other.discussion', ['content' => $content])

@@ -5,6 +5,7 @@ $content = [
     'title'      => 'Practice 3',
     'subtitle'   => 'Drag & drop the problem with the solution',
     'type'       => 'reading',
+    'blank_width_mode' => 'full',
 
     'sentences' => [
         "<span class=\"mr-2 inline-flex items-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 px-3 py-1 text-sm font-black text-white\">1</span>{{1}} Learn the rules and practise more.",

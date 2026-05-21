@@ -1,208 +1,104 @@
-@extends('slider.simple-layout')
-
 @php
     $content = is_array($content ?? null) ? $content : [];
+
+    $theme = is_array($theme ?? null) ? $theme : [];
+    $theme['name'] = trim((string) ($theme['name'] ?? '')) !== '' ? $theme['name'] : 'indigo';
+
     $pageTitle = trim((string) ($content['page_title'] ?? 'Writing'));
-    $title = trim((string) ($content['title'] ?? 'Writing'));
-    $subtitle = trim((string) ($content['subtitle'] ?? ''));
     $subtitle2 = trim((string) ($content['subtitle_2'] ?? ''));
     $rows = array_values(is_array($content['rows'] ?? null) ? $content['rows'] : []);
+
+    $rowStyles = [
+        [
+            'label' => 'bg-sky-50/80 text-sky-950 dark:bg-slate-900/70 dark:text-sky-100',
+            'badge' => 'bg-sky-500 text-white shadow-sky-500/20',
+            'focus' => 'focus-within:border-sky-300 focus-within:ring-sky-100 dark:focus-within:border-sky-500/60 dark:focus-within:ring-sky-500/10',
+        ],
+        [
+            'label' => 'bg-emerald-50/80 text-emerald-950 dark:bg-slate-900/70 dark:text-emerald-100',
+            'badge' => 'bg-emerald-500 text-white shadow-emerald-500/20',
+            'focus' => 'focus-within:border-emerald-300 focus-within:ring-emerald-100 dark:focus-within:border-emerald-500/60 dark:focus-within:ring-emerald-500/10',
+        ],
+        [
+            'label' => 'bg-violet-50/80 text-violet-950 dark:bg-slate-900/70 dark:text-violet-100',
+            'badge' => 'bg-violet-500 text-white shadow-violet-500/20',
+            'focus' => 'focus-within:border-violet-300 focus-within:ring-violet-100 dark:focus-within:border-violet-500/60 dark:focus-within:ring-violet-500/10',
+        ],
+        [
+            'label' => 'bg-amber-50/80 text-amber-950 dark:bg-slate-900/70 dark:text-amber-100',
+            'badge' => 'bg-amber-500 text-white shadow-amber-500/20',
+            'focus' => 'focus-within:border-amber-300 focus-within:ring-amber-100 dark:focus-within:border-amber-500/60 dark:focus-within:ring-amber-500/10',
+        ],
+        [
+            'label' => 'bg-rose-50/80 text-rose-950 dark:bg-slate-900/70 dark:text-rose-100',
+            'badge' => 'bg-rose-500 text-white shadow-rose-500/20',
+            'focus' => 'focus-within:border-rose-300 focus-within:ring-rose-100 dark:focus-within:border-rose-500/60 dark:focus-within:ring-rose-500/10',
+        ],
+    ];
 @endphp
+
+@extends('slider.simple-layout')
 
 @section('title', $pageTitle)
 
-@section('style')
-    <style>
-        .writing-page {
-            min-height: 100dvh;
-            width: 100%;
-            overflow-x: hidden;
-            font-family: "Plus Jakarta Sans", sans-serif;
-            background:
-                linear-gradient(180deg, rgba(255,255,255,.65) 0%, rgba(248,250,252,.88) 100%),
-                radial-gradient(900px 420px at 8% 6%, rgba(79,70,229,.08), transparent 55%),
-                radial-gradient(720px 420px at 100% 0%, rgba(59,130,246,.08), transparent 55%);
-        }
-
-        .dark .writing-page {
-            background:
-                linear-gradient(180deg, rgba(2,6,23,.88) 0%, rgba(15,23,42,.96) 100%),
-                radial-gradient(900px 420px at 8% 6%, rgba(99,102,241,.16), transparent 55%),
-                radial-gradient(720px 420px at 100% 0%, rgba(59,130,246,.14), transparent 55%);
-        }
-
-        .writing-shell {
-            max-width: 1080px;
-            margin: 0 auto;
-            padding: 28px 16px 36px;
-        }
-
-        .writing-table-wrap {
-            margin: 28px auto 0;
-            max-width: 900px;
-            border-radius: 26px;
-            border: 1px solid rgba(217,226,241,.9);
-            background: rgba(255,255,255,.75);
-            box-shadow: 0 18px 44px -34px rgba(15,23,42,.16);
-            overflow: hidden;
-            backdrop-filter: blur(8px);
-        }
-
-        .dark .writing-table-wrap {
-            border-color: rgba(71,85,105,.8);
-            background: rgba(15,23,42,.62);
-            box-shadow: 0 18px 44px -34px rgba(2,6,23,.45);
-        }
-
-        .writing-grid {
-            display: grid;
-            grid-template-columns: 280px minmax(0, 1fr);
-        }
-
-        .writing-cell-label,
-        .writing-cell-input {
-            min-height: 138px;
-            border-right: 1px solid rgba(251, 191, 36, .55);
-            border-bottom: 1px solid rgba(251, 191, 36, .55);
-        }
-
-        .writing-cell-label {
-            display: flex;
-            align-items: center;
-            padding: 18px 20px;
-            background: linear-gradient(180deg, #fff2db 0%, #fde9c6 100%);
-            font-size: 1.05rem;
-            line-height: 1.25;
-            font-weight: 900;
-            color: #3f2c12;
-        }
-
-        .writing-cell-input {
-            border-right: none;
-            background: rgba(255,255,255,.92);
-            padding: 14px 16px;
-        }
-
-        .dark .writing-cell-label {
-            background: linear-gradient(180deg, rgba(120, 53, 15, .34) 0%, rgba(146, 64, 14, .28) 100%);
-            color: #fed7aa;
-        }
-
-        .dark .writing-cell-input {
-            background: rgba(15,23,42,.88);
-        }
-
-        .writing-grid > :nth-last-child(-n+2) {
-            border-bottom: none;
-        }
-
-        .writing-area {
-            width: 100%;
-            min-height: 108px;
-            resize: none;
-            border: none;
-            outline: none;
-            background: transparent;
-            color: #0f172a;
-            font-size: 1.05rem;
-            line-height: 1.6;
-            font-weight: 700;
-            padding: 0;
-        }
-
-        .writing-area::placeholder {
-            color: #475569;
-            opacity: 1;
-            font-weight: 700;
-        }
-
-        .dark .writing-area {
-            color: #f8fafc;
-        }
-
-        .dark .writing-area::placeholder {
-            color: #cbd5e1;
-        }
-
-        @media (max-width: 900px) {
-            .writing-instruction {
-                font-size: 1.35rem;
-            }
-
-            .writing-grid {
-                grid-template-columns: 220px minmax(0, 1fr);
-            }
-        }
-
-        @media (max-width: 640px) {
-            .writing-shell {
-                padding: 22px 14px 28px;
-            }
-
-            .writing-instruction {
-                font-size: 1.15rem;
-            }
-
-            .writing-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .writing-cell-label,
-            .writing-cell-input {
-                min-height: auto;
-                border-right: none;
-            }
-
-            .writing-cell-label {
-                padding-bottom: 12px;
-            }
-
-            .writing-cell-input {
-                padding-top: 0;
-            }
-
-            .writing-area {
-                min-height: 96px;
-            }
-        }
-    </style>
-@endsection
-
 @section('content')
-    <main class="writing-page">
-        <div class="writing-shell">
-            <header class="mb-6 flex flex-col items-center gap-[0.55rem] text-center">
+    <main class="min-h-[100dvh] w-full overflow-x-hidden bg-[radial-gradient(900px_420px_at_10%_0%,rgba(99,102,241,0.08),transparent_58%),radial-gradient(780px_420px_at_100%_10%,rgba(14,165,233,0.07),transparent_55%)] px-3 py-5 sm:px-6 sm:py-6 lg:flex lg:items-center lg:px-8 lg:py-7">
+        <section class="mx-auto w-full max-w-7xl">
+            <header class="mx-auto flex w-full max-w-4xl flex-col items-center gap-2 text-center sm:gap-2.5">
                 @include('slider.components.title-subtitle')
+
                 @if($subtitle2 !== '')
-                    <p class="text-base font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-lg lg:text-[1.15rem]">
+                    <p class="max-w-3xl text-sm font-bold leading-[1.45] text-slate-600 dark:text-slate-200 sm:text-base lg:text-lg">
                         {{ $subtitle2 }}
                     </p>
                 @endif
             </header>
 
-            <section class="writing-table-wrap">
-                <div class="writing-grid">
-                    @foreach($rows as $index => $row)
-                        @php
-                            $label = trim((string) ($row['label'] ?? ''));
-                            $placeholder = trim((string) ($row['placeholder'] ?? ''));
-                        @endphp
-                        <div class="writing-cell-label">{{ $label }}</div>
-                        <div class="writing-cell-input">
-                            <textarea
-                                class="writing-area js-writing-area"
-                                data-index="{{ $index }}"
-                                placeholder="{{ $placeholder }}"
-                            ></textarea>
-                        </div>
-                    @endforeach
+            <section class="mx-auto mt-5 w-full max-w-6xl overflow-hidden rounded-[1.4rem] border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900/95 sm:mt-6 sm:rounded-[1.8rem] xl:max-w-7xl">
+                <div class="p-2 sm:overflow-x-auto sm:p-0">
+                    <table class="block w-full border-collapse sm:table sm:min-w-[760px] sm:table-fixed">
+                        <tbody class="block space-y-2.5 sm:table-row-group sm:space-y-0 sm:divide-y sm:divide-slate-200 sm:dark:divide-slate-700">
+                        @foreach($rows as $index => $row)
+                            @php
+                                $label = trim((string) ($row['label'] ?? ''));
+                                $placeholder = trim((string) ($row['placeholder'] ?? ''));
+                                $style = $rowStyles[$index % count($rowStyles)];
+                            @endphp
+
+                            <tr class="block overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-colors duration-200 hover:bg-slate-50/70 dark:border-slate-700 dark:bg-slate-900/70 dark:hover:bg-slate-800/50 sm:table-row sm:overflow-visible sm:rounded-none sm:border-0 sm:bg-transparent sm:shadow-none sm:dark:bg-transparent">
+                                <th scope="row" class="block w-full align-top {{ $style['label'] }} border-b border-slate-200 px-4 py-3 text-left dark:border-slate-700 sm:table-cell sm:w-[30%] sm:border-b-0 sm:border-r sm:px-5 sm:py-3.5 lg:w-[28%] lg:px-6">
+                                    <div class="flex items-start gap-3">
+                                            <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-black shadow-lg {{ $style['badge'] }}">
+                                                {{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}
+                                            </span>
+
+                                        <span class="pt-0.5 text-sm font-black leading-snug tracking-[-0.02em] sm:text-base">
+                                                {{ $label }}
+                                            </span>
+                                    </div>
+                                </th>
+
+                                <td class="block align-top bg-white px-3 py-3 dark:bg-slate-900/70 sm:table-cell sm:px-4 sm:py-3 lg:px-5">
+                                    <div class="rounded-2xl border border-slate-200 bg-white px-3.5 py-2.5 shadow-sm transition duration-200 focus-within:ring-4 dark:border-slate-700 dark:bg-slate-900/70 sm:px-4 {{ $style['focus'] }}">
+                                            <textarea
+                                                    class="js-writing-area block min-h-[86px] w-full resize-none bg-transparent text-sm font-bold leading-[1.5] text-slate-900 outline-none placeholder:text-slate-400 dark:text-slate-100 dark:placeholder:text-slate-400/80 sm:min-h-[76px] sm:text-base lg:min-h-[78px]"
+                                                    data-index="{{ $index }}"
+                                                    placeholder="{{ $placeholder }}"
+                                            ></textarea>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </section>
-        </div>
+        </section>
     </main>
 @endsection
 
 @section('script')
+    @parent
     <script>
         (() => {
             const areas = Array.from(document.querySelectorAll('.js-writing-area'));
@@ -212,7 +108,7 @@
             });
 
             window.resetSlide = () => {
-                areas.forEach((area) => {
+                areas.forEach((area) => { 
                     area.value = '';
                 });
             };

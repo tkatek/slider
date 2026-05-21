@@ -1,41 +1,83 @@
 <?php
+
 $content = [
-    'title' => 'Quick Practice',
+    'title'    => 'Quick Practice',
     'subtitle' => 'Correct the verbs in the present simple tense',
 
-    'questions' => [
+    'instruction'      => '',
+    'instruction_note' => 'Use the verb hint to complete each sentence',
+
+    'grid_class' => 'grid-cols-1 sm:grid-cols-2',
+
+    'lines' => [
         [
-            'prefix' => 'I',
-            'suffix' => 'outdoors in the summer.',
-            'hint' => 'play',
-            'answers' => ['play'],
+            'speaker' => '1',
+            'parts' => [
+                ['text' => 'I '],
+                [
+                    'blank' => true,
+                    'answer' => 'play',
+                    'answers' => ['play'],
+                ],
+                ['text' => ' outdoors in the summer.'],
+                ['text' => ' (play)'],
+            ],
         ],
         [
-            'prefix' => 'He',
-            'suffix' => 'football in summer.',
-            'hint' => 'play',
-            'answers' => ['plays'],
+            'speaker' => '2',
+            'parts' => [
+                ['text' => 'He '],
+                [
+                    'blank' => true,
+                    'answer' => 'plays',
+                    'answers' => ['plays'],
+                ],
+                ['text' => ' football in summer.'],
+                ['text' => ' (play)'],
+            ],
         ],
         [
-            'prefix' => 'She',
-            'suffix' => 'winter.',
-            'hint' => 'not / like',
-            'answers' => ["doesn't like", 'does not like'],
+            'speaker' => '3',
+            'parts' => [
+                ['text' => 'She '],
+                [
+                    'blank' => true,
+                    'answer' => "doesn't like",
+                    'answers' => ["doesn't like", 'does not like'],
+                ],
+                ['text' => ' winter.'],
+                ['text' => ' (not / like)'],
+            ],
         ],
         [
-            'prefix' => 'It',
-            'suffix' => 'in autumn.',
-            'hint' => 'rain',
-            'answers' => ['rains'],
+            'speaker' => '4',
+            'parts' => [
+                ['text' => 'It '],
+                [
+                    'blank' => true,
+                    'answer' => 'rains',
+                    'answers' => ['rains'],
+                ],
+                ['text' => ' in autumn.'],
+                ['text' => ' (rain)'],
+            ],
         ],
         [
-            'prefix' => 'They',
-            'suffix' => 'on vacation in winter.',
-            'hint' => 'not / go',
-            'answers' => ["don't go", 'do not go'],
+            'speaker' => '5',
+            'parts' => [
+                ['text' => 'They '],
+                [
+                    'blank' => true,
+                    'answer' => "don't go",
+                    'answers' => ["don't go", 'do not go'],
+                ],
+                ['text' => ' on vacation in winter.'],
+                ['text' => ' (not / go)'],
+            ],
         ],
     ],
 ];
+
 ?>
 
-@include('slider.game.type-correct-format', ['content' => $content])
+@include('slider.game.listening-missing-word', ['content' => $content])
