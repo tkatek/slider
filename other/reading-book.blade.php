@@ -24,6 +24,10 @@
         $themeShadowClass = $isOrangeTheme
             ? 'shadow-orange-500/25'
             : 'shadow-indigo-600/20';
+
+        $coverAudio = trim((string) ($content['book']['cover_audio'] ?? $content['book']['sound'] ?? $content['book']['audio'] ?? ''));
+        $storyGoalTitle = trim((string) ($content['story_goal_title'] ?? $content['goals_title'] ?? ''));
+        $storyGoals = is_array($content['story_goals'] ?? null) ? array_values($content['story_goals']) : [];
     @endphp
 
     <div class="relative min-h-[100dvh] w-full overflow-x-hidden">
@@ -35,6 +39,26 @@
 
                     <div class="relative mx-auto grid w-full gap-3 text-center sm:gap-4">
                         @include('slider.components.title-subtitle')
+
+                        @if($storyGoalTitle !== '' || count($storyGoals) > 0)
+                            <div class="mx-auto -mt-2 text-center">
+                                @if($storyGoalTitle !== '')
+                                    <h2 class="text-sm font-black text-slate-900 dark:text-slate-100 sm:text-base">
+                                        {{ $storyGoalTitle }}:
+                                    </h2>
+                                @endif
+
+                                @if(count($storyGoals) > 0)
+                                    <div class="mt-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5">
+                                        @foreach($storyGoals as $goal)
+                                            <p class="text-sm font-bold leading-snug text-slate-700 dark:text-slate-200 sm:text-base">
+                                                <span class="mr-1.5 text-orange-500">◆</span>{{ $goal }}
+                                            </p>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
 
                         <section id="storybook" class="mx-auto w-full max-w-6xl">
                             <div class="mx-auto flex items-center justify-center md:gap-3 lg:gap-5">
@@ -71,6 +95,25 @@
                                                     <p class="mt-1 text-[0.65rem] font-black uppercase tracking-[0.22em] text-slate-500 dark:text-slate-300 sm:text-xs">
                                                         {{ $content['book']['author'] }}
                                                     </p>
+                                                @endif
+
+                                                @if($coverAudio !== '')
+                                                    <button
+                                                            type="button"
+                                                            class="book-audio-btn relative z-[80] mx-auto mt-3 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 text-white shadow-lg shadow-slate-900/10 backdrop-blur-sm transform-gpu transition duration-200 ease-out hover:-rotate-3 hover:scale-105 focus-visible:outline-none focus-visible:ring-4 {{ $themeGradientClass }} {{ $themeShadowClass }} {{ $themeRingClass }}"
+                                                            data-book-audio="{{ $coverAudio }}"
+                                                            aria-label="Play title audio"
+                                                    >
+                                                        <svg class="js-static-icon h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                            <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                                        </svg>
+
+                                                        <span class="js-wave-wrap hidden items-center gap-0.5" aria-hidden="true">
+                                                            <span class="h-1.5 w-[2px] animate-pulse rounded-full bg-current"></span>
+                                                            <span class="h-3 w-[2px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
+                                                            <span class="h-2 w-[2px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
+                                                        </span>
+                                                    </button>
                                                 @endif
                                             </div>
 
@@ -213,6 +256,10 @@
                     radial-gradient(circle at 20% 20%, rgba(255,255,255,0.8) 0, transparent 28%),
                     linear-gradient(90deg, rgba(0,0,0,0.035), transparent 9%, transparent 91%, rgba(0,0,0,0.035));
         }
+
+        .book-audio-btn.is-playing {
+            transform: scale(1.05);
+        }
     </style>
 
     <script>
@@ -222,6 +269,13 @@
         let currentPage = -1;
         let touchStartX = 0;
         let touchEndX = 0;
+        let activeBookAudioButton = null;
+        let activeBookAudioSrc = "";
+        let currentBookAudioObjectUrl = "";
+        let bookAudioRequestId = 0;
+
+        const bookAudio = new Audio();
+        bookAudio.preload = "auto";
 
         const bookCover = document.getElementById('bookCover');
         const bookSpread = document.getElementById('bookSpread');
@@ -254,6 +308,29 @@
             `;
         }
 
+        function audioButtonHtml(src) {
+            if (!src) return '';
+
+            return `
+                <button
+                    type="button"
+                    class="book-audio-btn relative z-[80] mb-4 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 text-white shadow-lg shadow-slate-900/10 backdrop-blur-sm transform-gpu transition duration-200 ease-out hover:-rotate-3 hover:scale-105 focus-visible:outline-none focus-visible:ring-4 {{ $themeGradientClass }} {{ $themeShadowClass }} {{ $themeRingClass }} sm:h-11 sm:w-11"
+                    data-book-audio="${escapeHtml(src)}"
+                    aria-label="Play page audio"
+                >
+                    <svg class="js-static-icon h-4 w-4 sm:h-[1.1rem] sm:w-[1.1rem]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                    </svg>
+
+                    <span class="js-wave-wrap hidden items-center gap-0.5" aria-hidden="true">
+                        <span class="h-1.5 w-[2px] animate-pulse rounded-full bg-current"></span>
+                        <span class="h-3 w-[2px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
+                        <span class="h-2 w-[2px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
+                    </span>
+                </button>
+            `;
+        }
+
         function renderPage(page, pageNumber, side = 'right') {
             if (!page) {
                 return `
@@ -280,6 +357,8 @@
             return `
                 <div class="relative flex h-full w-full items-center justify-center px-5 py-6 sm:px-7 sm:py-8 lg:px-10 lg:py-10">
                     <div class="max-w-[92%] text-left md:max-w-[360px] lg:max-w-[390px]">
+                        ${audioButtonHtml(page.sound || page.audio || '')}
+
                         <p class="font-serif text-[0.98rem] font-semibold leading-[1.62] tracking-[-0.015em] text-slate-800 first-letter:float-left first-letter:mr-2 first-letter:text-4xl first-letter:font-black first-letter:leading-[0.9] dark:text-slate-100 sm:text-[1.1rem] sm:leading-[1.7] sm:first-letter:text-5xl md:text-[1.18rem] lg:text-[1.28rem]">
                             ${escapeHtml(page.text)}
                         </p>
@@ -307,6 +386,8 @@
         }
 
         function goNext() {
+            stopBookAudio();
+
             if (currentPage === -1) {
                 currentPage = 0;
                 renderBook();
@@ -323,6 +404,8 @@
         }
 
         function goPrev() {
+            stopBookAudio();
+
             if (isDesktopBook()) {
                 currentPage = currentPage <= 0 ? -1 : Math.max(0, normalizeDesktopPage(currentPage) - 2);
             } else {
@@ -369,9 +452,123 @@
 
             document.getElementById('restartBookBtn')?.addEventListener('click', (event) => {
                 event.stopPropagation();
+                stopBookAudio();
                 currentPage = -1;
                 renderBook();
             });
+        }
+
+        function setBookAudioButtonState(button, isPlaying) {
+            if (!button) return;
+
+            button.classList.toggle('is-playing', isPlaying);
+            button.querySelector('.js-static-icon')?.classList.toggle('hidden', isPlaying);
+            button.querySelector('.js-wave-wrap')?.classList.toggle('hidden', !isPlaying);
+            button.querySelector('.js-wave-wrap')?.classList.toggle('flex', isPlaying);
+        }
+
+        function revokeBookAudioObjectUrl() {
+            if (!currentBookAudioObjectUrl) return;
+
+            URL.revokeObjectURL(currentBookAudioObjectUrl);
+            currentBookAudioObjectUrl = "";
+        }
+
+        function resolveBookAudioUrl(src) {
+            try {
+                return new URL(src, document.baseURI).href;
+            } catch (e) {
+                return src;
+            }
+        }
+
+        function hasMpegExtension(src) {
+            return /\.(mpeg|mpga)(?:[?#]|$)/i.test(String(src || ""));
+        }
+
+        async function getPlayableBookAudioSrc(src) {
+            const resolvedSrc = resolveBookAudioUrl(src);
+
+            if (!hasMpegExtension(resolvedSrc)) {
+                return resolvedSrc;
+            }
+
+            try {
+                const url = new URL(resolvedSrc);
+
+                if (url.origin !== window.location.origin) {
+                    return resolvedSrc;
+                }
+
+                const response = await fetch(url.href, {
+                    credentials: "same-origin",
+                    cache: "force-cache",
+                });
+
+                if (!response.ok) {
+                    return resolvedSrc;
+                }
+
+                const rawBlob = await response.blob();
+                const audioBlob = rawBlob.type === "audio/mpeg"
+                    ? rawBlob
+                    : new Blob([rawBlob], { type: "audio/mpeg" });
+
+                revokeBookAudioObjectUrl();
+                currentBookAudioObjectUrl = URL.createObjectURL(audioBlob);
+
+                return currentBookAudioObjectUrl;
+            } catch (e) {
+                return resolvedSrc;
+            }
+        }
+
+        function stopBookAudio() {
+            bookAudioRequestId += 1;
+
+            try {
+                bookAudio.pause();
+                bookAudio.currentTime = 0;
+                bookAudio.removeAttribute('src');
+                bookAudio.load();
+            } catch (e) {}
+
+            revokeBookAudioObjectUrl();
+            setBookAudioButtonState(activeBookAudioButton, false);
+            activeBookAudioButton = null;
+            activeBookAudioSrc = "";
+        }
+
+        async function playBookAudio(src, button) {
+            if (!src) return;
+
+            if (activeBookAudioButton === button && activeBookAudioSrc === src && !bookAudio.paused) {
+                stopBookAudio();
+                return;
+            }
+
+            stopBookAudio();
+            activeBookAudioButton = button;
+            activeBookAudioSrc = src;
+            setBookAudioButtonState(button, true);
+
+            try {
+                const requestId = ++bookAudioRequestId;
+                bookAudio.src = await getPlayableBookAudioSrc(src);
+
+                if (requestId !== bookAudioRequestId) {
+                    return;
+                }
+
+                bookAudio.currentTime = 0;
+
+                const playPromise = bookAudio.play();
+                if (playPromise && typeof playPromise.catch === "function") {
+                    playPromise.catch(() => stopBookAudio());
+                }
+            } catch (e) {
+                stopBookAudio();
+            }
         }
 
         prevBtn.addEventListener('click', goPrev);
@@ -379,6 +576,16 @@
 
         mobilePrevZone?.addEventListener('click', goPrev);
         mobileNextZone?.addEventListener('click', goNext);
+
+        document.addEventListener('click', (event) => {
+            const audioButton = event.target.closest('.book-audio-btn');
+            if (!audioButton) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            playBookAudio(audioButton.dataset.bookAudio || '', audioButton);
+        }, true);
 
         bookCover.addEventListener('click', () => {
             if (!isDesktopBook()) {
@@ -405,9 +612,17 @@
 
         window.addEventListener('resize', renderBook);
 
+        bookAudio.addEventListener('ended', stopBookAudio);
+        bookAudio.addEventListener('error', stopBookAudio);
+
         window.resetSlide = function () {
+            stopBookAudio();
             currentPage = -1;
             renderBook();
+        };
+
+        window.stopSlideAudio = function () {
+            stopBookAudio();
         };
 
         renderBook();
