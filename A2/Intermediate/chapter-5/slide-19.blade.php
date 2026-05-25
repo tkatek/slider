@@ -1,10 +1,11 @@
 <?php
-// 1. MODIFY THESE TO CHANGE THE TEXT
-$customTitle    = "Speaking time!: What about you";
-$customSubtitle = "Think about a memorable moment: What were you doing when something unexpected happened?<br>
-Picture yourself in that moment clearly.
-";
-$customPlaceholder = "While I .........................., ............................................\n\nI .................................. when ................................";
+$customTitle = 'Speaking time!: What about you';
+
+$customSubtitle = '
+    <span class="font-black text-slate-950 dark:text-slate-50">Think about a memorable moment:</span>
+    <span class="text-blue-700 dark:text-blue-300 font-black">What were you doing when something unexpected happened?</span><br>
+    <span class="text-slate-700 dark:text-slate-200 font-bold">Picture yourself in that moment clearly.</span>
+';
 
 $user = auth()->user();
 
@@ -19,17 +20,13 @@ $pusher = [
     "channel" => "slide-$slide->id",
 ];
 
-$finalTitle    = $customTitle ?? 'Writing Time';
-$finalSubtitle = $customSubtitle ?? 'Share your thoughts';
-
 $content = [
     'pusher'      => $pusher,
     'user'        => $user,
     'user_avatar' => $userAvatar,
-    'title'       => $finalTitle,
-    'subtitle'    => $finalSubtitle,
-    'page_title'  => $finalTitle,
-    'placeholder' => $customPlaceholder,
+    'page_title'  => $customTitle,
+    'title'       => $customTitle,
+    'subtitle'    => $customSubtitle,
 ];
 ?>
 

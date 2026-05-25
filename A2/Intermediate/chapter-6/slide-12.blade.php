@@ -13,7 +13,7 @@ $content = [
     'questions' => [
         [
             'image'   => materialAsset('slider/A2/Intermediate/chapter-6/img/slide12/1.webp'),
-            'prompt'  => 'I was _____ TV when the lights ________ out.',
+            'prompt'  => 'I was ..... TV when the lights ..... out.',
             'correct' => 'watching / went',
             'options' => [
                 'watched / went',
@@ -23,7 +23,7 @@ $content = [
         ],
         [
             'image'   => materialAsset('slider/A2/Intermediate/chapter-6/img/slide12/2.webp'),
-            'prompt'  => 'He ______________ tennis when he ____ her arm.',
+            'prompt'  => 'He ..... tennis when he ..... her arm.',
             'correct' => 'was playing / broke',
             'options' => [
                 'played / was breaking',
@@ -33,7 +33,7 @@ $content = [
         ],
         [
             'image'   => materialAsset('slider/A2/Intermediate/chapter-6/img/slide12/3.webp'),
-            'prompt'  => 'I was doing my homework ______ my friend sent me a whatsapp message.',
+            'prompt'  => 'I was doing my homework ..... my friend sent me a whatsapp message.',
             'correct' => 'when',
             'options' => [
                 'when',
@@ -42,7 +42,7 @@ $content = [
         ],
         [
             'image'   => materialAsset('slider/A2/Intermediate/chapter-6/img/slide12/4.webp'),
-            'prompt'  => "I wasn't paying attention ______ the teacher was speaking.",
+            'prompt'  => "I wasn't paying attention ..... the teacher was speaking.",
             'correct' => 'while',
             'options' => [
                 'when',
@@ -51,7 +51,7 @@ $content = [
         ],
         [
             'image'   => materialAsset('slider/A2/Intermediate/chapter-6/img/slide12/5.webp'),
-            'prompt'  => 'I was walking my dog when I _______ you.',
+            'prompt'  => 'I was walking my dog when I ..... you.',
             'correct' => 'saw',
             'options' => [
                 'saw',
@@ -60,7 +60,7 @@ $content = [
         ],
         [
             'image'   => materialAsset('slider/A2/Intermediate/chapter-6/img/slide12/6.webp'),
-            'prompt'  => 'They were sleeping ________ the phone rang.',
+            'prompt'  => 'They were sleeping ..... the phone rang.',
             'correct' => 'when',
             'options' => [
                 'when',
@@ -69,7 +69,7 @@ $content = [
         ],
         [
             'image'   => materialAsset('slider/A2/Intermediate/chapter-6/img/slide12/7.webp'),
-            'prompt'  => 'I ___ watching a horror movie when my brother _________ me.',
+            'prompt'  => 'I ..... watching a horror movie when my brother ..... me.',
             'correct' => 'was / scared',
             'options' => [
                 'were / scared',
@@ -79,7 +79,7 @@ $content = [
         ],
         [
             'image'   => materialAsset('slider/A2/Intermediate/chapter-6/img/slide12/8.webp'),
-            'prompt'  => 'I _____________ while my mother _________________ the dinner.',
+            'prompt'  => 'I ..... while my mother ..... the dinner.',
             'correct' => 'was studying / was cooking',
             'options' => [
                 'was studying / was cooking',
@@ -89,7 +89,7 @@ $content = [
         ],
         [
             'image'   => materialAsset('slider/A2/Intermediate/chapter-6/img/slide12/9.webp'),
-            'prompt'  => 'He was playing football ___________ his father was washing the car.',
+            'prompt'  => 'He was playing football ..... his father was washing the car.',
             'correct' => 'while',
             'options' => [
                 'when',
@@ -98,7 +98,7 @@ $content = [
         ],
         [
             'image'   => materialAsset('slider/A2/Intermediate/chapter-6/img/slide12/10.webp'),
-            'prompt'  => '__________ he crashed the car, he was using the cell phone.',
+            'prompt'  => '..... he crashed the car, he was using the cell phone.',
             'correct' => 'when',
             'options' => [
                 'when',

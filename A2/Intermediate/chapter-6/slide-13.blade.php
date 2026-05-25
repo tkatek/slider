@@ -26,15 +26,15 @@ and practise the conversation',
         'desktop_pool_width' => 40,
 
         'sentences' => [
-            "<strong class='text-slate-700 dark:text-slate-200'>Detective:</strong> Mrs. Carrington, where were you on June 5th?",
+            "<strong class='text-blue-700 dark:text-blue-200'>Detective:</strong> Mrs. Carrington, where were you on June 5th?",
             "<strong class='text-rose-700 dark:text-rose-300'>Mrs. Carrington:</strong> I was {{1}} with a friend. She was ill, and I was {{2}} after her.",
-            "<strong class='text-slate-700 dark:text-slate-200'>Detective:</strong> What did you do that afternoon?",
+            "<strong class='text-blue-700 dark:text-blue-200'>Detective:</strong> What did you do that afternoon?",
             "<strong class='text-rose-700 dark:text-rose-300'>Mrs. Carrington:</strong> I {{3}} into the city to {{4}} some tea.",
-            "<strong class='text-slate-700 dark:text-slate-200'>Detective:</strong> Did you go {{5}}?",
+            "<strong class='text-blue-700 dark:text-blue-200'>Detective:</strong> Did you go {{5}}?",
             "<strong class='text-rose-700 dark:text-rose-300'>Mrs. Carrington:</strong> Yes, I did.",
-            "<strong class='text-slate-700 dark:text-slate-200'>Detective:</strong> Your neighbor says she {{6}} loud voices. A man and a woman were {{7}}.",
+            "<strong class='text-blue-700 dark:text-blue-200'>Detective:</strong> Your neighbor says she {{6}} loud voices. A man and a woman were {{7}}.",
             "<strong class='text-rose-700 dark:text-rose-300'>Mrs. Carrington:</strong> I think my husband had a {{8}}. I {{9}} a receipt for dinner for two.",
-            "<strong class='text-slate-700 dark:text-slate-200'>Detective:</strong> Maybe she {{10}} him…",
+            "<strong class='text-blue-700 dark:text-blue-200'>Detective:</strong> Maybe she {{10}} him…",
         ],
 
         'answers' => [

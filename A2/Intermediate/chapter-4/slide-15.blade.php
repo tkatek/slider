@@ -2,25 +2,42 @@
 $content = [
     'page_title' => 'Quick Wrap-up',
     'title'      => 'Quick Wrap-up',
-    'subtitle'   => 'Fill in with the missing suitable reflexive pronoun<br>Use the correct form of verbs',
+    'subtitle'   => 'Fill in with the missing suitable reflexive pronoun',
     'grid_class' => 'grid-cols-1',
 
-    'items' => [
+    'instruction'      => 'Use the correct form of verbs',
+    'instruction_note' => '',
+
+    'lines' => [
         [
-            'number' => 1,
+            'speaker' => '1',
             'parts'  => [
                 ['text' => "What's wrong with your finger? Did you cut "],
-                ['answer' => 'yourself'],
+                [
+                    'blank' => true,
+                    'answer' => 'yourself',
+                    'answers' => ['yourself'],
+                ],
                 ['text' => '?'],
             ],
         ],
         [
-            'number' => 2,
+            'speaker' => '2',
             'parts'  => [
                 ['text' => 'I '],
-                ['answer' => 'was having', 'placeholder' => 'have'],
+                [
+                    'blank' => true,
+                    'answer' => 'was having',
+                    'answers' => ['was having'],
+                    'placeholder' => 'have',
+                ],
                 ['text' => ' lunch in a cafe yesterday when the server accidentally '],
-                ['answer' => 'spilled', 'placeholder' => 'spill'],
+                [
+                    'blank' => true,
+                    'answer' => 'spilled',
+                    'answers' => ['spilled'],
+                    'placeholder' => 'spill',
+                ],
                 ['text' => ' tomato sauce on my shirt.'],
             ],
         ],
@@ -28,4 +45,4 @@ $content = [
 ];
 ?>
 
-@include('slider.game.image-missing-words', ['content' => $content])
+@include('slider.game.listening-missing-word', ['content' => $content])
