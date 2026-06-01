@@ -1,43 +1,111 @@
 <?php
 
 $content = [
-    'title' => 'Practice 6',
-    'subtitle' => 'Find the mistake! Each sentence has one mistake. Write the correct sentence.',
-    'stacked_full_input' => true,
-    'stacked_grid_cols_2' => true,
+    'title'    => 'Practice 6',
+    'subtitle' => 'Find the mistake! Each sentence has one mistake',
 
-    'questions' => [
+    'instruction'      => 'Write the correct sentence',
+    'instruction_note' => '',
+
+    'grid_class' => 'grid-cols-1 sm:grid-cols-2',
+
+    'card_class' => '[&_.lp-input]:!w-full [&_.lp-input]:!min-w-0 [&_.lp-input]:!max-w-full',
+
+    'lines' => [
         [
-            'hint' => '1. I has lived in this city for two months.',
-            'answers' => [
-                'I have lived in this city for two months.',
+            'speaker' => '1',
+            'parts' => [
+                ['text' => 'I has lived in this city for two months.'],
             ],
         ],
         [
-            'hint' => '2. Have you ever saw a famous person?',
-            'answers' => [
-                'Have you ever seen a famous person?',
+            'speaker' => '1',
+            'parts' => [
+                [
+                    'blank' => true,
+                    'answer' => 'I have lived in this city for two months.',
+                    'answers' => [
+                        'I have lived in this city for two months.',
+                    ],
+                ],
+            ],
+        ],
+
+        [
+            'speaker' => '2',
+            'parts' => [
+                ['text' => 'Have you ever saw a famous person?'],
             ],
         ],
         [
-            'hint' => '3. She has visit the new library today.',
-            'answers' => [
-                'She has visited the new library today.',
+            'speaker' => '2',
+            'parts' => [
+                [
+                    'blank' => true,
+                    'answer' => 'Have you ever seen a famous person?',
+                    'answers' => [
+                        'Have you ever seen a famous person?',
+                    ],
+                ],
+            ],
+        ],
+
+        [
+            'speaker' => '3',
+            'parts' => [
+                ['text' => 'She has visit the new library today.'],
             ],
         ],
         [
-            'hint' => "4. They haven’t never tried the local food.",
-            'answers' => [
-                "They haven’t tried the local food.",
-                "They have never tried the local food.",
-                "They haven't tried the local food.",
-                "They have never tried the local food.",
+            'speaker' => '3',
+            'parts' => [
+                [
+                    'blank' => true,
+                    'answer' => 'She has visited the new library today.',
+                    'answers' => [
+                        'She has visited the new library today.',
+                    ],
+                ],
+            ],
+        ],
+
+        [
+            'speaker' => '4',
+            'parts' => [
+                ['text' => "They haven’t never tried the local food."],
             ],
         ],
         [
-            'hint' => '5. My friend have been to the bank already.',
-            'answers' => [
-                'My friend has been to the bank already.', 
+            'speaker' => '4',
+            'parts' => [
+                [
+                    'blank' => true,
+                    'answer' => "They haven’t tried the local food.",
+                    'answers' => [
+                        "They haven’t tried the local food.",
+                        "They have never tried the local food.",
+                        "They haven't tried the local food.",
+                    ],
+                ],
+            ],
+        ],
+
+        [
+            'speaker' => '5',
+            'parts' => [
+                ['text' => 'My friend have been to the bank already.'],
+            ],
+        ],
+        [
+            'speaker' => '5',
+            'parts' => [
+                [
+                    'blank' => true,
+                    'answer' => 'My friend has been to the bank already.',
+                    'answers' => [
+                        'My friend has been to the bank already.',
+                    ],
+                ],
             ],
         ],
     ],
@@ -45,4 +113,4 @@ $content = [
 
 ?>
 
-@include('slider.game.type-correct-format', ['content' => $content])
+@include('slider.game.listening-missing-word', ['content' => $content])

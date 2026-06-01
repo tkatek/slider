@@ -3,36 +3,63 @@
 $content = [
     'page_title' => 'Quick wrap-up',
     'title'      => 'Quick wrap-up!',
-    'subtitle'   => 'Correct the mistakes in the sentences.',
+    'subtitle'   => '',
+
+    'instruction'      => 'Correct the mistakes in the sentences',
+    'instruction_note' => '',
 
     'grid_class' => 'md:grid-cols-2',
 
-    'items' => [
+    'lines' => [
         [
+            'speaker' => '1',
             'parts' => [
-                ['text' => '1. She’s always '],
-                ['answer' => 'using', 'placeholder' => 'use'],
+                ['text' => 'She’s always '],
+                [
+                    'blank' => true,
+                    'answer' => 'using',
+                    'answers' => ['using'],
+                    'placeholder' => 'use',
+                ],
                 ['text' => ' my phone charger.'],
             ],
         ],
         [
+            'speaker' => '2',
             'parts' => [
-                ['text' => '2. They’re always '],
-                ['answer' => 'making', 'placeholder' => 'are making'],
+                ['text' => 'They’re always '],
+                [
+                    'blank' => true,
+                    'answer' => 'making',
+                    'answers' => ['making'],
+                    'placeholder' => 'are making',
+                ],
                 ['text' => ' noise at night.'],
             ],
         ],
         [
+            'speaker' => '3',
             'parts' => [
-                ['text' => '3. My roommate is always '],
-                ['answer' => 'forgetting', 'placeholder' => 'forgetting'],
+                ['text' => 'My roommate is always '],
+                [
+                    'blank' => true,
+                    'answer' => 'forgetting',
+                    'answers' => ['forgetting'],
+                    'placeholder' => 'forgetting',
+                ],
                 ['text' => ' to clean the kitchen.'],
             ],
         ],
         [
+            'speaker' => '4',
             'parts' => [
-                ['text' => '4. You are always '],
-                ['answer' => 'interrupting', 'placeholder' => 'interrupt'],
+                ['text' => 'You are always '],
+                [
+                    'blank' => true,
+                    'answer' => 'interrupting',
+                    'answers' => ['interrupting'],
+                    'placeholder' => 'interrupt',
+                ],
                 ['text' => ' me!'],
             ],
         ],
@@ -41,4 +68,4 @@ $content = [
 
 ?>
 
-@include('slider.game.image-missing-words', ['content' => $content])
+@include('slider.game.listening-missing-word', ['content' => $content])

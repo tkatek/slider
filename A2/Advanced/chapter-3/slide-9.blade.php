@@ -1,14 +1,15 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
+
     'title' => 'New Vocabulary',
-    'subtitle' => '',
+    'subtitle' => 'Actions (Verbs)',
+    'image_text_style' => 'overlay',
 
     'groups' => [
         [
-            'key' => 'actions-verbs',
-            'title' => 'Actions (Verbs)',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4',
+            'key' => '',
+            'title' => '',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-6',
             'items' => [
                 [
                     'text' => 'use',

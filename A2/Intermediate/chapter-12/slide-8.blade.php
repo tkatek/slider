@@ -1,69 +1,90 @@
 <?php
 $content = [
     'page_title' => 'Practice 2',
-    'title' => 'Practice 2',
-    'subtitle' => 'Match the gestures with their meanings',
+    'title'      => 'Practice 2',
+    'subtitle'   => 'Match the gestures with their meanings',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Drag item type
-    |--------------------------------------------------------------------------
-    | Use one of these:
-    | - text              = drag words / phrases
-    | - image             = drag images only
-    | - image-with-label  = drag image cards with text under each image
-    */
-    'drag_item_type' => 'image-with-label',
-
-    // Old compatibility keys. Older slides can still use these.
-    'pool_item_type' => 'image',
-    'show_pool_item_labels' => true,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Responsive controls
-    |--------------------------------------------------------------------------
-    | This version follows the previous sticky UX:
-    | - mobile/tablet: fixed bottom tray with next/previous controls
-    | - laptop/desktop: sticky side tray
-    */
-    'pool_grid_class' => 'grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-8 2xl:grid-cols-10',
-    'category_grid_class' => 'grid-cols-1 md:grid-cols-2',
-    'slot_grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4',
-
-    'mobile_pool_visible_cap' => 4,
-    'tablet_pool_visible_cap' => 6,
+    'pool_item_type'   => 'image',
+    'image_text_style' => 'overlay',
 
     'categories' => [
         'Positive body language' => [
             'emoji' => '✅',
             'items' => [
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/smiling.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/making-eye-contact.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/shaking-hands-firmly.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/sitting-up-straight.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/paying-attention.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/nodding-your-head.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/leaning-forward.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/open-palms.webp'),
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/smiling.webp'),
+                    'text'  => 'Smiling',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/making-eye-contact.webp'),
+                    'text'  => 'Making eye contact',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/shaking-hands-firmly.webp'),
+                    'text'  => 'Shaking hands firmly',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/sitting-up-straight.webp'),
+                    'text'  => 'Sitting up straight',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/paying-attention.webp'),
+                    'text'  => 'Paying attention',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/nodding-your-head.webp'),
+                    'text'  => 'Nodding your head',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/leaning-forward.webp'),
+                    'text'  => 'Leaning forward',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/open-palms.webp'),
+                    'text'  => 'Open palms',
+                ],
             ],
         ],
 
         'Negative body language' => [
             'emoji' => '⚠️',
             'items' => [
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/staring.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/crossing-arms.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/yawning.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/slouching.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/looking-down.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/rubbing-your-nose.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/frowning.webp'),
-                materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/head-in-hands.webp'),
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/staring.webp'),
+                    'text'  => 'Staring',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/crossing-arms.webp'),
+                    'text'  => 'Crossing arms',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/yawning.webp'),
+                    'text'  => 'Yawning',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/slouching.webp'),
+                    'text'  => 'Slouching',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/looking-down.webp'),
+                    'text'  => 'Looking down',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/rubbing-your-nose.webp'),
+                    'text'  => 'Rubbing your nose',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/frowning.webp'),
+                    'text'  => 'Frowning',
+                ],
+                [
+                    'image' => materialAsset('slider/A2/Intermediate/chapter-12/img/slide7/head-in-hands.webp'),
+                    'text'  => 'Head in hands',
+                ],
             ],
         ],
     ],
 ];
 ?>
 
-@include('slider.game.drag-and-drop-v2', ['content' => $content])
+@include('slider.game.drag-and-drop', ['content' => $content])

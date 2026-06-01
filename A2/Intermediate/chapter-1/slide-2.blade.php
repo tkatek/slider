@@ -1,14 +1,9 @@
 <?php
 $content = [
-    'page_title' => 'Practice 1',
     'title' => 'Practice 1',
     'subtitle' => 'Let’s remember about countries & nationalities',
     'pool_item_type' => 'image',
-    'items_per_line' => 4,
-    'items_per_line_mobile' => 3,
-    'sticky_pool_visible_cap' => 6,
-    'desktop_game_width' => 65,
-    'desktop_pool_width' => 35,
+
     'categories' => [
         'French' => [
             'emoji' => '',

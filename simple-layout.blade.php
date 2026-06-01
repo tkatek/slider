@@ -67,6 +67,20 @@
             --ambient-three: rgba(253, 224, 71, 0.12);
         }
 
+        .slide-layout.slide-theme-green {
+            --ambient-one: rgba(34, 197, 94, 0.14);
+            --ambient-two: rgba(16, 185, 129, 0.13);
+            --ambient-three: rgba(132, 204, 22, 0.10);
+
+            --top-bar-gradient: linear-gradient(to right, #84cc16, #22c55e, #10b981);
+        }
+
+        .dark .slide-layout.slide-theme-green {
+            --ambient-one: rgba(34, 197, 94, 0.22);
+            --ambient-two: rgba(16, 185, 129, 0.18);
+            --ambient-three: rgba(132, 204, 22, 0.12);
+        }
+
         .slide-ambient-one {
             background: var(--ambient-one);
         }

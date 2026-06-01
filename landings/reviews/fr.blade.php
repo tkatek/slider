@@ -276,7 +276,7 @@
 
                         <p dir="{{ $hasArabic ? 'rtl' : 'ltr' }}" class="relative z-10 mt-5 flex-1 text-[15px] font-medium italic leading-[1.75] text-[#475569] dark:text-[#e2e8f0] sm:text-base {{ $hasArabic ? 'text-right' : 'text-left' }}">&ldquo;{{ $review['quote'] }}&rdquo;</p>
                     </article>
-                @endforeach
+                @endforeach 
             </div>
         </div>
     </section> 

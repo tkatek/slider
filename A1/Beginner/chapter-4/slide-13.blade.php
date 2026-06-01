@@ -1,18 +1,48 @@
 <?php
+
 $content = [
     'page_title' => 'Speaking Cards',
     'title'      => 'Speaking Cards',
-    'card_label' => 'Possessive Adjectives',
+    'subtitle'   => 'Possessive Adjectives',
+    'card_label' => '',
     'example'    => 'My sister is thin.',
-    'cards'      => [
-        ['answer' => 'tall',  'image' => materialAsset('slider/A1/Beginner/chapter-4/img/slide12/old.webp'), 'sentence' => 'grandpa / tall'],
-        ['answer' => 'tall',  'image' => materialAsset('slider/A1/Beginner/chapter-4/img/slide10/aunt.webp'), 'sentence' => 'mom / tall'],
-        ['answer' => 'tall',  'image' => materialAsset('slider/A1/Beginner/chapter-4/img/slide10/uncle.webp'), 'sentence' => 'dad / tall'],
-        ['answer' => 'short', 'image' => materialAsset('slider/A1/Beginner/chapter-4/img/slide12/old.webp'), 'sentence' => 'grandma / short'],
-        ['answer' => 'short', 'image' => materialAsset('slider/A1/Beginner/chapter-4/img/slide10/tom.webp'), 'sentence' => 'brother / short'],
-        ['answer' => 'short', 'image' => materialAsset('slider/A1/Beginner/chapter-4/img/slide12/kind.webp'), 'sentence' => 'sister / short'],
+
+    'card_type'  => 'image',
+
+    'cards' => [
+        [
+
+            'image'    => materialAsset('slider/A1/Beginner/chapter-4/img/slide13/grandpa-tall.webp'),
+            'sentence' => 'Grandpa / tall',
+        ],
+        [
+
+            'image'    => materialAsset('slider/A1/Beginner/chapter-4/img/slide13/mom-tall.webp'),
+            'sentence' => 'Mom / tall',
+        ],
+        [
+
+            'image'    => materialAsset('slider/A1/Beginner/chapter-4/img/slide13/dad-tall.webp'),
+            'sentence' => 'Dad / tall',
+        ],
+        [
+
+            'image'    => materialAsset('slider/A1/Beginner/chapter-4/img/slide13/grandma-short.webp'),
+            'sentence' => 'Grandma / short',
+        ],
+        [
+
+            'image'    => materialAsset('slider/A1/Beginner/chapter-4/img/slide13/brother-short.webp'),
+            'sentence' => 'Brother / short',
+        ],
+        [
+
+            'image'    => materialAsset('slider/A1/Beginner/chapter-4/img/slide13/sister-short.webp'),
+            'sentence' => 'Sister / short',
+        ],
     ],
 ];
+
 ?>
 
-@include("slider.game.speaking-cards", ["content" => $content])
+@include("slider.game.speaking-cards-v2", ["content" => $content])

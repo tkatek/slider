@@ -1,10 +1,15 @@
-
 @extends("slider.simple-layout")
 
 @php
+    $content = is_array($content ?? null) ? $content : [];
     $pageTitle = $content['page_title'] ?? ($content['title'] ?? 'Speaking Cards');
     $cards = is_array($content['cards'] ?? null) ? $content['cards'] : [];
     $dealButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 via-indigo-600 to-blue-600'));
+    $requestedCardType = strtolower(trim((string) ($content['card_type'] ?? $content['type'] ?? 'auto')));
+    $cardType = in_array($requestedCardType, ['auto', 'text', 'image', 'image-audio', 'image_audio', 'audio-image', 'audio_image'], true)
+        ? $requestedCardType
+        : 'auto';
+    $imageAspectRatio = trim((string) ($content['image_aspect_ratio'] ?? '5 / 4'));
 
     $SFX = [
         'click' => asset('slider/sounds/tap.wav'),
@@ -23,6 +28,17 @@
             </div>
 
             @include('slider.components.title-subtitle')
+
+            @if(!empty($content['example']))
+                <div class="mx-auto mt-4 max-w-3xl rounded-2xl border border-white/70 bg-white/80 px-4 py-3 text-center shadow-sm ring-1 ring-slate-200/70 backdrop-blur-xl dark:border-slate-700/40 dark:bg-slate-950/55 dark:ring-slate-700/45">
+                    <div class="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+                        Example
+                    </div>
+                    <div class="mt-1 text-base font-bold text-slate-900 dark:text-slate-50 sm:text-lg">
+                        {{ $content['example'] }}
+                    </div>
+                </div>
+            @endif
 
             <div class="mx-auto mt-4 flex max-w-4xl items-center justify-center gap-2 text-xs font-black text-slate-500 dark:text-slate-400 sm:mt-5">
                 <span><span id="progress">0</span>/<span id="totalCards">0</span></span>
@@ -106,11 +122,30 @@
         (() => {
             const RAW = @json($cards);
             const SFX_CONFIG = @json($SFX);
+            const REQUESTED_CARD_TYPE = @json($cardType);
+            const CARD_LABEL = @json($content['card_label'] ?? 'Speaking');
+            const IMAGE_ASPECT_RATIO = @json($imageAspectRatio);
 
-            const CARDS = (Array.isArray(RAW) ? RAW : []).map((card, index) => ({
+            const rawCards = Array.isArray(RAW) ? RAW : [];
+            const hasImages = rawCards.some(card => String(card.image ?? '').trim() !== '');
+            const hasAudio = rawCards.some(card => String(card.audio ?? card.sound ?? '').trim() !== '');
+            const normalizedType = REQUESTED_CARD_TYPE === 'image_audio' || REQUESTED_CARD_TYPE === 'audio-image' || REQUESTED_CARD_TYPE === 'audio_image'
+                ? 'image-audio'
+                : REQUESTED_CARD_TYPE;
+            const cardType = normalizedType === 'auto'
+                ? (hasAudio ? 'image-audio' : (hasImages ? 'image' : 'text'))
+                : normalizedType;
+            const showImages = cardType === 'image' || cardType === 'image-audio';
+            const showAudio = cardType === 'image-audio';
+
+            const CARDS = rawCards.map((card, index) => ({
                 id: index + 1,
                 sentence: String(card.sentence ?? card.title ?? ''),
                 answer: String(card.answer ?? card.description ?? ''),
+                title: String(card.title ?? card.sentence ?? ''),
+                description: String(card.description ?? card.answer ?? ''),
+                image: String(card.image ?? ''),
+                audio: String(card.audio ?? card.sound ?? '')
             }));
 
             const deckStackEl = document.getElementById('deckStack');
@@ -129,13 +164,32 @@
             const sfx = {
                 click: new Audio(SFX_CONFIG.click)
             };
-
+            const promptAudio = new Audio();
+            promptAudio.preload = 'auto';
             sfx.click.volume = Number(SFX_CONFIG.volume ?? 1);
 
             let deck = [];
             let dealt = [];
             let animating = false;
             let unlocked = false;
+            let activeAudioButton = null;
+
+            const classes = {
+                activeTextCard: 'relative mx-auto flex min-h-[24rem] w-full max-w-[34rem] flex-col justify-center rounded-[1.5rem] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-200 p-6 text-center shadow-[0_22px_55px_-38px_rgba(15,23,42,0.65)] ring-1 ring-white/80 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 dark:ring-slate-700/60 sm:p-8',
+                activeImageCard: 'relative mx-auto w-full max-w-[24rem] rounded-[1.5rem] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-200 p-3 shadow-[0_22px_55px_-38px_rgba(15,23,42,0.65)] ring-1 ring-white/80 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 dark:ring-slate-700/60',
+                countPill: 'absolute right-5 top-5 z-10 rounded-full bg-white/90 px-3 py-1.5 text-xs font-black text-slate-700 shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-950/75 dark:text-slate-200 dark:ring-slate-700/60',
+                imageWrap: 'rounded-[1.15rem] bg-gradient-to-br from-slate-100 via-slate-200 to-slate-400 p-3 dark:from-slate-800 dark:via-slate-800 dark:to-slate-950',
+                imageFrame: 'overflow-hidden rounded-[0.9rem] border border-white bg-white ring-1 ring-slate-200/90 dark:border-slate-200 dark:bg-slate-100',
+                image: 'h-full w-full object-cover',
+                fallback: 'flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 text-7xl',
+                cardBody: 'space-y-4 px-4 pb-3 pt-5 sm:px-5',
+                title: 'text-center text-xl font-black leading-tight tracking-tight text-slate-950 dark:text-slate-50 sm:text-2xl',
+                description: 'mx-auto max-w-xs text-center text-sm font-bold leading-relaxed text-slate-600 dark:text-slate-300 sm:text-base',
+                audioRow: 'flex justify-center',
+                audioBtn: 'group flex h-14 w-14 items-center justify-center rounded-xl border border-slate-300/90 bg-gradient-to-br from-white via-slate-100 to-slate-200 text-slate-700 shadow-sm ring-1 ring-slate-400/20 transition hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 dark:border-slate-600/70 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100 dark:ring-slate-500/40 sm:h-16 sm:w-16',
+                audioBtnPlaying: 'scale-105 ring-slate-500/70 dark:ring-slate-300/55',
+                audioIcon: 'h-8 w-8'
+            };
 
             function playClick() {
                 try {
@@ -194,6 +248,45 @@
                 setEnabled(btnShuffle, CARDS.length > 0 && !animating && (dealt.length > 0 || deck.length === 0));
             }
 
+            function stopPromptAudio() {
+                try {
+                    promptAudio.pause();
+                    promptAudio.currentTime = 0;
+                    promptAudio.removeAttribute('src');
+                    promptAudio.load();
+                } catch (e) {}
+
+                if (activeAudioButton) {
+                    activeAudioButton.classList.remove(...classes.audioBtnPlaying.split(' '));
+                    activeAudioButton.setAttribute('aria-label', 'Play audio');
+                }
+
+                activeAudioButton = null;
+            }
+
+            function playPromptAudio(source, button) {
+                if (!source) return;
+
+                if (activeAudioButton === button && !promptAudio.paused) {
+                    stopPromptAudio();
+                    return;
+                }
+
+                stopPromptAudio();
+                activeAudioButton = button;
+                activeAudioButton.classList.add(...classes.audioBtnPlaying.split(' '));
+                activeAudioButton.setAttribute('aria-label', 'Stop audio');
+
+                try {
+                    promptAudio.src = source;
+                    promptAudio.currentTime = 0;
+                    const play = promptAudio.play();
+                    if (play && typeof play.catch === 'function') play.catch(() => stopPromptAudio());
+                } catch (e) {
+                    stopPromptAudio();
+                }
+            }
+
             function renderDeck() {
                 const hasCards = deck.length > 0;
 
@@ -226,32 +319,136 @@
                 emptyMessageEl.textContent = 'Press Deal.';
             }
 
-            function makeActiveCard(card, index, total) {
-                const shell = document.createElement('article');
-                shell.className = 'relative mx-auto flex min-h-[24rem] w-full max-w-[34rem] flex-col justify-center rounded-[1.5rem] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-200 p-6 text-center shadow-[0_22px_55px_-38px_rgba(15,23,42,0.65)] ring-1 ring-white/80 dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 dark:ring-slate-700/60 sm:p-8';
-
+            function createCount(index, total) {
                 const count = document.createElement('div');
-                count.className = 'absolute right-5 top-5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-black text-slate-700 shadow-sm ring-1 ring-slate-200/80 dark:bg-slate-950/75 dark:text-slate-200 dark:ring-slate-700/60';
+                count.className = classes.countPill;
                 count.textContent = `Card ${index}/${total}`;
+                return count;
+            }
+
+            function createSpeakerIcon() {
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('viewBox', '0 0 24 24');
+                svg.setAttribute('fill', 'none');
+                svg.setAttribute('stroke', 'currentColor');
+                svg.setAttribute('stroke-width', '2.4');
+                svg.setAttribute('stroke-linecap', 'round');
+                svg.setAttribute('stroke-linejoin', 'round');
+                svg.classList.add(...classes.audioIcon.split(' '));
+
+                const pathOne = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                pathOne.setAttribute('d', 'M11 5 6 9H3v6h3l5 4V5Z');
+
+                const pathTwo = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                pathTwo.setAttribute('d', 'M15.54 8.46a5 5 0 0 1 0 7.08');
+
+                const pathThree = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                pathThree.setAttribute('d', 'M19.07 4.93a10 10 0 0 1 0 14.14');
+
+                svg.append(pathOne, pathTwo, pathThree);
+                return svg;
+            }
+
+            function makeTextCard(card, index, total) {
+                const shell = document.createElement('article');
+                shell.className = classes.activeTextCard;
 
                 const label = document.createElement('div');
                 label.className = 'mx-auto rounded-full bg-slate-900 px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-white dark:bg-slate-100 dark:text-slate-950';
-                label.textContent = @json($content['card_label'] ?? 'Speaking');
+                label.textContent = CARD_LABEL;
 
                 const sentence = document.createElement('h2');
                 sentence.className = 'mt-8 text-2xl font-black leading-tight tracking-tight text-slate-950 dark:text-slate-50 sm:text-3xl';
-                sentence.textContent = card.sentence;
+                sentence.textContent = card.sentence || card.title;
 
-                shell.append(count, label, sentence);
+                shell.append(createCount(index, total), label, sentence);
 
-                if (card.answer) {
+                if (card.answer || card.description) {
                     const answer = document.createElement('p');
                     answer.className = 'mx-auto mt-5 max-w-md text-base font-bold leading-relaxed text-slate-600 dark:text-slate-300';
-                    answer.textContent = card.answer;
+                    answer.textContent = card.answer || card.description;
                     shell.appendChild(answer);
                 }
 
                 return shell;
+            }
+
+            function makeImageCard(card, index, total) {
+                const shell = document.createElement('article');
+                shell.className = classes.activeImageCard;
+
+                const imageWrap = document.createElement('div');
+                imageWrap.className = classes.imageWrap;
+
+                const imageFrame = document.createElement('div');
+                imageFrame.className = classes.imageFrame;
+                imageFrame.style.aspectRatio = IMAGE_ASPECT_RATIO;
+
+                if (card.image) {
+                    const image = document.createElement('img');
+                    image.className = classes.image;
+                    image.src = card.image;
+                    image.alt = card.title || card.sentence || `Speaking card ${index}`;
+                    image.loading = 'lazy';
+                    imageFrame.appendChild(image);
+                } else {
+                    const fallback = document.createElement('div');
+                    fallback.className = classes.fallback;
+                    fallback.textContent = '?';
+                    imageFrame.appendChild(fallback);
+                }
+
+                imageWrap.appendChild(imageFrame);
+
+                const body = document.createElement('div');
+                body.className = classes.cardBody;
+
+                if (card.title || card.sentence || card.description || card.answer) {
+                    const textBlock = document.createElement('div');
+                    textBlock.className = 'space-y-2';
+
+                    if (card.title || card.sentence) {
+                        const title = document.createElement('div');
+                        title.className = classes.title;
+                        title.textContent = card.title || card.sentence;
+                        textBlock.appendChild(title);
+                    }
+
+                    if (card.description || card.answer) {
+                        const description = document.createElement('div');
+                        description.className = classes.description;
+                        description.textContent = card.description || card.answer;
+                        textBlock.appendChild(description);
+                    }
+
+                    body.appendChild(textBlock);
+                }
+
+                if (showAudio && card.audio) {
+                    const audioRow = document.createElement('div');
+                    audioRow.className = classes.audioRow;
+
+                    const audioButton = document.createElement('button');
+                    audioButton.type = 'button';
+                    audioButton.className = classes.audioBtn;
+                    audioButton.setAttribute('aria-label', 'Play audio');
+                    audioButton.appendChild(createSpeakerIcon());
+                    audioButton.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        playPromptAudio(card.audio, audioButton);
+                    });
+
+                    audioRow.appendChild(audioButton);
+                    body.appendChild(audioRow);
+                }
+
+                shell.append(createCount(index, total), imageWrap, body);
+                return shell;
+            }
+
+            function makeActiveCard(card, index, total) {
+                return showImages ? makeImageCard(card, index, total) : makeTextCard(card, index, total);
             }
 
             function renderPlayArea() {
@@ -285,6 +482,7 @@
 
                 animating = true;
                 setButtonState();
+                stopPromptAudio();
 
                 const nextCard = deck.pop();
                 dealt.push(nextCard);
@@ -301,6 +499,7 @@
 
                 if (animating || dealt.length === 0) return;
 
+                stopPromptAudio();
                 const previousCard = dealt.pop();
                 deck.push(previousCard);
 
@@ -313,6 +512,7 @@
 
                 if (animating || CARDS.length === 0) return;
 
+                stopPromptAudio();
                 deck = shuffleArray(CARDS);
                 dealt = [];
 
@@ -321,19 +521,28 @@
             }
 
             function resetGame() {
+                stopPromptAudio();
                 deck = shuffleArray(CARDS);
                 dealt = [];
                 renderPlayArea();
             }
 
+            promptAudio.addEventListener('ended', stopPromptAudio);
+            promptAudio.addEventListener('error', stopPromptAudio);
+
             document.addEventListener('pointerdown', unlockAudioOnce, { once: true, passive: true });
             document.addEventListener('keydown', unlockAudioOnce, { once: true });
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stopPromptAudio();
+            });
+            window.addEventListener('beforeunload', stopPromptAudio);
+            window.addEventListener('pagehide', stopPromptAudio);
 
             btnDeal.addEventListener('click', dealOne);
             btnUndo.addEventListener('click', undoOne);
             btnShuffle.addEventListener('click', shuffleAll);
 
-            window.stopSlideAudio = () => {};
+            window.stopSlideAudio = stopPromptAudio;
             window.resetSlide = resetGame;
 
             resetGame();

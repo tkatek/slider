@@ -1,6 +1,9 @@
 @extends('slider.simple-layout')
 
 @php
+    $theme = is_array($theme ?? null) ? $theme : [];
+    $theme['name'] = trim((string)($theme['name'] ?? '')) !== '' ? $theme['name'] : 'default';
+
     $content = array_replace_recursive([
         'page_title' => 'Warming Up',
         'title' => 'Warming Up',
@@ -8,303 +11,258 @@
         'instruction' => 'Choose a paper and answer the question.',
         'box_label' => 'Box',
         'retake_label' => 'Retake',
-        'complete_title' => 'All questions opened',
-        'complete_subtitle' => 'Great speaking practice.',
         'close_label' => 'Close',
         'grid' => [
             'cols' => [
                 'base' => 2,
                 'sm' => 3,
-                'md' => 4,
-                'lg' => 6,
+                'md' => 3,
+                'lg' => 3,
             ],
-            'gap' => 'gap-3 sm:gap-4 lg:gap-5',
-            'card_height' => 'h-32 sm:h-36 lg:h-40',
+            'gap' => 'gap-3 sm:gap-4 lg:gap-5', 
+            'card_height' => 'h-36 sm:h-40 md:h-44 lg:h-48',
         ],
         'sounds' => [
             'open' => materialAsset('slider/sounds/tap.wav'),
-            'done' => materialAsset('slider/sounds/correct.wav'),
             'reset' => materialAsset('slider/sounds/click.wav'),
         ],
         'items' => [],
     ], $content ?? []);
 
-    $cols = $content['grid']['cols'];
-    $gridCols = "grid-cols-{$cols['base']} sm:grid-cols-{$cols['sm']} md:grid-cols-{$cols['md']} lg:grid-cols-{$cols['lg']}";
+    $cols = is_array($content['grid']['cols'] ?? null) ? $content['grid']['cols'] : [];
+
+    $baseCols = (int)($cols['base'] ?? 2);
+    $smCols = (int)($cols['sm'] ?? 3);
+    $mdCols = (int)($cols['md'] ?? 4);
+    $lgCols = (int)($cols['lg'] ?? 6);
+
+    $gridBaseMap = [
+        1 => 'grid-cols-1',
+        2 => 'grid-cols-2',
+        3 => 'grid-cols-3',
+        4 => 'grid-cols-4',
+        5 => 'grid-cols-5',
+        6 => 'grid-cols-6',
+    ];
+
+    $gridSmMap = [
+        1 => 'sm:grid-cols-1',
+        2 => 'sm:grid-cols-2',
+        3 => 'sm:grid-cols-3',
+        4 => 'sm:grid-cols-4',
+        5 => 'sm:grid-cols-5',
+        6 => 'sm:grid-cols-6',
+    ];
+
+    $gridMdMap = [
+        1 => 'md:grid-cols-1',
+        2 => 'md:grid-cols-2',
+        3 => 'md:grid-cols-3',
+        4 => 'md:grid-cols-4',
+        5 => 'md:grid-cols-5',
+        6 => 'md:grid-cols-6',
+    ];
+
+    $gridLgMap = [
+        1 => 'lg:grid-cols-1',
+        2 => 'lg:grid-cols-2',
+        3 => 'lg:grid-cols-3',
+        4 => 'lg:grid-cols-4',
+        5 => 'lg:grid-cols-5',
+        6 => 'lg:grid-cols-6',
+    ];
+
+    $gridCols = trim(
+        ($gridBaseMap[$baseCols] ?? 'grid-cols-2') . ' ' .
+        ($gridSmMap[$smCols] ?? 'sm:grid-cols-3') . ' ' .
+        ($gridMdMap[$mdCols] ?? 'md:grid-cols-4') . ' ' .
+        ($gridLgMap[$lgCols] ?? 'lg:grid-cols-6')
+    );
 
     $items = collect($content['items'] ?? [])->map(function ($item) {
         if (is_array($item)) {
             return [
                 'question' => (string) ($item['question'] ?? $item['text'] ?? ''),
+                'image' => (string) ($item['image'] ?? ''),
+                'image_alt' => (string) ($item['image_alt'] ?? $item['alt'] ?? $item['question'] ?? $item['text'] ?? ''),
             ];
         }
 
         return [
             'question' => (string) $item,
+            'image' => '',
+            'image_alt' => '',
         ];
-    })->filter(fn ($item) => trim($item['question']) !== '')->values();
+    })->filter(fn ($item) => trim($item['question']) !== '' || trim($item['image']) !== '')->values();
 
-    $tones = ['sun', 'lime', 'sky', 'pink', 'orange', 'violet'];
+    $tones = ['butter', 'sage', 'sky', 'rose', 'peach', 'lavender'];
+
+    $toneStyles = [
+        'butter' => [
+            'outer' => 'bg-amber-100 dark:bg-amber-100/95',
+            'surface' => 'from-amber-50 via-white to-amber-100 dark:from-amber-50 dark:via-white dark:to-amber-100',
+            'fold' => 'bg-amber-100 dark:bg-amber-100',
+            'ring' => 'ring-amber-100/80 dark:ring-amber-100/70',
+        ],
+        'sage' => [
+            'outer' => 'bg-emerald-100 dark:bg-emerald-100/95',
+            'surface' => 'from-emerald-50 via-white to-emerald-100 dark:from-emerald-50 dark:via-white dark:to-emerald-100',
+            'fold' => 'bg-emerald-100 dark:bg-emerald-100',
+            'ring' => 'ring-emerald-100/80 dark:ring-emerald-100/70',
+        ],
+        'sky' => [
+            'outer' => 'bg-sky-100 dark:bg-sky-100/95',
+            'surface' => 'from-sky-50 via-white to-sky-100 dark:from-sky-50 dark:via-white dark:to-sky-100',
+            'fold' => 'bg-sky-100 dark:bg-sky-100',
+            'ring' => 'ring-sky-100/80 dark:ring-sky-100/70',
+        ],
+        'rose' => [
+            'outer' => 'bg-rose-100 dark:bg-rose-100/95',
+            'surface' => 'from-rose-50 via-white to-rose-100 dark:from-rose-50 dark:via-white dark:to-rose-100',
+            'fold' => 'bg-rose-100 dark:bg-rose-100',
+            'ring' => 'ring-rose-100/80 dark:ring-rose-100/70',
+        ],
+        'peach' => [
+            'outer' => 'bg-orange-100 dark:bg-orange-100/95',
+            'surface' => 'from-orange-50 via-white to-orange-100 dark:from-orange-50 dark:via-white dark:to-orange-100',
+            'fold' => 'bg-orange-100 dark:bg-orange-100',
+            'ring' => 'ring-orange-100/80 dark:ring-orange-100/70',
+        ],
+        'lavender' => [
+            'outer' => 'bg-violet-100 dark:bg-violet-100/95',
+            'surface' => 'from-violet-50 via-white to-violet-100 dark:from-violet-50 dark:via-white dark:to-violet-100',
+            'fold' => 'bg-violet-100 dark:bg-violet-100',
+            'ring' => 'ring-violet-100/80 dark:ring-violet-100/70',
+        ],
+    ];
 @endphp
 
 @section('title', $content['page_title'])
 
-@section('style')
-    <style>
-        [data-warmup-game] {
-            --wu-ink: #1f1a36;
-        }
-
-        @keyframes wuCardIn {
-            0% { opacity: 0; transform: translateY(14px) scale(.96); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes wuCoverAway {
-            0% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
-            100% { opacity: 0; transform: translateY(-14px) rotate(-3deg) scale(.94); }
-        }
-
-        @keyframes wuQuestionIn {
-            0% { opacity: .15; transform: scale(.98); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes wuPop {
-            0% { opacity: 0; transform: translateY(12px) scale(.97); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        [data-warmup-game] .wu-board {
-            border: 1px solid rgba(255, 255, 255, .74);
-            background: rgba(255, 255, 255, .38);
-            box-shadow: 0 20px 52px rgba(31, 41, 55, .12);
-            backdrop-filter: blur(10px);
-        }
-
-        [data-warmup-game] .wu-card {
-            --wu-accent: #fbbf24;
-            --wu-accent-dark: #f59e0b;
-            --wu-soft: #fef3c7;
-            position: relative;
-            isolation: isolate;
-            border: 5px solid var(--wu-ink);
-            background: linear-gradient(180deg, var(--wu-soft), #fff);
-            box-shadow:
-                7px 7px 0 rgba(31, 26, 54, .42),
-                inset 0 0 0 5px var(--wu-accent);
-            animation: wuCardIn .34s cubic-bezier(.2,.8,.2,1) both;
-            transition: transform .16s ease, box-shadow .16s ease;
-        }
-
-        [data-warmup-game] .wu-card:hover {
-            transform: translateY(-4px);
-            box-shadow:
-                9px 10px 0 rgba(31, 26, 54, .38),
-                inset 0 0 0 5px var(--wu-accent);
-        }
-
-        [data-warmup-game] .wu-card:focus-visible {
-            outline: none;
-            box-shadow:
-                0 0 0 4px rgba(15, 23, 42, .16),
-                7px 7px 0 rgba(31, 26, 54, .42),
-                inset 0 0 0 5px var(--wu-accent);
-        }
-
-        [data-warmup-game] .wu-card[data-tone="sun"] {
-            --wu-accent: #fde047;
-            --wu-accent-dark: #f59e0b;
-            --wu-soft: #fffbeb;
-        }
-
-        [data-warmup-game] .wu-card[data-tone="lime"] {
-            --wu-accent: #86efac;
-            --wu-accent-dark: #22c55e;
-            --wu-soft: #f0fdf4;
-        }
-
-        [data-warmup-game] .wu-card[data-tone="sky"] {
-            --wu-accent: #67e8f9;
-            --wu-accent-dark: #06b6d4;
-            --wu-soft: #ecfeff;
-        }
-
-        [data-warmup-game] .wu-card[data-tone="pink"] {
-            --wu-accent: #f472b6;
-            --wu-accent-dark: #db2777;
-            --wu-soft: #fdf2f8;
-        }
-
-        [data-warmup-game] .wu-card[data-tone="orange"] {
-            --wu-accent: #fb923c;
-            --wu-accent-dark: #ea580c;
-            --wu-soft: #fff7ed;
-        }
-
-        [data-warmup-game] .wu-card[data-tone="violet"] {
-            --wu-accent: #c4b5fd;
-            --wu-accent-dark: #7c3aed;
-            --wu-soft: #f5f3ff;
-        }
-
-        [data-warmup-game] .wu-question {
-            position: absolute;
-            inset: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 13px;
-            padding: .7rem;
-            background: linear-gradient(180deg, var(--wu-accent), var(--wu-accent-dark));
-            color: #111827;
-            font-size: clamp(.86rem, 1.3vw, 1.12rem);
-            font-weight: 900;
-            line-height: 1.15;
-            text-align: center;
-            opacity: 0;
-            transform: scale(.98);
-        }
-
-        [data-warmup-game] .wu-card.is-opened .wu-question {
-            animation: wuQuestionIn .2s ease both;
-        }
-
-        [data-warmup-game] .wu-cover {
-            position: absolute;
-            inset: 11px;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 4px solid var(--wu-ink);
-            border-radius: 13px;
-            background: #f8fafc;
-            color: #020617;
-            box-shadow: inset 0 -5px 0 rgba(15, 23, 42, .06);
-            font-size: clamp(1.9rem, 4vw, 3rem);
-            font-weight: 900;
-            transition: opacity .18s ease, transform .18s ease;
-        }
-
-        [data-warmup-game] .wu-cover::after {
-            content: "";
-            position: absolute;
-            right: -4px;
-            bottom: -4px;
-            width: 29px;
-            height: 29px;
-            border-top: 4px solid var(--wu-ink);
-            border-left: 4px solid var(--wu-ink);
-            border-radius: 13px 0 13px 0;
-            background: linear-gradient(135deg, #fff 0%, #fff 48%, #e9d5ff 49%, #f8fafc 100%);
-        }
-
-        [data-warmup-game] .wu-card.is-opened .wu-cover {
-            pointer-events: none;
-            animation: wuCoverAway .24s ease forwards;
-        }
-
-        [data-warmup-game] .wu-progress {
-            border: 2px solid rgba(31, 26, 54, .12);
-            background: rgba(255, 255, 255, .78);
-            box-shadow: 0 8px 20px rgba(31, 41, 55, .08);
-        }
-
-        [data-warmup-game] .wu-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .45rem;
-            border-radius: 999px;
-            padding: .66rem 1rem;
-            border: 2px solid var(--wu-ink);
-            background: #fff;
-            color: var(--wu-ink);
-            font-size: .82rem;
-            font-weight: 900;
-            box-shadow: 4px 4px 0 rgba(31, 26, 54, .26);
-            transition: transform .16s ease, box-shadow .16s ease;
-        }
-
-        [data-warmup-game] .wu-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 5px 6px 0 rgba(31, 26, 54, .22);
-        }
-
-        [data-warmup-game] .wu-btn:active {
-            transform: translateY(1px);
-            box-shadow: 2px 2px 0 rgba(31, 26, 54, .22);
-        }
-
-        [data-warmup-game] .wu-modal-card {
-            animation: wuPop .24s cubic-bezier(.2,.8,.2,1) both;
-        }
-
-        .dark [data-warmup-game] .wu-board,
-        .dark [data-warmup-game] .wu-progress {
-            border-color: rgba(255, 255, 255, .12);
-            background: rgba(15, 23, 42, .62);
-        }
-
-        .dark [data-warmup-game] .wu-question {
-            color: #0f172a;
-        }
-
-        @media (max-width: 640px) {
-            [data-warmup-game] .wu-card {
-                border-width: 4px;
-                box-shadow:
-                    4px 5px 0 rgba(31, 26, 54, .34),
-                    inset 0 0 0 4px var(--wu-accent);
-            }
-
-            [data-warmup-game] .wu-cover,
-            [data-warmup-game] .wu-question {
-                inset: 8px;
-            }
-        }
-    </style>
-@endsection
-
 @section('content')
-    <main data-warmup-game class="min-h-[100dvh] overflow-x-hidden overflow-y-auto">
-        <div class="mx-auto flex min-h-[100dvh] w-full max-w-[96rem] items-center px-4 py-5 sm:px-8 lg:px-10">
+    <main data-warmup-game class="min-h-[100dvh] overflow-x-hidden overflow-y-auto font-['Plus_Jakarta_Sans']">
+        <div
+                class="fixed inset-0 z-[3000] hidden items-center justify-center bg-slate-950/35 p-4 backdrop-blur-sm"
+                data-warmup-popup
+                aria-hidden="true"
+        >
+            <button
+                    type="button"
+                    class="absolute inset-0 cursor-default"
+                    data-close-popup
+                    aria-label="{{ $content['close_label'] }}"
+            ></button>
+
+            <section class="relative w-full max-w-[600px] rounded-[2rem] border-[5px] border-slate-800 bg-white p-3 shadow-[10px_12px_0_rgba(30,41,59,0.18),0_28px_80px_rgba(15,23,42,0.24)] dark:border-slate-700 dark:bg-white dark:shadow-[8px_10px_0_rgba(15,23,42,0.55),0_24px_70px_rgba(15,23,42,0.45)] sm:p-4">
+                <button
+                        type="button"
+                        class="absolute -right-3 -top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full border-[3px] border-slate-800 bg-white text-xl font-black leading-none text-slate-900 shadow-[3px_4px_0_rgba(30,41,59,0.18)] transition hover:-translate-y-0.5"
+                        data-close-popup
+                        aria-label="{{ $content['close_label'] }}"
+                >
+                    ×
+                </button>
+
+                <div data-popup-panel class="rounded-[1.5rem] bg-gradient-to-br from-slate-50 via-white to-slate-100 p-4 ring-8 ring-slate-100/80 dark:from-slate-50 dark:via-white dark:to-slate-100 dark:ring-slate-100/80 sm:p-5">
+                    <div data-popup-image-frame class="hidden h-[230px] w-full overflow-hidden rounded-[1.25rem] border border-white bg-white shadow-sm sm:h-[280px] md:h-[320px]">
+                        <img
+                                src=""
+                                alt=""
+                                class="h-full w-full object-cover"
+                                draggable="false"
+                                data-popup-image
+                        >
+                    </div>
+
+                    <p data-popup-text class="mt-4 text-center text-2xl font-black leading-[1.08] tracking-[-0.04em] text-slate-950 sm:text-3xl md:text-4xl"></p>
+                </div>
+            </section>
+        </div>
+
+        <div class="mx-auto flex min-h-[100dvh] w-full max-w-[90rem] items-center px-4 py-4 sm:px-6 sm:py-5 lg:px-10 lg:py-6">
             <section class="w-full">
-                <div class="grid place-items-center gap-4 text-center">
+                <div class="grid place-items-center gap-4 text-center sm:gap-5">
                     @include('slider.components.title-subtitle')
 
-                    <section class="w-full max-w-[92rem]">
-                        <div class="wu-board rounded-[1.75rem] p-4 sm:p-5 lg:p-6">
+                    <section class="w-full max-w-[86rem]">
+                        <div class="rounded-[2rem] border border-white/70 bg-white/55 p-3 shadow-[0_24px_70px_-44px_rgba(15,23,42,0.45)] backdrop-blur-md dark:border-white/10 dark:bg-slate-900/62 dark:shadow-[0_24px_70px_-44px_rgba(15,23,42,0.8)] sm:p-4 lg:p-5">
                             <div class="mb-4 flex flex-wrap items-center justify-between gap-3 text-left">
-                                <div class="wu-progress rounded-2xl px-4 py-3">
-                                    <p class="text-sm font-black text-slate-950 dark:text-white sm:text-lg">
+                                <div class="rounded-2xl border border-white/80 bg-white/80 px-4 py-3 shadow-sm backdrop-blur-sm dark:border-white/10 dark:bg-slate-800/80 dark:shadow-none">
+                                    <p class="text-sm font-black leading-[1.35] tracking-[-0.01em] text-slate-900 dark:text-white sm:text-base lg:text-lg">
                                         {{ $content['instruction'] }}
                                     </p>
-                                    <p class="mt-1 text-xs font-black text-slate-600 dark:text-slate-300">
+                                    <p class="mt-1 text-xs font-black text-slate-500 dark:text-slate-300 sm:text-sm">
                                         <span data-open-count>0</span>/<span>{{ $items->count() }}</span> opened
                                     </p>
                                 </div>
 
-                                <button type="button" class="wu-btn" data-reset-warmup>
+                                <button
+                                        type="button"
+                                        class="inline-flex items-center justify-center rounded-full border-[3px] border-slate-800 bg-white px-5 py-2.5 text-sm font-black text-slate-900 shadow-[4px_5px_0_rgba(30,41,59,0.18)] transition duration-150 hover:-translate-y-0.5 hover:shadow-[5px_6px_0_rgba(30,41,59,0.16)] active:translate-y-0 active:shadow-[2px_2px_0_rgba(30,41,59,0.16)] dark:border-slate-500/80 dark:bg-slate-700 dark:text-slate-50 dark:shadow-[3px_4px_0_rgba(15,23,42,0.35)] dark:hover:bg-slate-600"
+                                        data-reset-warmup
+                                >
                                     {{ $content['retake_label'] }}
                                 </button>
                             </div>
 
                             <div class="grid {{ $gridCols }} {{ $content['grid']['gap'] }}">
                                 @foreach($items as $index => $item)
-                                    @php($tone = $tones[$index % count($tones)])
+                                    @php
+                                        $tone = $tones[$index % count($tones)];
+                                        $toneStyle = $toneStyles[$tone] ?? $toneStyles['butter'];
+                                        $hasImage = trim((string)($item['image'] ?? '')) !== '';
+                                        $hasQuestion = trim((string)($item['question'] ?? '')) !== '';
+                                    @endphp
+
                                     <button
                                             type="button"
-                                            class="wu-card {{ $content['grid']['card_height'] }} rounded-[1.15rem]"
+                                            class="group relative isolate {{ $content['grid']['card_height'] }} overflow-hidden rounded-[1.55rem] border-[5px] border-slate-800 {{ $toneStyle['outer'] }} p-2 text-left shadow-[5px_6px_0_rgba(30,41,59,0.18)] transition duration-150 hover:-translate-y-1 hover:shadow-[6px_8px_0_rgba(30,41,59,0.16)] focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-900/20 dark:border-slate-700 dark:shadow-[5px_6px_0_rgba(15,23,42,0.42)] dark:hover:shadow-[6px_8px_0_rgba(15,23,42,0.36)]"
                                             data-warmup-box
                                             data-index="{{ $index }}"
-                                            data-tone="{{ $tone }}"
-                                            style="animation-delay: {{ $index * .025 }}s"
+                                            data-popup-surface="{{ $toneStyle['surface'] }}"
+                                            data-popup-ring="{{ $toneStyle['ring'] }}"
                                             aria-label="{{ $content['box_label'] }} {{ $index + 1 }}"
                                     >
-                                        <span class="wu-question">{{ $item['question'] }}</span>
-                                        <span class="wu-cover">{{ $index + 1 }}</span>
+                                        <span
+                                                class="absolute inset-2 z-10 flex rounded-[1.1rem] bg-gradient-to-br {{ $toneStyle['surface'] }} p-2 opacity-0 scale-[0.98] shadow-inner transition duration-200 ease-out"
+                                                data-open-content
+                                        >
+                                            <span class="flex h-full w-full flex-col items-center justify-center gap-2 overflow-hidden rounded-xl">
+                                                @if($hasImage)
+                                                    <span class="block h-[58%] w-full shrink-0 overflow-hidden rounded-xl border border-white bg-white shadow-sm">
+                                                        <img
+                                                                src="{{ $item['image'] }}"
+                                                                alt="{{ $item['image_alt'] }}"
+                                                                class="h-full w-full object-cover"
+                                                                loading="lazy"
+                                                                draggable="false"
+                                                        >
+                                                    </span>
+                                                @else
+                                                    <span class="hidden h-[58%] w-full shrink-0"></span>
+                                                @endif
+
+                                                @if($hasQuestion)
+                                                    <span class="flex min-h-0 w-full flex-1 items-center justify-center overflow-hidden px-1 text-center text-[0.74rem] font-black leading-[1.06] tracking-[-0.035em] text-slate-950 sm:text-[0.82rem] md:text-[0.9rem] lg:text-[0.98rem] xl:text-[1.05rem]">
+                                                        {{ $item['question'] }}
+                                                    </span>
+                                                @endif
+                                            </span>
+                                        </span>
+
+                                        <span
+                                                class="absolute inset-2 z-20 flex items-center justify-center overflow-hidden rounded-[1.1rem] border-[3px] border-slate-800 bg-slate-50 text-slate-950 shadow-[inset_0_-5px_0_rgba(15,23,42,0.05)] transition duration-200 ease-out group-hover:bg-white dark:border-slate-700 dark:bg-slate-50 dark:text-slate-950"
+                                                data-cover
+                                        >
+                                            <span class="text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl lg:text-6xl">
+                                                {{ $index + 1 }}
+                                            </span>
+
+                                            <span class="absolute bottom-0 right-0 h-10 w-10 overflow-hidden rounded-tl-2xl">
+                                                <span class="absolute bottom-0 right-0 h-full w-full rounded-tl-2xl border-l-[3px] border-t-[3px] border-slate-800 bg-white shadow-[-3px_-3px_0_rgba(30,41,59,0.08)] dark:border-slate-700 dark:bg-white"></span>
+                                                <span class="absolute -bottom-5 -right-5 h-12 w-12 rotate-45 border border-white/70 {{ $toneStyle['fold'] }} dark:border-white/10"></span>
+                                            </span>
+                                        </span>
                                     </button>
                                 @endforeach
                             </div>
@@ -313,60 +271,44 @@
                 </div>
             </section>
         </div>
-
-        <div class="fixed inset-0 z-[3000] hidden" data-complete-modal>
-            <div class="absolute inset-0 bg-slate-900/45 backdrop-blur-sm dark:bg-black/65"></div>
-
-            <div class="relative flex min-h-full w-full items-center justify-center p-4 sm:p-6">
-                <div class="wu-modal-card w-full max-w-xl rounded-[1.75rem] border-4 border-slate-950 bg-white p-7 text-center shadow-2xl dark:border-slate-200 dark:bg-slate-900">
-                    <h2 class="text-3xl font-black text-slate-950 dark:text-white">
-                        {{ $content['complete_title'] }}
-                    </h2>
-                    <p class="mt-2 text-sm font-bold text-slate-500 dark:text-slate-400">
-                        {{ $content['complete_subtitle'] }}
-                    </p>
-
-                    <div class="mt-6 flex flex-wrap justify-center gap-2">
-                        <button type="button" class="wu-btn" data-close-complete>
-                            {{ $content['close_label'] }}
-                        </button>
-                        <button type="button" class="wu-btn" data-reset-warmup>
-                            {{ $content['retake_label'] }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </main>
 @endsection
 
 @section('script')
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const root = document.querySelector('[data-warmup-game]');
+        document.addEventListener('DOMContentLoaded', function () {
+            var root = document.querySelector('[data-warmup-game]');
             if (!root) return;
 
-            const ITEMS = @json($items);
-            const SOUNDS = @json($content['sounds']);
+            var ITEMS = @json($items);
+            var SOUNDS = @json($content['sounds']);
 
-            const state = {
-                opened: new Set(),
-                completedShown: false,
+            var state = {
+                opened: {},
+                openedCount: 0,
+                zoomedIndex: null
             };
 
-            const audio = new Audio();
-            const boxes = Array.from(root.querySelectorAll('[data-warmup-box]'));
-            const openCount = root.querySelector('[data-open-count]');
-            const completeModal = root.querySelector('[data-complete-modal]');
+            var audio = new Audio();
+            var boxes = Array.prototype.slice.call(root.querySelectorAll('[data-warmup-box]'));
+            var openCount = root.querySelector('[data-open-count]');
+            var popup = root.querySelector('[data-warmup-popup]');
+            var popupPanel = root.querySelector('[data-popup-panel]');
+            var popupImageFrame = root.querySelector('[data-popup-image-frame]');
+            var popupImage = root.querySelector('[data-popup-image]');
+            var popupText = root.querySelector('[data-popup-text]');
+
+            var popupPanelBaseClass = 'rounded-[1.5rem] bg-gradient-to-br p-4 ring-8 sm:p-5';
+            var popupImageFrameBaseClass = 'h-[230px] w-full overflow-hidden rounded-[1.25rem] border border-white bg-white shadow-sm dark:border-white/10 dark:bg-slate-900 sm:h-[280px] md:h-[320px]';
 
             function playSound(key) {
-                if (!SOUNDS?.[key]) return;
+                if (!SOUNDS || !SOUNDS[key]) return;
 
                 try {
                     audio.pause();
                     audio.currentTime = 0;
                     audio.src = SOUNDS[key];
-                    audio.play().catch(() => {});
+                    audio.play().catch(function () {});
                 } catch (error) {}
             }
 
@@ -378,59 +320,141 @@
             }
 
             function updateOpenedCount() {
-                if (openCount) openCount.textContent = String(state.opened.size);
+                if (openCount) {
+                    openCount.textContent = String(state.openedCount);
+                }
             }
 
-            function closeComplete() {
-                completeModal?.classList.add('hidden');
+            function revealCard(box) {
+                var cover = box.querySelector('[data-cover]');
+                var content = box.querySelector('[data-open-content]');
+
+                if (content) {
+                    content.classList.remove('opacity-0', 'scale-[0.98]');
+                    content.classList.add('opacity-100', 'scale-100');
+                }
+
+                if (cover) {
+                    cover.classList.add('opacity-0', '-translate-y-2', 'scale-95', 'pointer-events-none');
+                }
             }
 
-            function maybeComplete() {
-                if (state.completedShown || state.opened.size !== ITEMS.length) return;
+            function hideCard(box) {
+                var cover = box.querySelector('[data-cover]');
+                var content = box.querySelector('[data-open-content]');
 
-                state.completedShown = true;
-                setTimeout(() => {
-                    completeModal?.classList.remove('hidden');
-                    playSound('done');
-                }, 260);
+                if (content) {
+                    content.classList.add('opacity-0', 'scale-[0.98]');
+                    content.classList.remove('opacity-100', 'scale-100');
+                }
+
+                if (cover) {
+                    cover.classList.remove('opacity-0', '-translate-y-2', 'scale-95', 'pointer-events-none');
+                }
+            }
+
+            function openPopup(index) {
+                if (!ITEMS[index] || !popup) return;
+
+                var item = ITEMS[index];
+                var box = boxes[index];
+                var surfaceClass = box ? box.getAttribute('data-popup-surface') : 'from-slate-50 via-white to-slate-100';
+                var ringClass = box ? box.getAttribute('data-popup-ring') : 'ring-slate-100/80';
+
+                if (popupPanel) {
+                    popupPanel.className = popupPanelBaseClass + ' ' + surfaceClass + ' ' + ringClass;
+                }
+
+                if (popupText) {
+                    popupText.textContent = item.question || '';
+                    if (item.question) {
+                        popupText.classList.remove('hidden');
+                    } else {
+                        popupText.classList.add('hidden');
+                    }
+                }
+
+                if (popupImage && popupImageFrame) {
+                    if (item.image) {
+                        popupImage.src = item.image;
+                        popupImage.alt = item.image_alt || item.question || '';
+                        popupImageFrame.className = popupImageFrameBaseClass;
+                    } else {
+                        popupImage.removeAttribute('src');
+                        popupImage.alt = '';
+                        popupImageFrame.className = popupImageFrameBaseClass + ' hidden';
+                    }
+                }
+
+                state.zoomedIndex = index;
+                popup.classList.remove('hidden');
+                popup.classList.add('flex');
+                popup.setAttribute('aria-hidden', 'false');
+            }
+
+            function closePopup() {
+                if (!popup) return;
+
+                state.zoomedIndex = null;
+                popup.classList.add('hidden');
+                popup.classList.remove('flex');
+                popup.setAttribute('aria-hidden', 'true');
             }
 
             function openBox(index) {
-                if (!ITEMS[index] || state.opened.has(index)) return;
+                if (!ITEMS[index]) return;
 
-                state.opened.add(index);
-                boxes[index]?.classList.add('is-opened');
-                boxes[index]?.setAttribute('aria-label', ITEMS[index].question);
-                updateOpenedCount();
-                playSound('open');
-                maybeComplete();
+                var box = boxes[index];
+                if (!box) return;
+
+                if (!state.opened[index]) {
+                    state.opened[index] = true;
+                    state.openedCount += 1;
+                    box.setAttribute('aria-label', ITEMS[index].question || '{{ $content['box_label'] }} ' + (index + 1));
+                    revealCard(box);
+                    updateOpenedCount();
+                    playSound('open');
+                }
+
+                openPopup(index);
             }
 
             function resetGame() {
-                state.opened.clear();
-                state.completedShown = false;
-                boxes.forEach((box, index) => {
-                    box.classList.remove('is-opened');
-                    box.setAttribute('aria-label', `{{ $content['box_label'] }} ${index + 1}`);
-                    box.style.animationDelay = `${index * .025}s`;
+                state.opened = {};
+                state.openedCount = 0;
+                state.zoomedIndex = null;
+
+                boxes.forEach(function (box, index) {
+                    hideCard(box);
+                    box.setAttribute('aria-label', '{{ $content['box_label'] }} ' + (index + 1));
                 });
+
                 updateOpenedCount();
-                closeComplete();
+                closePopup();
                 stopAudio();
-                //playSound('reset');
             }
 
-            boxes.forEach((box) => {
-                box.addEventListener('click', () => {
-                    openBox(Number(box.dataset.index));
+            boxes.forEach(function (box) {
+                box.addEventListener('click', function () {
+                    openBox(Number(box.getAttribute('data-index')));
                 });
             });
 
-            root.querySelectorAll('[data-reset-warmup]').forEach((button) => {
+            var resetButtons = root.querySelectorAll('[data-reset-warmup]');
+            Array.prototype.forEach.call(resetButtons, function (button) {
                 button.addEventListener('click', resetGame);
             });
 
-            root.querySelector('[data-close-complete]')?.addEventListener('click', closeComplete);
+            var closeButtons = root.querySelectorAll('[data-close-popup]');
+            Array.prototype.forEach.call(closeButtons, function (button) {
+                button.addEventListener('click', closePopup);
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    closePopup();
+                }
+            });
 
             window.stopSlideAudio = stopAudio;
             window.destroySlide = stopAudio;

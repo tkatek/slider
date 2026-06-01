@@ -1,20 +1,7 @@
 <?php
 $content = [
-    'page_title' => 'Practice 6',
     'title' => 'Practice 6',
     'subtitle' => 'Drag and drop each item into its correct group',
-
-    'drag_item_type' => 'text',
-
-    'pool_item_type' => 'text',
-    'show_pool_item_labels' => false,
-
-    'pool_grid_class' => 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7',
-    'category_grid_class' => 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4',
-    'slot_grid_class' => 'grid-cols-2',
-
-    'mobile_pool_visible_cap' => 4,
-    'tablet_pool_visible_cap' => 6,
 
     'categories' => [
         'Long wait' => [
@@ -70,4 +57,4 @@ $content = [
 ];
 ?>
 
-@include('slider.game.drag-and-drop-v2', ['content' => $content])
+@include('slider.game.drag-and-drop', ['content' => $content])

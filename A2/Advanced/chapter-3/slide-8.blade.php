@@ -1,14 +1,14 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
-    'title' => 'New Vocabulary',
-    'subtitle' => '',
 
+    'title' => 'New Vocabulary',
+    'subtitle' => 'Tools & Equipment (Key Vocabulary)',
+    'image_text_style' => 'overlay',
     'groups' => [
         [
-            'key' => 'tools-equipment-1',
-            'title' => 'Tools & Equipment (Key Vocabulary)',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5',
+            'key' => '',
+            'title' => '',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6',
             'items' => [
                 [
                     'text' => 'stethoscope',

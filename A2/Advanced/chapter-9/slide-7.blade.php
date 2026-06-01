@@ -7,7 +7,7 @@ $content = [
         [
             'key' => 'daily-english-habits-expressions',
             'title' => '',
-            'grid_class' => 'grid-cols-1 sm:grid-cols-2 ',
+            'grid_class' => 'grid-cols-2 lg:grid-cols-4',
             'items' => [
                 [
                     'text' => 'Speak English every day.',

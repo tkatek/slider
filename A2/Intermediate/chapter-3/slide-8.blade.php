@@ -9,15 +9,15 @@ $content = [
     'audio' => materialAsset('slider/A2/Intermediate/chapter-3/audios/slide8.mp3'),
 
     'transcript' => [
-        '1. ðŸˆ A Black Cat',
+        '1. A Black Cat',
         'Woman: In different countries, people have different beliefs. A black cat can be lucky or unlucky.',
         'Man: In the U.S., if a black cat walks in front of you, it is bad luck.',
         'Woman: In Scotland, people think a black cat brings money.',
-        '2. ðŸ A Snake',
+        '2. A Snake',
         'Woman: In Thailand, if you dream about a snake, it means you will meet your future husband or wife.',
         'Man: In Japan, seeing a white snake brings good luck.',
         'Woman: I have never seen one!',
-        '3. ðŸŒ• A Full Moon',
+        '3. A Full Moon',
         'Woman: In Spain, people think that going out on a full moon night is dangerous. You may see ghosts.',
         'Man: In Turkey, people believe that if you are born on a full moon, you will have a good future.',
         "Woman: That's a nice idea.",

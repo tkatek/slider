@@ -469,7 +469,7 @@
         }
 
         #ddbPoolBar {
-            position: relative; 
+            position: relative;
             width: 100%;
             max-width: 100%;
             padding: 0;

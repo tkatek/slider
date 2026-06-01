@@ -1,149 +1,121 @@
 <?php
-
 $content = [
-    'page_title' => 'Practise 3',
     'title' => 'Practise 3',
     'subtitle' => 'Match the tools with the right job',
-
-    'drag_item_type' => 'image-with-label',
     'pool_item_type' => 'image',
-    'show_pool_item_labels' => true,
-
-    'pool_grid_class' => 'grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-8 2xl:grid-cols-10',
-    'category_grid_class' => 'grid-cols-2 md:grid-cols-3',
-    'slot_grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4',
-
-    'mobile_pool_visible_cap' => 4,
-    'tablet_pool_visible_cap' => 6,
+    'image_text_style' => 'overlay',
 
     'categories' => [
         'Doctor' => [
+            'emoji' => '🩺',
             'items' => [
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/stethoscope.webp'),
-                    'text' => 'Stethoscope',
-                    'alt' => 'stethoscope',
+                    'text'  => 'Stethoscope',
                 ],
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/thermometer.webp'),
-                    'text' => 'Thermometer',
-                    'alt' => 'thermometer',
+                    'text'  => 'Thermometer',
                 ],
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/syringe.webp'),
-                    'text' => 'Syringe',
-                    'alt' => 'syringe',
+                    'text'  => 'Syringe',
                 ],
             ],
         ],
-
         'Nurse' => [
+            'emoji' => '👩‍⚕️',
             'items' => [
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/gloves.webp'),
-                    'text' => 'Medical gloves',
-                    'alt' => 'medical gloves',
+                    'text'  => 'Medical gloves',
                 ],
             ],
         ],
-
         'Police officer' => [
+            'emoji' => '👮',
             'items' => [
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/handcuffs.webp'),
-                    'text' => 'Handcuffs',
-                    'alt' => 'handcuffs',
+                    'text'  => 'Handcuffs',
                 ],
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/whistle.webp'),
-                    'text' => 'Whistle',
-                    'alt' => 'whistle',
+                    'text'  => 'Whistle',
                 ],
             ],
         ],
-
         'Firefighter' => [
+            'emoji' => '🧑‍🚒',
             'items' => [
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/fire-hose.webp'),
-                    'text' => 'Fire hose',
-                    'alt' => 'fire hose',
+                    'text'  => 'Fire hose',
                 ],
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/helmet.webp'),
-                    'text' => 'Helmet',
-                    'alt' => 'helmet',
+                    'text'  => 'Helmet',
                 ],
             ],
         ],
-
         'Farmer' => [
+            'emoji' => '🧑‍🌾',
             'items' => [
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/tractor.webp'),
-                    'text' => 'Tractor',
-                    'alt' => 'tractor',
+                    'text'  => 'Tractor',
                 ],
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/plough.webp'),
-                    'text' => 'Plough',
-                    'alt' => 'plough',
+                    'text'  => 'Plough',
                 ],
             ],
         ],
-
         'Construction worker' => [
+            'emoji' => '👷',
             'items' => [
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/hammer.webp'),
-                    'text' => 'Hammer',
-                    'alt' => 'hammer',
+                    'text'  => 'Hammer',
                 ],
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/helmet.webp'),
-                    'text' => 'Safety helmet',
-                    'alt' => 'safety helmet',
+                    'text'  => 'Safety helmet',
                 ],
             ],
         ],
-
         'Postman' => [
+            'emoji' => '📮',
             'items' => [
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/mailbag.webp'),
-                    'text' => 'Mailbag',
-                    'alt' => 'mailbag',
+                    'text'  => 'Mailbag',
                 ],
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/bicycle.webp'),
-                    'text' => 'Bicycle',
-                    'alt' => 'bicycle',
+                    'text'  => 'Bicycle',
                 ],
             ],
         ],
-
         'Chef' => [
+            'emoji' => '👨‍🍳',
             'items' => [
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/knife.webp'),
-                    'text' => 'Knife',
-                    'alt' => 'knife',
+                    'text'  => 'Knife',
                 ],
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/frying-pan.webp'),
-                    'text' => 'Frying pan',
-                    'alt' => 'frying pan',
+                    'text'  => 'Frying pan',
                 ],
                 [
                     'image' => materialAsset('slider/A2/Advanced/chapter-3/img/slide8/apron.webp'),
-                    'text' => 'Apron',
-                    'alt' => 'apron',
+                    'text'  => 'Apron',
                 ],
             ],
         ],
     ],
 ];
-
 ?>
 
-@include('slider.game.drag-and-drop-v2', ['content' => $content])
+@include('slider.game.drag-and-drop', ['content' => $content])

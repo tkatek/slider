@@ -1,6 +1,6 @@
 <?php
 $content = [
-    'title'    => "practice 5",
+    'title'    => "Practice 5",
     'subtitle' => 'Choose the correct answer',
     'type' => 'questions_only',
     'image_panel_col_class'  => 'sm:col-span-0',

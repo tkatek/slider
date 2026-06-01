@@ -2,14 +2,14 @@
 $content = [
     'page_title' => 'Listening',
     'title'      => 'Listening',
-    'subtitle'   => '',
+    'subtitle'   => 'Listen to 2 conversations about people’s personal experiences',
 
     'mode' => 'choice_table',
 
     'audio' => materialAsset('slider/A2/Advanced/chapter-4/audios/slide6.mp3'),
 
-    'instruction' => 'Listen to 2 conversations about people’s personal experiences.',
-    'instruction_note' => 'Tick the person who has done each experience. Then role-play the dialogues.',
+    'instruction' => 'Tick the person who has done each experience',
+    'instruction_note' => 'Then role-play the dialogues.',
 
     'row_heading'    => 'Experience',
     'option_heading' => 'Who has done it?',

@@ -56,18 +56,21 @@
         $hintText = $content['hint_text'] ?? 'Tap a card on the left, then tap its match on the right.';
 
         $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+        $isGreenTheme = ($theme['name'] ?? null) === 'green';
         $primaryButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500'));
-        $matchPrimary = $isOrangeTheme ? '#f97316' : '#6366f1';
-        $matchSecondary = $isOrangeTheme ? '#fb923c' : '#38bdf8';
-        $matchPrimaryRgb = $isOrangeTheme ? '249, 115, 22' : '99, 102, 241';
-        $matchSecondaryRgb = $isOrangeTheme ? '251, 146, 60' : '56, 189, 248';
-        $matchGlowOne = $isOrangeTheme ? 'rgba(254, 215, 170, .38)' : 'rgba(191,219,254,.42)';
-        $matchGlowTwo = $isOrangeTheme ? 'rgba(253, 186, 116, .30)' : 'rgba(199,210,254,.34)';
-        $matchDarkGlowOne = $isOrangeTheme ? 'rgba(249, 115, 22, .20)' : 'rgba(59,130,246,.20)';
-        $matchDarkGlowTwo = $isOrangeTheme ? 'rgba(251, 146, 60, .16)' : 'rgba(129,140,248,.16)';
+        $matchPrimary = $isOrangeTheme ? '#f97316' : ($isGreenTheme ? '#16a34a' : '#6366f1');
+        $matchSecondary = $isOrangeTheme ? '#fb923c' : ($isGreenTheme ? '#10b981' : '#38bdf8');
+        $matchPrimaryRgb = $isOrangeTheme ? '249, 115, 22' : ($isGreenTheme ? '22, 163, 74' : '99, 102, 241');
+        $matchSecondaryRgb = $isOrangeTheme ? '251, 146, 60' : ($isGreenTheme ? '16, 185, 129' : '56, 189, 248');
+        $matchGlowOne = $isOrangeTheme ? 'rgba(254, 215, 170, .38)' : ($isGreenTheme ? 'rgba(187,247,208,.38)' : 'rgba(191,219,254,.42)');
+        $matchGlowTwo = $isOrangeTheme ? 'rgba(253, 186, 116, .30)' : ($isGreenTheme ? 'rgba(167,243,208,.30)' : 'rgba(199,210,254,.34)');
+        $matchDarkGlowOne = $isOrangeTheme ? 'rgba(249, 115, 22, .20)' : ($isGreenTheme ? 'rgba(34,197,94,.20)' : 'rgba(59,130,246,.20)');
+        $matchDarkGlowTwo = $isOrangeTheme ? 'rgba(251, 146, 60, .16)' : ($isGreenTheme ? 'rgba(16,185,129,.16)' : 'rgba(129,140,248,.16)');
         $matchAccentGradient = $isOrangeTheme
             ? 'linear-gradient(135deg, #fb923c 0%, #f97316 54%, #ea580c 100%)'
-            : 'linear-gradient(135deg, #38bdf8 0%, #6366f1 54%, #8b5cf6 100%)';
+            : ($isGreenTheme
+                ? 'linear-gradient(135deg, #10b981 0%, #16a34a 54%, #15803d 100%)'
+                : 'linear-gradient(135deg, #38bdf8 0%, #6366f1 54%, #8b5cf6 100%)');
         $dotGradients = $isOrangeTheme ? [
             ['gradient' => 'linear-gradient(135deg, #fb923c, #f97316)', 'solid' => '#f97316'],
             ['gradient' => 'linear-gradient(135deg, #fbbf24, #f59e0b)', 'solid' => '#f59e0b'],
@@ -114,7 +117,7 @@
         $rowToneClasses = [
             'bg-white dark:bg-slate-900',
         ];
-        $matchColumnLabelClass = 'sticky top-0 z-[7] flex min-h-[2.45rem] items-center justify-center rounded-t-2xl rounded-b-none border border-slate-200 border-b-4 border-b-orange-400/80 bg-gradient-to-b from-slate-100 via-white to-stone-50 px-4 py-2 text-center text-[0.8rem] font-black uppercase leading-tight tracking-[0.14em] text-slate-700 shadow-sm shadow-slate-200/60 backdrop-blur dark:border-slate-700 dark:border-b-orange-400/70 dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100 dark:shadow-none sm:min-h-[2.65rem] sm:text-sm lg:min-h-[2.85rem] lg:text-base';
+        $matchColumnLabelClass = 'sticky top-0 z-[7] flex min-h-[2.45rem] items-center justify-center rounded-t-2xl rounded-b-none border border-slate-200 border-b-4 border-b-[var(--match-primary)] bg-gradient-to-b from-slate-100 via-white to-stone-50 px-4 py-2 text-center text-[0.8rem] font-black uppercase leading-tight tracking-[0.14em] text-slate-700 shadow-sm shadow-slate-200/60 backdrop-blur dark:border-slate-700 dark:border-b-[var(--match-primary)] dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100 dark:shadow-none sm:min-h-[2.65rem] sm:text-sm lg:min-h-[2.85rem] lg:text-base';
 
     @endphp
 

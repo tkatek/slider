@@ -1,12 +1,8 @@
 <?php
 $content = [
-    'page_title' => 'Now, It’s your turn to build your resume!',
     'title' => 'Drag and drop',
     'subtitle' => 'Now, It’s your turn to build your resume!',
 
-    'cards_grid' => 'grid-cols-1 sm:grid-cols-3 lg:grid-cols-1',
-    'desktop_game_width' => 100,
-    'desktop_pool_width' => 100,
     'categories' => [
         'Contact Information' => [
             'emoji' => '📇',

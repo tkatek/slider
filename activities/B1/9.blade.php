@@ -11,10 +11,9 @@ $content = [
             'base' => 2,
             'sm'   => 3,
             'md'   => 4,
-            'lg'   => 6,
+            'lg'   => 5,
         ],
-        'gap' => 'gap-3 sm:gap-4 lg:gap-5',
-        'card_height' => 'h-32 sm:h-36 lg:h-40',
+
     ],
 
     'items' => [

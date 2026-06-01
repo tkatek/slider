@@ -1,11 +1,9 @@
 <?php
 $content = [
-    'page_title' => 'Can you tell the time?',
     'title' => 'Can you tell the time?',
     'subtitle' => 'Drag & Drop',
     'type' => 'image',
-    'desktop_game_width' => 90,
-    'desktop_pool_width' => 90,
+
     'categories' => [
         '02:00' => [
             'image' => materialAsset('slider/A1/Beginner/chapter-6/img/2.webp'),

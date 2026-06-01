@@ -1,14 +1,8 @@
 <?php
 $content = [
-    'page_title' => 'Practice 7',
+
     'title'      => 'Practice 7',
     'subtitle'   => 'Drag and drop each keyword next to its definition',
-
-    'cards_grid' => 'grid-cols-2 sm:grid-cols-4',
-    'items_per_line' => 4,
-    'items_per_line_mobile' => 2,
-    'desktop_game_width' => 100,
-    'desktop_pool_width' => 100,
 
     'categories' => [
         'buy food' => [

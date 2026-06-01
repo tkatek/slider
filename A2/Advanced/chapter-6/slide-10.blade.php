@@ -2,13 +2,13 @@
 $content = [
     'page_title' => 'Listening',
     'title'      => 'Listening',
-    'subtitle'   => '',
+    'subtitle'   => 'You will hear five people talking about problems they had working abroad',
 
     'mode'  => 'type_table',
     'audio' => materialAsset('slider/A2/Advanced/chapter-6/audios/slide10.mp3'),
 
-    'instruction'      => 'You will hear five people talking about problems they had working abroad',
-    'instruction_note' => 'For each person decide which problem they mention. Write A–H.',
+    'instruction'      => 'For each person decide which problem they mention. Write A–H',
+    'instruction_note' => '',
 
     'options_list_title' => 'Problems',
     'options_list' => [

@@ -1,41 +1,83 @@
 <?php
-$content = [
-    'title' => 'Practice 7',
-    'subtitle' => 'Choose the correct answer',
 
-    'questions' => [
+$content = [
+    'title'    => 'Practice 7',
+    'subtitle' => '',
+
+    'instruction'      => 'Choose the correct answer',
+    'instruction_note' => '',
+
+    'grid_class' => 'grid-cols-1 sm:grid-cols-2',
+
+    'lines' => [
         [
-            'prefix' => 'I need to call',
-            'suffix' => 'my mom later. She called while I was busy.',
-            'hint' => 'out / back / on / up',
-            'answers' => ['back'],
+            'speaker' => '1',
+            'parts' => [
+                ['text' => 'I need to call '],
+                [
+                    'blank' => true,
+                    'answer' => 'back',
+                    'answers' => ['back'],
+                    'placeholder' => 'out / back / on / up',
+                ],
+                ['text' => ' my mom later. She called while I was busy.'],
+            ],
         ],
         [
-            'prefix' => "Please don't hang",
-            'suffix' => 'yet! I have one more question.',
-            'hint' => 'up / out / down / on',
-            'answers' => ['up'],
+            'speaker' => '2',
+            'parts' => [
+                ['text' => "Please don't hang "],
+                [
+                    'blank' => true,
+                    'answer' => 'up',
+                    'answers' => ['up'],
+                    'placeholder' => 'up / out / down / on',
+                ],
+                ['text' => ' yet! I have one more question.'],
+            ],
         ],
         [
-            'prefix' => 'Sorry to interrupt. Please go',
-            'suffix' => 'with your story.',
-            'hint' => 'up / on / out / off',
-            'answers' => ['on'],
+            'speaker' => '3',
+            'parts' => [
+                ['text' => 'Sorry to interrupt. Please go '],
+                [
+                    'blank' => true,
+                    'answer' => 'on',
+                    'answers' => ['on'],
+                    'placeholder' => 'up / on / out / off',
+                ],
+                ['text' => ' with your story.'],
+            ],
         ],
         [
-            'prefix' => 'The phone line was cut',
-            'suffix' => 'during our conversation.',
-            'hint' => 'up / off / on / out',
-            'answers' => ['off'],
+            'speaker' => '4',
+            'parts' => [
+                ['text' => 'The phone line was cut '],
+                [
+                    'blank' => true,
+                    'answer' => 'off',
+                    'answers' => ['off'],
+                    'placeholder' => 'up / off / on / out',
+                ],
+                ['text' => ' during our conversation.'],
+            ],
         ],
         [
-            'prefix' => 'The connection is',
-            'suffix' => "weak. I can't hear you.",
-            'hint' => 'to / too / very',
-            'answers' => ['too', 'very'],
+            'speaker' => '5',
+            'parts' => [
+                ['text' => 'The connection is '],
+                [
+                    'blank' => true,
+                    'answer' => 'too',
+                    'answers' => ['too', 'very'],
+                    'placeholder' => 'to / too / very',
+                ],
+                ['text' => " weak. I can't hear you."],
+            ],
         ],
     ],
 ];
+
 ?>
 
-@include('slider.game.type-correct-format', ['content' => $content])
+@include('slider.game.listening-missing-word', ['content' => $content])

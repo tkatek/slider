@@ -1,11 +1,11 @@
 <?php
 $content = [
-    'video'      => materialAsset('slider/A2/Intermediate/chapter-8/videos/'),
+    'video'      => materialAsset('slider/A2/Intermediate/chapter-8/video/up-too-encrypted/up-too.m3u8'),
     'thumbnail'  => materialAsset('slider/A2/Intermediate/chapter-8/img/slide4.webp'),
     'isQuiz'     => 0,
     'questions' => [
         [
-            'time' => 9000,
+            'time' => 8000,
             'type' => 'multiple_choice',
             'question' => 'What will the speaker do if the weather is nice?',
             'options' => [
@@ -18,7 +18,7 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 18000,
+            'time' => 15000,
             'type' => 'multiple_choice',
             'question' => 'What might they do if the sun comes out?',
             'options' => [
@@ -31,7 +31,7 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 28000,
+            'time' => 20400,
             'type' => 'multiple_choice',
             'question' => 'What will happen if the speaker runs into Jake?',
             'options' => [
@@ -44,7 +44,7 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 44000,
+            'time' => 31000,
             'type' => 'multiple_choice',
             'question' => 'What will the speaker do if it rains?',
             'options' => [
@@ -57,7 +57,7 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 62000,
+            'time' => 42500,
             'type' => 'multiple_choice',
             'question' => 'What is the final plan if the friend calls on Saturday morning?',
             'options' => [
@@ -71,14 +71,14 @@ $content = [
         ],
     ],
     'subtitles'  => [
-        ['start' => 0,  'end' => 4,  'text' => 'Ahmed: Hey, what are you up to this weekend?'],
-        ['start' => 4,  'end' => 10, 'text' => "Nader: Not sure yet. If the weather is nice, I'll hang out at the park."],
-        ['start' => 10, 'end' => 18, 'text' => 'Ahmed: Sounds good. If the sun comes out, we will check out that new cafe.'],
-        ['start' => 18, 'end' => 27, 'text' => 'Nader: Yeah, and if I run into Jake, I might bring him along.'],
-        ['start' => 27, 'end' => 35, 'text' => 'Ahmed: Cool. If we hang out together, we can catch up on all the news.'],
-        ['start' => 35, 'end' => 45, 'text' => "Nader: But if it rains, I'll stay in and binge-watch a series."],
-        ['start' => 45, 'end' => 55, 'text' => "Ahmed: Same here. If the rain doesn't let up, we should order pizza and chill at my place."],
-        ['start' => 55, 'end' => 64, 'text' => "Nader: Deal. If you call me on Saturday morning, I'll come over."],
+        ['start' => 0,  'end' => 2.5,  'text' => 'Ahmed: Hey, what are you up to this weekend?'],
+        ['start' => 3,  'end' => 7, 'text' => "Nader: Not sure yet. If the weather is nice, I'll hang out at the park."],
+        ['start' => 10, 'end' => 14, 'text' => 'Ahmed: Sounds good. If the sun comes out, we will check out that new cafe.'],
+        ['start' => 16.3, 'end' => 20, 'text' => 'Nader: Yeah, and if I run into Jake, I might bring him along.'],
+        ['start' => 20.8, 'end' => 25, 'text' => 'Ahmed: Cool. If we hang out together, we can catch up on all the news.'],
+        ['start' => 26.8, 'end' => 30, 'text' => "Nader: But if it rains, I'll stay in and binge-watch a series."],
+        ['start' => 31.8, 'end' => 37, 'text' => "Ahmed: Same here. If the rain doesn't let up, we should order pizza and chill at my place."],
+        ['start' => 38.5, 'end' => 42, 'text' => "Nader: Deal. If you call me on Saturday morning, I'll come over."],
     ],
 ];
 ?>

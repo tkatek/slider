@@ -1,11 +1,8 @@
 <?php
 $content = [
-    'page_title'    => 'Practice 4',
     'title'         => 'Practice 4',
     'subtitle'      => 'Match the pictures with the right airport vocabulary',
     'type' => 'image',
-    'items_per_line' => 5,
-    'items_per_line_mobile' => 2,
     'categories' => [
         'Boarding pass' => [
             'image' => materialAsset('slider/A1/Intermediate/chapter-11/img/slide7/boarding-pass.webp'),
