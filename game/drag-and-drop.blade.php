@@ -8,6 +8,11 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
         @keyframes popIn { 0% { transform: scale(.96); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
         @keyframes waveGrowth { 0%,100% { height: 6px; } 50% { height: 16px; } }
+        @keyframes ddNavNudge {
+            0%, 100% { transform: translateX(0) scale(1); }
+            35% { transform: translateX(2px) scale(1.06); }
+            70% { transform: translateX(-1px) scale(1.02); }
+        }
 
         :root {
             --pool-safe-space: 0px;
@@ -50,6 +55,25 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
         }
         .dark .draggable-item.wrong-feedback {
             outline-color: rgba(252,165,165,.82);
+        }
+
+        .pool-nav-btn.pool-nav-hint {
+            color: rgb(79,70,229);
+            border-color: rgba(99,102,241,.35);
+            background: rgba(238,242,255,.96);
+            box-shadow:
+                    0 0 0 4px rgba(99,102,241,.10),
+                    0 8px 18px rgba(79,70,229,.16);
+            animation: ddNavNudge 1.4s ease-in-out 3;
+        }
+
+        .dark .pool-nav-btn.pool-nav-hint {
+            color: rgb(224,231,255);
+            border-color: rgba(129,140,248,.45);
+            background: rgba(67,56,202,.34);
+            box-shadow:
+                    0 0 0 4px rgba(129,140,248,.12),
+                    0 10px 20px rgba(2,6,23,.28);
         }
 
         #poolBar[data-pool-placement="top"] {
@@ -1470,11 +1494,20 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                 this.poolPrevBtn.classList.toggle('hidden', !shouldShow);
                 this.poolNextBtn.classList.toggle('hidden', !shouldShow);
 
-                if (!shouldShow) return;
+                if (!shouldShow) {
+                    this.poolPrevBtn.classList.remove('pool-nav-hint');
+                    this.poolNextBtn.classList.remove('pool-nav-hint');
+                    return;
+                }
 
                 const maxStart = Math.max(0, totalTiles - cap);
-                this.poolPrevBtn.disabled = this.poolStartIndex <= 0;
-                this.poolNextBtn.disabled = this.poolStartIndex >= maxStart;
+                const hasPrevItems = this.poolStartIndex > 0;
+                const hasNextItems = this.poolStartIndex < maxStart;
+
+                this.poolPrevBtn.disabled = !hasPrevItems;
+                this.poolNextBtn.disabled = !hasNextItems;
+                this.poolPrevBtn.classList.toggle('pool-nav-hint', hasPrevItems);
+                this.poolNextBtn.classList.toggle('pool-nav-hint', hasNextItems);
             }
 
             handlePoolPrev(){

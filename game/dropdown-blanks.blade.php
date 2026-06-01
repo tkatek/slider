@@ -1,4 +1,5 @@
 @extends('slider.simple-layout')
+
 @section('style')
     <style>
         @keyframes shakeCard {
@@ -15,214 +16,57 @@
 
         .shake-card { animation: shakeCard .32s ease-in-out; }
         .solved-board { animation: pulseDone .35s ease-out; }
-
         .quiz-select { -webkit-tap-highlight-color: transparent; }
         .dark .quiz-select { color-scheme: dark; }
         .quiz-select option { background: #ffffff; color: #0f172a; }
         .dark .quiz-select option { background: #0b1220; color: #f8fafc; }
 
-        .question-shell {
-            border-radius: 24px;
-            border: 1px solid rgba(226, 232, 240, 0.9);
-            background: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.88) 100%);
-            box-shadow:
-                0 14px 34px rgba(15, 23, 42, 0.06),
-                inset 0 1px 0 rgba(255,255,255,0.8);
+        .slide-layout {
+            --dropdown-accent-bg: rgba(238, 242, 255, .96);
+            --dropdown-accent-border: rgba(129, 140, 248, .48);
+            --dropdown-accent-text: rgb(67, 56, 202);
+            --dropdown-accent-ring: rgba(99, 102, 241, .24);
         }
 
-        .dark .question-shell {
-            border-color: rgba(71, 85, 105, 0.75);
-            background: linear-gradient(180deg, rgba(15,23,42,0.62) 0%, rgba(2,6,23,0.5) 100%);
-            box-shadow:
-                0 14px 34px rgba(0,0,0,0.28),
-                inset 0 1px 0 rgba(255,255,255,0.03);
+        .dark .slide-layout {
+            --dropdown-accent-bg: rgba(67, 56, 202, .26);
+            --dropdown-accent-border: rgba(129, 140, 248, .46);
+            --dropdown-accent-text: rgb(224, 231, 255);
+            --dropdown-accent-ring: rgba(129, 140, 248, .22);
         }
 
-        .sentence-flow {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 8px 10px;
-            min-width: 0;
-            font-weight: 700;
-            line-height: 1.65;
-            letter-spacing: -0.01em;
+        .slide-layout.slide-theme-orange {
+            --dropdown-accent-bg: rgba(255, 237, 213, .96);
+            --dropdown-accent-border: rgba(251, 146, 60, .55);
+            --dropdown-accent-text: rgb(194, 65, 12);
+            --dropdown-accent-ring: rgba(251, 146, 60, .24);
         }
 
-        .sentence-text {
-            color: #0f172a;
+        .dark .slide-layout.slide-theme-orange {
+            --dropdown-accent-bg: rgba(154, 52, 18, .32);
+            --dropdown-accent-border: rgba(251, 146, 60, .48);
+            --dropdown-accent-text: rgb(255, 237, 213);
+            --dropdown-accent-ring: rgba(251, 146, 60, .22);
         }
 
-        .sentence-break {
-            flex-basis: 100%;
-            width: 100%;
-            height: 0;
+        .slide-layout.slide-theme-green {
+            --dropdown-accent-bg: rgba(220, 252, 231, .96);
+            --dropdown-accent-border: rgba(34, 197, 94, .50);
+            --dropdown-accent-text: rgb(21, 128, 61);
+            --dropdown-accent-ring: rgba(34, 197, 94, .22);
         }
 
-        .dark .sentence-text {
-            color: #f8fafc;
+        .dark .slide-layout.slide-theme-green {
+            --dropdown-accent-bg: rgba(20, 83, 45, .34);
+            --dropdown-accent-border: rgba(74, 222, 128, .46);
+            --dropdown-accent-text: rgb(220, 252, 231);
+            --dropdown-accent-ring: rgba(74, 222, 128, .22);
         }
 
-        .is-compact-text .sentence-flow {
-            gap: 7px 9px;
-            font-weight: 600;
-            line-height: 1.58;
-            letter-spacing: -0.005em;
-        }
-
-        .sentence-select-wrap {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .helper-note {
-            border-radius: 18px;
-            border: 1px solid rgba(226, 232, 240, 0.85);
-            background: rgba(255, 255, 255, 0.72);
-            backdrop-filter: blur(8px);
-        }
-
-        .dark .helper-note {
-            border-color: rgba(71, 85, 105, 0.7);
-            background: rgba(15, 23, 42, 0.45);
-        }
-
-        .dropdown-btn-primary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .5rem;
-            border-radius: .5rem;
-            padding: .375rem .75rem;
-            font-size: .75rem;
-            font-weight: 900;
-            color: #fff;
-            border: 1px solid rgba(255,255,255,.2);
-            background: linear-gradient(135deg, #9333ea, #4f46e5, #2563eb);
-            box-shadow: 0 10px 24px rgba(79,70,229,.10);
-            transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
-        }
-
-        .dropdown-btn-primary:hover { transform: scale(1.05); }
-        .dropdown-btn-primary:active { transform: scale(.95); }
-
-        .dropdown-btn-neutral {
-            color: #fff;
-            border-color: rgba(255,255,255,.12);
-            background: linear-gradient(135deg, #57534e, #3f3f46, #0f172a);
-            box-shadow: 0 12px 28px rgba(2,6,23,.24);
-        }
-
-        .dropdown-btn-neutral:hover {
-            background: linear-gradient(135deg, #44403c, #27272a, #020617);
-            box-shadow: 0 14px 30px rgba(2,6,23,.28);
-        }
-
-        .dropdown-btn-reveal {
-            color: rgb(154 52 18);
-            border-color: rgb(253 186 116);
-            background: rgb(255 237 213);
-            box-shadow: 0 8px 22px rgba(234,88,12,.10);
-        }
-
-        .dropdown-btn-reveal:hover {
-            background: rgb(254 215 170);
-            box-shadow: 0 10px 24px rgba(234,88,12,.14);
-        }
-
-        .dropdown-btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .5rem;
-            border-radius: .5rem;
-            padding: .375rem .75rem;
-            font-size: .75rem;
-            font-weight: 900;
-            color: rgb(15 23 42);
-            border: 1px solid rgb(226 232 240);
-            background: #fff;
-            box-shadow: 0 8px 22px rgba(2,6,23,.05);
-            transition: transform .2s ease, background .2s ease, box-shadow .2s ease, opacity .2s ease;
-        }
-
-        .dropdown-btn-secondary:hover {
-            transform: scale(1.05);
-            background: rgb(248 250 252);
-        }
-
-        .dropdown-btn-secondary:active { transform: scale(.98); }
-
-        .dark .dropdown-btn-secondary {
-            color: #fff;
-            border-color: rgb(51 65 85);
-            background: rgb(30 41 59);
-        }
-
-        .dark .dropdown-btn-secondary:hover {
-            background: rgb(51 65 85);
-        }
-
-        .dark .dropdown-btn-reveal {
-            color: rgb(254 215 170);
-            border-color: rgba(194, 65, 12, .45);
-            background: rgba(154, 52, 18, .35);
-        }
-
-        .dark .dropdown-btn-reveal:hover {
-            background: rgba(154, 52, 18, .5);
-        }
-
-        .dark .dropdown-btn-neutral {
-            color: rgb(248 250 252);
-            border-color: rgba(255,255,255,.12);
-            background: linear-gradient(135deg, #57534e, #3f3f46, #0f172a);
-            box-shadow: 0 12px 26px rgba(0,0,0,.35);
-        }
-
-        .dark .dropdown-btn-neutral:hover {
-            background: linear-gradient(135deg, #44403c, #27272a, #020617);
-        }
-
-        .dropdown-btn-warning {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .5rem;
-            border-radius: .5rem;
-            padding: .375rem .75rem;
-            font-size: .75rem;
-            font-weight: 900;
-            color: rgb(120 53 15);
-            border: 1px solid rgb(253 186 116);
-            background: rgb(254 243 199);
-            box-shadow: 0 8px 22px rgba(120,53,15,.10);
-            transition: transform .2s ease, background .2s ease, box-shadow .2s ease, opacity .2s ease;
-        }
-
-        .dropdown-btn-warning:hover {
-            transform: scale(1.05);
-            background: rgb(253 230 138);
-        }
-
-        .dropdown-btn-warning:active { transform: scale(.98); }
-
-        .dark .dropdown-btn-warning {
-            color: rgb(254 243 199);
-            border-color: rgba(180, 83, 9, .45);
-            background: rgba(120, 53, 15, .35);
-        }
-
-        .dark .dropdown-btn-warning:hover {
-            background: rgba(120, 53, 15, .5);
-        }
-
-        @media (max-width: 640px) {
-            .sentence-flow {
-                justify-content: center;
-                gap: 7px 9px;
-                line-height: 1.58;
+        @media (prefers-reduced-motion: reduce) {
+            .shake-card,
+            .solved-board {
+                animation: none !important;
             }
         }
     </style>
@@ -230,147 +74,160 @@
 
 @section('content')
     @php
-        $compactLayout = (bool)($content['compact_layout'] ?? false);
-        $compactText = (bool)($content['compact_text'] ?? $compactLayout);
+        $content = is_array($content ?? null) ? $content : [];
+        $compactLayout = (bool) ($content['compact_layout'] ?? false);
+        $compactText = (bool) ($content['compact_text'] ?? $compactLayout);
         $questionPromptLabel = trim((string) ($content['question_prompt_label'] ?? $content['prompt_label'] ?? $content['instruction_label'] ?? 'Complete the sentence:'));
+        $helperText = trim((string) ($content['helper_text'] ?? 'Choose the correct answer in each box.'));
+        $gameWidthClass = trim((string) ($content['game_width_class'] ?? 'max-w-5xl'));
+        $questionsForMeta = array_values($content['questions'] ?? []);
+        $maxQuestionChars = 0;
+        $maxBlankCount = 0;
+
+        foreach ($questionsForMeta as $questionForMeta) {
+            $segmentsForMeta = is_array($questionForMeta['segments'] ?? null) ? $questionForMeta['segments'] : [];
+            $blankCountForMeta = 0;
+            $charsForMeta = 0;
+
+            foreach ($segmentsForMeta as $segmentForMeta) {
+                if (is_string($segmentForMeta)) {
+                    $charsForMeta += mb_strlen(trim(strip_tags($segmentForMeta)));
+                } elseif (is_array($segmentForMeta)) {
+                    $blankCountForMeta++;
+                    $charsForMeta += mb_strlen(trim((string) ($segmentForMeta['answer'] ?? '')));
+                }
+            }
+
+            $maxQuestionChars = max($maxQuestionChars, $charsForMeta);
+            $maxBlankCount = max($maxBlankCount, $blankCountForMeta);
+        }
+
+        $verticalAlignment = trim((string) ($content['vertical_alignment'] ?? 'auto'));
+        if (!in_array($verticalAlignment, ['auto', 'top', 'center'], true)) {
+            $verticalAlignment = 'auto';
+        }
+
+        $isReadingLikeQuestion = $maxQuestionChars >= 150 || $maxBlankCount >= 3;
+        $topAlignGame = $verticalAlignment === 'top' || ($verticalAlignment === 'auto' && $isReadingLikeQuestion);
+        $mainStackClass = $topAlignGame
+            ? 'justify-start py-4 sm:py-5'
+            : 'justify-center py-4 sm:py-5';
+        $mainFlowClass = $topAlignGame
+            ? 'pt-2 sm:pt-3 lg:pt-4'
+            : 'pt-0';
+
+        $navigationMode = trim((string) ($content['navigation_mode'] ?? 'unanswered'));
+        if (!in_array($navigationMode, ['unanswered', 'sequential'], true)) {
+            $navigationMode = 'unanswered';
+        }
+
+        $selectSize = trim((string) ($content['select_size'] ?? 'auto'));
+        if (!in_array($selectSize, ['compact', 'auto', 'wide'], true)) {
+            $selectSize = 'auto';
+        }
+
+        $selectWidthClass = match ($selectSize) {
+            'compact' => 'min-w-[6.5rem] sm:min-w-[7.25rem] lg:min-w-[8rem]',
+            'wide' => 'min-w-[9.5rem] sm:min-w-[11rem] lg:min-w-[12.5rem]',
+            default => 'min-w-[7.5rem] sm:min-w-[8.75rem] lg:min-w-[9.75rem]',
+        };
+
         if ($questionPromptLabel === '') {
             $questionPromptLabel = 'Complete the sentence:';
         }
+
+        if ($helperText === '') {
+            $helperText = 'Choose the correct answer in each box.';
+        }
     @endphp
-    <div class="font-sans relative isolate min-h-[100dvh] overflow-x-hidden overflow-y-auto dark:text-slate-100 {{ $compactText ? 'is-compact-text' : '' }}">
-            <main class="mx-auto flex min-h-[100dvh] w-full max-w-7xl items-center justify-center px-4 sm:px-8 {{ $compactLayout ? 'py-4 sm:py-7' : 'py-5 sm:py-8' }}">
-            <section class="{{ $compactLayout ? 'p-1 sm:p-3' : 'p-2 sm:p-4' }} flex w-full justify-center">
-                <div class="flex w-full flex-col items-center justify-center text-center {{ $compactLayout ? 'gap-4 sm:gap-5' : 'gap-4 sm:gap-6' }}">
 
-                    @include('slider.components.title-subtitle')
+    <main id="dropdownBlanksGame" class="font-sans flex min-h-[100dvh] w-full flex-col items-center {{ $mainStackClass }} overflow-x-hidden dark:text-slate-100">
+        @include('slider.components.title-subtitle')
+        @include('slider.components.game-status')
 
-                    @include('slider.components.game-status')
+        <div id="dropdownGameFlow" class="mx-auto flex w-full max-w-[1500px] flex-none flex-col items-center {{ $mainFlowClass }} gap-2 px-3 pb-4 sm:gap-2.5 sm:px-5 sm:pb-5 lg:px-7">
+            <section id="gameCard" class="mx-auto flex w-full {{ $gameWidthClass }} flex-col">
+                <div id="questionPanel" class="relative isolate overflow-hidden rounded-[1.6rem] border border-slate-200/70 bg-white/75 shadow-[0_18px_55px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60">
+                    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(99,102,241,0.10)_0%,transparent_52%),radial-gradient(120%_120%_at_100%_0%,rgba(59,130,246,0.08)_0%,transparent_52%)]"></div>
 
-                    <section id="gameCard" class="relative w-full max-w-5xl {{ $compactLayout ? 'p-2.5 sm:p-4 min-h-[360px]' : 'p-2.5 sm:p-4 min-h-[390px]' }}">
-                        <div id="questionPanel" class="h-full overflow-hidden rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl">
-                            <div class="h-full {{ $compactLayout ? 'p-4 sm:p-5' : 'p-4 sm:p-5' }} text-left">
-                                <div class="flex items-center justify-between gap-2 sm:gap-3">
-                                    <div class="min-w-0 text-[11px] sm:text-base font-extrabold text-slate-500 dark:text-slate-400">
-                                        {{ $questionPromptLabel }}
-                                    </div>
-
-                                    <button
-                                        id="btnRevealCorrection"
-                                        class="dropdown-btn-primary dropdown-btn-reveal shrink-0 whitespace-nowrap px-2.5 py-1.5 text-[11px] sm:px-3 sm:py-2 sm:text-xs"
-                                    >
-                                        Reveal correction
-                                    </button>
-                                </div>
-                                <div id="qPrompt" class="my-3 sm:my-4">
-                                    ...
-                                </div>
-                                <div class="helper-note {{ $compactLayout ? 'mt-4' : 'mt-5' }} flex items-center gap-2 px-3 py-2.5 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
-                                    <span class="text-base">👇</span>
-                                    <span>Choose the correct answer in each box.</span>
-                                </div>
-
-                                <div class="{{ $compactLayout ? 'mt-4' : 'mt-4' }} grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
-                                    <button
-                                        id="btnResetInline"
-                                        class="dropdown-btn-secondary py-3"
-                                    >
-                                        Restart 🔁
-                                    </button>
-
-                                    <button
-                                        id="btnAutoCheck"
-                                        class="dropdown-btn-warning py-3"
-                                    >
-                                        Hint ✨ (<span id="autoCheckBadge">2</span>)
-                                    </button>
-
-                                    <button
-                                        id="btnPrev"
-                                        class="dropdown-btn-secondary py-3"
-                                    >
-                                        Previous
-                                    </button>
-
-                                    <button
-                                        id="btnNext"
-                                        class="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-3 text-xs font-black text-white transition duration-200 ease-out hover:scale-105 active:scale-95 sm:px-4 sm:text-sm {{ $theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500' }}"
-                                    >
-                                        Next
-                                    </button>
-                                </div>
+                    <div class="relative z-[1] p-3 text-left sm:p-4 lg:p-5">
+                        <div class="flex items-center justify-between gap-2 sm:gap-3">
+                            <div class="flex min-w-0 flex-col gap-1 text-[11px] font-black tracking-[-0.01em] text-slate-500 dark:text-slate-400 sm:flex-row sm:items-center sm:gap-2 sm:text-sm">
+                                <span>{{ $questionPromptLabel }}</span>
+                                <span id="questionIndicator" class="inline-flex w-fit rounded-full border border-slate-200/70 bg-white/75 px-2 py-0.5 text-[10px] font-black text-slate-500 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/45 dark:text-slate-300">
+                                    1 of 1
+                                </span>
                             </div>
+
+                            <button
+                                    id="btnRevealCorrection"
+                                    type="button"
+                                    class="inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-[color:var(--dropdown-accent-border)] bg-[var(--dropdown-accent-bg)] px-2.5 py-1.5 text-[11px] font-black text-[color:var(--dropdown-accent-text)] shadow-sm transition duration-200 ease-out hover:scale-105 active:scale-95 sm:px-3 sm:text-xs"
+                            >
+                                Reveal correction
+                            </button>
                         </div>
 
-                        @include('slider.components.game-win-modal-correction')
-
-                        {{--
-                            <div class="relative min-h-full w-full flex items-center justify-center p-4 sm:p-6">
-                                <div class="w-full max-w-[42rem] lg:max-w-[46rem] max-h-[88dvh] overflow-y-auto rounded-3xl border border-slate-200/70 dark:border-slate-700/70 bg-white/95 dark:bg-slate-900/95 shadow-2xl">
-                                    <div class="p-5 sm:p-7 lg:p-8 text-center">
-                                        <div class="flex items-center justify-center gap-2 sm:block">
-                                            <div class="text-3xl sm:text-6xl">🎉</div>
-
-                                            <h2 class="text-2xl sm:mt-5 sm:text-4xl leading-none font-black dark:text-white">
-                                                Done
-                                            </h2>
-                                        </div>
-
-                                        <div class="mt-5 sm:mt-8 w-full grid grid-cols-3 gap-2 sm:gap-4">
-                                            <div class="p-2.5 sm:p-5 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
-                                                <div class="text-[9px] sm:text-xs font-bold uppercase tracking-[0.12em] sm:tracking-[0.14em] text-slate-500 dark:text-slate-400">Score</div>
-                                                <div id="finalScore" class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">0</div>
-                                            </div>
-                                            <div class="p-2.5 sm:p-5 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
-                                                <div class="text-[9px] sm:text-xs font-bold uppercase tracking-[0.12em] sm:tracking-[0.14em] text-slate-500 dark:text-slate-400">Time</div>
-                                                <div id="finalTime" class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">00:00</div>
-                                            </div>
-                                            <div class="p-2.5 sm:p-5 bg-white/80 dark:bg-slate-800/80 rounded-2xl shadow border border-slate-200/70 dark:border-slate-700">
-                                                <div class="text-[9px] sm:text-xs font-bold uppercase tracking-[0.12em] sm:tracking-[0.14em] text-slate-500 dark:text-slate-400">Mistakes</div>
-                                                <div id="finalMistakes" class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">0</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="mt-4 sm:mt-6 rounded-2xl border border-slate-200/70 bg-white/80 p-3 sm:p-4 text-left shadow dark:border-slate-700 dark:bg-slate-800/80">
-                                            <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                                                Corrections
-                                            </div>
-                                            <div id="finalCorrection" class="mt-3 text-[15px] sm:text-base font-bold leading-[1.75] sm:leading-[1.85] text-slate-900 dark:text-white"></div>
-                                        </div>
-
-                                        <div class="mt-5 sm:mt-8 grid grid-cols-2 gap-2.5 sm:gap-4">
-                                            <button
-                                                id="btnReset"
-                                                class="dropdown-btn-secondary w-full px-4 py-3 sm:px-8 text-sm"
-                                            >
-                                                Restart 🔁
-                                            </button>
-
-                                            <button
-                                                id="btnContinue"
-                                                class="dropdown-btn-primary dropdown-btn-neutral w-full px-4 py-3 sm:px-8 text-sm"
-                                            >
-                                                Continue ⚡
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div id="qPrompt" class="my-2.5 sm:my-3">
+                            ...
                         </div>
-                        --}}
-                    </section>
 
-                    <div id="toastOne" class="fixed left-1/2 -translate-x-1/2 bottom-24 opacity-0 pointer-events-none z-50">
-                        <div class="px-6 py-2 rounded-full bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 font-black dark:text-white">
-                            <span id="toastIcon"></span>
-                            <span id="toastText"></span>
+                        <div class="flex items-center justify-start gap-2 rounded-[1rem] border border-slate-200/70 bg-white/70 px-3 py-1.5 text-left text-xs font-bold text-slate-600 shadow-sm backdrop-blur dark:border-slate-700/60 dark:bg-slate-900/35 dark:text-slate-300 sm:text-sm">
+                            <span class="text-base leading-none" aria-hidden="true">↓</span>
+                            <span>{{ $helperText }}</span>
+                        </div>
+
+                        <div class="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
+                            <button
+                                    id="btnResetInline"
+                                    type="button"
+                                    class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300/70 bg-white/75 px-3 py-2.5 text-xs font-black text-slate-600 shadow-sm transition duration-200 ease-out hover:scale-[1.02] hover:bg-white active:scale-95 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-200 dark:hover:bg-slate-800 sm:text-sm"
+                            >
+                                Restart
+                            </button>
+
+                            <button
+                                    id="btnAutoCheck"
+                                    type="button"
+                                    class="inline-flex items-center justify-center gap-2 rounded-lg border border-[color:var(--dropdown-accent-border)] bg-[var(--dropdown-accent-bg)] px-3 py-2.5 text-xs font-black text-[color:var(--dropdown-accent-text)] shadow-sm transition duration-200 ease-out hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-55 sm:text-sm"
+                            >
+                                Hint (<span id="autoCheckBadge">2</span>)
+                            </button>
+
+                            <button
+                                    id="btnPrev"
+                                    type="button"
+                                    class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300/70 bg-white/75 px-3 py-2.5 text-xs font-black text-slate-600 shadow-sm transition duration-200 ease-out hover:scale-[1.02] hover:bg-white active:scale-95 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-200 dark:hover:bg-slate-800 sm:text-sm"
+                            >
+                                <span aria-hidden="true">‹</span>
+                                <span>Previous</span>
+                            </button>
+
+                            <button
+                                    id="btnNext"
+                                    type="button"
+                                    class="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-xs font-black text-white shadow-[0_10px_24px_rgba(79,70,229,.14)] transition duration-200 ease-out hover:scale-[1.03] active:scale-95 sm:text-sm {{ $theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500' }}"
+                            >
+                                <span>Next</span>
+                                <span aria-hidden="true">›</span>
+                            </button>
                         </div>
                     </div>
-
                 </div>
-            </section>
-        </main>
 
-    </div>
+                @include('slider.components.game-win-modal-correction')
+            </section>
+
+            <div id="toastOne" class="pointer-events-none fixed bottom-24 left-1/2 z-50 -translate-x-1/2 opacity-0">
+                <div class="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-black text-slate-900 shadow-2xl dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                    <span id="toastIcon"></span>
+                    <span id="toastText"></span>
+                </div>
+            </div>
+
+            <div id="dropdownLiveRegion" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+        </div>
+    </main>
 @endsection
 
 @section('script')
@@ -380,7 +237,12 @@
             const GAME_TITLE = @json($content['title'] ?? 'Exercise');
             const TOTAL = QUESTIONS.length;
             const COMPACT_TEXT = @json($compactText);
+            const NAVIGATION_MODE = @json($navigationMode);
+            const SELECT_WIDTH_CLASS = @json($selectWidthClass);
+            const VERTICAL_ALIGNMENT = @json($verticalAlignment);
 
+            const gameRoot = document.getElementById("dropdownBlanksGame");
+            const gameFlow = document.getElementById("dropdownGameFlow");
             const qPrompt = document.getElementById("qPrompt");
             const progressCount = document.getElementById("tilesCount");
             const correctCount = document.getElementById("correctCount");
@@ -398,6 +260,8 @@
             const toastOne = document.getElementById("toastOne");
             const toastIcon = document.getElementById("toastIcon");
             const toastText = document.getElementById("toastText");
+            const liveRegion = document.getElementById("dropdownLiveRegion");
+            const questionIndicator = document.getElementById("questionIndicator");
 
             const continueBtnModal = document.getElementById("continueBtnModal");
             const restartBtnModal = document.getElementById("restartBtnModal");
@@ -414,16 +278,39 @@
             let wrongedQuestions = new Set();
             let completedQuestions = new Set();
             let revealedQuestions = new Set();
+            let hintedQuestions = new Set();
+            let questionSelections = new Map();
             let autoChecksLeft = 2;
+            let hasRevealedCorrection = false;
             let startTime = Date.now();
             let timerInt = null;
             let toastT = null;
+            let toastFallbackTimer = null;
 
             const audio = {
                 correct: new Audio('/slider/sounds/correct.wav'),
                 wrong: new Audio('/slider/sounds/wrong.wav'),
                 success: new Audio('/slider/sounds/success.wav')
             };
+
+            const clsQuestionShell =
+                "rounded-[1.2rem] border border-slate-200/70 bg-white/75 px-3 py-3 text-left shadow-[0_10px_30px_rgba(2,6,23,0.05)] backdrop-blur " +
+                "dark:border-slate-700/60 dark:bg-slate-900/25 dark:shadow-[0_12px_28px_rgba(2,6,23,0.28)] sm:px-4 sm:py-3.5 lg:px-5";
+
+            const clsSentenceFlow = COMPACT_TEXT
+                ? "flex flex-wrap items-center justify-start gap-x-2 gap-y-2.5 text-left text-sm font-semibold leading-[1.85] tracking-[-0.005em] text-slate-900 dark:text-slate-100 sm:gap-y-2 sm:text-base lg:text-[1.05rem]"
+                : "flex flex-wrap items-center justify-start gap-x-2.5 gap-y-3 text-left text-base font-semibold leading-[1.9] tracking-[-0.01em] text-slate-900 dark:text-slate-100 sm:gap-y-2.5 sm:text-lg lg:text-[1.15rem]";
+
+            const clsSentenceText = "text-slate-900 dark:text-slate-100";
+            const clsSentenceBreak = "h-0 w-full basis-full";
+            const clsSelectWrap = "relative inline-flex items-center align-middle";
+            const clsBaseSelect =
+                "quiz-select appearance-none " + SELECT_WIDTH_CLASS + " w-auto max-w-full rounded-xl border-2 border-dashed border-slate-300/95 " +
+                "min-h-[42px] bg-white/95 px-3.5 py-2 pr-10 text-sm font-black text-slate-900 shadow-sm shadow-slate-900/10 transition duration-200 " +
+                "focus:border-[color:var(--dropdown-accent-border)] focus:outline-none focus:ring-4 focus:ring-[color:var(--dropdown-accent-ring)] " +
+                "dark:[color-scheme:dark] dark:border-slate-500/80 dark:bg-slate-900/55 dark:text-slate-50 dark:shadow-black/30 " +
+                "sm:min-h-[46px] sm:py-2.5 sm:text-base";
+            const clsChevron = "pointer-events-none absolute right-3 text-slate-500 dark:text-slate-200/85";
 
             function play(sound) {
                 if (!sound) return;
@@ -432,23 +319,45 @@
                 sound.play().catch(() => {});
             }
 
+            function formatElapsedTime() {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+                const secs = String(elapsed % 60).padStart(2, '0');
+                return `${mins}:${secs}`;
+            }
+
+            function updateTimerDisplay() {
+                if (timer) timer.textContent = formatElapsedTime();
+            }
+
             function startTimer() {
                 clearInterval(timerInt);
-                timerInt = setInterval(() => {
-                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
-                    const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
-                    const secs = String(elapsed % 60).padStart(2, '0');
-                    if (timer) timer.textContent = `${mins}:${secs}`;
-                }, 1000);
+                updateTimerDisplay();
+                timerInt = setInterval(updateTimerDisplay, 1000);
             }
 
             function showToast(text, icon = "✨") {
+                if (!toastOne || !toastIcon || !toastText) return;
+
                 toastIcon.textContent = icon;
                 toastText.textContent = text;
+                if (liveRegion) liveRegion.textContent = `${icon} ${text}`;
 
-                if (!window.gsap) return;
+                if (toastFallbackTimer) {
+                    clearTimeout(toastFallbackTimer);
+                    toastFallbackTimer = null;
+                }
+
+                if (!window.gsap) {
+                    toastOne.style.opacity = "1";
+                    toastOne.style.transform = "translateX(-50%) translateY(0)";
+                    toastFallbackTimer = setTimeout(() => {
+                        toastOne.style.opacity = "0";
+                    }, 1250);
+                    return;
+                }
+
                 if (toastT) toastT.kill();
-
                 gsap.set(toastOne, { opacity: 0, y: 8 });
                 toastT = gsap.timeline()
                     .to(toastOne, { opacity: 1, y: 0, duration: 0.3 })
@@ -460,21 +369,64 @@
                 return Math.min(progressedQuestions.size, TOTAL);
             }
 
-            function updateUI() {
-                if (progressCount) progressCount.textContent = `${getProgressCount()}/${TOTAL}`;
-                if (correctCount) correctCount.textContent = String(firstTryCorrect);
-                if (mistakesCount) mistakesCount.textContent = String(wrongTries);
-                if (autoCheckBadge) autoCheckBadge.textContent = String(autoChecksLeft);
-                setNavDisabledState(btnPrev, findPreviousUnansweredIndex(idx) < 0);
-                setNavDisabledState(btnNext, findNextUnansweredIndex(idx) < 0);
-            }
-
             function setNavDisabledState(button, disabled) {
                 if (!button) return;
                 button.disabled = disabled;
                 button.classList.toggle("opacity-60", disabled);
                 button.classList.toggle("pointer-events-none", disabled);
                 button.classList.toggle("cursor-not-allowed", disabled);
+            }
+
+            function updateUI() {
+                if (progressCount) progressCount.textContent = `${getProgressCount()}/${TOTAL}`;
+                if (correctCount) correctCount.textContent = String(firstTryCorrect);
+                if (mistakesCount) mistakesCount.textContent = String(wrongTries);
+                if (autoCheckBadge) autoCheckBadge.textContent = String(autoChecksLeft);
+                if (questionIndicator) questionIndicator.textContent = TOTAL > 0 ? `${idx + 1} of ${TOTAL}` : 'No questions';
+                if (btnAutoCheck) btnAutoCheck.disabled = autoChecksLeft <= 0;
+                setNavDisabledState(btnPrev, findPreviousTargetIndex(idx) < 0);
+                setNavDisabledState(btnNext, findNextTargetIndex(idx) < 0);
+
+                if (btnPrev) {
+                    btnPrev.title = NAVIGATION_MODE === 'sequential' ? 'Previous question' : 'Previous unanswered question';
+                    btnPrev.setAttribute('aria-label', btnPrev.title);
+                }
+
+                if (btnNext) {
+                    btnNext.title = NAVIGATION_MODE === 'sequential' ? 'Next question' : 'Next unanswered question';
+                    btnNext.setAttribute('aria-label', btnNext.title);
+                }
+            }
+
+            function getQuestionMetrics(question) {
+                const segments = Array.isArray(question?.segments) ? question.segments : [];
+                return segments.reduce((meta, segment) => {
+                    if (typeof segment === "string") {
+                        meta.chars += String(segment).replace(/<[^>]*>/g, "").trim().length;
+                    } else if (segment && typeof segment === "object") {
+                        meta.blanks += 1;
+                        meta.chars += String(segment.answer ?? "").trim().length;
+                    }
+                    return meta;
+                }, { chars: 0, blanks: 0 });
+            }
+
+            function updateVerticalAlignmentForQuestion(question) {
+                if (!gameRoot || !gameFlow) return;
+
+                const meta = getQuestionMetrics(question);
+                const shouldTopAlign = VERTICAL_ALIGNMENT === 'top'
+                    || (VERTICAL_ALIGNMENT === 'auto' && (meta.chars >= 150 || meta.blanks >= 3));
+
+                gameRoot.classList.toggle('justify-start', shouldTopAlign);
+                gameRoot.classList.toggle('justify-center', !shouldTopAlign);
+
+                gameFlow.classList.remove('pt-0', 'pt-2', 'sm:pt-3', 'lg:pt-4');
+                if (shouldTopAlign) {
+                    gameFlow.classList.add('pt-2', 'sm:pt-3', 'lg:pt-4');
+                } else {
+                    gameFlow.classList.add('pt-0');
+                }
             }
 
             function findPreviousUnansweredIndex(fromIndex) {
@@ -501,6 +453,29 @@
                 return -1;
             }
 
+            function findPreviousTargetIndex(fromIndex) {
+                if (NAVIGATION_MODE === 'sequential') {
+                    return fromIndex > 0 ? fromIndex - 1 : -1;
+                }
+
+                return findPreviousUnansweredIndex(fromIndex);
+            }
+
+            function findNextTargetIndex(fromIndex) {
+                if (NAVIGATION_MODE === 'sequential') {
+                    return fromIndex + 1 < TOTAL ? fromIndex + 1 : -1;
+                }
+
+                return findNextUnansweredIndex(fromIndex);
+            }
+
+            function saveCurrentSelections() {
+                if (!qPrompt || TOTAL === 0) return;
+                const selects = Array.from(qPrompt.querySelectorAll('.quiz-select'));
+                if (!selects.length) return;
+                questionSelections.set(idx, selects.map(select => select.value || ''));
+            }
+
             function shuffle(arr) {
                 const a = [...arr];
                 for (let i = a.length - 1; i > 0; i--) {
@@ -510,28 +485,19 @@
                 return a;
             }
 
-            const clsBaseSelect =
-                "quiz-select appearance-none min-w-[9rem] sm:min-w-[10.5rem] lg:min-w-[11.5rem] w-auto max-w-full rounded-xl px-3 py-2.5 sm:py-3 pr-10 " +
-                "font-black text-sm sm:text-base " +
-                "bg-white/95 text-slate-900 border border-slate-200/80 ring-1 ring-slate-200/60 " +
-                "shadow-md shadow-slate-900/10 " +
-                "focus:outline-none focus:ring-4 focus:ring-indigo-500/25 focus:border-indigo-400/40 " +
-                "dark:[color-scheme:dark] dark:bg-slate-900/55 dark:text-slate-50 dark:border-slate-600/50 dark:ring-slate-700/55 " +
-                "dark:shadow-black/40 dark:focus:ring-indigo-400/25";
-
             function clearState(sel) {
                 sel.classList.remove(
-                    "ring-emerald-300/70", "dark:ring-emerald-300/35", "bg-emerald-100/70", "dark:bg-emerald-400/10", "text-emerald-900", "dark:text-emerald-100",
-                    "ring-rose-300/70", "dark:ring-rose-300/35", "bg-rose-100/70", "dark:bg-rose-400/10", "text-rose-900", "dark:text-rose-100"
+                    "border-emerald-400/70", "ring-emerald-300/70", "dark:ring-emerald-300/35", "bg-emerald-100/70", "dark:bg-emerald-400/10", "text-emerald-900", "dark:text-emerald-100",
+                    "border-rose-400/70", "ring-rose-300/70", "dark:ring-rose-300/35", "bg-rose-100/70", "dark:bg-rose-400/10", "text-rose-900", "dark:text-rose-100"
                 );
             }
 
             function setState(sel, ok) {
                 clearState(sel);
                 if (ok) {
-                    sel.classList.add("ring-emerald-300/70", "dark:ring-emerald-300/35", "bg-emerald-100/70", "dark:bg-emerald-400/10", "text-emerald-900", "dark:text-emerald-100");
+                    sel.classList.add("border-emerald-400/70", "ring-emerald-300/70", "dark:ring-emerald-300/35", "bg-emerald-100/70", "dark:bg-emerald-400/10", "text-emerald-900", "dark:text-emerald-100");
                 } else {
-                    sel.classList.add("ring-rose-300/70", "dark:ring-rose-300/35", "bg-rose-100/70", "dark:bg-rose-400/10", "text-rose-900", "dark:text-rose-100");
+                    sel.classList.add("border-rose-400/70", "ring-rose-300/70", "dark:ring-rose-300/35", "bg-rose-100/70", "dark:bg-rose-400/10", "text-rose-900", "dark:text-rose-100");
                 }
             }
 
@@ -548,7 +514,10 @@
                 wrongedQuestions = new Set();
                 completedQuestions = new Set();
                 revealedQuestions = new Set();
+                hintedQuestions = new Set();
+                questionSelections = new Map();
                 autoChecksLeft = 2;
+                hasRevealedCorrection = false;
                 startTime = Date.now();
                 startTimer();
                 renderQuestion();
@@ -557,11 +526,14 @@
             }
 
             function renderQuestion() {
+                if (!qPrompt) return;
+
                 if (TOTAL === 0) {
+                    updateVerticalAlignmentForQuestion({ segments: [] });
                     qPrompt.innerHTML = `
-                        <div class="question-shell p-4 sm:p-5 lg:p-6">
-                            <div class="sentence-flow justify-center sm:justify-start ${COMPACT_TEXT ? 'text-base sm:text-lg lg:text-xl' : 'text-lg sm:text-xl lg:text-2xl'}">
-                                <span class="sentence-text">No questions found.</span>
+                        <div class="${clsQuestionShell}">
+                            <div class="${clsSentenceFlow}">
+                                <span class="${clsSentenceText}">No questions found.</span>
                             </div>
                         </div>
                     `;
@@ -569,16 +541,17 @@
                     return;
                 }
 
-                const q = QUESTIONS[idx];
+                const q = QUESTIONS[idx] || {};
+                updateVerticalAlignmentForQuestion(q);
+                const segments = Array.isArray(q.segments) ? q.segments : ["Question content is missing."];
+                const savedSelections = questionSelections.get(idx) || [];
                 qPrompt.innerHTML = "";
 
                 const shell = document.createElement("div");
-                shell.className = "question-shell p-4 sm:p-5 lg:p-6";
+                shell.className = clsQuestionShell;
 
                 const flow = document.createElement("div");
-                flow.className = COMPACT_TEXT
-                    ? "sentence-flow text-base sm:text-lg lg:text-xl justify-center sm:justify-start"
-                    : "sentence-flow text-lg sm:text-xl lg:text-2xl justify-center sm:justify-start";
+                flow.className = clsSentenceFlow;
 
                 function appendTextSegment(text) {
                     const pieces = String(text).split(/<br\s*\/?>|\r?\n/gi);
@@ -586,7 +559,7 @@
                     pieces.forEach((piece, pieceIndex) => {
                         if (pieceIndex > 0) {
                             const lineBreak = document.createElement("span");
-                            lineBreak.className = "sentence-break";
+                            lineBreak.className = clsSentenceBreak;
                             lineBreak.setAttribute("aria-hidden", "true");
                             flow.appendChild(lineBreak);
                         }
@@ -594,24 +567,27 @@
                         if (piece === "") return;
 
                         const s = document.createElement("span");
-                        s.className = "sentence-text";
+                        s.className = clsSentenceText;
                         s.textContent = piece;
                         flow.appendChild(s);
                     });
                 }
 
-                (q.segments || []).forEach(seg => {
+                let selectIndex = 0;
+
+                segments.forEach((seg) => {
                     if (typeof seg === "string") {
                         appendTextSegment(seg);
                         return;
                     }
 
                     const wrap = document.createElement("span");
-                    wrap.className = "sentence-select-wrap";
+                    wrap.className = clsSelectWrap;
 
                     const sel = document.createElement("select");
                     sel.className = clsBaseSelect;
-                    sel.dataset.answer = seg.answer;
+                    sel.dataset.answer = String(seg.answer ?? "");
+                    sel.setAttribute("aria-label", `Choose answer for blank ${selectIndex + 1} in question ${idx + 1}`);
 
                     const placeholder = document.createElement("option");
                     placeholder.value = "";
@@ -623,7 +599,7 @@
                     const wrongOptions = Array.isArray(seg.wrong) ? seg.wrong : [seg.wrong];
                     const configuredOptions = Array.isArray(seg.options) ? seg.options : null;
                     const opts = shuffle([...new Set(
-                        (configuredOptions ?? [seg.answer, ...wrongOptions])
+                        (configuredOptions ?? [sel.dataset.answer, ...wrongOptions])
                             .filter(v => v !== undefined && v !== null && v !== "")
                     )]);
 
@@ -634,23 +610,39 @@
                         sel.appendChild(o);
                     });
 
+                    const savedValue = savedSelections[selectIndex];
+                    if (savedValue) {
+                        sel.value = savedValue;
+                    }
+
+                    if (completedQuestions.has(idx) && sel.dataset.answer) {
+                        sel.value = sel.dataset.answer;
+                        setState(sel, true);
+                        sel.disabled = true;
+                        sel.classList.add("opacity-95");
+                    }
+
                     const chevron = document.createElement("span");
-                    chevron.className = "pointer-events-none absolute right-3 text-slate-500 dark:text-slate-200/85";
-                    chevron.innerHTML = `<svg viewBox="0 0 20 20" class="w-4 h-4" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.17l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.24 4.5a.75.75 0 0 1-1.08 0l-4.24-4.5a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd"/></svg>`;
+                    chevron.className = clsChevron;
+                    chevron.innerHTML = `<svg viewBox="0 0 20 20" class="h-4 w-4" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.17l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.24 4.5a.75.75 0 0 1-1.08 0l-4.24-4.5a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd"/></svg>`;
 
                     wrap.appendChild(sel);
                     wrap.appendChild(chevron);
                     flow.appendChild(wrap);
+                    selectIndex++;
                 });
 
                 shell.appendChild(flow);
                 qPrompt.appendChild(shell);
                 updateUI();
 
-                const selects = Array.from(document.querySelectorAll(".quiz-select"));
-                selects.forEach(sel => {
+                Array.from(qPrompt.querySelectorAll(".quiz-select")).forEach(sel => {
                     sel.addEventListener("change", () => {
+                        const selects = Array.from(qPrompt.querySelectorAll(".quiz-select"));
                         const allFilled = selects.every(select => !!select.value);
+
+                        saveCurrentSelections();
+
                         if (allFilled) {
                             evaluateQuestion();
                         } else {
@@ -658,22 +650,24 @@
                         }
                     });
                 });
-
             }
 
             function evaluateQuestion() {
                 if (winModal && !winModal.classList.contains("hidden")) return;
 
-                const all = Array.from(document.querySelectorAll(".quiz-select"));
+                const all = Array.from(qPrompt.querySelectorAll(".quiz-select"));
                 const filled = all.every(s => !!s.value);
 
                 all.forEach(s => {
                     if (!s.value) clearState(s);
                 });
+
                 if (!filled) {
                     showToast("Complete all boxes first", "📝");
                     return;
                 }
+
+                saveCurrentSelections();
 
                 const wrongs = all.filter(s => s.value !== s.dataset.answer);
 
@@ -685,8 +679,9 @@
                     });
 
                     completedQuestions.add(idx);
+                    questionSelections.set(idx, all.map(s => s.value || ''));
 
-                    if (!wrongedQuestions.has(idx)) firstTryCorrect++;
+                    if (!wrongedQuestions.has(idx) && !hintedQuestions.has(idx)) firstTryCorrect++;
                     play(audio.correct);
                     showToast("Nice!", "✅");
                     questionPanel.classList.add("solved-board");
@@ -729,19 +724,20 @@
                         s.value = "";
                         clearState(s);
                     });
+                    saveCurrentSelections();
                     questionPanel.classList.remove("shake-card");
-                }, 650);
+                }, 850);
             }
 
             function revealOneCorrectAnswer() {
                 if (winModal && !winModal.classList.contains("hidden")) return;
 
                 if (autoChecksLeft <= 0) {
-                    showToast("No auto checks left", "⚠️");
+                    showToast("No hints left", "⚠️");
                     return;
                 }
 
-                const all = Array.from(document.querySelectorAll(".quiz-select"));
+                const all = Array.from(qPrompt.querySelectorAll(".quiz-select"));
                 const unresolved = all.filter(s => !s.disabled && s.value !== s.dataset.answer);
 
                 if (unresolved.length === 0) {
@@ -750,18 +746,18 @@
                 }
 
                 const target = unresolved[0];
+                hintedQuestions.add(idx);
                 autoChecksLeft--;
                 target.value = target.dataset.answer;
                 clearState(target);
                 setState(target, true);
+                saveCurrentSelections();
                 updateUI();
                 showToast("One answer filled", "✨");
 
                 const allCorrect = all.every(s => s.value === s.dataset.answer);
                 if (allCorrect) {
-                    setTimeout(() => {
-                        evaluateQuestion();
-                    }, 150);
+                    setTimeout(() => evaluateQuestion(), 150);
                 }
             }
 
@@ -771,25 +767,34 @@
                 document.documentElement.classList.add("overflow-hidden");
             }
 
+            function escapeHtml(value) {
+                return String(value ?? "")
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            function escapeHtmlWithLineBreaks(value) {
+                return escapeHtml(value)
+                    .replace(/&lt;br\s*\/?&gt;/gi, "<br>")
+                    .replace(/\r?\n/g, "<br>");
+            }
+
             function buildCorrectionHTML(question, isRevealed) {
                 if (!question || !Array.isArray(question.segments)) return "";
 
                 return question.segments.map((seg) => {
                     if (typeof seg === "string") {
-                        return `<span>${String(seg)
-                            .replace(/&/g, "&amp;")
-                            .replace(/</g, "&lt;")
-                            .replace(/>/g, "&gt;")}</span>`;
+                        return `<span>${escapeHtmlWithLineBreaks(seg)}</span>`;
                     }
 
                     const answerClass = isRevealed
                         ? "bg-rose-100/80 text-rose-900 ring-1 ring-rose-300/70 dark:bg-rose-400/10 dark:text-rose-100 dark:ring-rose-300/30"
                         : "bg-emerald-100/80 text-emerald-900 ring-1 ring-emerald-300/70 dark:bg-emerald-400/10 dark:text-emerald-100 dark:ring-emerald-300/30";
 
-                    return `<span class="inline-flex rounded-xl px-3 py-1 ${answerClass}">${String(seg.answer ?? "")
-                        .replace(/&/g, "&amp;")
-                        .replace(/</g, "&lt;")
-                        .replace(/>/g, "&gt;")}</span>`;
+                    return `<span class="inline-flex rounded-xl px-3 py-1 ${answerClass}">${escapeHtml(seg.answer)}</span>`;
                 }).join(" ");
             }
 
@@ -797,11 +802,11 @@
                 return QUESTIONS.map((question, questionIndex) => {
                     const sentence = buildCorrectionHTML(question, revealedQuestions.has(questionIndex));
                     return `
-                        <div class="mb-2 last:mb-0 flex items-baseline">
+                        <div class="mb-2 flex items-start last:mb-0">
                             <span class="mr-2 text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                                 ${questionIndex + 1}.
                             </span>
-                            <span class="inline-flex flex-wrap items-center gap-x-2 gap-y-2 align-middle">${sentence}</span>
+                            <span class="block min-w-0 leading-[1.55]">${sentence}</span>
                         </div>
                     `;
                 }).join("");
@@ -820,15 +825,18 @@
             }
 
             function revealCorrection() {
-                if (TOTAL === 0) return;
+                if (TOTAL === 0 || hasRevealedCorrection) return;
 
+                let newlyRevealed = 0;
                 for (let i = 0; i < TOTAL; i++) {
-                    if (!completedQuestions.has(i)) {
+                    if (!completedQuestions.has(i) && !revealedQuestions.has(i)) {
                         revealedQuestions.add(i);
+                        newlyRevealed++;
                     }
                 }
 
-                wrongTries += revealedQuestions.size;
+                hasRevealedCorrection = true;
+                wrongTries += newlyRevealed;
                 updateUI();
                 clearInterval(timerInt);
                 if (finalCorrect) finalCorrect.textContent = `${firstTryCorrect}/${TOTAL}`;
@@ -880,14 +888,16 @@
             btnAutoCheck?.addEventListener("click", revealOneCorrectAnswer);
             btnRevealCorrection?.addEventListener("click", revealCorrection);
             btnPrev?.addEventListener("click", () => {
-                const target = findPreviousUnansweredIndex(idx);
+                saveCurrentSelections();
+                const target = findPreviousTargetIndex(idx);
                 if (target < 0) return;
                 idx = target;
                 renderQuestion();
                 updateUI();
             });
             btnNext?.addEventListener("click", () => {
-                const target = findNextUnansweredIndex(idx);
+                saveCurrentSelections();
+                const target = findNextTargetIndex(idx);
                 if (target < 0) return;
                 idx = target;
                 renderQuestion();
