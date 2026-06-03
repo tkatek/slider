@@ -1,14 +1,15 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
+
     'title' => 'New Vocabulary',
     'subtitle' => '',
+    'image_text_style' => 'overlay',
 
     'groups' => [
         [
             'key' => 'jobs',
             'title' => 'Jobs',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-5 lg:grid-cols-5',
             'items' => [
                 [
                     'text' => 'professional sleeper',
@@ -40,7 +41,7 @@ $content = [
         [
             'key' => 'work-actions',
             'title' => 'Work & Actions',
-            'grid_class' => 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4',
+            'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4',
             'items' => [
                 [
                     'text' => 'test (beds / products)',

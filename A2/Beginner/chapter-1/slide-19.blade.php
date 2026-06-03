@@ -7,7 +7,7 @@ $customPlaceholder = "It’s .............................";
 
 // Optional image beside the input card.
 // Set this to null if you do not want to show an image.
-$customImage = materialAsset('slider/A2/Beginner/chapter-1/cover.webp');
+$customImage = materialAsset('slider/A2/Beginner/chapter-2/img/slide7.webp');
 // $customImage = null;
 
 if (auth()->check()){

@@ -3,7 +3,66 @@ $content = [
     'video'      => materialAsset('slider/A2/Intermediate/chapter-1/video/clothes-encrypted/clothes.m3u8'),
     'thumbnail'  => materialAsset('slider/A2/Intermediate/chapter-1/img/slide13.webp'),
     'isQuiz'     => 0,
-    'questions'  => [],
+
+    'questions'  => [
+        [
+            'time' => 24200,
+            'type' => 'multiple_choice',
+            'question' => 'Where is the kimono from?',
+            'options' => ['China', 'Japan', 'India'],
+            'correct_answer' => 1,
+            'points' => 10,
+        ],
+        [
+            'time' => 34200,
+            'type' => 'multiple_choice',
+            'question' => 'What is a sari?',
+            'options' => ['A big hat with a wide brim', 'A long black cloak', 'A long piece of cloth wrapped around the body'],
+            'correct_answer' => 2,
+            'points' => 10,
+        ],
+        [
+            'time' => 45200,
+            'type' => 'multiple_choice',
+            'question' => 'What material is a kilt made of?',
+            'options' => ['Silk', 'Cotton', 'Wool'],
+            'correct_answer' => 2,
+            'points' => 10,
+        ],
+        [
+            'time' => 54800,
+            'type' => 'multiple_choice',
+            'question' => 'What is a sombrero?',
+            'options' => ['A big hat with a wide brim', 'A tight-fitting dress', 'A short pleated skirt'],
+            'correct_answer' => 0,
+            'points' => 10,
+        ],
+        [
+            'time' => 67700,
+            'type' => 'multiple_choice',
+            'question' => 'What do men wear in Saudi Arabia and many Arab countries?',
+            'options' => ['A kimono and a sombrero', 'A thobe or dishdasha and a ghutra or keffiyeh', 'A sari and a hijab'],
+            'correct_answer' => 1,
+            'points' => 10,
+        ],
+        [
+            'time' => 85200,
+            'type' => 'multiple_choice',
+            'question' => 'What is the traditional dress for women in China called?',
+            'options' => ['Sari', 'Sarafan', 'Cheongsam or qipao'],
+            'correct_answer' => 2,
+            'points' => 10,
+        ],
+        [
+            'time' => 93600,
+            'type' => 'multiple_choice',
+            'question' => 'What is an áo dài?',
+            'options' => ['A long silk tunic worn over trousers', 'A big hat with a wide brim', 'A sleeveless dress'],
+            'correct_answer' => 0,
+            'points' => 10,
+        ],
+    ],
+
     'subtitles'  => [
         ['start' => 0,   'end' => 4,   'text' => 'Welcome to this video about traditional clothes around the world.'],
         ['start' => 4,   'end' => 12,  'text' => 'People from different countries wear special clothes that show their culture and history. Let\'s learn some of them.'],
@@ -21,4 +80,5 @@ $content = [
     ],
 ];
 ?>
+
 @include("slider.video.interactive", ['content' => $content])

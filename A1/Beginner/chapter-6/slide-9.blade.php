@@ -2,6 +2,7 @@
 $content = [
     'page_title'    => 'Unscramble Practice',
     'title'         => 'Unscramble the highlighted words',
+    'title_class' => 'text-3xl sm:text-4xl lg:text-5xl',
     'subtitle'      => 'Drag the letters to put them in the correct order.',
     'type'          => 'letters',
     'sentences' => [

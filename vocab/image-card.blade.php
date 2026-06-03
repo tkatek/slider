@@ -9,8 +9,16 @@
     $sentences = is_array($content['sentences'] ?? null) ? array_values($content['sentences']) : [];
     $items = is_array($content['items'] ?? null) ? array_values($content['items']) : [];
     $groups = is_array($content['groups'] ?? null) ? array_values($content['groups']) : [];
+    $themeName = strtolower((string) ($theme['name'] ?? 'default'));
+    $isOrangeTheme = $themeName === 'orange';
+    $isGreenTheme = $themeName === 'green';
     $primaryGradient = trim((string) ($theme['primary_color'] ?? 'bg-[image:var(--top-bar-gradient)]'));
     $buttonGradient = trim((string) ($theme['button_primary_color'] ?? 'bg-[image:var(--top-bar-gradient)]'));
+
+    if ($isGreenTheme) {
+        $primaryGradient = 'bg-gradient-to-br from-emerald-800 via-emerald-600 to-green-500 dark:from-emerald-200 dark:via-emerald-300 dark:to-green-300';
+        $buttonGradient = 'bg-gradient-to-br from-emerald-700 via-emerald-600 to-green-500 dark:from-emerald-300 dark:via-emerald-400 dark:to-green-400';
+    }
     $requestedCardType = strtolower(trim((string) ($content['card_type'] ?? $content['type'] ?? 'auto')));
     $cardType = in_array($requestedCardType, ['auto', 'image', 'text'], true)
         ? $requestedCardType
@@ -28,14 +36,17 @@
         ? $requestedImageTextStyle
         : 'default';
     $hideCardSubtitle = (bool) ($content['hide_card_subtitle'] ?? false);
-    $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
     $audioButtonClass = 'border-white/20 ' . $buttonGradient . ' text-white shadow-lg shadow-slate-900/10 hover:shadow-xl';
     $audioButtonIdleClass = $isOrangeTheme
         ? 'border-orange-100 bg-orange-50 text-orange-600 hover:border-orange-300 hover:bg-orange-100 dark:border-orange-400/20 dark:bg-orange-950/35 dark:text-orange-200'
-        : 'border-indigo-100 bg-indigo-50 text-indigo-600 hover:border-indigo-300 hover:bg-indigo-100 dark:border-indigo-400/20 dark:bg-indigo-950/35 dark:text-indigo-200';
+        : ($isGreenTheme
+            ? 'border-emerald-100 bg-emerald-50 text-emerald-700 hover:border-emerald-300 hover:bg-emerald-100 dark:border-emerald-400/20 dark:bg-emerald-950/35 dark:text-emerald-200'
+            : 'border-indigo-100 bg-indigo-50 text-indigo-600 hover:border-indigo-300 hover:bg-indigo-100 dark:border-indigo-400/20 dark:bg-indigo-950/35 dark:text-indigo-200');
     $groupTitleShellClass = $isOrangeTheme
         ? 'border-orange-100 bg-orange-50/85 ring-orange-100/80 dark:border-orange-400/20 dark:bg-orange-950/25 dark:ring-orange-400/20'
-        : 'border-indigo-100 bg-indigo-50/85 ring-indigo-100/80 dark:border-indigo-400/20 dark:bg-indigo-950/25 dark:ring-indigo-400/20';
+        : ($isGreenTheme
+            ? 'border-emerald-100 bg-emerald-50/85 ring-emerald-100/80 dark:border-emerald-400/20 dark:bg-emerald-950/25 dark:ring-emerald-400/20'
+            : 'border-indigo-100 bg-indigo-50/85 ring-indigo-100/80 dark:border-indigo-400/20 dark:bg-indigo-950/25 dark:ring-indigo-400/20');
     $splitLeadingEmoji = static function (string $value): array {
         $value = trim($value);
 

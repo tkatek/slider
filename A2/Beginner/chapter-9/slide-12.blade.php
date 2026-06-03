@@ -1,51 +1,59 @@
 ﻿<?php
-$content = [
-    'title'    => 'Practice 5',
-    'subtitle' => 'Read the sentences & match with the right picture',
+$content['page_title'] = 'Practice 5';
+$content['title'] = 'Practice 5';
+$content['subtitle'] = 'Read the sentences & match with the right picture';
+$content['type'] = 'grid';
 
-    'questions' => [
-        [
-            'id'    => '1',
-            'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/1.webp'),
-            'word'  => 'is a young man with glasses. He has dark skin.',
-        ],
-        [
-            'id'    => '2',
-            'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/2.webp'),
-            'word'  => 'is a girl. She has long fair hair and brown eyes.',
-        ],
-        [
-            'id'    => '3',
-            'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/3.webp'),
-            'word'  => 'is a bald man. He is a middle-aged man with dirty beard.',
-        ],
-        [
-            'id'    => '4',
-            'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/4.webp'),
-            'word'  => 'is a teenager with short brown hair and brown eyes.',
-        ],
-        [
-            'id'    => '5',
-            'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/5.webp'),
-            'word'  => 'is an old man. He is tall and medium-weight.',
-        ],
-        [
-            'id'    => '6',
-            'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/6.webp'),
-            'word'  => 'is a young woman. She has dark skin and long straight black hair.',
-        ],
-        [
-            'id'    => '7',
-            'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/7.webp'),
-            'word'  => 'is a young man with long beard and moustache.',
-        ],
-        [
-            'id'    => '8',
-            'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/8.webp'),
-            'word'  => 'is a school boy with glasses. He has short fair hair and blue eyes.',
-        ],
+$content['items'] = [
+    [
+        'key' => 'brian',
+        'text' => 'is a young man with glasses. He has dark skin.',
+        'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/1.webp'),
+        'caption' => 'Brian',
+    ],
+    [
+        'key' => 'clara',
+        'text' => 'is a girl. She has long fair hair and brown eyes.',
+        'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/2.webp'),
+        'caption' => 'Clara',
+    ],
+    [
+        'key' => 'ricardo',
+        'text' => 'is a bald man. He is a middle-aged man with dirty beard.',
+        'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/3.webp'),
+        'caption' => 'Ricardo',
+    ],
+    [
+        'key' => 'karen',
+        'text' => 'is a teenager with short brown hair and brown eyes.',
+        'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/4.webp'),
+        'caption' => 'Karen',
+    ],
+    [
+        'key' => 'david',
+        'text' => 'is an old man. He is tall and medium-weight.',
+        'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/5.webp'),
+        'caption' => 'David',
+    ],
+    [
+        'key' => 'maria',
+        'text' => 'is a young woman. She has dark skin and long straight black hair.',
+        'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/6.webp'),
+        'caption' => 'Maria',
+    ],
+    [
+        'key' => 'ted',
+        'text' => 'is a young man with long beard and moustache.',
+        'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/7.webp'),
+        'caption' => 'Ted',
+    ],
+    [
+        'key' => 'sam',
+        'text' => 'is a school boy with glasses. He has short fair hair and blue eyes.',
+        'image' => materialAsset('slider/A2/Beginner/chapter-9/img/slide14/8.webp'),
+        'caption' => 'Sam',
     ],
 ];
 ?>
 
-@include('slider.game.match-picture-word', ['content' => $content])
+@include('slider.game.guess-who', ['content' => $content])

@@ -2,17 +2,26 @@
 
 $customTitle = "Writing";
 $customSubtitle = "Write a short paragraph (5-6 sentences) about a communication problem.";
+
 $customCalloutText = "
-<span class='font-black text-yellow-500 dark:text-yellow-300'>Instructions</span><br>
-<span class='font-black'>Write about:</span><br>
-&bull; who you were talking to<br>
-&bull; what the problem was<br>
-&bull; what you could / couldn't do<br>
-&bull; how you solved the problem<br>
-<span class='font-black text-yellow-500 dark:text-yellow-300'>Use:</span><br>
-&bull; can / can't<br>
-&bull; too / very<br>
-&bull; at least 2 expressions (e.g. I can't hear you, call back, weak signal)";
+<div class='grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm sm:text-base leading-snug'>
+    <div>
+        <span class='font-black text-yellow-500 dark:text-yellow-300'>Instructions</span>
+        <span class='font-black'> — Write about:</span><br>
+        &bull; who you were talking to<br>
+        &bull; what the problem was<br>
+        &bull; what you could / couldn't do<br>
+        &bull; how you solved the problem
+    </div>
+
+    <div>
+        <span class='font-black text-yellow-500 dark:text-yellow-300'>Use:</span><br>
+        &bull; can / can't<br>
+        &bull; too / very<br>
+        &bull; at least 2 expressions<br>
+        <span class='text-xs sm:text-sm opacity-80'>(e.g. I can't hear you, call back, weak signal)</span>
+    </div>
+</div>";
 
 // Use \n for line breaks in the placeholder
 $customPlaceholder = "Yesterday, I was talking to ........\nI couldn't ........ because ........\nThe connection ........\nSo, I decided to ........\nFinally, ........";

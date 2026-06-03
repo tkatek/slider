@@ -1,8 +1,9 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
+
     'title'      => 'New Vocabulary',
     'subtitle'   => 'Regions & People',
+    'image_text_style' => 'overlay',
     'groups'     => [
 
         [

@@ -7,7 +7,7 @@ $content = [
     'note_label' => 'Useful Language',
     'note_title' => 'How can you overcome difficulties in a new country?',
     'note_content' => [
-        'The Problend & the Solution',
+        'The Problem & the Solution',
     ],
 
     'items'      => [

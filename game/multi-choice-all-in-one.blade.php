@@ -20,7 +20,15 @@
     $showReadingBadge = array_key_exists('show_reading_badge', $content)
         ? !empty($content['show_reading_badge'])
         : true;
-    $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+    $themeName = strtolower((string) ($theme['name'] ?? 'default'));
+    $isOrangeTheme = $themeName === 'orange';
+    $isGreenTheme = $themeName === 'green';
+    $primaryButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500'));
+
+    if ($isGreenTheme) {
+        $primaryButtonClass = 'bg-gradient-to-br from-emerald-700 via-emerald-600 to-green-500 dark:from-emerald-300 dark:via-emerald-400 dark:to-green-400 dark:text-emerald-950';
+    }
+
     $rawReadingPassage = $content['passage'] ?? $content['reading'] ?? $content['reading_passage'] ?? [];
     $readingPassage = is_array($rawReadingPassage)
         ? array_values(array_filter(array_map(static fn ($paragraph) => trim((string) $paragraph), $rawReadingPassage), static fn ($paragraph) => $paragraph !== ''))
@@ -994,7 +1002,7 @@
 
                                     <button
                                             id="btnNext"
-                                            class="w-full mca-btn-primary py-3 {{ $theme['button_primary_color'] }}"
+                                            class="w-full mca-btn-primary py-3 {{ $primaryButtonClass }}"
                                     >
                                         Next
                                     </button>
@@ -1870,9 +1878,9 @@
             if (questionImage) {
                 questionImage.addEventListener('load', () => {
                     syncImageViewportAspectRatio();
-                    resetImageZoom(); 
+                    resetImageZoom();
                 });
-            } 
+            }
 
             if (imageViewport && questionImage) {
                 window.addEventListener('resize', () => {

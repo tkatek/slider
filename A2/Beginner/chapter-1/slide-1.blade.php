@@ -4,7 +4,7 @@ $content = [
     'lesson'        => "What’s the weather like?",
     'unit_number'   => '1',
     'lesson_number' => '1',
-    'image'         => materialAsset('slider/A2/Beginner/chapter-1/cover.webp'),
+    'image'         => materialAsset('slider/A2/Beginner/chapter-2/img/slide7.webp'),
     'button'        => 'Start Session',
 
 ];

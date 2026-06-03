@@ -4,7 +4,7 @@ $customTitle = "Writing";
 $customSubtitle = "Write 3 sentences abouts most famous traditions in your country, using the form provided";
 
 // Use \n for line breaks in the placeholder
-$customPlaceholder = "----------------is famous for.................\nPeople greet each other by---------------------\nIn ----------------, when two male friends meet, they usually ----------------------
+$customPlaceholder = ". . . . . is famous for . . . . . \nPeople greet each other by . . . . .\nIn . . . . ., when two male friends meet, they usually . . . . .
 
 ";
 

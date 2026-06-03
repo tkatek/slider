@@ -75,16 +75,26 @@
     $successTitle = trim((string) ($content['success_title'] ?? 'Excellent!'));
     $centerPage = !empty($content['center_page']);
 
+    $themeName = (string) ($theme['name'] ?? 'default');
+    $isOrangeTheme = $themeName === 'orange';
+    $isGreenTheme = $themeName === 'green';
+    $themePrimaryButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-r from-indigo-600 via-sky-600 to-cyan-500'));
+    $matchAccentStyle = match (true) {
+        $isOrangeTheme => '--match-accent: #f97316; --match-accent-soft: rgba(255,237,213,.92); --match-accent-border: rgba(251,146,60,.48); --match-accent-text: #c2410c; --match-accent-ring: rgba(251,146,60,.22); --match-accent-dark-soft: rgba(124,45,18,.35); --match-accent-dark-border: rgba(251,146,60,.38); --match-accent-dark-text: #fed7aa;',
+        $isGreenTheme => '--match-accent: #16a34a; --match-accent-soft: rgba(220,252,231,.92); --match-accent-border: rgba(34,197,94,.42); --match-accent-text: #15803d; --match-accent-ring: rgba(34,197,94,.20); --match-accent-dark-soft: rgba(20,83,45,.35); --match-accent-dark-border: rgba(74,222,128,.34); --match-accent-dark-text: #bbf7d0;',
+        default => '--match-accent: #4f46e5; --match-accent-soft: rgba(238,242,255,.94); --match-accent-border: rgba(129,140,248,.45); --match-accent-text: #4338ca; --match-accent-ring: rgba(99,102,241,.22); --match-accent-dark-soft: rgba(67,56,202,.28); --match-accent-dark-border: rgba(129,140,248,.36); --match-accent-dark-text: #c7d2fe;',
+    };
+
     $modalActions = [
         [
             'label' => 'Restart',
             'id' => 'restartBtnModal',
-            'class' => 'inline-flex w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-8 py-3 text-sm font-black text-slate-900 shadow-[0_8px_22px_rgba(2,6,23,0.05)] transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700',
+            'class' => 'inline-flex w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-8 py-3 text-sm font-black text-slate-900 shadow-[0_8px_22px_rgba(2,6,23,0.05)] transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--match-accent-ring)] dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700',
         ],
         [
             'label' => 'Continue',
             'id' => 'continueBtnModal',
-            'class' => 'inline-flex w-full items-center justify-center rounded-2xl border border-white/20 bg-gradient-to-r from-indigo-600 via-sky-600 to-cyan-500 px-8 py-3 text-sm font-black text-white shadow-[0_10px_24px_rgba(79,70,229,0.15)] transition hover:brightness-105',
+            'class' => 'inline-flex w-full items-center justify-center rounded-2xl border border-white/20 px-8 py-3 text-sm font-black text-white shadow-[0_10px_24px_rgba(79,70,229,0.15)] transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--match-accent-ring)] ' . $themePrimaryButtonClass,
         ],
     ];
 @endphp
@@ -104,39 +114,39 @@
                 'group',
                 'relative',
                 'w-full',
-                'min-h-20',
-                'sm:min-h-[92px]',
+                'min-h-[56px]',
                 'overflow-hidden',
-                'rounded-3xl',
-                'border-2',
+                'rounded-2xl',
+                'border',
                 'border-slate-200/90',
                 'bg-white/95',
-                'shadow-[0_10px_24px_rgba(15,23,42,0.06)]',
-                'transition',
-                'duration-200',
-                'ease-out',
-                'hover:-translate-y-0.5',
-                'hover:shadow-[0_14px_28px_rgba(15,23,42,0.09)]',
-                'dark:border-slate-700/80',
-                'dark:bg-slate-900/90',
-                'dark:shadow-[0_12px_24px_rgba(0,0,0,0.22)]',
-                'motion-reduce:transition-none',
-                'motion-reduce:hover:transform-none'
+                'shadow-[0_8px_20px_rgba(15,23,42,0.05)]',
+                'transition-colors',
+                'duration-150',
+                'hover:border-[color:var(--match-accent-border)]',
+                'hover:bg-[var(--match-accent-soft)]',
+                'focus-visible:outline-none',
+                'focus-visible:ring-4',
+                'focus-visible:ring-[color:var(--match-accent-ring)]',
+                'dark:border-slate-700/75',
+                'dark:bg-slate-900/85',
+                'dark:hover:border-[color:var(--match-accent-dark-border)]',
+                'dark:hover:bg-[var(--match-accent-dark-soft)]'
             ].join(' ');
 
-            var FEEDBACK_MARK_CLASS = [
+            var FEEDBACK_PILL_CLASS = [
                 'pointer-events-none',
                 'absolute',
-                'inset-0',
-                'flex',
-                'items-center',
-                'justify-center',
-                'text-5xl',
+                'right-2',
+                'top-2',
+                'hidden',
+                'rounded-full',
+                'px-2',
+                'py-0.5',
+                'text-[10px]',
                 'font-black',
-                'opacity-0',
-                'transition-opacity',
-                'duration-200',
-                'motion-reduce:transition-none'
+                'uppercase',
+                'tracking-[0.12em]'
             ].join(' ');
 
             var SFX = {
@@ -364,11 +374,10 @@
                 button.setAttribute('data-key', option.key || '');
 
                 button.innerHTML = [
-                    '<span class="flex min-h-20 items-center justify-center px-3 py-3 text-center text-[0.88rem] font-black leading-[1.35] tracking-[-0.01em] text-slate-900 sm:min-h-[92px] sm:px-4 sm:text-[0.95rem] dark:text-slate-50">',
+                    '<span class="flex min-h-[56px] items-center justify-center px-3.5 py-2.5 text-center text-[0.88rem] font-black leading-[1.32] tracking-[-0.01em] text-slate-900 sm:min-h-[64px] sm:px-4 sm:text-[0.95rem] dark:text-slate-50">',
                     escapeHtml(option.text),
                     '</span>',
-                    '<span data-feedback="correct" class="', FEEDBACK_MARK_CLASS, ' bg-emerald-500/15 text-emerald-500">&#9989;</span>',
-                    '<span data-feedback="wrong" class="', FEEDBACK_MARK_CLASS, ' bg-rose-500/15 text-rose-500">&#10060;</span>'
+                    '<span data-feedback="status" class="', FEEDBACK_PILL_CLASS, '"></span>'
                 ].join('');
 
                 button.addEventListener('click', function () {
@@ -429,10 +438,35 @@
                 });
             }
 
-            function handleChoice(element, option, question) {
-                var correctMark = element.querySelector('[data-feedback="correct"]');
-                var wrongMark = element.querySelector('[data-feedback="wrong"]');
+            function setChoiceFeedback(element, type, label) {
+                var pill = element.querySelector('[data-feedback="status"]');
 
+                if (!pill) return;
+
+                pill.textContent = label || '';
+                pill.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-700', 'dark:bg-emerald-400/15', 'dark:text-emerald-200', 'bg-rose-100', 'text-rose-700', 'dark:bg-rose-400/15', 'dark:text-rose-200');
+
+                if (type === 'correct') {
+                    pill.classList.add('bg-emerald-100', 'text-emerald-700', 'dark:bg-emerald-400/15', 'dark:text-emerald-200');
+                    return;
+                }
+
+                if (type === 'wrong') {
+                    pill.classList.add('bg-rose-100', 'text-rose-700', 'dark:bg-rose-400/15', 'dark:text-rose-200');
+                }
+            }
+
+            function clearChoiceFeedback(element) {
+                var pill = element.querySelector('[data-feedback="status"]');
+
+                if (!pill) return;
+
+                pill.textContent = '';
+                pill.classList.add('hidden');
+                pill.classList.remove('bg-emerald-100', 'text-emerald-700', 'dark:bg-emerald-400/15', 'dark:text-emerald-200', 'bg-rose-100', 'text-rose-700', 'dark:bg-rose-400/15', 'dark:text-rose-200');
+            }
+
+            function handleChoice(element, option, question) {
                 if (state.busy) return;
 
                 if ((option.key || '') === (question.correctKey || '')) {
@@ -441,11 +475,8 @@
 
                     playSfx('correct');
 
-                    element.classList.add('border-emerald-500', 'bg-emerald-500/10', 'dark:bg-emerald-500/15');
-
-                    if (correctMark) {
-                        correctMark.classList.add('opacity-100');
-                    }
+                    element.classList.add('!border-emerald-400', '!bg-emerald-50', 'dark:!bg-emerald-400/10');
+                    setChoiceFeedback(element, 'correct', 'Correct');
 
                     setTimeout(function () {
                         state.remainingItems = state.remainingItems.filter(function (item) {
@@ -454,7 +485,7 @@
 
                         state.busy = false;
                         renderQuestion();
-                    }, 800);
+                    }, 650);
 
                     return;
                 }
@@ -464,19 +495,12 @@
 
                 playSfx('wrong');
 
-                element.classList.add('border-rose-500', 'bg-rose-500/10', 'dark:bg-rose-500/15');
-
-                if (wrongMark) {
-                    wrongMark.classList.add('opacity-100');
-                }
+                element.classList.add('!border-rose-300', '!bg-rose-50', 'dark:!bg-rose-400/10');
+                setChoiceFeedback(element, 'wrong', 'Try again');
 
                 setTimeout(function () {
-                    element.classList.remove('border-rose-500', 'bg-rose-500/10', 'dark:bg-rose-500/15');
-
-                    if (wrongMark) {
-                        wrongMark.classList.remove('opacity-100');
-                    }
-
+                    element.classList.remove('!border-rose-300', '!bg-rose-50', 'dark:!bg-rose-400/10');
+                    clearChoiceFeedback(element);
                     state.busy = false;
                 }, 550);
             }
@@ -556,11 +580,14 @@
 @endsection
 
 @section('content')
-    <div class="flex min-h-[100dvh] w-full flex-col justify-center overflow-x-hidden overflow-y-auto px-0 py-4 sm:py-6">
-        @include('slider.components.title-subtitle')
+    <div class="flex min-h-[100dvh] w-full flex-col justify-center overflow-x-hidden overflow-y-auto px-0 py-3 sm:py-5" style="{{ $matchAccentStyle }}">
+        @include('slider.components.title-subtitle', [
+            'titleWrapClass' => 'header-spacing my-1 px-4 text-center sm:my-2 sm:px-6 lg:px-8',
+            'titleSpacingClass' => 'space-y-1.5',
+        ])
 
         <section class="mx-auto w-full max-w-5xl px-4 sm:px-8">
-            <div class="mb-4 text-center">
+            <div class="mb-3 text-center sm:mb-4">
                 <h2
                         id="questionText"
                         class="text-xl font-black leading-tight text-slate-700 dark:text-slate-100 sm:text-2xl md:text-3xl"
@@ -574,21 +601,17 @@
                         id="questionImage"
                         src=""
                         alt=""
-                        class="mx-auto aspect-square w-full max-w-[15rem] rounded-[1.5rem] object-cover shadow-[0_18px_45px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70 dark:ring-slate-700/80 sm:max-w-[17rem]"
+                        class="mx-auto aspect-[5/4] w-full max-w-[16rem] rounded-[1.35rem] bg-white object-cover shadow-[0_14px_34px_rgba(15,23,42,0.10)] ring-1 ring-slate-200/70 dark:bg-slate-900 dark:ring-slate-700/80 sm:max-w-[18rem] lg:max-w-[19rem]"
                 >
 
-                <p
+                <div
                         id="questionCaption"
-                        class="mt-3 hidden text-center text-sm font-bold text-slate-500 dark:text-slate-300"
-                ></p>
+                        class="mx-auto mt-3 hidden max-w-[46rem] rounded-[1.35rem] border border-[color:var(--match-accent-border)] bg-white/92 px-4 py-3 text-center text-base font-black leading-[1.35] tracking-[-0.02em] text-slate-900 shadow-[0_14px_34px_rgba(15,23,42,0.08)] dark:border-[color:var(--match-accent-dark-border)] dark:bg-slate-900/88 dark:text-white sm:px-6 sm:py-3.5 sm:text-lg lg:text-xl"
+                ></div>
             </div>
 
             <div id="questionCaptionWrap" class="hidden">
-                <div class="mx-auto max-w-3xl rounded-[2rem] border border-indigo-200/80 bg-white/95 px-5 py-5 text-center shadow-[0_18px_45px_rgba(79,70,229,0.10)] dark:border-indigo-400/20 dark:bg-slate-900/90 sm:px-8 sm:py-6">
-                    <div class="mb-3 inline-flex items-center rounded-full bg-indigo-50 px-4 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300">
-                        Prompt
-                    </div>
-
+                <div class="mx-auto max-w-3xl rounded-[1.6rem] border border-[color:var(--match-accent-border)] bg-white/92 px-5 py-4 text-center shadow-[0_14px_34px_rgba(15,23,42,0.08)] dark:border-[color:var(--match-accent-dark-border)] dark:bg-slate-900/88 sm:px-8 sm:py-5">
                     <p
                             id="captionPrompt"
                             class="text-xl font-black leading-[1.35] tracking-[-0.02em] text-slate-900 dark:text-white sm:text-2xl md:text-3xl"
@@ -597,8 +620,8 @@
             </div>
         </section>
 
-        <main class="mx-auto w-full max-w-5xl px-4 py-5 sm:px-8 sm:py-6">
-            <div id="cardGrid" class="grid w-full {{ $gridClass }} gap-4 md:gap-5"></div>
+        <main class="mx-auto w-full max-w-5xl px-4 py-4 sm:px-8 sm:py-5">
+            <div id="cardGrid" class="grid w-full {{ $gridClass }} gap-2.5 sm:gap-3 md:gap-4"></div>
         </main>
 
         @include('slider.components.game-win-modal', [
@@ -606,5 +629,6 @@
             'modalTitleClass' => 'js-win-title text-3xl font-black text-slate-900 dark:text-white sm:text-4xl',
             'modalActions' => $modalActions,
         ])
+        <div class="hidden border-[color:var(--match-accent-border)] bg-[var(--match-accent-soft)] text-[color:var(--match-accent-text)] ring-[color:var(--match-accent-ring)] dark:border-[color:var(--match-accent-dark-border)] dark:bg-[var(--match-accent-dark-soft)] dark:text-[color:var(--match-accent-dark-text)] hover:border-[color:var(--match-accent-border)] hover:bg-[var(--match-accent-soft)] focus-visible:ring-[color:var(--match-accent-ring)] dark:hover:border-[color:var(--match-accent-dark-border)] dark:hover:bg-[var(--match-accent-dark-soft)]"></div>
     </div>
 @endsection

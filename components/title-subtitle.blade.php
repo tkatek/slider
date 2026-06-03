@@ -9,8 +9,14 @@
 
     $gameTitleClass = $titleClass ?? ($content['title_class'] ?? 'text-4xl md:text-5xl lg:text-6xl');
 
+    $themeName = strtolower((string) ($theme['name'] ?? 'default'));
+
     // Theme fallback
     $primaryGradient = $theme['primary_color'] ?? 'bg-gradient-to-r from-indigo-500 to-blue-500';
+
+    if ($themeName === 'green') {
+        $primaryGradient = 'bg-gradient-to-br from-emerald-800 via-emerald-600 to-green-500 dark:from-emerald-200 dark:via-emerald-300 dark:to-green-300';
+    }
 @endphp
 
 <div class="header-spacing my-4 space-y-3 px-4 text-center sm:my-5 sm:px-6 lg:px-8">

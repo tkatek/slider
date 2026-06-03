@@ -1,8 +1,9 @@
 <?php
 $content = [
-    'page_title' => 'New Vocabulary',
+
     'title'      => 'New Vocabulary',
     'subtitle'   => 'Body Parts',
+    'image_text_style' => 'overlay',
     'groups'     => [
         [
             'key'        => 'body-parts',

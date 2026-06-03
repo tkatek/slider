@@ -37,8 +37,6 @@
             "Miss Taylor: You're Peter. Okay. Let's begin class.",
         ],
 
-        'desktop_game_width' => 60,
-        'desktop_pool_width' => 40,
 
         'sentences' => [
             "<strong class='text-pink-600 dark:text-pink-400'>Molly:</strong> Excuse me. Hello. My name is Molly. {{1}}",

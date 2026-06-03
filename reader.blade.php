@@ -199,6 +199,139 @@
             color: var(--accent-deep) !important;
             background: rgba(249, 115, 22, 0.12) !important;
         }
+
+        body.editor-theme-green {
+            --accent: #22c55e;
+            --accent-soft: #bbf7d0;
+            --accent-light: #4ade80;
+            --accent-dark: #16a34a;
+            --accent-deep: #15803d;
+            --accent-gradient: linear-gradient(to bottom right, #064E3B, #047857, #10B981);
+        }
+
+        body.editor-theme-green .sidebar-thumb:hover {
+            border-color: var(--accent-light);
+            box-shadow: 0 12px 24px -18px rgba(34, 197, 94, 0.45);
+        }
+
+        body.editor-theme-green .sidebar-thumb:hover .thumb-number {
+            border-color: var(--accent) !important;
+            color: var(--accent-deep);
+        }
+
+        body.editor-theme-green .sidebar-thumb.active {
+            border-color: var(--accent);
+            box-shadow: 0 16px 32px -22px rgba(34, 197, 94, 0.55);
+        }
+
+        body.editor-theme-green .thumb-number {
+            border-color: var(--border-ui);
+        }
+
+        body.editor-theme-green .sidebar-thumb.active .thumb-number {
+            background: var(--accent-gradient);
+            border-color: transparent;
+            color: #ffffff;
+        }
+
+        body.editor-theme-green .editor-brand-logo {
+            background: var(--accent-gradient) !important;
+        }
+
+        body.editor-theme-green .editor-primary-btn {
+            background: var(--accent-gradient) !important;
+            box-shadow: 0 10px 20px -10px rgba(34, 197, 94, 0.55) !important;
+        }
+
+        body.editor-theme-green .editor-primary-btn:hover {
+            background: linear-gradient(to bottom right, #065F46, #059669, #22C55E) !important;
+        }
+
+        body.editor-theme-green .editor-secondary-btn:hover {
+            border-color: var(--accent-light) !important;
+            color: var(--accent-deep) !important;
+            box-shadow: 0 10px 20px -16px rgba(34, 197, 94, 0.45);
+        }
+
+        body.editor-theme-green .text-brand,
+        body.editor-theme-green .hover\:text-brand:hover,
+        body.editor-theme-green .dark\:text-brand-glow {
+            color: var(--accent) !important;
+        }
+
+        body.editor-theme-green .bg-brand,
+        body.editor-theme-green .hover\:bg-brand-glow:hover,
+        body.editor-theme-green .dark\:bg-brand,
+        body.editor-theme-green .dark\:hover\:bg-brand-glow:hover {
+            background: var(--accent-gradient) !important;
+        }
+
+        body.editor-theme-green .border-brand,
+        body.editor-theme-green .hover\:border-brand:hover,
+        body.editor-theme-green .group:hover .group-hover\:border-brand {
+            border-color: var(--accent) !important;
+        }
+
+        body.editor-theme-green .focus\:ring-brand:focus {
+            --tw-ring-color: rgba(34, 197, 94, 0.45) !important;
+        }
+
+        body.editor-theme-green .shadow-brand\/20,
+        body.editor-theme-green .dark\:shadow-brand\/20 {
+            --tw-shadow-color: rgba(34, 197, 94, 0.2) !important;
+            --tw-shadow: var(--tw-shadow-colored) !important;
+        }
+
+        body.editor-theme-green .cue-btn {
+            background: var(--accent-gradient);
+            box-shadow:
+                    0 0 0 1px rgba(34, 197, 94, 0.4),
+                    0 10px 20px -10px rgba(34, 197, 94, 0.5);
+        }
+
+        body.editor-theme-green .cue-btn:hover {
+            background: linear-gradient(to bottom right, #065F46, #059669, #22C55E);
+            box-shadow:
+                    0 0 0 2px rgba(34, 197, 94, 0.4),
+                    0 8px 16px -4px rgba(34, 197, 94, 0.3);
+        }
+
+        body.editor-theme-green .cue-tooltip {
+            border-color: rgba(34, 197, 94, 0.16);
+            box-shadow:
+                    0 40px 80px -15px rgba(15, 23, 42, 0.15),
+                    inset 0 0 0 1px rgba(34, 197, 94, 0.08);
+        }
+
+        body.editor-theme-green .cue-header {
+            background: rgba(34, 197, 94, 0.08);
+            border-left-color: var(--accent);
+        }
+
+        body.editor-theme-green .cue-header::before {
+            background: linear-gradient(to bottom, transparent, rgba(34, 197, 94, 0.12), transparent);
+        }
+
+        body.editor-theme-green .cue-badge {
+            color: var(--accent) !important;
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.22);
+        }
+
+        body.editor-theme-green .cue-header .cue-badge::after,
+        body.editor-theme-green .cue-marker {
+            background: var(--accent);
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+        }
+
+        body.editor-theme-green .teacher-cue div:hover .cue-marker {
+            background: var(--accent-light);
+            box-shadow: 0 0 12px rgba(74, 222, 128, 0.6);
+        }
+
+        body.editor-theme-green #desktop-sidebar-toggle-btn:hover {
+            color: var(--accent-deep) !important;
+            background: rgba(34, 197, 94, 0.12) !important;
+        }
         body{
             overflow: hidden;
         }

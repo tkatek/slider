@@ -1,8 +1,9 @@
 <?php
 $content = [
-    'page_title' => 'New vocabulary 2',
+
     'title'      => 'New vocabulary 2',
     'subtitle'   => 'Learn these new personality words.',
+    'image_text_style' => 'overlay',
 
     'grid_class' => 'grid-cols-2 sm:grid-cols-4 lg:grid-cols-4',
 

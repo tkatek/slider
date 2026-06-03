@@ -404,10 +404,10 @@
         }
 
         #ddbLayoutShell {
-            flex: 1 1 auto;
+            flex: 0 0 auto;
             width: 100%;
             max-width: 1500px;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
         }
 
@@ -582,6 +582,42 @@
             cursor: grabbing !important;
             transition: none !important;
             will-change: left, top, transform;
+            border-color: var(--ddb-accent-border) !important;
+            box-shadow:
+                    0 0 0 4px var(--ddb-accent-ring),
+                    0 18px 38px rgba(15,23,42,.24),
+                    0 8px 18px var(--ddb-accent-shadow) !important;
+            filter: saturate(1.04);
+        }
+
+        .ddb-draggable-item.ddb-wrong-feedback {
+            border-color: rgba(244,63,94,.72) !important;
+            box-shadow:
+                    0 0 0 3px rgba(244,63,94,.22),
+                    0 14px 30px rgba(15,23,42,.18) !important;
+        }
+
+        .dark .ddb-draggable-item.ddb-wrong-feedback {
+            border-color: rgba(251,113,133,.74) !important;
+            box-shadow:
+                    0 0 0 3px rgba(251,113,133,.24),
+                    0 16px 34px rgba(2,6,23,.34) !important;
+        }
+
+        .ddb-blank-slot.ddb-wrong-slot {
+            border-color: rgba(244,63,94,.70) !important;
+            background: rgba(255,255,255,.78) !important;
+            box-shadow:
+                    inset 0 0 0 1px rgba(244,63,94,.22),
+                    0 0 0 4px rgba(244,63,94,.12) !important;
+        }
+
+        .dark .ddb-blank-slot.ddb-wrong-slot {
+            border-color: rgba(251,113,133,.68) !important;
+            background: rgba(15,23,42,.28) !important;
+            box-shadow:
+                    inset 0 0 0 1px rgba(251,113,133,.20),
+                    0 0 0 4px rgba(251,113,133,.14) !important;
         }
 
         .ddb-returning {
@@ -593,36 +629,142 @@
         .ddb-locked { animation: popIn .35s cubic-bezier(.175,.885,.32,1.275); pointer-events: none; }
         .ddb-locked.ddb-audio-tile { pointer-events: auto; cursor: default; }
 
+        .ddb-audio-tile {
+            min-width: 5.15rem !important;
+            min-height: 2.85rem !important;
+            max-width: 5.75rem !important;
+            justify-content: center !important;
+            gap: .55rem !important;
+            padding: .38rem .58rem !important;
+            border-radius: 1.1rem !important;
+            text-align: center !important;
+            color: rgb(30 41 59) !important;
+            background: rgba(255,255,255,.96) !important;
+            border-color: rgba(203,213,225,.92) !important;
+            box-shadow: 0 10px 22px rgba(15,23,42,.10) !important;
+        }
+
+        .ddb-audio-tile::before {
+            display: none !important;
+        }
+
+        .dark .ddb-audio-tile {
+            color: rgb(248 250 252) !important;
+            background: rgba(15,23,42,.92) !important;
+            border-color: rgba(71,85,105,.92) !important;
+            box-shadow: 0 12px 26px rgba(2,6,23,.34) !important;
+        }
+
+        .ddb-audio-tile-main {
+            display: inline-flex;
+            min-width: 0;
+            align-items: center;
+            justify-content: center;
+        }
+
         .ddb-audio-tile-btn {
             display: inline-flex;
-            width: 2.35rem;
-            height: 2.35rem;
+            width: 2.18rem;
+            height: 2.18rem;
+            flex: 0 0 auto;
             align-items: center;
             justify-content: center;
             border-radius: 9999px;
-            background: rgba(255,255,255,.2);
+            background: var(--ddb-accent);
             color: #fff;
-            border: 1px solid rgba(255,255,255,.28);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
+            border: 1px solid rgba(255,255,255,.38);
+            box-shadow: 0 8px 16px var(--ddb-accent-shadow);
             cursor: pointer;
+            transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
+        }
+
+        .dark .ddb-audio-tile-btn {
+            background: var(--ddb-accent-soft);
+            color: var(--ddb-accent-text);
+            border-color: var(--ddb-accent-border);
+            box-shadow: 0 10px 20px rgba(2,6,23,.3);
+        }
+
+        .ddb-audio-tile-index {
+            display: none !important;
         }
 
         .ddb-audio-tile-btn:hover {
-            background: rgba(255,255,255,.3);
+            transform: scale(1.04);
+            background: var(--ddb-accent);
+            filter: brightness(.96);
+        }
+
+        .dark .ddb-audio-tile-btn:hover {
+            background: var(--ddb-accent-soft);
+            filter: brightness(1.08);
         }
 
         .ddb-audio-tile-btn:focus-visible {
-            outline: 2px solid rgba(255,255,255,.72);
+            outline: 2px solid var(--ddb-accent-border);
             outline-offset: 2px;
         }
 
         .ddb-audio-tile-grip {
             display: inline-flex;
-            width: .8rem;
-            height: 2rem;
+            width: .95rem;
+            height: 1.9rem;
+            flex: 0 0 auto;
             align-items: center;
             justify-content: center;
-            opacity: .75;
+            color: rgba(100,116,139,.72);
+            opacity: .9;
+        }
+
+        .ddb-audio-tile-grip::before {
+            content: '';
+            width: .25rem;
+            height: 1.25rem;
+            border-radius: 9999px;
+            background:
+                    radial-gradient(circle, currentColor 1.5px, transparent 2px) 0 0 / .25rem .42rem;
+        }
+
+        .dark .ddb-audio-tile-grip {
+            color: rgba(203,213,225,.74);
+        }
+
+        .ddb-audio-tile.ddb-audio-playing {
+            box-shadow:
+                    0 0 0 3px var(--ddb-accent-ring),
+                    0 14px 30px rgba(2,6,23,.16) !important;
+        }
+
+        .ddb-audio-tile.ddb-audio-playing .ddb-audio-tile-btn {
+            background: var(--ddb-accent);
+            color: #fff;
+            filter: brightness(.96);
+        }
+
+        .dark .ddb-audio-tile.ddb-audio-playing .ddb-audio-tile-btn {
+            background: var(--ddb-accent-soft);
+            color: var(--ddb-accent-text);
+            filter: brightness(1.08);
+        }
+
+        .ddb-blank-slot .ddb-audio-tile {
+            min-width: 3.75rem !important;
+            min-height: 2rem !important;
+            max-width: 4rem !important;
+            justify-content: center !important;
+            padding: .18rem .3rem !important;
+            gap: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .ddb-blank-slot .ddb-audio-tile-index,
+        .ddb-blank-slot .ddb-audio-tile-grip {
+            display: none !important;
+        }
+
+        .ddb-blank-slot .ddb-audio-tile-btn {
+            width: 1.65rem;
+            height: 1.65rem;
         }
 
         .ddb-emoji-burst {
@@ -631,8 +773,8 @@
             top: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
-            font-size: 1rem;
-            animation: riseFade .7s ease forwards;
+            font-size: .95rem;
+            animation: riseFade .58s ease forwards;
             z-index: 20;
         }
 
@@ -691,6 +833,16 @@
             max-height: none;
             overflow: visible;
             padding: .05rem 0 .05rem;
+        }
+
+        #dragDropBlanksGame.ddb-answer-audio #ddbPoolContent {
+            gap: .45rem .55rem;
+            min-height: 2.9rem;
+        }
+
+        #dragDropBlanksGame.ddb-answer-audio .ddb-bank-inner {
+            padding-top: .55rem !important;
+            padding-bottom: .65rem !important;
         }
 
         #ddbPoolRail.ddb-show-all-scroll #ddbPoolContent {
@@ -771,8 +923,8 @@
             border-color: var(--ddb-accent-border);
             background: var(--ddb-accent-soft);
             box-shadow:
-                0 0 0 4px var(--ddb-accent-ring),
-                0 8px 18px var(--ddb-accent-shadow);
+                    0 0 0 4px var(--ddb-accent-ring),
+                    0 8px 18px var(--ddb-accent-shadow);
             animation: ddbNavNudge 1.4s ease-in-out 3;
         }
 
@@ -781,8 +933,8 @@
             border-color: var(--ddb-accent-border);
             background: var(--ddb-accent-soft);
             box-shadow:
-                0 0 0 4px var(--ddb-accent-ring),
-                0 10px 20px var(--ddb-accent-shadow);
+                    0 0 0 4px var(--ddb-accent-ring),
+                    0 10px 20px var(--ddb-accent-shadow);
         }
 
         .ddb-color-bank .ddb-draggable-item:not(.ddb-locked):not(.revealed-answer) {
@@ -858,6 +1010,24 @@
         }
 
         @media (max-width: 639.98px) {
+            .ddb-audio-tile {
+                min-width: 4.75rem !important;
+                min-height: 2.62rem !important;
+                max-width: 5.1rem !important;
+                padding: .32rem .48rem !important;
+                gap: .45rem !important;
+            }
+
+            .ddb-audio-tile-btn {
+                width: 1.92rem;
+                height: 1.92rem;
+            }
+
+            .ddb-audio-tile-grip {
+                width: .78rem;
+                height: 1.65rem;
+            }
+
             .ddb-bank-inner {
                 padding: .35rem .5rem .5rem !important;
             }
@@ -991,7 +1161,7 @@
 @endsection
 
 @section("content")
-    <main class="flex min-h-[100dvh] w-full flex-col items-center justify-start {{ $bankChipStyle === 'color' ? 'ddb-color-bank' : 'ddb-neutral-bank' }} {{ $compactCenter ? 'ddb-compact-center' : '' }}" id="dragDropBlanksGame" style="--ddb-sticky-bank-gap: {{ $stickyBankGapPx }}px;">
+    <main class="flex min-h-[100dvh] w-full flex-col items-center justify-center {{ $bankChipStyle === 'color' ? 'ddb-color-bank' : 'ddb-neutral-bank' }} {{ $compactCenter ? 'ddb-compact-center' : '' }} {{ $answerTileType === 'audio' ? 'ddb-answer-audio' : '' }}" id="dragDropBlanksGame" style="--ddb-sticky-bank-gap: {{ $stickyBankGapPx }}px;">
         @include('slider.components.title-subtitle')
 
         @include('slider.components.game-status')
@@ -1221,16 +1391,33 @@
             function playCorrect(){ play(audio.correct); }
             function playWrong(){ play(audio.wrong); }
             function playWin(){ play(audio.success); }
-            function playTileAudio(src){
+
+            function clearActiveTileAudio(){
+                Array.prototype.slice.call(document.querySelectorAll('.ddb-audio-playing')).forEach(function(tile){
+                    tile.classList.remove('ddb-audio-playing');
+                });
+            }
+
+            audio.tile.addEventListener('ended', clearActiveTileAudio);
+            audio.tile.addEventListener('error', clearActiveTileAudio);
+
+            function playTileAudio(src, tile){
                 if (!src) return;
 
                 try {
+                    clearActiveTileAudio();
                     if (audio.tile.src !== src) {
                         audio.tile.src = src;
                     }
                     audio.tile.pause();
                     audio.tile.currentTime = 0;
-                    audio.tile.play().catch(function(){});
+                    if (tile) {
+                        tile.classList.add('ddb-audio-playing');
+                    }
+                    var promise = audio.tile.play();
+                    if (promise && typeof promise.catch === 'function') {
+                        promise.catch(clearActiveTileAudio);
+                    }
                 } catch (e) {}
             }
 
@@ -1256,6 +1443,8 @@
             };
 
             window.stopSlideAudio = function(){
+                clearActiveTileAudio();
+
                 Object.keys(audio).forEach(function(key){
                     if (audio[key]) {
                         audio[key].pause();
@@ -1393,7 +1582,7 @@
                     s.style.minWidth = getInitialBlankMinWidth(s);
                     s.classList.add('ddb-slot-ready');
                     s.classList.remove(
-                        'ddb-slot-hover','ddb-revealed-slot',
+                        'ddb-slot-hover','ddb-revealed-slot','ddb-wrong-slot',
                         'text-emerald-700','border-emerald-500/55','bg-emerald-50/90',
                         'dark:text-emerald-300','dark:bg-emerald-950/35','dark:border-emerald-500/45',
                         'text-rose-700','border-rose-500/55','bg-rose-50/90',
@@ -1562,34 +1751,20 @@
                 node.setAttribute('aria-label', 'Answer: ' + normalizeAnswerText(itemData.text || ''));
                 node.setAttribute('aria-grabbed', 'false');
 
-                var answerTextLength = normalizeAnswerText(itemData.text || '').length;
-
-                if (answerTextLength > 42) {
-                    node.classList.add('ddb-long-answer');
-                } else if (answerTextLength > 18) {
-                    node.classList.add('ddb-phrase-answer');
-                } else {
-                    node.classList.add('ddb-short-answer');
-                }
-
                 if (ANSWER_TILE_TYPE === 'audio') {
-                    node.classList.add('ddb-audio-tile', 'gap-2', 'min-w-[72px]');
-                    node.setAttribute('aria-label', 'Audio for answer ' + itemData.answerIndex);
+                    node.classList.add('ddb-audio-tile');
+                    node.setAttribute('aria-label', 'Audio answer. Press play to listen, or drag the card to a blank.');
                     node.innerHTML = [
+                        '<span class="ddb-audio-tile-main">',
                         '<button type="button" class="ddb-audio-tile-btn" data-ddb-audio-button="1" aria-label="Play audio">',
-                        '<svg class="h-5 w-5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24" aria-hidden="true">',
+                        '<svg class="h-4 w-4 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24" aria-hidden="true">',
                         '<path stroke-linecap="round" stroke-linejoin="round" d="M5 9v6h4l5 4V5L9 9H5z"></path>',
                         '<path stroke-linecap="round" stroke-linejoin="round" d="M17 9.5a4 4 0 010 5"></path>',
                         '<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 7a7 7 0 010 10"></path>',
                         '</svg>',
                         '</button>',
-                        '<span class="ddb-audio-tile-grip" aria-hidden="true">',
-                        '<svg class="h-5 w-3 pointer-events-none" viewBox="0 0 12 20" fill="currentColor">',
-                        '<circle cx="3" cy="4" r="1.2"></circle><circle cx="9" cy="4" r="1.2"></circle>',
-                        '<circle cx="3" cy="10" r="1.2"></circle><circle cx="9" cy="10" r="1.2"></circle>',
-                        '<circle cx="3" cy="16" r="1.2"></circle><circle cx="9" cy="16" r="1.2"></circle>',
-                        '</svg>',
-                        '</span>'
+                        '</span>',
+                        '<span class="ddb-audio-tile-grip" aria-hidden="true"></span>'
                     ].join('');
 
                     node.querySelector('[data-ddb-audio-button]').addEventListener('pointerdown', function(e){
@@ -1598,9 +1773,19 @@
                     node.querySelector('[data-ddb-audio-button]').addEventListener('click', function(e){
                         e.preventDefault();
                         e.stopPropagation();
-                        playTileAudio(itemData.audio || '');
+                        playTileAudio(itemData.audio || '', node);
                     });
                 } else {
+                    var answerTextLength = normalizeAnswerText(itemData.text || '').length;
+
+                    if (answerTextLength > 42) {
+                        node.classList.add('ddb-long-answer');
+                    } else if (answerTextLength > 18) {
+                        node.classList.add('ddb-phrase-answer');
+                    } else {
+                        node.classList.add('ddb-short-answer');
+                    }
+
                     node.textContent = itemData.text;
                 }
 
@@ -1809,7 +1994,7 @@
 
                 blank.classList.remove('ddb-slot-ready');
                 blank.classList.remove(
-                    'ddb-slot-hover',
+                    'ddb-slot-hover','ddb-wrong-slot',
                     'text-emerald-700','border-emerald-500/55','bg-emerald-50/90',
                     'dark:text-emerald-300','dark:bg-emerald-950/35','dark:border-emerald-500/45',
                     'text-rose-700','border-rose-500/55','bg-rose-50/90',
@@ -1822,7 +2007,7 @@
                 if (!blank) return;
 
                 blank.classList.remove(
-                    'ddb-slot-hover','ddb-revealed-slot',
+                    'ddb-slot-hover','ddb-revealed-slot','ddb-wrong-slot',
                     'text-emerald-700','border-emerald-500/55','bg-emerald-50/90',
                     'dark:text-emerald-300','dark:bg-emerald-950/35','dark:border-emerald-500/45',
                     'text-rose-700','border-rose-500/55','bg-rose-50/90',
@@ -1835,16 +2020,10 @@
                         'dark:text-emerald-300','dark:bg-emerald-950/35','dark:border-emerald-500/45'
                     );
                 } else if (type === 'wrong') {
-                    blank.classList.add(
-                        'text-rose-700','border-rose-500/55','bg-rose-50/90',
-                        'dark:text-rose-300','dark:bg-rose-950/30','dark:border-rose-500/40'
-                    );
+                    blank.classList.add('ddb-wrong-slot');
                     setTimeout(function(){
-                        blank.classList.remove(
-                            'text-rose-700','border-rose-500/55','bg-rose-50/90',
-                            'dark:text-rose-300','dark:bg-rose-950/30','dark:border-rose-500/40'
-                        );
-                    }, 850);
+                        blank.classList.remove('ddb-wrong-slot');
+                    }, 620);
                 }
             };
 
@@ -1873,7 +2052,7 @@
                 this.clearHoverState();
 
                 if (item) {
-                    item.classList.remove('ddb-dragging','ddb-returning','ddb-shake');
+                    item.classList.remove('ddb-dragging','ddb-returning','ddb-shake','ddb-wrong-feedback');
                     item.style.position = '';
                     item.style.left = '';
                     item.style.top = '';
@@ -1942,7 +2121,7 @@
 
                 item.style.left = (e.clientX - this.offsetX) + 'px';
                 item.style.top = (e.clientY - this.offsetY) + 'px';
-                item.style.transform = 'scale(1.05) rotate(-2deg)';
+                item.style.transform = 'scale(1.04) rotate(-1deg)';
 
                 document.addEventListener('pointermove', this.handlePointerMove, { passive: false });
                 document.addEventListener('pointerup', this.handlePointerUp, { passive: false });
@@ -2026,7 +2205,9 @@
                 if (!below) return null;
                 exactBlank = below.closest('.ddb-blank-slot');
 
-                if (exactBlank) return exactBlank;
+                if (exactBlank) {
+                    return exactBlank.children.length === 0 ? exactBlank : null;
+                }
 
                 threshold = window.innerWidth >= 1280 ? 42 : (window.innerWidth >= 640 ? 34 : 28);
 
@@ -2123,7 +2304,7 @@
 
                 if (!item || !blank) return false;
 
-                item.classList.remove('ddb-dragging', 'ddb-returning', 'ddb-shake');
+                item.classList.remove('ddb-dragging', 'ddb-returning', 'ddb-shake', 'ddb-wrong-feedback');
                 item.style.position = '';
                 item.style.left = '';
                 item.style.top = '';
@@ -2160,9 +2341,9 @@
                 var tileId = item.dataset.id;
 
                 playCorrect();
-                this.spawnBurst(blank, this.burstEmojis.sort(function(){ return Math.random() - 0.5; }).slice(0, 3));
+                this.spawnBurst(blank, ['✓']);
 
-                item.classList.remove('ddb-dragging', 'ddb-shake');
+                item.classList.remove('ddb-dragging', 'ddb-shake', 'ddb-wrong-feedback');
 
                 item.style.position = '';
                 item.style.left = '';
@@ -2203,12 +2384,10 @@
 
                 if (blank && countAsMistake) {
                     this.flashBlankState(blank, 'wrong');
-                    item.classList.add('ddb-shake');
-                    item.classList.add('border-rose-300','bg-rose-50','text-rose-700','dark:bg-rose-900/25','dark:border-rose-900/40','dark:text-rose-200');
+                    item.classList.add('ddb-shake', 'ddb-wrong-feedback');
 
                     setTimeout(function(){
-                        item.classList.remove('ddb-shake');
-                        item.classList.remove('border-rose-300','bg-rose-50','text-rose-700','dark:bg-rose-900/25','dark:border-rose-900/40','dark:text-rose-200');
+                        item.classList.remove('ddb-shake', 'ddb-wrong-feedback');
                     }, 380);
                 }
 
@@ -2223,7 +2402,7 @@
                 }
 
                 setTimeout(function(){
-                    item.classList.remove('ddb-dragging','ddb-returning');
+                    item.classList.remove('ddb-dragging','ddb-returning','ddb-wrong-feedback');
                     item.style.position = '';
                     item.style.left = '';
                     item.style.top = '';
@@ -2351,5 +2530,5 @@
                 window.dragDropBlanksGame.init();
             });
         })();
-    </script>
+    </script> 
 @endsection

@@ -1,3 +1,5 @@
+@extends('slider.simple-layout')
+
 @php
     $allowedTypes = ['letters', 'words', 'sentence'];
     $gameType = in_array(($content['type'] ?? 'letters'), $allowedTypes, true)
@@ -23,6 +25,45 @@
     $instructionText = trim((string) ($content['instruction'] ?? $defaultInstructions[$gameType] ?? 'Drag the tiles to make the correct answer.'));
     $pageTitle = trim((string) ($content['page_title'] ?? $content['title'] ?? 'Unscramble'));
     $nextButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-indigo-600 hover:bg-indigo-500'));
+    $themeName = strtolower((string) ($theme['name'] ?? 'default'));
+    $isOrangeTheme = $themeName === 'orange';
+    $isGreenTheme = $themeName === 'green';
+
+    if ($isGreenTheme) {
+        $nextButtonClass = 'bg-gradient-to-br from-emerald-700 via-emerald-600 to-green-500 dark:from-emerald-300 dark:via-emerald-400 dark:to-green-400 dark:text-emerald-950';
+    }
+
+    $accentButtonClass = $isOrangeTheme
+        ? 'border-orange-300/80 bg-orange-50 text-orange-700 hover:bg-orange-100 dark:border-orange-500/35 dark:bg-orange-500/15 dark:text-orange-200 dark:hover:bg-orange-500/20'
+        : ($isGreenTheme
+            ? 'border-emerald-300/80 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-500/35 dark:bg-emerald-500/15 dark:text-emerald-200 dark:hover:bg-emerald-500/20'
+            : 'border-indigo-300/80 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:border-indigo-500/35 dark:bg-indigo-500/15 dark:text-indigo-200 dark:hover:bg-indigo-500/20');
+    $accentSoftTextClass = $isOrangeTheme
+        ? 'text-orange-700 dark:text-orange-200'
+        : ($isGreenTheme ? 'text-emerald-700 dark:text-emerald-200' : 'text-indigo-700 dark:text-indigo-200');
+    $accentRingClass = $isOrangeTheme
+        ? 'focus-visible:ring-orange-400/30'
+        : ($isGreenTheme ? 'focus-visible:ring-emerald-400/30' : 'focus-visible:ring-indigo-400/30');
+    $slotFilledClasses = $isOrangeTheme
+        ? ['border-orange-300/80', 'bg-orange-50/85', 'dark:border-orange-400/35', 'dark:bg-orange-500/10']
+        : ($isGreenTheme
+            ? ['border-emerald-300/80', 'bg-emerald-50/85', 'dark:border-emerald-400/35', 'dark:bg-emerald-500/10']
+            : ['border-indigo-300/80', 'bg-indigo-50/80', 'dark:border-indigo-400/35', 'dark:bg-indigo-500/10']);
+    $slotFocusClass = $isOrangeTheme
+        ? 'focus-visible:ring-orange-400/25'
+        : ($isGreenTheme ? 'focus-visible:ring-emerald-400/25' : 'focus-visible:ring-indigo-400/25');
+    $slotHotClasses = $isOrangeTheme
+        ? ['slot-hot', 'ring-4', 'ring-orange-300/50', 'border-orange-500', 'bg-orange-50/90', 'dark:bg-orange-500/15']
+        : ($isGreenTheme
+            ? ['slot-hot', 'ring-4', 'ring-emerald-300/50', 'border-emerald-500', 'bg-emerald-50/90', 'dark:bg-emerald-500/15']
+            : ['slot-hot', 'ring-4', 'ring-indigo-300/50', 'border-indigo-500', 'bg-indigo-50/90', 'dark:bg-indigo-500/15']);
+    $gameWidthClass = trim((string) ($content['game_width_class'] ?? 'max-w-5xl'));
+    $verticalAlignment = trim((string) ($content['vertical_alignment'] ?? 'auto'));
+    if (!in_array($verticalAlignment, ['auto', 'top', 'center'], true)) {
+        $verticalAlignment = 'auto';
+    }
+    $topAlignGame = $verticalAlignment === 'top' || ($verticalAlignment === 'auto' && ($playerAudio || $hasScript));
+    $mainJustifyClass = $topAlignGame ? 'justify-start pt-4 sm:pt-5' : 'justify-center pt-3 sm:pt-4';
 
     $normalizeChunkWords = static function ($value): array {
         if (is_array($value)) {
@@ -228,90 +269,97 @@
         ];
     }
 @endphp
-@extends('slider.simple-layout')
 
 @section('title', $pageTitle)
 
 @section('content')
-    <main id="unscramble-game" class="min-h-[100dvh] w-full overflow-x-hidden bg-transparent text-slate-900 dark:text-slate-100">
-        <div class="mx-auto flex min-h-[100dvh] w-full max-w-[1320px] flex-col px-4 py-6 sm:px-6 sm:py-8 lg:justify-center">
-            <div class="grid place-items-center gap-5 text-center sm:gap-6">
+    <main id="unscramble-game" class="min-h-[100dvh] w-full overflow-x-hidden bg-transparent text-slate-900 transition-colors duration-300 dark:text-slate-100">
+        <div class="mx-auto flex min-h-[100dvh] w-full max-w-[1500px] flex-col {{ $mainJustifyClass }} px-3 pb-4 sm:px-5 sm:pb-5 lg:px-7">
+            <div class="grid w-full place-items-center gap-2.5 text-center sm:gap-3">
                 @include('slider.components.title-subtitle')
+
                 @unless(!empty($content['hide_status_bar']))
                     @include('slider.components.game-status')
                 @endunless
 
                 @if($playerAudio || $hasScript)
-                    <section class="w-full max-w-4xl rounded-[28px] border border-slate-200/70 bg-white/75 p-4 shadow-xl backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/65">
+                    <section class="mx-auto w-full max-w-5xl rounded-[1.35rem] border border-slate-200/70 bg-white/75 p-3 shadow-[0_12px_36px_rgba(2,6,23,0.06)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60 sm:p-4">
                         @include('slider.components.audio-player')
                     </section>
                 @endif
 
-                <section class="w-full max-w-[1180px] rounded-[30px] border border-slate-200/70 bg-white/75 p-4 shadow-xl backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/65 sm:p-5">
-                    <div class="flex flex-wrap items-center justify-between gap-3 text-left">
-                        <div class="text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.1rem]">
-                            {{ $instructionText }}
-                        </div>
+                <section id="uns-game-card" class="mx-auto w-full {{ $gameWidthClass }}">
+                    <div class="relative isolate overflow-hidden rounded-[1.6rem] border border-slate-200/70 bg-white/75 p-2.5 text-left shadow-[0_18px_55px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60 sm:p-3 lg:p-4">
+                        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_120%_at_0%_0%,rgba(99,102,241,0.10)_0%,transparent_52%),radial-gradient(120%_120%_at_100%_0%,rgba(59,130,246,0.08)_0%,transparent_52%)] dark:bg-[radial-gradient(120%_120%_at_0%_0%,rgba(99,102,241,0.14)_0%,transparent_52%),radial-gradient(120%_120%_at_100%_0%,rgba(59,130,246,0.10)_0%,transparent_52%)]"></div>
 
-                        <button
-                                id="uns-reveal"
-                                type="button"
-                                class="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-300 bg-amber-100 px-3 py-2 text-xs font-black text-amber-900 shadow-sm transition hover:scale-[1.03] active:scale-[.98] dark:border-amber-700/50 dark:bg-amber-900/30 dark:text-amber-200"
-                        >
-                            Reveal answer
-                        </button>
-                    </div>
-
-                    <div class="mt-4 grid gap-3.5 sm:gap-4">
-                        <div id="uns-image-wrap" class="hidden justify-center">
-                            <img id="uns-image" src="" alt="" class="aspect-[5/3] w-full max-w-[16rem] rounded-[24px] object-cover shadow-lg sm:max-w-[17rem] lg:max-w-[19rem]">
-                        </div>
-
-                        <div class="rounded-[26px] border border-slate-200/70 bg-white/85 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-950/35 sm:p-4">
-                            <div id="uns-prompt" class="hidden mb-2 text-center text-xs font-black uppercase tracking-[0.14em] text-indigo-600 dark:text-indigo-300 sm:text-sm"></div>
-                            <div id="uns-answer-feedback" class="hidden mb-3 text-center">
-                                <span class="inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-black tracking-[0.08em] sm:text-sm"></span>
-                            </div>
-
-                            <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-center">
-                                <span id="uns-before" class="text-sm font-bold leading-[1.4] text-slate-900 dark:text-slate-100 sm:text-base lg:text-[1.05rem]"></span>
-                                <div id="uns-slots" class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5"></div>
-                                <span id="uns-after" class="text-sm font-bold leading-[1.4] text-slate-900 dark:text-slate-100 sm:text-base lg:text-[1.05rem]"></span>
-                            </div>
-                        </div>
-
-                        <div class="rounded-[26px] border border-slate-200/70 bg-slate-50/80 p-3 dark:border-slate-700 dark:bg-slate-950/35 sm:p-4">
-                            <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2">
-                                <div class="text-left text-[11px] font-black uppercase tracking-[0.14em] text-slate-500 dark:text-slate-300">
-                                    Tile Bank
+                        <div class="relative z-[1] flex flex-wrap items-center justify-between gap-2.5">
+                            <div class="min-w-0 flex flex-1 flex-wrap items-center gap-2">
+                                <div id="uns-round-indicator" class="inline-flex rounded-full border border-slate-200/70 bg-white/75 px-2.5 py-1 text-[10px] font-black text-slate-500 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/45 dark:text-slate-300">
+                                    0 of 0
                                 </div>
-                                <div class="flex flex-wrap items-center justify-center gap-1.5 text-[10px] font-semibold text-slate-600 dark:text-slate-300 sm:text-[11px]">
-                                    <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/85 px-2 py-1 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">👆 Tap</span>
-                                    <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/85 px-2 py-1 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">🤏 Drag</span>
-                                    <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/85 px-2 py-1 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">✖ Tap to remove</span>
+                                <div class="min-w-0 text-xs font-black leading-[1.35] text-slate-900 dark:text-slate-100 sm:text-sm lg:text-base">
+                                    {{ $instructionText }}
                                 </div>
                             </div>
 
-                            <div id="uns-bank" class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5"></div>
+                            <button
+                                    id="uns-reveal"
+                                    type="button"
+                                    class="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border px-3 py-1.5 text-[11px] font-black shadow-sm transition duration-200 ease-out hover:scale-[1.03] active:scale-95 sm:text-xs {{ $accentButtonClass }} {{ $accentRingClass }} focus-visible:outline-none focus-visible:ring-4"
+                            >
+                                Reveal answer
+                            </button>
                         </div>
-                    </div> 
 
-                    <div class="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-                        <button id="uns-reset" type="button" class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-black text-slate-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
-                            Reset 🔁
-                        </button>
+                        <div class="relative z-[1] mt-2.5 grid gap-2.5 sm:mt-3 sm:gap-3">
+                            <div id="uns-image-wrap" class="hidden justify-center">
+                                <img id="uns-image" src="" alt="" class="aspect-[5/3] w-full max-w-[15rem] rounded-[1.35rem] object-cover shadow-[0_12px_30px_rgba(2,6,23,0.12)] sm:max-w-[17rem] lg:max-w-[19rem]">
+                            </div>
 
-                        <button id="uns-hint" type="button" class="inline-flex w-full items-center justify-center rounded-xl border border-amber-300 bg-amber-100 px-3 py-3 text-sm font-black text-amber-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-amber-700/50 dark:bg-amber-900/30 dark:text-amber-200">
-                            Hint 💡 (<span id="uns-hint-count">2</span>)
-                        </button>
+                            <div class="rounded-[1.25rem] border border-slate-200/70 bg-white/80 p-2.5 shadow-sm backdrop-blur dark:border-slate-700/60 dark:bg-slate-950/35 sm:p-3">
+                                <div id="uns-prompt" class="hidden mb-2 text-left text-[11px] font-black uppercase tracking-[0.14em] {{ $accentSoftTextClass }} sm:text-xs"></div>
+                                <div id="uns-answer-feedback" class="hidden mb-2 text-left">
+                                    <span class="inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-black tracking-[0.08em] sm:text-sm"></span>
+                                </div>
 
-                        <button id="uns-prev" type="button" class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-black text-slate-900 shadow-sm transition hover:scale-[1.02] active:scale-[.98] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
-                            Previous
-                        </button>
+                                <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-[1rem] border border-slate-200/60 bg-slate-50/55 px-3 py-3 text-center dark:border-slate-700/50 dark:bg-slate-900/30 sm:px-4 sm:py-3.5">
+                                    <span id="uns-before" class="text-sm font-bold leading-[1.5] text-slate-900 dark:text-slate-100 sm:text-base lg:text-[1.05rem]"></span>
+                                    <div id="uns-slots" class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5"></div>
+                                    <span id="uns-after" class="text-sm font-bold leading-[1.5] text-slate-900 dark:text-slate-100 sm:text-base lg:text-[1.05rem]"></span>
+                                </div>
+                            </div>
 
-                        <button id="uns-next" type="button" class="inline-flex w-full items-center justify-center rounded-xl border border-transparent px-3 py-3 text-sm font-black text-white shadow-sm transition hover:scale-[1.02] active:scale-[.98] {{ $nextButtonClass }}">
-                            Next
-                        </button>
+                            <div class="rounded-[1.25rem] border border-slate-200/70 bg-slate-50/80 p-2.5 shadow-sm backdrop-blur dark:border-slate-700/60 dark:bg-slate-950/35 sm:p-3">
+                                <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
+                                    <div class="text-left text-[11px] font-black uppercase tracking-[0.14em] text-slate-500 dark:text-slate-300">
+                                        Tile Bank
+                                    </div>
+                                    <div class="inline-flex rounded-full border border-slate-200/80 bg-white/75 px-2 py-1 text-[10px] font-bold text-slate-500 shadow-sm dark:border-slate-700/70 dark:bg-slate-900/60 dark:text-slate-300 sm:hidden">
+                                        Tap or drag
+                                    </div>
+                                </div>
+
+                                <div id="uns-bank" class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5"></div>
+                            </div>
+                        </div>
+
+                        <div class="relative z-[1] mt-2.5 grid grid-cols-2 gap-2 sm:mt-3 lg:grid-cols-4 lg:gap-2.5">
+                            <button id="uns-reset" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-slate-300/70 bg-white/75 px-3 py-2 text-xs font-black text-slate-600 shadow-sm transition duration-200 ease-out hover:scale-[1.02] hover:bg-white active:scale-95 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-200 dark:hover:bg-slate-800 sm:text-sm">
+                                Reset
+                            </button>
+
+                            <button id="uns-hint" type="button" class="inline-flex w-full items-center justify-center rounded-lg border px-3 py-2 text-xs font-black shadow-sm transition duration-200 ease-out hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-55 sm:text-sm {{ $accentButtonClass }}">
+                                Hint (<span id="uns-hint-count">2</span>)
+                            </button>
+
+                            <button id="uns-prev" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-slate-300/70 bg-white/75 px-3 py-2 text-xs font-black text-slate-600 shadow-sm transition duration-200 ease-out hover:scale-[1.02] hover:bg-white active:scale-95 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-200 dark:hover:bg-slate-800 sm:text-sm">
+                                ‹ Previous
+                            </button>
+
+                            <button id="uns-next" type="button" class="inline-flex w-full items-center justify-center rounded-lg border border-transparent px-3 py-2 text-xs font-black text-white shadow-[0_10px_24px_rgba(79,70,229,.14)] transition duration-200 ease-out hover:scale-[1.03] active:scale-95 sm:text-sm {{ $nextButtonClass }}">
+                                Next ›
+                            </button>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -329,12 +377,12 @@
                 [
                     'label' => 'Restart',
                     'id' => 'uns-restart-popup',
-                    'class' => 'game-btn w-full border border-slate-200 bg-white px-8 py-3 text-sm text-slate-900 shadow-[0_8px_22px_#0206170D] hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700',
+                    'class' => 'inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-8 py-3 text-sm font-black text-slate-900 shadow-[0_8px_22px_#0206170D] transition hover:scale-[1.02] hover:bg-slate-50 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700',
                 ],
                 [
                     'label' => 'Continue',
                     'id' => 'uns-continue-popup',
-                    'class' => 'game-btn w-full border border-white/20 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-8 py-3 text-sm text-white shadow-[0_10px_24px_#4F46E51A]',
+                    'class' => 'inline-flex w-full items-center justify-center rounded-xl border border-white/20 px-8 py-3 text-sm font-black text-white shadow-[0_10px_24px_#4F46E51A] transition hover:scale-[1.02] active:scale-95 ' . $nextButtonClass,
                 ],
             ],
         ])
@@ -346,6 +394,9 @@
         document.addEventListener('DOMContentLoaded', function () {
             const GAME_TYPE = @json($gameType);
             const QUESTION_SOURCE = @json($roundsData);
+            const SLOT_FILLED_CLASSES = @json($slotFilledClasses);
+            const SLOT_FOCUS_CLASS = @json($slotFocusClass);
+            const SLOT_HOT_CLASSES = @json($slotHotClasses);
 
             const root = document.getElementById('unscramble-game');
             if (!root) return;
@@ -355,6 +406,7 @@
             const mistakesCount = document.getElementById('mistakesCount');
             const timerEl = document.getElementById('gameTimer');
             const hintCount = document.getElementById('uns-hint-count');
+            const roundIndicator = document.getElementById('uns-round-indicator');
 
             const promptEl = document.getElementById('uns-prompt');
             const beforeEl = document.getElementById('uns-before');
@@ -640,6 +692,7 @@
                 const round = currentRound();
 
                 if (roundLabel) roundLabel.textContent = total ? (state.idx + 1) + '/' + total : '0/0';
+                if (roundIndicator) roundIndicator.textContent = total ? (state.idx + 1) + ' of ' + total : '0 of 0';
                 if (correctCount) correctCount.textContent = String(state.correct);
                 if (mistakesCount) mistakesCount.textContent = String(state.mistakes);
                 if (hintCount) hintCount.textContent = String(state.hintsLeft);
@@ -675,22 +728,22 @@
 
             function slotSizeClasses() {
                 if (GAME_TYPE === 'letters') {
-                    return 'min-h-[42px] min-w-[42px] px-2.5 py-2 text-sm sm:min-h-[52px] sm:min-w-[52px] sm:px-3 sm:text-lg';
+                    return 'min-h-[40px] min-w-[40px] px-2.5 py-2 text-sm sm:min-h-[46px] sm:min-w-[46px] sm:px-2.5 sm:text-base lg:min-h-[48px] lg:min-w-[48px]';
                 }
                 if (GAME_TYPE === 'sentence') {
-                    return 'min-h-[44px] min-w-[64px] px-3 py-2 text-sm sm:min-h-[52px] sm:min-w-[78px] sm:px-3.5 sm:text-base';
+                    return 'min-h-[42px] min-w-[62px] px-3 py-2 text-sm sm:min-h-[50px] sm:min-w-[76px] sm:px-3.5 sm:text-base';
                 }
-                return 'min-h-[44px] min-w-[72px] px-3 py-2 text-sm sm:min-h-[52px] sm:min-w-[88px] sm:px-3.5 sm:text-base';
+                return 'min-h-[42px] min-w-[70px] px-3 py-2 text-sm sm:min-h-[50px] sm:min-w-[86px] sm:px-3.5 sm:text-base';
             }
 
             function tileSizeClasses() {
                 if (GAME_TYPE === 'letters') {
-                    return 'min-h-[42px] min-w-[48px] px-2.5 py-2 text-sm sm:min-h-[52px] sm:min-w-[58px] sm:px-3 sm:text-lg';
+                    return 'min-h-[40px] min-w-[48px] px-2.5 py-2 text-sm sm:min-h-[50px] sm:min-w-[58px] sm:px-3 sm:text-lg';
                 }
                 if (GAME_TYPE === 'sentence') {
-                    return 'min-h-[44px] px-3 py-2 text-sm sm:min-h-[52px] sm:px-3.5 sm:text-base';
+                    return 'min-h-[42px] px-3 py-2 text-sm sm:min-h-[50px] sm:px-3.5 sm:text-base';
                 }
-                return 'min-h-[44px] min-w-[72px] px-3 py-2 text-sm sm:min-h-[52px] sm:min-w-[88px] sm:px-3.5 sm:text-base';
+                return 'min-h-[42px] min-w-[70px] px-3 py-2 text-sm sm:min-h-[50px] sm:min-w-[86px] sm:px-3.5 sm:text-base';
             }
 
             function buildGroupedIndexes(groups, total) {
@@ -717,18 +770,18 @@
                     'inline-flex',
                     'items-center',
                     'justify-center',
-                    'rounded-2xl',
-                    'border',
+                    'rounded-xl',
+                    'border-2',
                     'border-dashed',
-                    'border-slate-300',
-                    'bg-white/85',
+                    ...(slot.text ? SLOT_FILLED_CLASSES : ['border-slate-300/90', 'bg-white/90', 'dark:border-slate-600/80', 'dark:bg-slate-950/45']),
                     'font-black',
                     'text-slate-900',
                     'shadow-sm',
                     'transition',
                     'active:scale-95',
-                    'dark:border-slate-600',
-                    'dark:bg-slate-950/45',
+                    'focus-visible:outline-none',
+                    'focus-visible:ring-4',
+                    SLOT_FOCUS_CLASS,
                     'dark:text-slate-50',
                     slotSizeClasses()
                 ].join(' ');
@@ -751,7 +804,7 @@
                 const groupedIndexes = buildGroupedIndexes(round.groups || [], round.slots.length);
                 const wrapperClasses = GAME_TYPE === 'sentence'
                     ? 'flex flex-wrap items-center justify-center gap-2 sm:gap-2.5'
-                    : 'inline-flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-dashed border-indigo-200/80 bg-indigo-50/70 px-2 py-2 dark:border-indigo-500/30 dark:bg-indigo-500/10';
+                    : 'inline-flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-200/80 bg-white/65 px-2 py-2 dark:border-slate-700/70 dark:bg-slate-900/35';
 
                 groupedIndexes.forEach(function (indexes) {
                     const group = document.createElement('div');
@@ -784,7 +837,7 @@
 
             function clearHot() {
                 root.querySelectorAll('.slot-hot').forEach(function (element) {
-                    element.classList.remove('slot-hot', 'ring-4', 'ring-indigo-300/50', 'border-indigo-500');
+                    element.classList.remove(...SLOT_HOT_CLASSES);
                 });
             }
 
@@ -838,7 +891,7 @@
                 clearHot();
 
                 if (slot && !slot.dataset.filled) {
-                    slot.classList.add('slot-hot', 'ring-4', 'ring-indigo-300/50', 'border-indigo-500');
+                    slot.classList.add(...SLOT_HOT_CLASSES);
                     drag.over = slot;
                 } else {
                     drag.over = null;
@@ -865,22 +918,28 @@
                 button.dataset.tileId = tile.id;
                 button.className = [
                     'tile',
+                    'relative',
                     'inline-flex',
                     'items-center',
                     'justify-center',
-                    'rounded-2xl',
+                    'rounded-xl',
                     'border',
-                    'border-slate-200',
-                    'bg-white/90',
+                    'border-slate-200/80',
+                    'bg-white/95',
                     'font-black',
                     'text-slate-900',
-                    'shadow-sm',
+                    'shadow-[0_7px_16px_rgba(15,23,42,0.08)]',
                     'transition',
                     'hover:-translate-y-0.5',
+                    'hover:shadow-[0_10px_22px_rgba(15,23,42,0.12)]',
                     'active:scale-95',
-                    'dark:border-slate-700',
-                    'dark:bg-slate-900/75',
+                    'focus-visible:outline-none',
+                    'focus-visible:ring-4',
+                    SLOT_FOCUS_CLASS,
+                    'dark:border-slate-700/70',
+                    'dark:bg-slate-900/80',
                     'dark:text-slate-50',
+                    'dark:shadow-black/20',
                     tileSizeClasses()
                 ].join(' ');
                 button.textContent = tile.text;
@@ -920,7 +979,7 @@
 
                 const wrapperClass = GAME_TYPE === 'sentence'
                     ? 'contents'
-                    : 'inline-flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-dashed border-indigo-200/80 bg-indigo-50/70 px-2 py-2 dark:border-indigo-500/30 dark:bg-indigo-500/10';
+                    : 'inline-flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-200/80 bg-white/65 px-2 py-2 dark:border-slate-700/70 dark:bg-slate-900/35';
 
                 const groups = buildGroupedIndexes(round.groups || [], round.tiles.length);
 
@@ -1090,6 +1149,7 @@
             function startTimer() {
                 if (timerInt) clearInterval(timerInt);
                 startTime = Date.now();
+                if (timerEl) timerEl.textContent = '0:00';
                 timerInt = setInterval(function () {
                     const elapsed = Math.floor((Date.now() - startTime) / 1000);
                     if (timerEl) timerEl.textContent = formatTime(elapsed);
