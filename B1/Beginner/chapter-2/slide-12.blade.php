@@ -3,7 +3,7 @@
         'page_title'    => 'Listen Again & Fill In The Blanks',
         'title'         => 'Listen Again & Fill In The Blanks',
         'subtitle'      => 'Complete the sentences with the correct word.',
-        'audio'         => materialAsset('slider/B1/Beginner/chapter-2/audios/slide11.mp3'),
+        'audio'         => materialAsset('slider/B1/Beginner/chapter-2/audios/slide12.mp3'),
 
         'script'        => [
             "Sam: Hello. This is 6 Minute English . I’m Sam.",

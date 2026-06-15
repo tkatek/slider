@@ -79,7 +79,7 @@ $content = [
         ],
         [
             'text'     => 'Reminder',
-            'subtitle' => 'something that makes you remember an',
+            'subtitle' => 'something that makes you remember',
             'emoji'    => '💭',
             'sound'    => materialAsset('slider/B1/Beginner/chapter-2/audios/slide7/reminder.mp3'),
             'image'    => materialAsset('slider/B1/Beginner/chapter-2/img/slide7/reminder.webp'),

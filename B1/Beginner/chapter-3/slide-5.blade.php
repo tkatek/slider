@@ -1,0 +1,105 @@
+<?php
+$content = [
+    'video'          => materialAsset(''),
+    'thumbnail'      => materialAsset('slider/B1/Beginner/chapter-3/img/slide5.webp'),
+    'isQuiz'         => 0,
+
+    'questions' => [
+        [
+            'time' => 9000,
+            'type' => 'multiple_choice',
+            'question' => 'What does Charlie apologize for?',
+            'options' => [
+                'Forgetting a meeting',
+                'Not working tomorrow',
+                'Losing money',
+            ],
+            'correct_answer' => 1,
+            'points' => 10,
+        ],
+        [
+            'time' => 26000,
+            'type' => 'multiple_choice',
+            'question' => 'Which expression is used to ask for forgiveness?',
+            'options' => [
+                'No worries.',
+                'Please forgive me.',
+                'Forget about it.',
+            ],
+            'correct_answer' => 1,
+            'points' => 10,
+        ],
+        [
+            'time' => 21000,
+            'type' => 'multiple_choice',
+            'question' => 'What does “It’s all my fault” mean?',
+            'options' => [
+                'I am responsible for the mistake.',
+                'I don’t care about the problem.',
+                'Someone else made the mistake.',
+            ],
+            'correct_answer' => 0,
+            'points' => 10,
+        ],
+        [
+            'time' => 38000,
+            'type' => 'multiple_choice',
+            'question' => 'Which expression accepts an apology?',
+            'options' => [
+                'I’m terribly sorry.',
+                'I apologize for that.',
+                'No harm done.',
+            ],
+            'correct_answer' => 2,
+            'points' => 10,
+        ],
+        [
+            'time' => 42000,
+            'type' => 'multiple_choice',
+            'question' => 'What does “No worries” mean?',
+            'options' => [
+                'Be more careful.',
+                'It’s okay.',
+                'I’m angry.',
+            ],
+            'correct_answer' => 1,
+            'points' => 10,
+        ],
+    ],
+
+    'subtitles' => [
+        ['start' => 0,    'end' => 2.5,  'text' => 'Mary: I am truly sorry.'],
+        ['start' => 2.5,  'end' => 5,    'text' => 'I forgot about your party.'],
+        ['start' => 5,    'end' => 7.5,  'text' => 'Oh, do not worry.'],
+        ['start' => 7.5,  'end' => 9.5,  'text' => 'No harm done.'],
+        ['start' => 9.5,  'end' => 12,   'text' => 'Charlie: So sorry.'],
+        ['start' => 12,   'end' => 14.5, 'text' => 'I cannot work tomorrow.'],
+        ['start' => 14.5, 'end' => 17,   'text' => 'Oh, no worries.'],
+        ['start' => 17,   'end' => 19.5, 'text' => 'I will find someone else.'],
+        ['start' => 19.5, 'end' => 22,   'text' => 'Let’s review.'],
+        ['start' => 22,   'end' => 25,   'text' => 'To apologize, we can use the following expressions.'],
+        ['start' => 25,   'end' => 27,   'text' => 'I apologize for...'],
+        ['start' => 27,   'end' => 29,   'text' => 'I am sorry.'],
+        ['start' => 29,   'end' => 31,   'text' => 'It’s all my fault.'],
+        ['start' => 31,   'end' => 33.5, 'text' => 'I’d like to apologize for...'],
+        ['start' => 33.5, 'end' => 36,   'text' => 'I’m terribly sorry for...'],
+        ['start' => 36,   'end' => 38,   'text' => 'Please forgive me.'],
+        ['start' => 38,   'end' => 40,   'text' => 'Pardon me for...'],
+        ['start' => 40,   'end' => 42,   'text' => 'I am truly sorry.'],
+        ['start' => 42,   'end' => 45,   'text' => 'Accepting apologies.'],
+        ['start' => 45,   'end' => 47,   'text' => 'Don’t worry about it.'],
+        ['start' => 47,   'end' => 49,   'text' => 'It’s okay.'],
+        ['start' => 49,   'end' => 51,   'text' => 'No worries.'],
+        ['start' => 51,   'end' => 53,   'text' => 'It’s all right.'],
+        ['start' => 53,   'end' => 55,   'text' => 'It doesn’t matter.'],
+        ['start' => 55,   'end' => 57,   'text' => 'Oh, forget about it.'],
+        ['start' => 57,   'end' => 59.5, 'text' => 'It’s okay. No harm done.'],
+        ['start' => 59.5, 'end' => 62,   'text' => 'No worries. It’s fine.'],
+        ['start' => 62,   'end' => 65,   'text' => 'Now practice using these expressions.'],
+        ['start' => 65,   'end' => 68,   'text' => 'Use them when you want to apologize.'],
+        ['start' => 68,   'end' => 71,   'text' => 'Or accept an apology.'],
+    ],
+];
+?>
+
+@include("slider.video.interactive", ['content' => $content])

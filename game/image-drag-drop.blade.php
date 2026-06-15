@@ -2,182 +2,151 @@
 
 @section('style')
     <style>
-        /* 2. Theme tokens */
-        /* 3. Base component styles */
-        #gameRoot {
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
+        @keyframes imageDdPopIn {
+            0% { transform: translate(-50%, -50%) scale(.92); opacity: .55; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        @keyframes imageDdShake {
+            0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+            25% { transform: translate(-50%, -50%) translateX(-6px); }
+            75% { transform: translate(-50%, -50%) translateX(6px); }
+        }
+
+        @keyframes imageDdTileShake {
+            0%, 100% { transform: scale(1.05) rotate(-2deg) translateX(0); }
+            25% { transform: scale(1.05) rotate(-2deg) translateX(-7px); }
+            75% { transform: scale(1.05) rotate(-2deg) translateX(7px); }
+        }
+
+        @keyframes imageDdNudge {
+            0%, 100% { transform: translateX(0) scale(1); }
+            35% { transform: translateX(2px) scale(1.06); }
+            70% { transform: translateX(-1px) scale(1.02); }
+        }
+
+        #imageDdShell,
+        #imageDdShell * {
             -webkit-user-select: none;
             user-select: none;
+            -webkit-touch-callout: none;
         }
 
-        .game-page {
-            font-family: "Plus Jakarta Sans", sans-serif;
-            background:
-                radial-gradient(980px 560px at 8% 10%, #673FE724 0%, #673FE700 55%),
-                radial-gradient(900px 560px at 92% 14%, #3B82F61F 0%, #3B82F600 56%),
-                radial-gradient(880px 640px at 50% 100%, #10B98114 0%, #10B98100 60%);
+        body.image-dd-drag-active,
+        body.image-dd-drag-active * {
+            cursor: grabbing !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
         }
 
-        .dark .game-page {
-            background:
-                radial-gradient(980px 560px at 8% 10%, #60A5FA2E 0%, #60A5FA00 55%),
-                radial-gradient(900px 560px at 92% 14%, #C084FC29 0%, #C084FC00 56%),
-                radial-gradient(880px 640px at 50% 100%, #6366F11F 0%, #6366F100 60%),
-                linear-gradient(180deg, #020617 0%, #0F172A 100%);
-        }
-
-        .game-fallback {
-            background: linear-gradient(135deg, #3B82F61A, #6366F114, #9333EA1A);
-        }
-
-        .word-bank-overlay {
-            background:
-                radial-gradient(120% 120% at 0% 0%, #6366F129 0%, #6366F100 55%),
-                radial-gradient(120% 120% at 100% 0%, #3B82F61F 0%, #3B82F600 55%);
-        }
-
-        .game-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            border-radius: 0.5rem;
-            padding: 0.375rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 900;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, opacity 0.2s ease;
-        }
-
-        .game-icon-btn {
-            display: inline-flex;
-            height: 2rem;
-            width: 2rem;
-            align-items: center;
-            justify-content: center;
-            border-radius: 999px;
-            transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
-        }
-
-        .tile-placeholder {
-            border: 1px dashed #CBD5E1CC;
-            background: #E2E8F059;
-            border-radius: 0.75rem;
-        }
-
-        .dark .tile-placeholder {
-            border-color: #334155B3;
-            background: #1E293B4D;
-        }
-
-        .image-drop-slot {
+        .image-dd-slot {
             position: absolute;
+            left: 50%;
+            top: 50%;
             transform: translate(-50%, -50%);
-            width: 76px;
-            min-height: 24px;
-            padding: 2px 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: clamp(54px, 7.4vw, 82px);
+            min-height: clamp(18px, 2.4vw, 28px);
+            padding: 2px 7px;
             border-radius: 999px;
-            border: 3px solid #FFFFFFF2;
-            background: #FFFFFF00;
-            box-shadow: 0 0 0 2px #0F172A59;
-            transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+            border: 3px solid rgba(255,255,255,.94);
+            background: rgba(255,255,255,.02);
+            box-shadow: 0 0 0 2px rgba(15,23,42,.40), 0 8px 18px rgba(15,23,42,.10);
+            transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease, width .18s ease;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .image-drop-slot-inner {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            min-height: 18px;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-size: 10px;
-            font-weight: 800;
-            line-height: 1.05;
-            letter-spacing: 0.01em;
-            color: #4C1D9538;
+        .image-dd-slot:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(15,23,42,.45), 0 0 0 6px rgba(99,102,241,.24), 0 8px 18px rgba(15,23,42,.12);
         }
 
-        .word-tile {
-            border: 1px solid #FFFFFF33;
-            color: #FFFFFF;
-            box-shadow: 0 10px 20px #02061729;
+        .image-dd-slot-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 16px;
+            text-align: center;
+            font-size: clamp(8px, 1vw, 11px);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -.01em;
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .image-dd-slot.is-hover {
+            transform: translate(-50%, -50%) scale(1.08);
+            border-color: #ffffff;
+            background: rgba(255,255,255,.22);
+            box-shadow: 0 0 0 3px rgba(15,23,42,.48), 0 14px 26px rgba(15,23,42,.18);
+        }
+
+        .image-dd-slot.is-solved {
+            width: auto;
+            max-width: min(142px, 28vw);
+            min-height: clamp(23px, 3vw, 32px);
+            border-color: rgba(99,102,241,.92);
+            background: rgba(255,255,255,.94);
+            box-shadow: 0 0 0 2px rgba(99,102,241,.16), 0 12px 24px rgba(79,70,229,.20);
+            animation: imageDdPopIn .26s cubic-bezier(.175,.885,.32,1.275);
+        }
+
+        .image-dd-slot.is-solved .image-dd-slot-inner {
+            min-width: 42px;
+            color: rgb(49,46,129);
+            text-shadow: 0 1px 0 rgba(255,255,255,.65);
+        }
+
+        .image-dd-slot.is-revealed {
+            border-color: rgba(244,63,94,.68);
+            background: rgba(255,241,242,.95);
+            box-shadow: 0 0 0 2px rgba(244,63,94,.13), 0 12px 24px rgba(244,63,94,.18);
+        }
+
+        .image-dd-slot.is-revealed .image-dd-slot-inner {
+            color: rgb(136,19,55);
+        }
+
+        .image-dd-slot.is-wrong {
+            animation: imageDdShake .32s ease-in-out;
+            border-color: rgba(248,113,113,.95);
+            background: rgba(254,226,226,.36);
+        }
+
+        .dark .image-dd-slot.is-solved {
+            border-color: rgba(129,140,248,.9);
+            background: rgba(15,23,42,.88);
+            box-shadow: 0 0 0 2px rgba(129,140,248,.16), 0 12px 24px rgba(2,6,23,.28);
+        }
+
+        .dark .image-dd-slot.is-solved .image-dd-slot-inner {
+            color: rgb(224,231,255);
+            text-shadow: none;
+        }
+
+        .dark .image-dd-slot.is-revealed {
+            border-color: rgba(251,113,133,.72);
+            background: rgba(127,29,29,.82);
+        }
+
+        .dark .image-dd-slot.is-revealed .image-dd-slot-inner {
+            color: rgb(255,228,230);
+        }
+
+        .image-dd-tile {
             touch-action: none;
         }
 
-        .word-tile--1 { background: linear-gradient(135deg, #3B82F6, #2563EB); }
-        .word-tile--2 { background: linear-gradient(135deg, #F43F5E, #9333EA); }
-        .word-tile--3 { background: linear-gradient(135deg, #10B981, #06B6D4); }
-        .word-tile--4 { background: linear-gradient(135deg, #F59E0B, #EA580C); }
-        .word-tile--5 { background: linear-gradient(135deg, #6366F1, #9333EA); }
-        .word-tile--6 { background: linear-gradient(135deg, #06B6D4, #0EA5E9); }
-
-        #wordList {
-            align-content: start;
+        .image-dd-tile.is-selected {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 14px 30px rgba(79,70,229,.25), 0 0 0 4px rgba(255,255,255,.32);
         }
 
-        /* 4. State styles */
-        .game-btn:hover,
-        .game-icon-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .game-btn:active,
-        .game-icon-btn:active {
-            transform: scale(0.98);
-        }
-
-        .game-icon-btn:disabled {
-            cursor: not-allowed;
-            opacity: 0.4;
-        }
-
-        .image-drop-slot-empty .image-drop-slot-inner {
-            color: #00000000;
-        }
-
-        .image-drop-slot.is-hover {
-            transform: translate(-50%, -50%) scale(1.06);
-            border-color: #FFFFFF;
-            box-shadow: 0 0 0 3px #0F172A73;
-        }
-
-        .image-drop-slot.is-solved {
-            width: auto;
-            max-width: 132px;
-            min-height: 28px;
-            border-color: #4F46E5E6;
-            background: linear-gradient(135deg, #E0E7FFF2, #F3E8FFF2);
-            box-shadow: 0 8px 20px #6366F124, inset 0 0 0 1px #FFFFFF38;
-        }
-        .image-drop-slot.is-solved .image-drop-slot-inner {
-            min-height: 20px;
-            padding: 0 2px;
-            color: #4C1D95;
-        }
-
-        .image-drop-slot.is-revealed {
-            border-color: #F43F5E73;
-            background: linear-gradient(135deg, #FBCFE8F5, #FECDD3F5);
-            box-shadow: 0 8px 20px #F43F5E29, inset 0 0 0 1px #FFFFFF38;
-        }
-
-        .image-drop-slot.is-revealed .image-drop-slot-inner {
-            color: #881337;
-        }
-
-        .dark .image-drop-slot.is-revealed {
-            border-color: #F472B657;
-            background: linear-gradient(135deg, #881337AD, #9F12399E);
-        }
-
-        .image-drop-slot.is-wrong {
-            animation: gameShake 0.28s ease-in-out;
-        }
-
-        .tile-dragging {
+        .image-dd-tile-dragging {
             position: fixed !important;
             z-index: 9999 !important;
             pointer-events: none !important;
@@ -186,147 +155,70 @@
             will-change: left, top, transform;
         }
 
-        .tile-returning {
+        .image-dd-tile-returning {
             z-index: 9000;
-            transition: top 0.42s cubic-bezier(0.23, 1, 0.32, 1), left 0.42s cubic-bezier(0.23, 1, 0.32, 1), transform 0.42s ease;
+            transition: top .42s cubic-bezier(.23,1,.32,1), left .42s cubic-bezier(.23,1,.32,1), transform .42s ease;
         }
 
-        .tile-shake {
-            animation: gameShake 0.35s ease-in-out;
+        .image-dd-tile-shake {
+            animation: imageDdTileShake .34s ease-in-out;
         }
 
-        .game-shake-card {
-            animation: gameShake 0.32s ease-in-out;
+        .image-dd-placeholder {
+            border: 1px dashed rgba(203,213,225,.85);
+            background: rgba(226,232,240,.34);
+            border-radius: .75rem;
         }
 
-        .word-tile.is-active {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 16px 34px #4F46E538, 0 0 0 3px #FFFFFF38;
+        .dark .image-dd-placeholder {
+            border-color: rgba(71,85,105,.85);
+            background: rgba(30,41,59,.34);
         }
 
-        .game-done-board {
-            animation: gameDonePulse 0.35s ease-out;
+        .image-dd-pool-nav-hint {
+            color: rgb(79,70,229);
+            border-color: rgba(99,102,241,.35);
+            background: rgba(238,242,255,.96);
+            box-shadow: 0 0 0 4px rgba(99,102,241,.10), 0 8px 18px rgba(79,70,229,.16);
+            animation: imageDdNudge 1.4s ease-in-out 3;
         }
 
-        #wordBankBar.is-fixed {
-            position: fixed;
-            top: var(--sticky-top, 16px);
-            right: auto;
-            bottom: auto;
-            z-index: 1400;
+        .dark .image-dd-pool-nav-hint {
+            color: rgb(224,231,255);
+            border-color: rgba(129,140,248,.45);
+            background: rgba(67,56,202,.34);
+            box-shadow: 0 0 0 4px rgba(129,140,248,.12), 0 10px 20px rgba(2,6,23,.28);
         }
 
-        #wordBankBar.is-bottom {
-            position: absolute;
-            top: auto;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            z-index: 1;
+
+        #imageDdImage {
+            max-height: var(--image-dd-max-height-mobile);
         }
 
-        /* 5. Responsive styles */
-        @media (max-width: 1024px) {
-            .image-drop-slot {
-                width: 68px;
-                min-height: 22px;
-                padding: 2px 5px;
-            }
-        }
-
-        @media (max-width: 1023.98px) {
-            #wordBankPanel {
-                max-height: min(35vh, 310px);
+        @media (min-width: 640px) {
+            #imageDdImage {
+                max-height: var(--image-dd-max-height-desktop);
             }
 
-            #wordList {
-                max-height: calc(min(35vh, 310px) - 56px);
+            #imageDdPoolContent {
+                max-height: calc(100dvh - 285px);
                 overflow-x: hidden;
                 overflow-y: auto;
             }
         }
 
-        @media (min-width: 1024px) {
-            #wordBankRail {
-                position: relative;
-                align-self: stretch;
-            }
-
-            #wordBankBar {
-                inset-inline: auto;
-                bottom: auto;
-            }
-
-            .word-bank-panel {
-                box-shadow: 0 18px 45px #0206171A;
-            }
-        }
-
         @media (max-width: 640px) {
-            .image-drop-slot {
-                width: 60px;
-                min-height: 20px;
-                padding: 2px 4px;
+            .image-dd-slot.is-solved {
+                max-width: 104px;
             }
-
-            .image-drop-slot-inner {
-                min-height: 16px;
-                font-size: 9px;
-            }
-
-            .image-drop-slot.is-solved {
-                max-width: 100px;
-                min-height: 24px;
-            }
-
-            .image-drop-slot.is-solved .image-drop-slot-inner {
-                font-size: 9px;
-            }
-        }
-
-        /* 6. Motion/accessibility */
-        @keyframes gameShake {
-            0%,
-            100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
-        }
-
-        @keyframes gameDonePulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.014); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes gameBurstUp {
-            0% {
-                transform: translateY(0) scale(0.8) rotate(0deg);
-                opacity: 0;
-            }
-            15% { opacity: 1; }
-            100% {
-                transform: translateY(-34px) scale(1.12) rotate(10deg);
-                opacity: 0;
-            }
-        }
-
-        .win-burst {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            z-index: 20;
-            pointer-events: none;
-            font-size: 1rem;
-            animation: gameBurstUp 0.7s ease forwards;
-            transform: translate(-50%, -50%);
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .tile-returning,
-            .tile-shake,
-            .game-done-board,
-            .image-drop-slot.is-wrong,
-            .win-burst {
+            .image-dd-slot,
+            .image-dd-tile-returning,
+            .image-dd-tile-shake,
+            .image-dd-slot.is-wrong,
+            .image-dd-slot.is-solved {
                 animation: none !important;
                 transition: none !important;
             }
@@ -335,133 +227,133 @@
 @endsection
 
 @section('content')
-    <main class="game-page flex min-h-[100dvh] w-full flex-col" id="gameRoot">
-        {{-- 7. Header --}}
-        @include('slider.components.title-subtitle')
- 
-        {{-- 8. Status --}}
-        @include('slider.components.game-status')
+    @php
+        $imageMaxHeightMobile = $content['image_max_height_mobile'] ?? ($content['image_max_height'] ?? 'calc(100dvh - 300px)');
+        $imageMaxHeightDesktop = $content['image_max_height_desktop'] ?? 'calc(100dvh - 190px)';
+        $poolVisibleCap = $content['pool_visible_cap'] ?? null;
+    @endphp
 
-        <div id="gameLayout" class="mx-auto flex min-h-0 w-full flex-1 flex-col px-4 pb-[calc(min(35vh,310px)+16px)] pt-2 sm:px-6 sm:pb-[calc(min(35vh,310px)+20px)] sm:pt-3 lg:flex-row lg:items-start lg:justify-center lg:gap-5 lg:px-8 lg:pb-0 lg:pt-2">
-            {{-- 9. Game area --}}
-            <section id="gameArea" class="flex w-full flex-col lg:w-[70%] lg:flex-none">
-                <div class="grid auto-rows-max place-items-center gap-3 text-center sm:gap-4">
-                    <div class="w-full">
-                        <div id="imageCard" class="relative isolate mb-4 w-full overflow-hidden rounded-[1.6rem] border border-slate-200/70 bg-white/70 text-left shadow-[0_18px_55px_#02061714] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60">
-                            <div class="relative z-[1] aspect-[10/6.8] overflow-hidden rounded-[1.6rem]">
-                                <img id="gameImage" class="absolute inset-0 h-full w-full object-contain" alt="Labeling game image">
+    <main id="imageDdShell" class="flex min-h-[100dvh] w-full flex-col">
+        <div id="imageDdPage" class="mx-auto flex min-h-[100dvh] w-full max-w-[1500px] flex-col px-3 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6">
+            <div class="shrink-0">
+                @include('slider.components.title-subtitle')
+                @include('slider.components.game-status')
+            </div>
 
-                                <div id="imageFallback" class="game-fallback absolute inset-0 grid place-items-center">
-                                    <div class="rounded-3xl border border-slate-200/80 bg-white/85 px-5 py-4 text-center shadow-sm dark:border-slate-700/70 dark:bg-slate-900/65">
-                                        <p class="text-xs font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-300 sm:text-sm">
-                                            Add your image
-                                        </p>
-                                        <p class="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-200 sm:text-base">
-                                            Set <code>$content['image']</code>.
-                                        </p>
+            <div id="imageDdGameBody" class="flex min-h-0 w-full flex-1 flex-col pt-3 sm:flex-row sm:items-start sm:justify-center sm:gap-4 sm:pt-4 lg:gap-5">
+                <aside id="imageDdPoolRail" class="order-2 w-full sm:order-1 sm:w-[29%] sm:min-w-[210px] sm:max-w-[330px] sm:shrink-0 sm:self-stretch lg:w-[27%]">
+                    <div id="imageDdPoolBar" class="fixed inset-x-0 bottom-0 z-[1500] px-2 pb-2 sm:sticky sm:bottom-auto sm:inset-x-auto sm:top-3 sm:z-[80] sm:px-0 sm:pb-0">
+                        <div class="mx-auto w-full max-w-5xl sm:max-w-none">
+                            <div class="relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white/92 shadow-[0_-10px_28px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/82 sm:shadow-sm">
+                                <div class="relative px-2.5 py-2 sm:px-3 sm:py-3 lg:px-4">
+                                    <div class="flex items-center justify-center sm:hidden">
+                                        <div class="h-1 w-10 rounded-full bg-slate-900/10 dark:bg-white/10"></div>
                                     </div>
-                                </div>
 
-                                <div id="dropLayer" class="absolute inset-0"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                                    <div class="mt-2 flex items-center justify-between gap-2 sm:mt-0">
+                                        <div class="flex items-center gap-1.5 sm:gap-2">
+                                            <button
+                                                    type="button"
+                                                    id="imageDdPrevBtn"
+                                                    class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200/70 bg-white/90 text-base font-black text-slate-600 shadow-sm transition disabled:cursor-not-allowed disabled:opacity-35 dark:border-slate-700/60 dark:bg-slate-900/85 dark:text-slate-200"
+                                                    aria-label="Show previous words"
+                                            >‹</button>
 
-            {{-- 10. Word bank --}}
-            <aside id="wordBankRail" class="w-full lg:order-first lg:self-stretch">
-                <div id="wordBankBar" class="fixed inset-x-0 bottom-0 z-[1500] lg:relative lg:inset-auto">
-                    <div class="mx-auto w-full px-3 pb-0 sm:px-6 lg:px-0">
-                        <div id="wordBankPanel" class="word-bank-panel relative overflow-hidden rounded-t-3xl border border-slate-200/70 bg-white/90 shadow-[0_-18px_55px_#02061729] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/75 sm:rounded-3xl lg:rounded-3xl">
-                            <div class="word-bank-overlay pointer-events-none absolute inset-0 opacity-80"></div>
+                                            <div id="imageDdPoolCount" class="inline-flex items-center gap-1.5 rounded-full border border-slate-200/70 bg-white/75 px-2.5 py-1 text-[10px] font-black text-slate-600 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/50 dark:text-slate-100 sm:text-xs">
+                                                0/0
+                                            </div>
 
-                            <div class="relative px-3 pb-4 pt-3 sm:px-4 sm:py-4 lg:px-6">
-                                <div class="flex items-center justify-center">
-                                    <div class="h-1.5 w-14 rounded-full bg-slate-900/10 dark:bg-white/10"></div>
-                                </div>
-
-                                <div class="mt-3 flex items-center justify-between gap-2">
-                                    <div class="flex items-center gap-2">
-                                        <button id="prevWordsBtn" type="button" class="game-icon-btn bg-white/90 text-slate-700 shadow-[0_10px_24px_#0F172A1F] hover:bg-slate-50 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_#02061759] dark:hover:bg-slate-800 lg:hidden" aria-label="Previous words">
-                                            <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
-                                                <path fill-rule="evenodd" d="M12.79 4.23a.75.75 0 0 1-.02 1.06L8.06 10l4.71 4.71a.75.75 0 1 1-1.06 1.06l-5.24-5.24a.75.75 0 0 1 0-1.06l5.24-5.24a.75.75 0 0 1 1.08-.02Z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </button>
-
-                                        <div id="wordCount" class="inline-flex items-center gap-1.5 rounded-full border border-slate-200/70 bg-white/80 px-3 py-1.5 text-[10px] font-black text-slate-700 shadow-[0_4px_12px_#0206170D] dark:border-slate-700/60 dark:bg-slate-900/50 dark:text-slate-100 sm:text-xs">
-                                            0/0
+                                            <button
+                                                    type="button"
+                                                    id="imageDdNextBtn"
+                                                    class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200/70 bg-white/90 text-base font-black text-slate-600 shadow-sm transition disabled:cursor-not-allowed disabled:opacity-35 dark:border-slate-700/60 dark:bg-slate-900/85 dark:text-slate-200"
+                                                    aria-label="Show more words"
+                                            >›</button>
                                         </div>
 
-                                        <button id="nextWordsBtn" type="button" class="game-icon-btn bg-white/90 text-slate-700 shadow-[0_10px_24px_#0F172A1F] hover:bg-slate-50 dark:bg-slate-900/85 dark:text-slate-200 dark:shadow-[0_10px_24px_#02061759] dark:hover:bg-slate-800 lg:hidden" aria-label="Next words">
-                                            <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
-                                                <path fill-rule="evenodd" d="M7.21 15.77a.75.75 0 0 1 .02-1.06L11.94 10 7.23 5.29a.75.75 0 0 1 1.06-1.06l5.24 5.24c.3.3.3.77 0 1.06l-5.24 5.24a.75.75 0 0 1-1.08.02Z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </button>
+                                        <div class="flex flex-wrap items-center justify-end gap-2">
+                                            <button
+                                                    type="button"
+                                                    id="imageDdRevealBtn"
+                                                    class="inline-flex items-center justify-center gap-2 rounded-lg border border-orange-300/80 bg-orange-50/90 px-3 py-1.5 text-[11px] font-black text-orange-700 shadow-sm transition-colors duration-200 hover:bg-orange-100 active:scale-95 dark:border-orange-700/50 dark:bg-orange-900/35 dark:text-orange-200 dark:hover:bg-orange-900/50 sm:text-xs"
+                                            >Reveal answers</button>
+
+                                            <button
+                                                    type="button"
+                                                    id="imageDdRetakeBtn"
+                                                    class="hidden inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300/70 bg-white/80 px-3 py-1.5 text-[11px] font-black text-slate-700 shadow-sm transition-colors duration-200 hover:bg-slate-50 active:scale-95 dark:border-slate-700/70 dark:bg-slate-900/70 dark:text-slate-100 dark:hover:bg-slate-800 sm:text-xs"
+                                            >Retake test</button>
+                                        </div>
                                     </div>
 
-                                    <div class="flex flex-wrap items-center justify-end gap-2">
-                                        <button type="button" id="revealButton" class="game-btn border border-orange-300 bg-orange-50 text-orange-700 shadow-[0_8px_22px_#EA580C1A] hover:bg-orange-100 dark:border-orange-700/50 dark:bg-orange-900/35 dark:text-orange-200 dark:hover:bg-orange-900/50">
-                                            Reveal answers
-                                        </button>
+                                    <div class="my-1.5 h-px w-full bg-slate-200/50 dark:bg-slate-700/45"></div>
 
-                                        <button type="button" id="retakeButton" class="game-btn hidden border border-slate-200 bg-white text-slate-900 shadow-[0_8px_22px_#0206170D] hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700">
-                                            Retake test
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="mt-3 h-px w-full bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent dark:via-indigo-400/15"></div>
-
-                                <div class="relative mt-3">
-                                    <div id="wordList" class="mx-auto flex w-fit max-w-full flex-wrap items-start justify-start gap-2 sm:gap-2.5 lg:w-full"></div>
+                                    <div id="imageDdPoolContent" class="mx-auto flex w-full max-w-full flex-wrap items-start justify-center gap-1.5 overflow-hidden sm:mx-0 sm:justify-start sm:gap-2 sm:overflow-x-hidden sm:overflow-y-auto sm:pr-1"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </aside>
+                </aside>
+
+                <section id="imageDdBoardColumn" class="order-1 flex min-h-0 w-full flex-1 items-start justify-center sm:order-2 sm:min-w-0">
+                    <div id="imageDdCard" class="relative w-full max-w-[1180px] overflow-hidden rounded-[1.35rem] border border-slate-200/70 bg-white/80 p-2 shadow-sm backdrop-blur dark:border-slate-700/60 dark:bg-slate-950/35 sm:rounded-[1.55rem] sm:p-3">
+                        <div id="imageDdImageFrame" class="flex w-full items-center justify-center overflow-hidden rounded-[1.05rem] bg-slate-100 dark:bg-slate-900 sm:rounded-[1.25rem]">
+                            <div id="imageDdImageWrap" class="relative inline-block max-w-full">
+                                @if(!empty($content['image']))
+                                    <img
+                                            id="imageDdImage"
+                                            src="{{ $content['image'] }}"
+                                            alt="Labeling game image"
+                                            draggable="false"
+                                            class="block h-auto w-auto max-w-full select-none object-contain"
+                                            style="--image-dd-max-height-mobile: {{ $imageMaxHeightMobile }}; --image-dd-max-height-desktop: {{ $imageMaxHeightDesktop }};"
+                                    >
+                                @else
+                                    <div id="imageDdFallback" class="grid min-h-[320px] w-full min-w-[min(720px,calc(100vw-3rem))] place-items-center bg-gradient-to-br from-indigo-500/10 via-sky-500/10 to-violet-500/10">
+                                        <div class="rounded-3xl border border-slate-200/80 bg-white/85 px-5 py-4 text-center shadow-sm dark:border-slate-700/70 dark:bg-slate-900/65">
+                                            <p class="text-xs font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-300 sm:text-sm">Add your image</p>
+                                            <p class="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-200 sm:text-base">Set <code>$content['image']</code>.</p>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <div id="imageDdDropLayer" class="absolute inset-0"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            @include('slider.components.game-win-modal')
+
+            <template id="imageDdTileTpl">
+                <button
+                        type="button"
+                        class="image-dd-tile relative inline-flex min-h-[34px] max-w-full cursor-grab select-none items-center justify-center rounded-xl border border-white/20 px-3 py-2 pl-5 text-center text-[11px] font-black leading-tight text-white shadow-[0_8px_18px_rgba(2,6,23,0.12)] transition-transform duration-150 before:absolute before:left-2 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-white/55 hover:-translate-y-0.5 active:translate-y-0 sm:min-h-[38px] sm:px-3.5 sm:py-2 sm:pl-5 sm:text-sm"
+                        draggable="false"
+                ></button>
+            </template>
         </div>
-
-        {{-- 11. Win modal --}}
-        @include('slider.components.game-win-modal')
-
-        <template id="wordTemplate">
-            <div class="word-tile inline-flex min-h-[42px] w-auto max-w-full shrink-0 cursor-grab select-none touch-none items-center justify-center rounded-xl px-2 py-2 text-base font-black leading-snug shadow-sm transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0 sm:px-2.5 sm:py-2.5"></div>
-        </template>
     </main>
 @endsection
 
 @section('script')
     <script>
         (() => {
-            // 12. Constants
-            const IMAGE_SRC = @json($content['image'] ?? '');
-            const RAW_LABELS = @json($content['labels'] ?? []);
+            const IMAGE_DD_RAW_LABELS = @json($content['labels'] ?? []);
+            const IMAGE_DD_VISIBLE_CAP = Number(@json($poolVisibleCap ?? 0));
+
             const CONFIG = {
-                layout: {
-                    desktopGameWidth: 70,
-                    desktopWordBankWidth: 30,
-                    mobileBankGap: 20,
-                    stickyTop: 16,
-                },
-                breakpoints: {
-                    sm: 640,
-                    lg: 1024,
-                },
-                drag: {
-                    thresholdMobile: 28,
-                    thresholdTablet: 34,
-                    thresholdDesktop: 42,
-                },
-                timing: {
-                    resizeDebounce: 120,
-                    wrongShake: 320,
-                    wrongTapShake: 280,
-                    returnTile: 440,
-                    completeDelay: 220,
-                    burstLifetime: 800,
-                    burstStagger: 40,
+                dragStartDistance: 7,
+                returnDuration: 420,
+                wrongDuration: 330,
+                completeDelay: 240,
+                autoScrollThreshold: 78,
+                autoScrollSpeed: 13,
+                dropThreshold: {
+                    mobile: 34,
+                    tablet: 40,
+                    desktop: 46,
                 },
                 audio: {
                     correct: '/slider/sounds/correct.wav',
@@ -469,52 +361,54 @@
                     success: '/slider/sounds/success.wav',
                 },
             };
-            const { layout, breakpoints, drag, timing } = CONFIG;
-            const TILE_SKINS = ['word-tile--1', 'word-tile--2', 'word-tile--3', 'word-tile--4', 'word-tile--5', 'word-tile--6'];
-            const BURST_CHARS = ['*', '+', 'o'];
+
+            const TILE_SKINS = [
+                'bg-indigo-600 dark:bg-indigo-700',
+                'bg-pink-600 dark:bg-pink-700',
+                'bg-emerald-600 dark:bg-emerald-700',
+                'bg-orange-600 dark:bg-orange-700',
+                'bg-violet-600 dark:bg-violet-700',
+                'bg-sky-600 dark:bg-sky-700',
+                'bg-cyan-600 dark:bg-cyan-700',
+                'bg-blue-600 dark:bg-blue-700',
+            ];
+
             const SOUND = {
                 correct: new Audio(CONFIG.audio.correct),
                 wrong: new Audio(CONFIG.audio.wrong),
                 success: new Audio(CONFIG.audio.success),
             };
+            Object.values(SOUND).forEach((audio) => { audio.volume = 1; });
 
-            Object.values(SOUND).forEach((audio) => {
-                audio.volume = 1;
-            });
-
-            // 13. Helpers
             const $ = (id) => document.getElementById(id);
             const clamp = (value, min, max) => Math.max(min, Math.min(max, Number(value)));
+            const isFiniteNumber = (value) => Number.isFinite(Number(value));
 
-            const shuffle = (items) => {
-                const copy = [...items];
-
-                for (let index = copy.length - 1; index > 0; index -= 1) {
-                    const swapIndex = Math.floor(Math.random() * (index + 1));
-                    [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
-                }
-
-                return copy;
-            };
-
-            const formatTime = (seconds) => {
-                const minutes = String(Math.floor(seconds / 60)).padStart(2, '0');
-                const remainingSeconds = String(seconds % 60).padStart(2, '0');
-                return `${minutes}:${remainingSeconds}`;
-            };
-
-            const playAudio = (audio) => {
+            const playSound = (audio) => {
                 if (!audio) return;
                 audio.pause();
                 audio.currentTime = 0;
                 audio.play().catch(() => {});
             };
-            const isEmbedded = () => {
-                try {
-                    return window.top !== window.self;
-                } catch (error) {
-                    return true;
+
+            const shuffle = (items) => {
+                const copy = [...items];
+                for (let i = copy.length - 1; i > 0; i -= 1) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [copy[i], copy[j]] = [copy[j], copy[i]];
                 }
+                return copy;
+            };
+
+            const formatTime = (seconds) => {
+                const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+                const secs = String(seconds % 60).padStart(2, '0');
+                return `${mins}:${secs}`;
+            };
+
+            const isEmbedded = () => {
+                try { return window.top !== window.self; }
+                catch (error) { return true; }
             };
 
             const goNextSlide = () => {
@@ -527,9 +421,8 @@
                     }
                 } catch (error) {}
 
-                try {
-                    window.parent.postMessage({ type: 'BEC_NAV', action: 'next' }, '*');
-                } catch (error) {}
+                try { window.parent.postMessage({ type: 'BEC_NAV', action: 'next' }, '*'); }
+                catch (error) {}
             };
 
             const normalizeLabels = (items) => {
@@ -539,16 +432,15 @@
                     .map((item, index) => ({
                         id: index,
                         text: String(item?.text ?? '').trim(),
-                        x: clamp(item?.x ?? 50, 0, 100),
-                        y: clamp(item?.y ?? 50, 0, 100),
+                        x: clamp(isFiniteNumber(item?.x) ? item.x : 50, 0, 100),
+                        y: clamp(isFiniteNumber(item?.y) ? item.y : 50, 0, 100),
+                        placed: false,
+                        revealed: false,
                     }))
                     .filter((item) => item.text.length > 0);
             };
 
-            const LABELS = normalizeLabels(RAW_LABELS);
-
-            // 14. Game class
-            class ImageGame {
+            class ImageDragDropGame {
                 constructor() {
                     this.cacheDom();
                     this.bindMethods();
@@ -556,26 +448,24 @@
                     this.resetState();
                 }
 
-                // setup
                 cacheDom() {
-                    this.gameLayout = $('gameLayout');
-                    this.gameArea = $('gameArea');
-                    this.wordBankRail = $('wordBankRail');
-                    this.wordBankBar = $('wordBankBar');
-                    this.dropLayer = $('dropLayer');
-                    this.gameImage = $('gameImage');
-                    this.imageFallback = $('imageFallback');
-                    this.imageCard = $('imageCard');
-                    this.wordList = $('wordList');
-                    this.wordCount = $('wordCount');
-                    this.prevWordsBtn = $('prevWordsBtn');
-                    this.nextWordsBtn = $('nextWordsBtn');
-                    this.revealButton = $('revealButton');
-                    this.retakeButton = $('retakeButton');
+                    this.page = $('imageDdPage');
+                    this.boardColumn = $('imageDdBoardColumn');
+                    this.imageCard = $('imageDdCard');
+                    this.imageWrap = $('imageDdImageWrap');
+                    this.image = $('imageDdImage');
+                    this.dropLayer = $('imageDdDropLayer');
+                    this.poolBar = $('imageDdPoolBar');
+                    this.poolContent = $('imageDdPoolContent');
+                    this.poolCount = $('imageDdPoolCount');
+                    this.prevBtn = $('imageDdPrevBtn');
+                    this.nextBtn = $('imageDdNextBtn');
+                    this.revealBtn = $('imageDdRevealBtn');
+                    this.retakeBtn = $('imageDdRetakeBtn');
+                    this.tileTpl = $('imageDdTileTpl');
+                    this.winModal = $('winModal');
                     this.restartBtnModal = $('restartBtnModal');
                     this.continueBtnModal = $('continueBtnModal');
-                    this.wordTemplate = $('wordTemplate');
-                    this.winModal = $('winModal');
                     this.tilesCount = $('tilesCount');
                     this.correctCountEl = $('correctCount');
                     this.mistakesCountEl = $('mistakesCount');
@@ -587,24 +477,53 @@
 
                 bindMethods() {
                     this.handleResize = this.handleResize.bind(this);
-                    this.handleScroll = this.handleScroll.bind(this);
                     this.handlePointerMove = this.handlePointerMove.bind(this);
                     this.handlePointerUp = this.handlePointerUp.bind(this);
-                    this.showPrevWords = this.showPrevWords.bind(this);
-                    this.showNextWords = this.showNextWords.bind(this);
-                    this.handleRevealAnswers = this.handleRevealAnswers.bind(this);
-                    this.handleRetakeTest = this.handleRetakeTest.bind(this);
+                    this.handlePointerCancel = this.handlePointerCancel.bind(this);
+                    this.handlePoolPrev = this.handlePoolPrev.bind(this);
+                    this.handlePoolNext = this.handlePoolNext.bind(this);
+                    this.handleReveal = this.handleReveal.bind(this);
+                    this.handleRetake = this.handleRetake.bind(this);
+                    this.handleWindowBlur = this.handleWindowBlur.bind(this);
                 }
 
                 bindEvents() {
-                    this.prevWordsBtn?.addEventListener('click', this.showPrevWords);
-                    this.nextWordsBtn?.addEventListener('click', this.showNextWords);
-                    this.revealButton?.addEventListener('click', this.handleRevealAnswers);
-                    this.retakeButton?.addEventListener('click', this.handleRetakeTest);
+                    this.prevBtn?.addEventListener('click', this.handlePoolPrev);
+                    this.nextBtn?.addEventListener('click', this.handlePoolNext);
+                    this.revealBtn?.addEventListener('click', this.handleReveal);
+                    this.retakeBtn?.addEventListener('click', this.handleRetake);
                     this.restartBtnModal?.addEventListener('click', () => this.reset());
                     this.continueBtnModal?.addEventListener('click', goNextSlide);
                     window.addEventListener('resize', this.handleResize, { passive: true });
-                    window.addEventListener('scroll', this.handleScroll, { passive: true });
+                    window.addEventListener('orientationchange', this.handleResize, { passive: true });
+                    window.addEventListener('blur', this.handleWindowBlur, { passive: true });
+                    this.image?.addEventListener('load', () => this.refreshLayout(), { passive: true });
+                }
+
+                resetState() {
+                    this.labels = [];
+                    this.poolOrder = [];
+                    this.poolStartIndex = 0;
+                    this.correctCount = 0;
+                    this.mistakeCount = 0;
+                    this.selectedId = null;
+                    this.hoverTargetId = null;
+                    this.draggedItem = null;
+                    this.pendingDrag = null;
+                    this.placeholder = null;
+                    this.originalParent = null;
+                    this.offsetX = 0;
+                    this.offsetY = 0;
+                    this.pointerClientX = 0;
+                    this.pointerClientY = 0;
+                    this.rafId = null;
+                    this.autoScrollTimer = null;
+                    this.timerId = null;
+                    this.startTime = Date.now();
+                    this.gameCompleted = false;
+                    this.hasUsedReveal = false;
+                    this.isRevealing = false;
+                    this.modalShown = false;
                 }
 
                 init() {
@@ -613,66 +532,18 @@
                     this.hideWin();
                     this.resetState();
 
-                    this.labels = LABELS.map((item) => ({
-                        id: item.id,
-                        text: item.text,
-                        x: item.x,
-                        y: item.y,
-                        placed: false,
-                        revealed: false,
-                    }));
+                    this.labels = normalizeLabels(IMAGE_DD_RAW_LABELS);
+                    this.poolOrder = shuffle(this.labels.map((label) => label.id));
 
-                    this.wordDeck = this.buildWordDeck();
-                    this.setupImage();
                     this.startTimer();
-                    this.render();
-                    this.refreshUI();
-
-                    window.clearTimeout(this.resizeTimer);
-                    this.resizeTimer = window.setTimeout(() => this.refreshUI(), timing.resizeDebounce);
+                    this.renderTargets();
+                    this.renderPool();
+                    this.refreshLayout();
+                    this.updateAll();
                 }
 
                 reset() {
                     this.init();
-                }
-
-                resetState() {
-                    this.labels = [];
-                    this.wordDeck = { all: [], active: [], waiting: [], history: [] };
-                    this.activeLabelId = null;
-                    this.hoverTargetId = null;
-                    this.draggedItem = null;
-                    this.placeholder = null;
-                    this.originalParent = null;
-                    this.offsetX = 0;
-                    this.offsetY = 0;
-                    this.rafId = null;
-                    this.pointerX = 0;
-                    this.pointerY = 0;
-                    this.correctCount = 0;
-                    this.mistakeCount = 0;
-                    this.startTime = Date.now();
-                    this.timerId = null;
-                    this.resizeTimer = null;
-                    this.gameCompleted = false;
-                    this.hasUsedReveal = false;
-                    this.isRevealingAnswers = false;
-                    this.modalShown = false;
-                }
-
-                setupImage() {
-                    if (!this.gameImage || !this.imageFallback) return;
-
-                    if (IMAGE_SRC) {
-                        this.gameImage.src = IMAGE_SRC;
-                        this.gameImage.classList.remove('hidden');
-                        this.imageFallback.classList.add('hidden');
-                        return;
-                    }
-
-                    this.gameImage.removeAttribute('src');
-                    this.gameImage.classList.add('hidden');
-                    this.imageFallback.classList.remove('hidden');
                 }
 
                 startTimer() {
@@ -687,339 +558,348 @@
                     this.timerId = null;
                 }
 
-                buildWordDeck() {
-                    const all = shuffle(this.labels.map(({ id, text }) => ({ id, text })));
-                    return { all, active: [], waiting: [...all], history: [] };
+                updateTimer() {
+                    if (!this.gameTimer) return;
+                    const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+                    this.gameTimer.textContent = formatTime(elapsed);
                 }
 
-                // state
+                getTotalCount() {
+                    return this.labels.length;
+                }
+
+                getSolvedCount() {
+                    return this.labels.filter((label) => label.placed).length;
+                }
+
+                getRemainingLabels() {
+                    return this.poolOrder
+                        .map((id) => this.getLabel(id))
+                        .filter((label) => label && !label.placed);
+                }
+
                 getLabel(id) {
-                    return this.labels.find((item) => Number(item.id) === Number(id)) || null;
+                    return this.labels.find((label) => Number(label.id) === Number(id)) || null;
                 }
 
-                solvedCount() {
-                    return this.labels.filter((item) => item.placed).length;
-                }
-
-                allSolved() {
-                    return this.labels.length > 0 && this.solvedCount() === this.labels.length;
-                }
-
-                getVisibleWordLimit() {
-                    const width = window.innerWidth || document.documentElement.clientWidth || 0;
-                    if (width >= breakpoints.lg) return Number.MAX_SAFE_INTEGER;
-                    if (width < breakpoints.sm) return 8;
-                    return 9;
-                }
-
-                getDropThreshold() {
-                    const width = window.innerWidth || document.documentElement.clientWidth || 0;
-                    if (width >= breakpoints.lg) return drag.thresholdDesktop;
-                    if (width >= breakpoints.sm) return drag.thresholdTablet;
-                    return drag.thresholdMobile;
-                }
-
-                getDropSlots() {
-                    return Array.from(document.querySelectorAll('.image-drop-slot'));
-                }
-
-                clearHoverStates() {
-                    this.getDropSlots().forEach((slot) => slot.classList.remove('is-hover'));
-                }
-
-                ensureActiveWordCount() {
-                    const desired = this.getVisibleWordLimit();
-
-                    while (this.wordDeck.active.length < desired && this.wordDeck.waiting.length > 0) {
-                        this.wordDeck.active.push(this.wordDeck.waiting.shift());
-                    }
-
-                    while (this.wordDeck.active.length > desired) {
-                        this.wordDeck.waiting.unshift(this.wordDeck.active.pop());
-                    }
-                }
-
-                removeActiveWordById(id) {
-                    const targetId = Number(id);
-                    this.wordDeck.active = this.wordDeck.active.filter((item) => Number(item.id) !== targetId);
-                    this.wordDeck.waiting = this.wordDeck.waiting.filter((item) => Number(item.id) !== targetId);
-                    this.wordDeck.all = this.wordDeck.all.filter((item) => Number(item.id) !== targetId);
-                    this.wordDeck.history = this.wordDeck.history
-                        .map((page) => page.filter((item) => Number(item.id) !== targetId))
-                        .filter((page) => page.length > 0);
-                }
-
-                // rendering
-                render() {
-                    this.ensureActiveWordCount();
-                    this.renderTargets();
-                    this.renderWords();
+                isComplete() {
+                    return this.getTotalCount() > 0 && this.getSolvedCount() === this.getTotalCount();
                 }
 
                 renderTargets() {
                     if (!this.dropLayer) return;
-
                     this.dropLayer.innerHTML = '';
 
-                    this.labels.forEach((item) => {
+                    this.labels.forEach((label) => {
                         const slot = document.createElement('button');
-                        const slotText = document.createElement('span');
+                        const inner = document.createElement('span');
 
                         slot.type = 'button';
-                        slot.className = 'image-drop-slot';
-                        slot.dataset.targetId = String(item.id);
-                        slot.dataset.solved = item.placed ? '1' : '0';
-                        slot.style.left = `${item.x}%`;
-                        slot.style.top = `${item.y}%`;
-                        slot.classList.add(item.placed ? 'is-solved' : 'image-drop-slot-empty');
+                        slot.className = 'image-dd-slot';
+                        slot.dataset.targetId = String(label.id);
+                        slot.dataset.solved = label.placed ? '1' : '0';
+                        slot.style.left = `${label.x}%`;
+                        slot.style.top = `${label.y}%`;
+                        slot.setAttribute('aria-label', label.placed ? label.text : `Drop ${label.text} here`);
 
-                        if (item.revealed) slot.classList.add('is-revealed');
-                        if (Number(this.hoverTargetId) === Number(item.id) && !item.placed) slot.classList.add('is-hover');
+                        if (label.placed) slot.classList.add('is-solved');
+                        if (label.revealed) slot.classList.add('is-revealed');
+                        if (Number(this.hoverTargetId) === Number(label.id) && !label.placed) slot.classList.add('is-hover');
 
-                        slotText.className = 'image-drop-slot-inner';
-                        slotText.textContent = item.placed ? item.text : '';
-                        slot.appendChild(slotText);
-                        slot.addEventListener('click', () => this.handleTargetClick(item.id, slot));
+                        inner.className = 'image-dd-slot-inner';
+                        inner.textContent = label.placed ? label.text : '';
+                        slot.appendChild(inner);
+                        slot.addEventListener('click', () => this.handleSlotClick(label.id, slot));
                         this.dropLayer.appendChild(slot);
                     });
-
-                    this.imageCard?.classList.toggle('game-done-board', this.allSolved());
                 }
 
-                renderWords() {
-                    if (!this.wordList || !this.wordTemplate) return;
+                renderPool() {
+                    if (!this.poolContent || !this.tileTpl) return;
+                    this.poolContent.innerHTML = '';
 
-                    this.wordList.innerHTML = '';
-                    if (!this.wordDeck.active.length && this.allSolved()) return;
+                    this.getRemainingLabels().forEach((label, index) => {
+                        const tile = this.tileTpl.content.firstElementChild.cloneNode(true);
+                        tile.textContent = label.text;
+                        tile.dataset.labelId = String(label.id);
+                        tile.dataset.baseClass = tile.className;
+                        tile.classList.add(...TILE_SKINS[index % TILE_SKINS.length].split(' '));
 
-                    this.wordDeck.active.forEach((item, index) => {
-                        this.wordList.appendChild(this.createWordTile(item, index));
-                    });
-                }
+                        if (Number(this.selectedId) === Number(label.id)) {
+                            tile.classList.add('is-selected');
+                        }
 
-                createWordTile(item, index) {
-                    const node = this.wordTemplate.content.firstElementChild.cloneNode(true);
-                    node.textContent = item.text;
-                    node.dataset.labelId = item.id;
-                    node.classList.add(TILE_SKINS[index % TILE_SKINS.length]);
-
-                    if (Number(this.activeLabelId) === Number(item.id)) {
-                        node.classList.add('is-active');
-                    }
-
-                    node.addEventListener('click', () => {
-                        if (this.draggedItem) return;
-                        this.handleTileTap(item.id);
+                        tile.addEventListener('click', (event) => {
+                            if (this.draggedItem || this.pendingDrag?.started) return;
+                            event.preventDefault();
+                            this.toggleTileSelection(label.id);
+                        });
+                        tile.addEventListener('pointerdown', (event) => this.handlePointerDown(event, tile));
+                        this.poolContent.appendChild(tile);
                     });
 
-                    node.addEventListener('pointerdown', (event) => this.handlePointerDown(event, node));
-                    return node;
+                    this.refreshPoolVisibility();
                 }
 
-                updateTimer() {
-                    if (!this.gameTimer) return;
-                    const elapsedSeconds = Math.floor((Date.now() - this.startTime) / 1000);
-                    this.gameTimer.textContent = formatTime(elapsedSeconds);
+                updateAll() {
+                    this.updateStats();
+                    this.updateButtons();
+                    this.updatePoolCount();
+                    this.refreshPoolVisibility();
                 }
 
                 updateStats() {
-                    const total = this.labels.length;
-                    const remaining = total - this.solvedCount();
+                    const total = this.getTotalCount();
                     if (this.tilesCount) this.tilesCount.textContent = `${this.correctCount}/${total}`;
                     if (this.correctCountEl) this.correctCountEl.textContent = String(this.correctCount);
                     if (this.mistakesCountEl) this.mistakesCountEl.textContent = String(this.mistakeCount);
-                    if (this.wordCount) this.wordCount.textContent = `${remaining}/${total}`;
                 }
 
                 updateButtons() {
-                    const remaining = this.labels.length - this.solvedCount();
-                    const canReveal = remaining > 0 && !this.hasUsedReveal && !this.isRevealingAnswers && !this.gameCompleted;
-                    const canRetake = this.hasUsedReveal;
+                    const remaining = this.getRemainingLabels().length;
+                    const canReveal = remaining > 0 && !this.hasUsedReveal && !this.isRevealing && !this.gameCompleted;
 
-                    if (this.revealButton) {
-                        this.revealButton.classList.toggle('hidden', !canReveal);
-                        this.revealButton.disabled = !canReveal;
+                    if (this.revealBtn) {
+                        this.revealBtn.classList.toggle('hidden', !canReveal);
+                        this.revealBtn.disabled = !canReveal;
                     }
 
-                    if (this.retakeButton) {
-                        this.retakeButton.classList.toggle('hidden', !canRetake);
-                    }
-                }
-
-                updateWordPager() {
-                    if (this.prevWordsBtn) this.prevWordsBtn.disabled = this.wordDeck.history.length === 0;
-                    if (this.nextWordsBtn) this.nextWordsBtn.disabled = this.wordDeck.waiting.length === 0;
-                }
-
-                refreshUI() {
-                    this.updateStats();
-                    this.updateButtons();
-                    this.updateWordPager();
-                    this.updateDesktopColumnWidths();
-                    this.updateMobileBottomSpacing();
-                    this.updateDesktopStickyPosition();
-                }
-
-                // layout
-                resetDesktopStickyState() {
-                    if (!this.wordBankBar) return;
-
-                    this.wordBankBar.classList.remove('is-fixed', 'is-bottom');
-                    this.wordBankBar.style.top = '';
-                    this.wordBankBar.style.left = '';
-                    this.wordBankBar.style.right = '';
-                    this.wordBankBar.style.width = '';
-                    this.wordBankBar.style.maxWidth = '';
-                    this.wordBankBar.style.setProperty('--sticky-top', '');
-
-                    if (this.wordBankRail) {
-                        this.wordBankRail.style.minHeight = '';
+                    if (this.retakeBtn) {
+                        this.retakeBtn.classList.toggle('hidden', !this.hasUsedReveal);
                     }
                 }
 
-                updateDesktopColumnWidths() {
-                    const width = window.innerWidth || document.documentElement.clientWidth || 0;
-                    if (!this.gameArea || !this.wordBankRail) return;
+                updatePoolCount() {
+                    if (!this.poolCount) return;
+                    const remaining = this.getRemainingLabels().length;
+                    this.poolCount.textContent = `${remaining}/${this.getTotalCount()}`;
+                }
 
-                    if (width < breakpoints.lg) {
-                        this.gameArea.style.width = '';
-                        this.gameArea.style.maxWidth = '';
-                        this.gameArea.style.flexBasis = '';
-                        this.wordBankRail.style.width = '';
-                        this.wordBankRail.style.maxWidth = '';
-                        this.wordBankRail.style.flexBasis = '';
-                        this.resetDesktopStickyState();
+                getManualVisibleCap() {
+                    return Number.isFinite(IMAGE_DD_VISIBLE_CAP) && IMAGE_DD_VISIBLE_CAP > 0 ? IMAGE_DD_VISIBLE_CAP : 0;
+                }
+
+                getFallbackVisibleCap() {
+                    const width = window.innerWidth || document.documentElement.clientWidth || 1024;
+                    if (width >= 640) return Number.MAX_SAFE_INTEGER;
+                    if (width < 420) return 6;
+                    return 8;
+                }
+
+                measureVisibleCap(tiles) {
+                    const total = tiles.length;
+                    if (total <= 1) return total;
+
+                    const manual = this.getManualVisibleCap();
+                    if (manual > 0) return Math.max(1, Math.min(total, manual));
+
+                    return Math.max(1, Math.min(total, this.getFallbackVisibleCap()));
+                }
+
+                refreshPoolVisibility() {
+                    if (!this.poolContent) return;
+                    const tiles = Array.from(this.poolContent.querySelectorAll('.image-dd-tile'));
+                    const cap = this.measureVisibleCap(tiles);
+
+                    if (!tiles.length) {
+                        this.poolStartIndex = 0;
+                        this.updatePoolPager(0, cap, false);
+                        this.refreshLayout();
                         return;
                     }
 
-                    this.gameArea.style.width = `${layout.desktopGameWidth}%`;
-                    this.gameArea.style.maxWidth = `${layout.desktopGameWidth}%`;
-                    this.gameArea.style.flexBasis = `${layout.desktopGameWidth}%`;
-                    this.wordBankRail.style.width = `${layout.desktopWordBankWidth}%`;
-                    this.wordBankRail.style.maxWidth = `${layout.desktopWordBankWidth}%`;
-                    this.wordBankRail.style.flexBasis = `${layout.desktopWordBankWidth}%`;
+                    const shouldPage = tiles.length > cap;
+                    if (!shouldPage) {
+                        this.poolStartIndex = 0;
+                        tiles.forEach((tile) => tile.classList.remove('hidden'));
+                        this.updatePoolPager(tiles.length, cap, false);
+                        this.refreshLayout();
+                        return;
+                    }
+
+                    const maxStart = Math.max(0, tiles.length - cap);
+                    this.poolStartIndex = Math.min(this.poolStartIndex, maxStart);
+
+                    tiles.forEach((tile, index) => {
+                        tile.classList.toggle('hidden', !(index >= this.poolStartIndex && index < this.poolStartIndex + cap));
+                    });
+
+                    this.updatePoolPager(tiles.length, cap, true);
+                    this.refreshLayout();
                 }
 
-                updateDesktopStickyPosition() {
-                    const width = window.innerWidth || document.documentElement.clientWidth || 0;
-                    if (!this.wordBankBar || !this.wordBankRail) return;
+                updatePoolPager(total, cap, shouldShow) {
+                    if (!this.prevBtn || !this.nextBtn) return;
+                    const visible = shouldShow && total > cap;
+                    this.prevBtn.classList.toggle('hidden', !visible);
+                    this.nextBtn.classList.toggle('hidden', !visible);
 
-                    if (width < breakpoints.lg) {
-                        this.resetDesktopStickyState();
+                    if (!visible) {
+                        this.prevBtn.classList.remove('image-dd-pool-nav-hint');
+                        this.nextBtn.classList.remove('image-dd-pool-nav-hint');
                         return;
                     }
 
-                    const stickyTop = layout.stickyTop;
-                    const barHeight = Math.ceil(this.wordBankBar.offsetHeight || 0);
-                    const railRect = this.wordBankRail.getBoundingClientRect();
-
-                    this.wordBankRail.style.minHeight = `${barHeight}px`;
-                    this.wordBankBar.style.setProperty('--sticky-top', `${stickyTop}px`);
-
-                    if (railRect.top > stickyTop) {
-                        this.resetDesktopStickyState();
-                        this.wordBankRail.style.minHeight = `${barHeight}px`;
-                        return;
-                    }
-
-                    if (railRect.bottom <= stickyTop + barHeight) {
-                        this.wordBankBar.classList.remove('is-fixed');
-                        this.wordBankBar.classList.add('is-bottom');
-                        this.wordBankBar.style.top = '';
-                        this.wordBankBar.style.left = '0';
-                        this.wordBankBar.style.right = '0';
-                        this.wordBankBar.style.width = '100%';
-                        this.wordBankBar.style.maxWidth = '100%';
-                        return;
-                    }
-
-                    this.wordBankBar.classList.remove('is-bottom');
-                    this.wordBankBar.classList.add('is-fixed');
-                    this.wordBankBar.style.top = `${stickyTop}px`;
-                    this.wordBankBar.style.left = `${Math.round(railRect.left)}px`;
-                    this.wordBankBar.style.right = 'auto';
-                    this.wordBankBar.style.width = `${Math.round(railRect.width)}px`;
-                    this.wordBankBar.style.maxWidth = `${Math.round(railRect.width)}px`;
+                    const maxStart = Math.max(0, total - cap);
+                    const hasPrev = this.poolStartIndex > 0;
+                    const hasNext = this.poolStartIndex < maxStart;
+                    this.prevBtn.disabled = !hasPrev;
+                    this.nextBtn.disabled = !hasNext;
+                    this.prevBtn.classList.toggle('image-dd-pool-nav-hint', hasPrev);
+                    this.nextBtn.classList.toggle('image-dd-pool-nav-hint', hasNext);
                 }
 
-                updateMobileBottomSpacing() {
-                    const width = window.innerWidth || document.documentElement.clientWidth || 0;
-                    if (!this.gameLayout || !this.wordBankBar) return;
+                handlePoolPrev() {
+                    if (this.draggedItem || this.pendingDrag?.started) return;
+                    const tiles = Array.from(this.poolContent?.querySelectorAll('.image-dd-tile') || []);
+                    const cap = this.measureVisibleCap(tiles);
+                    this.poolStartIndex = Math.max(0, this.poolStartIndex - cap);
+                    this.refreshPoolVisibility();
+                }
 
-                    if (width >= breakpoints.lg) {
-                        this.gameLayout.style.paddingBottom = '';
+                handlePoolNext() {
+                    if (this.draggedItem || this.pendingDrag?.started) return;
+                    const tiles = Array.from(this.poolContent?.querySelectorAll('.image-dd-tile') || []);
+                    const cap = this.measureVisibleCap(tiles);
+                    const maxStart = Math.max(0, tiles.length - cap);
+                    this.poolStartIndex = Math.min(maxStart, this.poolStartIndex + cap);
+                    this.refreshPoolVisibility();
+                }
+
+                refreshLayout() {
+                    this.updateBottomSafeSpace();
+                    window.requestAnimationFrame(() => this.updateBottomSafeSpace());
+                }
+
+                updateBottomSafeSpace() {
+                    if (!this.page || !this.poolBar) return;
+                    const width = window.innerWidth || document.documentElement.clientWidth || 1024;
+
+                    if (width >= 640) {
+                        this.page.style.paddingBottom = '';
+                        document.documentElement.style.setProperty('--pool-safe-space', '0px');
                         return;
                     }
 
-                    const barHeight = Math.ceil(this.wordBankBar.getBoundingClientRect().height || 0);
-                    this.gameLayout.style.paddingBottom = `${barHeight + layout.mobileBankGap}px`;
+                    const safe = Math.ceil(this.poolBar.getBoundingClientRect().height || this.poolBar.offsetHeight || 0) + 16;
+                    this.page.style.paddingBottom = `${safe}px`;
+                    document.documentElement.style.setProperty('--pool-safe-space', `${safe}px`);
                 }
 
                 handleResize() {
                     window.clearTimeout(this.resizeTimer);
                     this.resizeTimer = window.setTimeout(() => {
-                        if (!this.draggedItem) {
-                            this.ensureActiveWordCount();
-                            this.renderWords();
+                        if (!this.draggedItem && !this.pendingDrag) {
+                            this.renderPool();
+                            this.renderTargets();
                         }
-                        this.refreshUI();
-                    }, timing.resizeDebounce);
+                        this.refreshLayout();
+                    }, 120);
                 }
 
-                handleScroll() {
-                    this.updateDesktopStickyPosition();
+                toggleTileSelection(labelId) {
+                    if (this.gameCompleted || this.isRevealing) return;
+                    this.selectedId = Number(this.selectedId) === Number(labelId) ? null : Number(labelId);
+                    this.renderPool();
                 }
 
-                // interaction
-                handleTileTap(labelId) {
-                    this.activeLabelId = Number(this.activeLabelId) === Number(labelId) ? null : Number(labelId);
-                    this.renderWords();
-                }
+                handleSlotClick(targetId, targetEl) {
+                    if (this.selectedId == null || this.gameCompleted || this.isRevealing) return;
 
-                handleTargetClick(targetId, targetEl) {
-                    if (this.activeLabelId == null) return;
-                    this.tryTapPlacement(this.activeLabelId, targetId, targetEl);
+                    if (Number(this.selectedId) === Number(targetId)) {
+                        this.completePlacement(this.selectedId, targetEl, { revealed: false });
+                        return;
+                    }
+
+                    this.mistakeCount += 1;
+                    playSound(SOUND.wrong);
+                    this.flashWrong(targetEl);
+                    this.updateStats();
+                    this.renderPool();
                 }
 
                 handlePointerDown(event, item) {
                     if (event.button !== undefined && event.button !== 0) return;
-                    if (!item || this.gameCompleted || this.isRevealingAnswers) return;
+                    if (!item || this.gameCompleted || this.isRevealing) return;
 
-                    event.preventDefault();
-                    if (item.setPointerCapture) item.setPointerCapture(event.pointerId);
+                    this.pendingDrag = {
+                        item,
+                        pointerId: event.pointerId,
+                        startX: event.clientX,
+                        startY: event.clientY,
+                        started: false,
+                    };
 
+                    item.setPointerCapture?.(event.pointerId);
+                    document.addEventListener('pointermove', this.handlePointerMove, { passive: false });
+                    document.addEventListener('pointerup', this.handlePointerUp, { passive: false });
+                    document.addEventListener('pointercancel', this.handlePointerCancel, { passive: false });
+                }
+
+                renderPoolSelectionOnly() {
+                    this.poolContent?.querySelectorAll('.image-dd-tile').forEach((tile) => {
+                        tile.classList.toggle('is-selected', Number(tile.dataset.labelId) === Number(this.selectedId));
+                    });
+                }
+
+                beginDrag(event) {
+                    if (!this.pendingDrag || this.draggedItem) return;
+
+                    const item = this.pendingDrag.item;
                     const rect = item.getBoundingClientRect();
+
+                    this.pendingDrag.started = true;
+                    this.selectedId = Number(item.dataset.labelId);
+                    this.renderPoolSelectionOnly();
                     this.draggedItem = item;
                     this.originalParent = item.parentElement;
-                    this.activeLabelId = Number(item.dataset.labelId);
-
-                    this.placeholder = document.createElement('div');
-                    this.placeholder.className = 'tile-placeholder';
-                    this.placeholder.style.width = `${rect.width}px`;
-                    this.placeholder.style.height = `${rect.height}px`;
-                    this.originalParent.insertBefore(this.placeholder, item);
-
-                    item.classList.add('tile-dragging');
-                    item.style.width = `${rect.width}px`;
                     this.offsetX = event.clientX - rect.left;
                     this.offsetY = event.clientY - rect.top;
 
-                    document.body.appendChild(item);
-                    item.style.left = `${event.clientX - this.offsetX}px`;
-                    item.style.top = `${event.clientY - this.offsetY}px`;
-                    item.style.transform = 'scale(1.05) rotate(-2deg)';
+                    this.placeholder = document.createElement('div');
+                    this.placeholder.className = 'image-dd-placeholder';
+                    this.placeholder.style.width = `${rect.width}px`;
+                    this.placeholder.style.height = `${rect.height}px`;
+                    this.originalParent?.insertBefore(this.placeholder, item);
 
-                    document.addEventListener('pointermove', this.handlePointerMove, { passive: false });
-                    document.addEventListener('pointerup', this.handlePointerUp, { passive: false });
-                    document.addEventListener('pointercancel', this.handlePointerUp, { passive: false });
+                    document.body.classList.add('image-dd-drag-active');
+                    item.classList.add('image-dd-tile-dragging');
+                    item.style.width = `${rect.width}px`;
+                    item.style.height = `${rect.height}px`;
+                    item.style.left = `${rect.left}px`;
+                    item.style.top = `${rect.top}px`;
+                    item.style.transform = 'scale(1.05) rotate(-2deg)';
+                    document.body.appendChild(item);
+
+                    this.pointerClientX = event.clientX;
+                    this.pointerClientY = event.clientY;
+                    this.moveDraggedItem(event.clientX, event.clientY);
+                    this.startAutoScroll();
                 }
 
                 handlePointerMove(event) {
+                    if (!this.pendingDrag && !this.draggedItem) return;
+
+                    if (this.pendingDrag && !this.pendingDrag.started) {
+                        const dx = Math.abs(event.clientX - this.pendingDrag.startX);
+                        const dy = Math.abs(event.clientY - this.pendingDrag.startY);
+
+                        if (dx + dy < CONFIG.dragStartDistance) return;
+                        event.preventDefault();
+                        this.beginDrag(event);
+                    }
+
                     if (!this.draggedItem) return;
                     event.preventDefault();
+                    this.pointerClientX = event.clientX;
+                    this.pointerClientY = event.clientY;
+                    this.moveDraggedItem(event.clientX, event.clientY);
+                    this.checkHover(event.clientX, event.clientY);
+                }
 
-                    this.pointerX = event.clientX - this.offsetX;
-                    this.pointerY = event.clientY - this.offsetY;
+                moveDraggedItem(clientX, clientY) {
+                    const left = clientX - this.offsetX;
+                    const top = clientY - this.offsetY;
 
                     if (!this.rafId) {
                         this.rafId = window.requestAnimationFrame(() => {
@@ -1027,42 +907,68 @@
                                 this.rafId = null;
                                 return;
                             }
-
-                            this.draggedItem.style.left = `${this.pointerX}px`;
-                            this.draggedItem.style.top = `${this.pointerY}px`;
+                            this.draggedItem.style.left = `${left}px`;
+                            this.draggedItem.style.top = `${top}px`;
                             this.rafId = null;
                         });
                     }
-
-                    this.checkHover(event.clientX, event.clientY);
                 }
 
                 handlePointerUp(event) {
-                    if (!this.draggedItem) return;
-
-                    this.removeDragListeners();
-                    const target = this.getTargetSlot(event.clientX, event.clientY);
-
-                    if (target && target.classList.contains('image-drop-slot') && target.dataset.solved !== '1') {
-                        const labelId = Number(this.draggedItem.dataset.labelId || -1);
-                        const targetId = Number(target.dataset.targetId || -1);
-
-                        if (labelId === targetId) {
-                            this.handleCorrectDrop(target, labelId);
-                            return;
-                        }
-
-                        this.handleWrongDrop(target, { countAsMistake: true });
+                    if (this.pendingDrag && !this.pendingDrag.started) {
+                        this.pendingDrag = null;
+                        this.removeDragListeners();
                         return;
                     }
 
-                    this.handleWrongDrop(target, { countAsMistake: false });
+                    if (!this.draggedItem) {
+                        this.pendingDrag = null;
+                        this.removeDragListeners();
+                        return;
+                    }
+
+                    const target = this.getTargetSlot(event.clientX, event.clientY);
+                    const labelId = Number(this.draggedItem.dataset.labelId || -1);
+                    const targetId = target ? Number(target.dataset.targetId || -1) : -1;
+
+                    this.stopAutoScroll();
+                    this.removeDragListeners();
+
+                    if (target && target.dataset.solved !== '1') {
+                        if (labelId === targetId) {
+                            this.finishCorrectDrag(target, labelId);
+                            return;
+                        }
+
+                        this.handleWrongDrag(target, { countAsMistake: true });
+                        return;
+                    }
+
+                    this.handleWrongDrag(null, { countAsMistake: false });
+                }
+
+                handlePointerCancel() {
+                    if (!this.pendingDrag && !this.draggedItem) return;
+                    this.stopAutoScroll();
+                    this.removeDragListeners();
+
+                    if (this.draggedItem) {
+                        this.returnDraggedTile({ countAsMistake: false });
+                        return;
+                    }
+
+                    this.pendingDrag = null;
+                    this.clearHover();
+                }
+
+                handleWindowBlur() {
+                    this.handlePointerCancel();
                 }
 
                 removeDragListeners() {
                     document.removeEventListener('pointermove', this.handlePointerMove);
                     document.removeEventListener('pointerup', this.handlePointerUp);
-                    document.removeEventListener('pointercancel', this.handlePointerUp);
+                    document.removeEventListener('pointercancel', this.handlePointerCancel);
 
                     if (this.rafId) {
                         window.cancelAnimationFrame(this.rafId);
@@ -1070,24 +976,117 @@
                     }
                 }
 
+                cleanupDrag() {
+                    this.stopAutoScroll();
+                    this.removeDragListeners();
+                    document.body.classList.remove('image-dd-drag-active');
+
+                    if (this.draggedItem && this.draggedItem.parentNode === document.body) {
+                        this.draggedItem.remove();
+                    }
+
+                    this.placeholder?.remove();
+                    this.placeholder = null;
+                    this.draggedItem = null;
+                    this.pendingDrag = null;
+                    this.originalParent = null;
+                    this.clearHover();
+                }
+
+                startAutoScroll() {
+                    this.stopAutoScroll();
+                    this.autoScrollTimer = window.setInterval(() => this.handleAutoScroll(), 16);
+                }
+
+                stopAutoScroll() {
+                    if (!this.autoScrollTimer) return;
+                    window.clearInterval(this.autoScrollTimer);
+                    this.autoScrollTimer = null;
+                }
+
+                getScrollContainer() {
+                    const candidates = [
+                        document.querySelector('.slide-layout'),
+                        document.querySelector('[data-slide-scroll]'),
+                        document.scrollingElement || document.documentElement,
+                    ].filter(Boolean);
+
+                    for (const el of candidates) {
+                        if (el === document.documentElement || el === document.body || el === document.scrollingElement) {
+                            continue;
+                        }
+
+                        const style = window.getComputedStyle(el);
+                        const canScroll = /(auto|scroll)/.test(style.overflowY) && el.scrollHeight > el.clientHeight + 2;
+                        if (canScroll) return el;
+                    }
+
+                    return document.scrollingElement || document.documentElement;
+                }
+
+                getScrollViewport(scroller) {
+                    if (scroller === document.scrollingElement || scroller === document.documentElement || scroller === document.body) {
+                        return { top: 0, bottom: window.innerHeight || document.documentElement.clientHeight || 0 };
+                    }
+
+                    const rect = scroller.getBoundingClientRect();
+                    return { top: rect.top, bottom: rect.bottom };
+                }
+
+                handleAutoScroll() {
+                    if (!this.draggedItem) return;
+
+                    const scroller = this.getScrollContainer();
+                    const viewport = this.getScrollViewport(scroller);
+                    const y = this.pointerClientY;
+                    let direction = 0;
+
+                    if (y < viewport.top + CONFIG.autoScrollThreshold) direction = -1;
+                    else if (y > viewport.bottom - CONFIG.autoScrollThreshold) direction = 1;
+
+                    if (!direction) return;
+
+                    const distanceToEdge = direction < 0
+                        ? Math.max(0, y - viewport.top)
+                        : Math.max(0, viewport.bottom - y);
+                    const strength = 1 + ((CONFIG.autoScrollThreshold - Math.min(CONFIG.autoScrollThreshold, distanceToEdge)) / CONFIG.autoScrollThreshold);
+                    const amount = direction * CONFIG.autoScrollSpeed * strength;
+
+                    if (scroller === document.scrollingElement || scroller === document.documentElement || scroller === document.body) {
+                        window.scrollBy(0, amount);
+                    } else {
+                        scroller.scrollTop += amount;
+                    }
+
+                    this.checkHover(this.pointerClientX, this.pointerClientY);
+                }
+
+                getDropThreshold() {
+                    const width = window.innerWidth || document.documentElement.clientWidth || 1024;
+                    if (width < 640) return CONFIG.dropThreshold.mobile;
+                    if (width < 1024) return CONFIG.dropThreshold.tablet;
+                    return CONFIG.dropThreshold.desktop;
+                }
+
+                getSlots() {
+                    return Array.from(this.dropLayer?.querySelectorAll('.image-dd-slot') || []);
+                }
+
                 getTargetSlot(x, y) {
-                    if (!this.draggedItem) return null;
-
-                    this.draggedItem.hidden = true;
+                    const item = this.draggedItem;
+                    if (item) item.hidden = true;
                     const below = document.elementFromPoint(x, y);
-                    this.draggedItem.hidden = false;
-                    if (!below) return null;
+                    if (item) item.hidden = false;
 
-                    const exactTarget = below.closest('.image-drop-slot');
-                    if (exactTarget && exactTarget.dataset.solved !== '1') return exactTarget;
+                    const exact = below?.closest?.('.image-dd-slot');
+                    if (exact && exact.dataset.solved !== '1') return exact;
 
                     const threshold = this.getDropThreshold();
-                    let nearestTarget = null;
+                    let nearest = null;
                     let nearestDistance = Number.POSITIVE_INFINITY;
 
-                    this.getDropSlots().forEach((slot) => {
+                    this.getSlots().forEach((slot) => {
                         if (slot.dataset.solved === '1') return;
-
                         const rect = slot.getBoundingClientRect();
                         let dx = 0;
                         let dy = 0;
@@ -1099,282 +1098,199 @@
                         else if (y > rect.bottom) dy = y - rect.bottom;
 
                         const distance = Math.sqrt((dx * dx) + (dy * dy));
-
                         if (distance <= threshold && distance < nearestDistance) {
                             nearestDistance = distance;
-                            nearestTarget = slot;
+                            nearest = slot;
                         }
                     });
 
-                    return nearestTarget;
+                    return nearest;
                 }
 
                 checkHover(x, y) {
-                    this.clearHoverStates();
                     const target = this.getTargetSlot(x, y);
-
-                    if (target && target.dataset.solved !== '1') {
-                        target.classList.add('is-hover');
-                        this.hoverTargetId = Number(target.dataset.targetId);
-                        return;
-                    }
-
-                    this.hoverTargetId = null;
+                    this.getSlots().forEach((slot) => slot.classList.toggle('is-hover', slot === target));
+                    this.hoverTargetId = target ? Number(target.dataset.targetId) : null;
                 }
 
-                handleCorrectDrop(target, labelId) {
-                    if (this.draggedItem) {
-                        this.draggedItem.classList.remove('tile-dragging', 'tile-shake');
-                        this.draggedItem.style.position = '';
-                        this.draggedItem.style.left = '';
-                        this.draggedItem.style.top = '';
-                        this.draggedItem.style.width = '';
-                        this.draggedItem.style.zIndex = '';
-                        this.draggedItem.style.transform = '';
+                clearHover() {
+                    this.hoverTargetId = null;
+                    this.getSlots().forEach((slot) => slot.classList.remove('is-hover', 'is-wrong'));
+                }
 
-                        if (this.draggedItem.parentNode) {
-                            this.draggedItem.parentNode.removeChild(this.draggedItem);
-                        }
+                finishCorrectDrag(target, labelId) {
+                    const item = this.draggedItem;
+                    if (item) {
+                        item.classList.remove('image-dd-tile-dragging', 'image-dd-tile-shake');
+                        item.remove();
                     }
 
                     this.placeholder?.remove();
                     this.placeholder = null;
                     this.draggedItem = null;
+                    this.pendingDrag = null;
                     this.originalParent = null;
-                    this.hoverTargetId = null;
-                    this.clearHoverStates();
-                    this.completePlacement(labelId, target);
+                    document.body.classList.remove('image-dd-drag-active');
+                    this.clearHover();
+                    this.completePlacement(labelId, target, { revealed: false });
                 }
 
-                handleWrongDrop(target, options = {}) {
-                    if (!this.draggedItem) return;
-
+                handleWrongDrag(target, options = {}) {
                     const countAsMistake = options.countAsMistake === true;
-                    const item = this.draggedItem;
 
                     if (countAsMistake) {
                         this.mistakeCount += 1;
-                        playAudio(SOUND.wrong);
+                        playSound(SOUND.wrong);
                         this.updateStats();
                     }
 
                     if (target && countAsMistake) {
-                        target.classList.remove('is-wrong');
-                        void target.offsetWidth;
-                        target.classList.add('is-wrong');
-                        item.classList.add('tile-shake');
-                        window.setTimeout(() => {
-                            target.classList.remove('is-wrong');
-                            item.classList.remove('tile-shake');
-                        }, timing.wrongShake);
+                        this.flashWrong(target);
                     }
 
-                    item.classList.add('tile-returning');
+                    this.returnDraggedTile({ countAsMistake });
+                }
+
+                returnDraggedTile() {
+                    const item = this.draggedItem;
+                    const placeholder = this.placeholder;
+                    const originalParent = this.originalParent;
+
+                    if (!item) {
+                        this.cleanupDrag();
+                        return;
+                    }
+
+                    item.classList.add('image-dd-tile-returning');
+                    item.classList.remove('image-dd-tile-shake');
                     item.style.transform = 'scale(1)';
 
-                    if (this.placeholder) {
-                        const placeholderRect = this.placeholder.getBoundingClientRect();
-                        item.style.left = `${placeholderRect.left}px`;
-                        item.style.top = `${placeholderRect.top}px`;
+                    if (placeholder) {
+                        const rect = placeholder.getBoundingClientRect();
+                        item.style.left = `${rect.left}px`;
+                        item.style.top = `${rect.top}px`;
+                    } else {
+                        item.classList.add('image-dd-tile-shake');
                     }
 
                     window.setTimeout(() => {
-                        item.classList.remove('tile-dragging', 'tile-returning', 'tile-shake');
+                        item.classList.remove('image-dd-tile-dragging', 'image-dd-tile-returning', 'image-dd-tile-shake');
                         item.style.position = '';
                         item.style.left = '';
                         item.style.top = '';
                         item.style.width = '';
+                        item.style.height = '';
                         item.style.zIndex = '';
                         item.style.transform = '';
 
-                        if (this.originalParent && this.placeholder) {
-                            this.originalParent.insertBefore(item, this.placeholder);
-                            this.placeholder.remove();
+                        if (originalParent && placeholder?.parentNode) {
+                            originalParent.insertBefore(item, placeholder);
+                            placeholder.remove();
+                        } else if (originalParent) {
+                            originalParent.appendChild(item);
+                        } else {
+                            this.poolContent?.appendChild(item);
                         }
 
                         this.placeholder = null;
                         this.draggedItem = null;
+                        this.pendingDrag = null;
                         this.originalParent = null;
-                        this.hoverTargetId = null;
-                        this.clearHoverStates();
-                        this.renderWords();
-                        this.refreshUI();
-                    }, timing.returnTile);
+                        document.body.classList.remove('image-dd-drag-active');
+                        this.clearHover();
+                        this.renderPoolSelectionOnly();
+                        this.refreshPoolVisibility();
+                        this.updateAll();
+                    }, CONFIG.returnDuration);
                 }
 
-                tryTapPlacement(labelId, targetId, targetEl) {
-                    if (this.isRevealingAnswers || this.gameCompleted) return;
-
-                    if (Number(labelId) === Number(targetId)) {
-                        this.completePlacement(labelId, targetEl);
-                        return;
-                    }
-
-                    this.mistakeCount += 1;
-                    playAudio(SOUND.wrong);
-                    this.updateStats();
-
-                    if (this.imageCard) {
-                        this.imageCard.classList.remove('game-shake-card');
-                        void this.imageCard.offsetWidth;
-                        this.imageCard.classList.add('game-shake-card');
-                    }
-
-                    if (targetEl) {
-                        targetEl.classList.remove('is-wrong');
-                        void targetEl.offsetWidth;
-                        targetEl.classList.add('is-wrong');
-                        window.setTimeout(() => targetEl.classList.remove('is-wrong'), timing.wrongTapShake);
-                    }
-
-                    this.renderWords();
+                flashWrong(target) {
+                    if (!target) return;
+                    target.classList.remove('is-wrong');
+                    void target.offsetWidth;
+                    target.classList.add('is-wrong');
+                    window.setTimeout(() => target.classList.remove('is-wrong'), CONFIG.wrongDuration);
                 }
 
-                completePlacement(labelId, target) {
+                completePlacement(labelId, target, options = {}) {
                     const label = this.getLabel(labelId);
-                    if (!label) return;
+                    if (!label || label.placed) return;
 
                     label.placed = true;
-                    label.revealed = false;
-                    this.correctCount += 1;
-                    this.activeLabelId = null;
+                    label.revealed = options.revealed === true;
+                    if (!label.revealed) {
+                        this.correctCount += 1;
+                        playSound(SOUND.correct);
+                    }
+
+                    this.selectedId = null;
                     this.hoverTargetId = null;
-
-                    this.removeActiveWordById(labelId);
-                    playAudio(SOUND.correct);
-
-                    if (target) {
-                        this.spawnBurst(target);
-                    }
-
-                    this.render();
-                    this.refreshUI();
-
-                    if (this.allSolved()) {
-                        this.checkComplete(true);
-                    }
-                }
-
-                spawnBurst(target) {
-                    const rect = target.getBoundingClientRect();
-
-                    BURST_CHARS.forEach((char, index) => {
-                        const burst = document.createElement('div');
-                        burst.className = 'win-burst';
-                        burst.textContent = char;
-                        burst.style.left = `${rect.left + (rect.width / 2) + ((index - 1) * 10)}px`;
-                        burst.style.top = `${rect.top + (rect.height / 2)}px`;
-                        burst.style.position = 'fixed';
-                        burst.style.animationDelay = `${index * (timing.burstStagger / 1000)}s`;
-                        document.body.appendChild(burst);
-                        window.setTimeout(() => burst.remove(), timing.burstLifetime);
-                    });
-                }
-
-                showNextWords() {
-                    if (this.draggedItem || this.wordDeck.waiting.length === 0) return;
-
-                    this.wordDeck.history.push([...this.wordDeck.active]);
-
-                    while (this.wordDeck.active.length > 0) {
-                        this.wordDeck.waiting.push(this.wordDeck.active.shift());
-                    }
-
-                    this.ensureActiveWordCount();
-                    this.renderWords();
-                    this.refreshUI();
-                }
-
-                showPrevWords() {
-                    if (this.draggedItem || this.wordDeck.history.length === 0) return;
-
-                    while (this.wordDeck.active.length > 0) {
-                        this.wordDeck.waiting.unshift(this.wordDeck.active.pop());
-                    }
-
-                    this.wordDeck.active = this.wordDeck.history.pop();
-                    this.renderWords();
-                    this.refreshUI();
-                }
-
-                handleRevealAnswers() {
-                    if (this.draggedItem || this.isRevealingAnswers || this.gameCompleted || this.hasUsedReveal) return;
-
-                    const remaining = this.labels.filter((item) => !item.placed);
-                    if (!remaining.length) return;
-
-                    this.isRevealingAnswers = true;
-                    this.hasUsedReveal = true;
-
-                    remaining.forEach((item) => {
-                        item.placed = true;
-                        item.revealed = true;
-                        this.mistakeCount += 1;
-                        this.removeActiveWordById(item.id);
-                    });
-
-                    this.wordDeck.active = [];
-                    this.wordDeck.waiting = [];
-                    this.wordDeck.history = [];
-                    this.activeLabelId = null;
-                    this.hoverTargetId = null;
-                    this.isRevealingAnswers = false;
 
                     this.renderTargets();
-                    if (this.wordList) {
-                        this.wordList.innerHTML = '';
-                    }
+                    this.renderPool();
+                    this.updateAll();
 
-                    this.refreshUI();
+                    if (target) this.flashSolvedTarget(label.id);
+                    this.checkComplete(!label.revealed);
+                }
+
+                flashSolvedTarget(labelId) {
+                    const slot = this.dropLayer?.querySelector(`.image-dd-slot[data-target-id="${labelId}"]`);
+                    if (!slot) return;
+                    slot.classList.remove('is-hover');
+                }
+
+                handleReveal() {
+                    if (this.draggedItem || this.pendingDrag || this.isRevealing || this.gameCompleted || this.hasUsedReveal) return;
+
+                    const remaining = this.labels.filter((label) => !label.placed);
+                    if (!remaining.length) return;
+
+                    this.isRevealing = true;
+                    this.hasUsedReveal = true;
+
+                    remaining.forEach((label) => {
+                        label.placed = true;
+                        label.revealed = true;
+                        this.mistakeCount += 1;
+                    });
+
+                    this.selectedId = null;
+                    this.hoverTargetId = null;
+                    this.isRevealing = false;
+
+                    this.renderTargets();
+                    this.renderPool();
+                    this.updateAll();
                     this.checkComplete(false);
                 }
 
-                handleRetakeTest() {
+                handleRetake() {
                     this.reset();
                 }
 
-                cleanupDrag() {
-                    if (this.draggedItem && this.draggedItem.parentNode === document.body) {
-                        this.draggedItem.remove();
-                    }
+                checkComplete(showModal = true) {
+                    if (!this.isComplete() || this.gameCompleted) return;
 
-                    this.placeholder?.remove();
-                    this.removeDragListeners();
-                    this.draggedItem = null;
-                    this.placeholder = null;
-                    this.originalParent = null;
-                    this.hoverTargetId = null;
-                    this.clearHoverStates();
-                }
-
-                // completion
-                checkComplete(showModal) {
-                    if (!this.allSolved()) return;
-
+                    this.gameCompleted = true;
                     window.setTimeout(() => {
                         this.stopTimer();
-                        this.gameCompleted = true;
-
-                        if (this.wordList) {
-                            this.wordList.innerHTML = '';
-                        }
-
-                        this.refreshUI();
+                        this.renderPool();
+                        this.updateAll();
 
                         if (!showModal) return;
 
-                        if (this.finalCorrect) this.finalCorrect.textContent = `${this.correctCount}/${this.labels.length}`;
+                        if (this.finalCorrect) this.finalCorrect.textContent = `${this.correctCount}/${this.getTotalCount()}`;
                         if (this.finalTime) this.finalTime.textContent = formatTime(Math.floor((Date.now() - this.startTime) / 1000));
                         if (this.finalMistakes) this.finalMistakes.textContent = String(this.mistakeCount);
-
                         this.showWin();
-                    }, timing.completeDelay);
+                    }, CONFIG.completeDelay);
                 }
 
                 showWin() {
                     if (this.modalShown) return;
                     this.modalShown = true;
-                    playAudio(SOUND.success);
+                    playSound(SOUND.success);
                     this.winModal?.classList.remove('hidden');
                 }
 
@@ -1383,18 +1299,23 @@
                 }
             }
 
-            // 15. Boot/init
-            function startImageGame() {
-                const game = new ImageGame();
-                window.imageGame = game;
+            const startGame = () => {
+                const game = new ImageDragDropGame();
+                window.imageDragDropGame = game;
                 window.resetSlide = () => game.reset();
+                window.stopSlideAudio = () => {
+                    Object.values(SOUND).forEach((audio) => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    });
+                };
                 game.init();
-            }
+            };
 
             if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', startImageGame);
+                document.addEventListener('DOMContentLoaded', startGame);
             } else {
-                startImageGame();
+                startGame();
             }
         })();
     </script>

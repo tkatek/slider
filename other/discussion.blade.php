@@ -18,6 +18,57 @@
     <style>
         .discussion-page {
             font-family: "Plus Jakarta Sans", sans-serif;
+            --discussion-card-glow-one: rgba(99, 102, 241, 0.24);
+            --discussion-card-glow-two: rgba(59, 130, 246, 0.18);
+            --discussion-card-glow-three: rgba(124, 58, 237, 0.22);
+            --discussion-card-glow-soft: rgba(96, 165, 250, 0.16);
+            --discussion-frame-one: rgba(129, 140, 248, 0.62);
+            --discussion-frame-two: rgba(59, 130, 246, 0.42);
+            --discussion-image-bg: linear-gradient(135deg, rgba(224, 231, 255, 0.9), rgba(219, 234, 254, 0.86), rgba(237, 233, 254, 0.86));
+            --discussion-image-glow-one: rgba(96, 165, 250, 0.30);
+            --discussion-image-glow-two: rgba(139, 92, 246, 0.20);
+            --discussion-shadow: rgba(99, 102, 241, 0.20);
+        }
+
+        .slide-theme-orange .discussion-page {
+            --discussion-card-glow-one: rgba(249, 115, 22, 0.24);
+            --discussion-card-glow-two: rgba(251, 146, 60, 0.18);
+            --discussion-card-glow-three: rgba(245, 158, 11, 0.24);
+            --discussion-card-glow-soft: rgba(252, 211, 77, 0.18);
+            --discussion-frame-one: rgba(251, 191, 36, 0.62);
+            --discussion-frame-two: rgba(249, 115, 22, 0.42);
+            --discussion-image-bg: linear-gradient(135deg, rgba(255, 237, 213, 0.92), rgba(254, 243, 199, 0.88), rgba(254, 249, 195, 0.86));
+            --discussion-image-glow-one: rgba(252, 211, 77, 0.32);
+            --discussion-image-glow-two: rgba(249, 115, 22, 0.22);
+            --discussion-shadow: rgba(249, 115, 22, 0.20);
+        }
+
+        .slide-theme-green .discussion-page {
+            --discussion-card-glow-one: rgba(34, 197, 94, 0.22);
+            --discussion-card-glow-two: rgba(16, 185, 129, 0.18);
+            --discussion-card-glow-three: rgba(132, 204, 22, 0.22);
+            --discussion-card-glow-soft: rgba(110, 231, 183, 0.16);
+            --discussion-frame-one: rgba(52, 211, 153, 0.58);
+            --discussion-frame-two: rgba(34, 197, 94, 0.40);
+            --discussion-image-bg: linear-gradient(135deg, rgba(220, 252, 231, 0.90), rgba(209, 250, 229, 0.86), rgba(236, 252, 203, 0.82));
+            --discussion-image-glow-one: rgba(74, 222, 128, 0.26);
+            --discussion-image-glow-two: rgba(16, 185, 129, 0.20);
+            --discussion-shadow: rgba(34, 197, 94, 0.18);
+        }
+
+        .dark .discussion-page {
+            --discussion-image-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(49, 46, 129, 0.30), rgba(15, 23, 42, 0.95));
+            --discussion-shadow: rgba(99, 102, 241, 0.12);
+        }
+
+        .dark .slide-theme-orange .discussion-page {
+            --discussion-image-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(154, 52, 18, 0.30), rgba(15, 23, 42, 0.95));
+            --discussion-shadow: rgba(251, 146, 60, 0.12);
+        }
+
+        .dark .slide-theme-green .discussion-page {
+            --discussion-image-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(6, 78, 59, 0.34), rgba(15, 23, 42, 0.95));
+            --discussion-shadow: rgba(16, 185, 129, 0.12);
         }
 
         .slide-viewport {
@@ -67,52 +118,52 @@
             opacity: 0.55;
         }
 
-        .objective-card.card-orange::before {
-            background: radial-gradient(circle, rgba(249, 115, 22, 0.24) 0%, rgba(249, 115, 22, 0) 72%);
+        .objective-card.card-theme-one::before {
+            background: radial-gradient(circle, var(--discussion-card-glow-one) 0%, transparent 72%);
         }
 
-        .objective-card.card-orange::after {
-            background: radial-gradient(circle, rgba(251, 146, 60, 0.18) 0%, rgba(251, 146, 60, 0) 72%);
+        .objective-card.card-theme-one::after {
+            background: radial-gradient(circle, var(--discussion-card-glow-two) 0%, transparent 72%);
         }
 
-        .objective-card.card-amber::before {
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.24) 0%, rgba(245, 158, 11, 0) 72%);
+        .objective-card.card-theme-two::before {
+            background: radial-gradient(circle, var(--discussion-card-glow-three) 0%, transparent 72%);
         }
 
-        .objective-card.card-amber::after {
-            background: radial-gradient(circle, rgba(252, 211, 77, 0.18) 0%, rgba(252, 211, 77, 0) 72%);
+        .objective-card.card-theme-two::after {
+            background: radial-gradient(circle, var(--discussion-card-glow-soft) 0%, transparent 72%);
         }
 
-        .objective-card.card-tangerine::before {
-            background: radial-gradient(circle, rgba(234, 88, 12, 0.22) 0%, rgba(234, 88, 12, 0) 72%);
+        .objective-card.card-theme-three::before {
+            background: radial-gradient(circle, var(--discussion-card-glow-two) 0%, transparent 72%);
         }
 
-        .objective-card.card-tangerine::after {
-            background: radial-gradient(circle, rgba(249, 115, 22, 0.16) 0%, rgba(249, 115, 22, 0) 72%);
+        .objective-card.card-theme-three::after {
+            background: radial-gradient(circle, var(--discussion-card-glow-one) 0%, transparent 72%);
         }
 
-        .objective-card.card-indigo::before {
-            background: radial-gradient(circle, rgba(79, 70, 229, 0.24) 0%, rgba(79, 70, 229, 0) 72%);
+        .discussion-frame-one {
+            border-color: var(--discussion-frame-one);
         }
 
-        .objective-card.card-indigo::after {
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, rgba(59, 130, 246, 0) 72%);
+        .discussion-frame-two {
+            border-color: var(--discussion-frame-two);
         }
 
-        .objective-card.card-sky::before {
-            background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, rgba(37, 99, 235, 0) 72%);
+        .discussion-image-shell {
+            box-shadow: 0 25px 50px -12px var(--discussion-shadow);
         }
 
-        .objective-card.card-sky::after {
-            background: radial-gradient(circle, rgba(96, 165, 250, 0.16) 0%, rgba(96, 165, 250, 0) 72%);
+        .discussion-image-bg {
+            background: var(--discussion-image-bg);
         }
 
-        .objective-card.card-violet::before {
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.22) 0%, rgba(124, 58, 237, 0) 72%);
+        .discussion-glow-one {
+            background: var(--discussion-image-glow-one);
         }
 
-        .objective-card.card-violet::after {
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.16) 0%, rgba(139, 92, 246, 0) 72%);
+        .discussion-glow-two {
+            background: var(--discussion-image-glow-two);
         }
 
         .objective-heading {
@@ -134,45 +185,11 @@
 
 @section("content")
     @php
-        $subtitleClass = ($theme['name'] ?? null) === 'orange'
-            ? 'discussion-subtitle mx-auto max-w-2xl text-base font-bold leading-[1.45] text-stone-800 dark:text-orange-100 sm:mx-0 sm:text-lg lg:text-xl'
-            : 'discussion-subtitle mx-auto max-w-2xl text-base font-bold leading-[1.45] text-slate-700 dark:text-slate-200 sm:mx-0 sm:text-lg lg:text-xl';
-
-        $labelClass = ($theme['name'] ?? null) === 'orange'
-            ? 'mb-1 block text-[0.65rem] font-black uppercase tracking-[0.22em] text-orange-500 dark:text-orange-300'
-            : 'mb-1 block text-[0.65rem] font-black uppercase tracking-[0.22em] text-indigo-600 dark:text-indigo-300';
-
-        $cardStyles = ($theme['name'] ?? null) === 'orange'
-            ? ['card-orange', 'card-amber', 'card-tangerine']
-            : ['card-indigo', 'card-sky', 'card-violet'];
-
-        $frameBorderOne = ($theme['name'] ?? null) === 'orange'
-            ? 'border-amber-300/60'
-            : 'border-indigo-300/60';
-
-        $frameBorderTwo = ($theme['name'] ?? null) === 'orange'
-            ? 'border-orange-300/40'
-            : 'border-blue-300/40';
-
-        $imageShellShadow = ($theme['name'] ?? null) === 'orange'
-            ? 'shadow-orange-400/20 dark:shadow-orange-400/10'
-            : 'shadow-indigo-500/20 dark:shadow-indigo-500/10';
-
-        $imageBgClass = ($theme['name'] ?? null) === 'orange'
-            ? 'bg-gradient-to-br from-orange-100 via-amber-100 to-yellow-100 dark:from-slate-800 dark:via-orange-950/30 dark:to-slate-700'
-            : 'bg-gradient-to-br from-indigo-100 via-blue-100 to-violet-100 dark:from-slate-800 dark:via-indigo-950/30 dark:to-slate-700';
-
-        $glowOneClass = ($theme['name'] ?? null) === 'orange'
-            ? 'bg-amber-300/30 dark:bg-amber-300/20'
-            : 'bg-blue-300/30 dark:bg-blue-300/20';
-
-        $glowTwoClass = ($theme['name'] ?? null) === 'orange'
-            ? 'bg-orange-400/20 dark:bg-orange-400/20'
-            : 'bg-violet-400/20 dark:bg-violet-400/20';
-
-        $practiceDotClass = ($theme['name'] ?? null) === 'orange'
-            ? 'bg-gradient-to-br from-orange-500 to-amber-400'
-            : 'bg-gradient-to-br from-indigo-500 to-blue-500';
+        $primaryGradient = trim((string) ($theme['primary_color'] ?? 'bg-[image:var(--top-bar-gradient)]'));
+        $buttonGradient = trim((string) ($theme['button_primary_color'] ?? 'bg-[image:var(--top-bar-gradient)]'));
+        $labelClass = 'mb-1 block bg-clip-text text-[0.65rem] font-black uppercase tracking-[0.22em] text-transparent ' . $primaryGradient;
+        $cardStyles = ['card-theme-one', 'card-theme-two', 'card-theme-three'];
+        $practiceDotClass = $buttonGradient;
 
     @endphp
     <div class="discussion-page relative h-[100dvh] w-full overflow-hidden">
@@ -190,7 +207,7 @@
                             @if($supportItems !== [])
                                 <div class="mb-3 rounded-[18px] border border-slate-200/80 bg-white/70 p-3 text-left shadow-[0_14px_28px_-24px_rgba(15,23,42,0.24)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:p-4">
                                     @if($supportTitle !== '')
-                                        <p class="text-[0.62rem] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                                        <p class="bg-clip-text text-[0.62rem] font-black uppercase tracking-[0.2em] text-transparent {{ $primaryGradient }}">
                                             {{ $supportTitle }}
                                         </p>
                                     @endif
@@ -254,13 +271,13 @@
 
                         <div class="discussion-image-wrap w-full mx-auto max-w-[300px] sm:max-w-[420px] lg:max-w-[460px]">
                             <div class="relative p-4">
-                                <div class="absolute inset-0 -translate-x-3.5 translate-y-3.5 rounded-[26px] border-2 {{ $frameBorderOne }} pointer-events-none"></div>
-                                <div class="absolute inset-0 translate-x-3.5 -translate-y-3.5 rounded-[26px] border border-dashed {{ $frameBorderTwo }} pointer-events-none"></div>
+                                <div class="discussion-frame-one pointer-events-none absolute inset-0 -translate-x-3.5 translate-y-3.5 rounded-[26px] border-2"></div>
+                                <div class="discussion-frame-two pointer-events-none absolute inset-0 translate-x-3.5 -translate-y-3.5 rounded-[26px] border border-dashed"></div>
 
-                                <div class="relative aspect-square w-full overflow-hidden rounded-[22px] shadow-2xl {{ $imageShellShadow }}">
-                                    <div class="absolute inset-0 {{ $imageBgClass }}"></div>
-                                    <div class="absolute -left-10 -top-10 h-36 w-36 rounded-full {{ $glowOneClass }} blur-2xl"></div>
-                                    <div class="absolute -right-10 -bottom-10 h-40 w-40 rounded-full {{ $glowTwoClass }} blur-2xl"></div>
+                                <div class="discussion-image-shell relative aspect-square w-full overflow-hidden rounded-[22px]">
+                                    <div class="discussion-image-bg absolute inset-0"></div>
+                                    <div class="discussion-glow-one absolute -left-10 -top-10 h-36 w-36 rounded-full blur-2xl"></div>
+                                    <div class="discussion-glow-two absolute -right-10 -bottom-10 h-40 w-40 rounded-full blur-2xl"></div>
 
                                     <img
                                             src="{{ $image }}"

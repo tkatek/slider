@@ -4,7 +4,6 @@ $content = [
 
     'title'      => 'New vocabulary & language',
     'subtitle'   => '',
-    'image_text_style' => 'overlay',
 
     'groups' => [
         [

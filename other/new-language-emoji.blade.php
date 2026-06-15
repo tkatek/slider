@@ -1,279 +1,80 @@
 @extends('slider.simple-layout')
 
-@section('title', $content['page_title'])
-
-@php
-    $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
-
-    $noteCardLightGlowOne = $isOrangeTheme ? 'rgba(254, 215, 170, .42)' : 'rgba(191,219,254,.42)';
-    $noteCardLightGlowTwo = $isOrangeTheme ? 'rgba(253, 186, 116, .30)' : 'rgba(199,210,254,.34)';
-    $noteCardDarkGlowOne = $isOrangeTheme ? 'rgba(249, 115, 22, .18)' : 'rgba(59,130,246,.18)';
-    $noteCardDarkGlowTwo = $isOrangeTheme ? 'rgba(251, 146, 60, .14)' : 'rgba(129,140,248,.14)';
-
-    $noteAccentGradient = $isOrangeTheme
-        ? 'linear-gradient(180deg, #fb923c 0%, #f97316 52%, #ea580c 100%)'
-        : 'linear-gradient(180deg, #38bdf8 0%, #4f46e5 52%, #8b5cf6 100%)';
-
-    $noteBadgeBorder = $isOrangeTheme ? 'rgba(251, 146, 60, .24)' : 'rgba(148,163,184,.22)';
-    $noteBadgeBg = $isOrangeTheme ? 'rgba(255, 247, 237, .82)' : 'rgba(255,255,255,.72)';
-    $noteBadgeDarkBorder = $isOrangeTheme ? 'rgba(251, 146, 60, .24)' : 'rgba(148,163,184,.18)';
-    $noteBadgeDarkBg = $isOrangeTheme ? 'rgba(124, 45, 18, .34)' : 'rgba(15,23,42,.64)';
-    $noteBadgeText = $isOrangeTheme ? '#c2410c' : '#475569';
-    $noteBadgeDarkText = $isOrangeTheme ? '#fdba74' : '#cbd5e1';
-
-    $noteDotGradient = $isOrangeTheme
-        ? 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)'
-        : 'linear-gradient(135deg, #38bdf8 0%, #6366f1 100%)';
-@endphp
-
-@section('style')
-    <style>
-        .organic-shape {
-            position: absolute;
-            z-index: 0;
-            filter: blur(60px);
-            opacity: 0.12;
-        }
-
-        .blob-1 {
-            top: 5%;
-            left: 5%;
-            width: 300px;
-            height: 300px;
-            background: #4f46e5;
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-        }
-
-        .blob-2 {
-            bottom: 5%;
-            right: 5%;
-            width: 400px;
-            height: 400px;
-            background: #7c3aed;
-            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-        }
-
-        .dark .organic-shape { opacity: 0.18; }
-
-        .play-hit { -webkit-tap-highlight-color: transparent; }
-        .play-hit:focus-visible { outline: none; }
-
-        #titleBlock,
-        .sentence-card {
-            opacity: 1;
-            transform: none;
-        }
-
-        .audio-btn {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .audio-btn .static-icon {
-            display: block;
-        }
-
-        .audio-btn .wave-wrap {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-            height: 16px;
-        }
-
-        .audio-btn .wave-bar {
-            width: 3px;
-            height: 8px;
-            background: currentColor;
-            border-radius: 999px;
-        }
-
-        .audio-btn.speaking .static-icon {
-            display: none;
-        }
-
-        .audio-btn.speaking .wave-wrap {
-            display: inline-flex;
-        }
-
-        .audio-btn.speaking .wave-bar:nth-child(1) {
-            animation: waveBounce 0.7s ease-in-out infinite;
-        }
-
-        .audio-btn.speaking .wave-bar:nth-child(2) {
-            animation: waveBounce 0.7s ease-in-out 0.12s infinite;
-        }
-
-        .audio-btn.speaking .wave-bar:nth-child(3) {
-            animation: waveBounce 0.7s ease-in-out 0.24s infinite;
-        }
-
-        @keyframes waveBounce {
-            0%, 100% {
-                height: 7px;
-                opacity: 0.7;
-            }
-            50% {
-                height: 16px;
-                opacity: 1;
-            }
-        }
-
-        .content-note-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 1.65rem;
-            border: 1px solid rgba(226, 232, 240, .78);
-            background:
-                    radial-gradient(120% 120% at 0% 0%, {{ $noteCardLightGlowOne }} 0%, transparent 46%),
-                    radial-gradient(120% 120% at 100% 0%, {{ $noteCardLightGlowTwo }} 0%, transparent 44%),
-                    rgba(255, 255, 255, .82);
-            box-shadow: 0 22px 52px -40px rgba(15, 23, 42, .28);
-            backdrop-filter: blur(12px);
-        }
-
-        .dark .content-note-card {
-            border-color: rgba(71, 85, 105, .72);
-            background:
-                    radial-gradient(120% 120% at 0% 0%, {{ $noteCardDarkGlowOne }} 0%, transparent 46%),
-                    radial-gradient(120% 120% at 100% 0%, {{ $noteCardDarkGlowTwo }} 0%, transparent 44%),
-                    rgba(15, 23, 42, .82);
-        }
-
-        .content-note-card::before {
-            content: "";
-            position: absolute;
-            inset: 0 auto 0 0;
-            width: 6px;
-            border-radius: inherit;
-            background: {{ $noteAccentGradient }};
-            opacity: .95;
-        }
-
-        .note-label-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: .5rem;
-            border-radius: 999px;
-            border: 1px solid {{ $noteBadgeBorder }};
-            background: {{ $noteBadgeBg }};
-            padding: .45rem .78rem;
-            font-size: .68rem;
-            font-weight: 900;
-            letter-spacing: .18em;
-            text-transform: uppercase;
-            color: {{ $noteBadgeText }};
-            box-shadow: 0 10px 24px rgba(15, 23, 42, .06);
-        }
-
-        .dark .note-label-badge {
-            border-color: {{ $noteBadgeDarkBorder }};
-            background: {{ $noteBadgeDarkBg }};
-            color: {{ $noteBadgeDarkText }};
-        }
-
-        .note-label-dot {
-            display: inline-block;
-            height: .55rem;
-            width: .55rem;
-            flex-shrink: 0;
-            border-radius: 999px;
-            background: {{ $noteDotGradient }};
-            box-shadow: 0 0 0 3px rgba(251, 146, 60, .14);
-        }
-
-        .content-note-copy p {
-            margin: 0;
-        }
-    </style>
-@endsection
+@section('title', $content['page_title'] ?? $content['title'] ?? '')
 
 @section('content')
     @php
+        $primaryGradient = trim((string)($theme['primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500'));
+        $buttonGradient = trim((string)($theme['button_primary_color'] ?? 'bg-gradient-to-tr from-blue-500 via-indigo-500 to-purple-600'));
+
         $imageAlt = trim((string)($content['image_alt'] ?? 'Slide image'));
         $playLabel = trim((string)($content['play_label'] ?? 'Play audio'));
 
-        $footerText = trim((string)($content['footer_text'] ?? ''));
-        $footerItems = is_array($content['footer_items'] ?? null) ? $content['footer_items'] : [];
+        $hideImage = (bool)($content['hide_image'] ?? false);
+        $hasImage = !$hideImage && !empty($content['image']);
 
-        /*
-            Reusable note card fields.
-
-            The label is disabled by default.
-            Add this only when you want the label to show:
-
-            'note_label' => 'Useful Language',
-
-            Example:
-            'note_title' => 'Remember',
-            'note_content' => ['First line...', 'Second line...']
-        */
         $noteLabel = trim((string)($content['note_label'] ?? ''));
         $noteTitle = trim((string)($content['note_title'] ?? ''));
 
         $rawNoteContent = $content['note_content'] ?? [];
 
-        if (empty($rawNoteContent) && ($footerText || count($footerItems))) {
-            $rawNoteContent = [];
-
-            if ($footerText) {
-                $rawNoteContent[] = $footerText;
-            }
-
-            foreach ($footerItems as $footerItem) {
-                $rawNoteContent[] = $footerItem;
-            }
+        if (!is_array($rawNoteContent)) {
+            $rawNoteContent = trim((string)$rawNoteContent) !== ''
+                ? [trim((string)$rawNoteContent)]
+                : [];
         }
 
-        $noteParagraphs = is_array($rawNoteContent)
-            ? array_values(array_filter(array_map(static fn ($item) => trim((string) $item), $rawNoteContent), static fn ($item) => $item !== ''))
-            : array_values(array_filter(
-                array_map('trim', preg_split('/\R{2,}/', trim((string) $rawNoteContent)) ?: []),
-                static fn ($item) => $item !== ''
-            ));
+        $noteParagraphs = array_values(array_filter(
+            array_map(static fn ($item) => trim((string)$item), $rawNoteContent),
+            static fn ($item) => $item !== ''
+        ));
 
         $hasNoteCard = $noteTitle !== '' || count($noteParagraphs);
 
-        $hideImage = (bool)($content['hide_image'] ?? false);
-        $contentGridClass = trim((string)($content['content_grid_class'] ?? 'grid lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_460px] gap-8 lg:gap-12 items-center'));
-        $itemsGridClass = trim((string)($content['items_grid_class'] ?? 'grid grid-cols-1 gap-4 text-left'));
-        $itemTextClass = trim((string)($content['item_text_class'] ?? 'text-xl sm:text-2xl'));
+        $contentGridClass = trim((string)($content['content_grid_class'] ?? (
+            $hasImage
+                ? 'grid grid-cols-1 items-center gap-5 md:grid-cols-[minmax(0,1fr)_minmax(240px,340px)] lg:grid-cols-[minmax(0,1fr)_minmax(300px,390px)] xl:grid-cols-[minmax(0,1fr)_minmax(330px,430px)] md:gap-6 lg:gap-8'
+                : 'mx-auto grid w-full max-w-5xl grid-cols-1'
+        )));
+
+        $itemsGridClass = trim((string)($content['items_grid_class'] ?? (
+            $hasImage
+                ? 'grid grid-cols-1 gap-3.5 text-left sm:gap-4'
+                : 'grid grid-cols-1 gap-3.5 text-left sm:grid-cols-2 sm:gap-4'
+        )));
+
+        $itemTextClass = trim((string)($content['item_text_class'] ?? 'text-base sm:text-lg lg:text-xl'));
     @endphp
 
-    <body class="font-display bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-50 min-h-screen relative">
-    <div class="organic-shape blob-1"></div>
-    <div class="organic-shape blob-2"></div>
-
-    <main class="w-full">
-        <div class="mx-auto w-full max-w-7xl px-4 sm:px-8 py-7 sm:py-9 lg:min-h-[100dvh] lg:flex lg:items-center">
+    <main class="relative min-h-[100dvh] w-full overflow-hidden">
+        <div class="mx-auto flex min-h-[100dvh] w-full max-w-7xl items-center px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
             <section class="w-full">
-
                 <div class="{{ $contentGridClass }}">
-
-                    <div class="space-y-6">
-
+                    <div class="w-full space-y-4 sm:space-y-5">
                         @include('slider.components.title-subtitle')
 
                         @if($hasNoteCard)
-                            <div class="content-note-card p-4 pl-5 sm:p-5 sm:pl-6">
-                                <div class="relative">
+                            <div class="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-[0_16px_34px_-30px_rgba(15,23,42,0.35)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/55 sm:p-5">
+                                <div class="absolute inset-y-0 left-0 w-1.5 {{ $primaryGradient }}"></div>
+
+                                <div class="relative pl-2 sm:pl-3">
                                     @if($noteLabel !== '')
-                                        <div class="note-label-badge">
-                                            <span class="note-label-dot"></span>
+                                        <div class="mb-3 inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/85 px-3 py-1.5 text-[0.68rem] font-black uppercase tracking-[0.18em] text-slate-500 shadow-sm dark:border-slate-700/70 dark:bg-slate-950/50 dark:text-slate-300">
+                                            <span class="h-2 w-2 rounded-full {{ $buttonGradient }}"></span>
                                             <span>{{ $noteLabel }}</span>
                                         </div>
                                     @endif
 
                                     @if($noteTitle !== '')
-                                        <h2 class="{{ $noteLabel !== '' ? 'mt-3' : '' }} max-w-2xl text-xl font-black leading-[1.08] tracking-[-0.04em] text-slate-950 dark:text-slate-50 sm:text-2xl">
+                                        <h2 class="text-lg font-black leading-tight tracking-[-0.03em] text-slate-950 dark:text-slate-50 sm:text-xl">
                                             {!! $noteTitle !!}
                                         </h2>
                                     @endif
 
                                     @if(count($noteParagraphs))
-                                        <div class="content-note-copy mt-3 grid gap-2.5">
+                                        <div class="mt-2 grid gap-1.5">
                                             @foreach($noteParagraphs as $paragraph)
-                                                <p class="text-base font-black leading-[1.5] tracking-[-0.015em] text-slate-700 dark:text-slate-200 sm:text-lg lg:text-xl">
+                                                <p class="text-sm font-extrabold leading-[1.45] text-slate-700 dark:text-slate-200 sm:text-base">
                                                     {!! $paragraph !!}
                                                 </p>
                                             @endforeach
@@ -285,75 +86,65 @@
 
                         <section id="cards" class="w-full">
                             <div class="{{ $itemsGridClass }}">
-                                @foreach($content['items'] as $item)
+                                @foreach($content['items'] ?? [] as $item)
                                     @php
-                                        $itemSound = trim((string) ($item['sound'] ?? ''));
+                                        $itemSound = trim((string)($item['sound'] ?? ''));
                                     @endphp
-                                    <article
-                                            class="sentence-card rounded-[26px] border border-slate-200/70 bg-white/65 backdrop-blur-xl
-                                               shadow-[0_14px_44px_-26px_rgba(15,23,42,0.45)]
-                                               dark:border-slate-700/35 dark:bg-slate-950/40
-                                               p-4 sm:p-5"
-                                    >
-                                        <div class="flex items-center gap-4">
-                                            <div class="h-11 w-11 rounded-2xl flex items-center justify-center text-[0px]
-                                                        border border-indigo-500/25 bg-indigo-500/10 text-indigo-700
-                                                        dark:border-indigo-500/30 dark:bg-indigo-500/15 dark:text-indigo-200">
-                                                <span class="text-xl leading-none">{{ $item['emoji'] ?? '🎉' }}</span>
+
+                                    <article class="rounded-2xl border border-slate-200/75 bg-white/80 p-3.5 text-left shadow-[0_14px_30px_-28px_rgba(15,23,42,0.38)] backdrop-blur-xl transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-32px_rgba(15,23,42,0.45)] dark:border-slate-700/55 dark:bg-slate-900/55 sm:p-4">
+                                        <div class="flex items-center gap-3 sm:gap-3.5">
+                                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200/80 bg-slate-50 text-xl shadow-sm dark:border-slate-700/70 dark:bg-slate-950/45 sm:h-11 sm:w-11 sm:text-2xl">
+                                                {{ $item['emoji'] ?? '🎉' }}
                                             </div>
 
                                             <div class="min-w-0 flex-1">
-                                                <div class="{{ $itemTextClass }} font-black tracking-[-0.03em]
-                                                            text-slate-900 dark:text-slate-50 leading-tight break-words">
-                                                    {!! $item['text'] !!}
+                                                <div class="{{ $itemTextClass }} font-black leading-snug tracking-[-0.025em] text-slate-900 dark:text-slate-50">
+                                                    {!! $item['text'] ?? '' !!}
                                                 </div>
                                             </div>
 
                                             @if($itemSound !== '')
-                                                <div class="shrink-0">
-                                                    <button
-                                                            type="button"
-                                                            class="audio-btn speak-btn play-hit inline-flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#57534e,#3f3f46,#0f172a)] text-white backdrop-blur-md ring-1 ring-white/25 shadow-lg shadow-slate-950/30 focus-visible:ring-4 focus-visible:ring-slate-300/40"
-                                                            aria-label="{{ $playLabel }}"
-                                                            data-sound="{{ $itemSound }}"
-                                                    >
-                                                        <svg class="static-icon w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                                            <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-                                                        </svg>
-                                                        <span class="wave-wrap" aria-hidden="true">
-                                                            <span class="wave-bar"></span>
-                                                            <span class="wave-bar"></span>
-                                                            <span class="wave-bar"></span>
-                                                        </span>
-                                                    </button>
-                                                </div>
+                                                <button
+                                                        type="button"
+                                                        class="audio-btn inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full {{ $buttonGradient }} text-white shadow-lg shadow-slate-900/15 ring-1 ring-white/25 transition hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-300/40 dark:shadow-black/25 sm:h-10 sm:w-10"
+                                                        aria-label="{{ $playLabel }}"
+                                                        data-sound="{{ $itemSound }}"
+                                                >
+                                                    <svg class="js-static-icon h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                        <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                                    </svg>
+
+                                                    <span class="js-wave-wrap hidden items-center gap-0.5" aria-hidden="true">
+                                                        <span class="h-1.5 w-[2px] animate-pulse rounded-full bg-current"></span>
+                                                        <span class="h-3.5 w-[2px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
+                                                        <span class="h-2.5 w-[2px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
+                                                    </span>
+                                                </button>
                                             @endif
                                         </div>
                                     </article>
                                 @endforeach
                             </div>
                         </section>
-
                     </div>
 
-                    @unless($hideImage)
-                        <div class="relative mx-auto w-full max-w-[360px] sm:max-w-[400px] lg:max-w-none">
-                            <img
-                                    src="{{ $content['image'] }}"
-                                    alt="{{ $imageAlt }}"
-                                    class="mt-[20px] block w-full h-auto rounded-[32px]"
-                                    loading="lazy"
-                                    draggable="false"
-                            />
+                    @if($hasImage)
+                        <div class="mx-auto w-full max-w-[320px] sm:max-w-[380px] md:max-w-none">
+                            <div class="overflow-hidden rounded-[28px] border border-white/70 bg-white/65 p-2 shadow-[0_22px_50px_-38px_rgba(15,23,42,0.5)] backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
+                                <img
+                                        src="{{ $content['image'] }}"
+                                        alt="{{ $imageAlt }}"
+                                        class="block aspect-[5/6] w-full rounded-[22px] object-cover"
+                                        loading="lazy"
+                                        draggable="false"
+                                />
+                            </div>
                         </div>
-                    @endunless
-
+                    @endif
                 </div>
-
             </section>
         </div>
     </main>
-    </body>
 @endsection
 
 @section('script')
@@ -368,14 +159,17 @@
 
                 let activeButton = null;
 
-                function setSpeaking(button, isSpeaking) {
+                function setPlaying(button, isPlaying) {
                     if (!button) return;
-                    button.classList.toggle("speaking", isSpeaking);
+
+                    button.querySelector(".js-static-icon")?.classList.toggle("hidden", isPlaying);
+                    button.querySelector(".js-wave-wrap")?.classList.toggle("hidden", !isPlaying);
+                    button.querySelector(".js-wave-wrap")?.classList.toggle("flex", isPlaying);
                 }
 
                 function clearActive() {
                     if (activeButton) {
-                        setSpeaking(activeButton, false);
+                        setPlaying(activeButton, false);
                         activeButton = null;
                     }
                 }
@@ -385,6 +179,7 @@
                         audio.pause();
                         audio.currentTime = 0;
                     } catch (e) {}
+
                     clearActive();
                 }
 
@@ -402,13 +197,15 @@
 
                     try {
                         if (audio.src !== resolved) audio.src = resolved;
+
                         audio.currentTime = 0;
                         activeButton = button;
-                        setSpeaking(activeButton, true);
+                        setPlaying(activeButton, true);
 
-                        const p = audio.play();
-                        if (p && typeof p.catch === "function") {
-                            p.catch(() => stop());
+                        const promise = audio.play();
+
+                        if (promise && typeof promise.catch === "function") {
+                            promise.catch(() => stop());
                         }
                     } catch (e) {
                         stop();
@@ -433,13 +230,14 @@
             if (!window.__BEC_AUDIO_DELEGATE__) {
                 window.__BEC_AUDIO_DELEGATE__ = true;
 
-                document.addEventListener("click", (e) => {
-                    const btn = e.target.closest(".audio-btn");
-                    if (!btn) return;
+                document.addEventListener("click", (event) => {
+                    const button = event.target.closest(".audio-btn");
+                    if (!button) return;
 
-                    e.preventDefault();
-                    const src = btn.dataset.sound || btn.getAttribute("data-sound") || "";
-                    window[KEY].play(src, btn);
+                    event.preventDefault();
+
+                    const src = button.dataset.sound || button.getAttribute("data-sound") || "";
+                    window[KEY].play(src, button);
                 });
             }
         })();

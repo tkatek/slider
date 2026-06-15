@@ -20,7 +20,7 @@ $content = [
             'sound' => materialAsset('slider/A2/Beginner/chapter-12/audios/slide7/Proteins-are-necessary.mpeg'),
         ],
         [
-            'emoji' => '🥦🍎',
+            'emoji' => '🍎',
             'text'  => '“<span class="text-red-500 font-black">Both</span> fruits <span class="text-red-500 font-black">and</span> vegetables are low in calories.”',
             'sound' => materialAsset('slider/A2/Beginner/chapter-12/audios/slide7/Both-fruits.mpeg'),
         ],

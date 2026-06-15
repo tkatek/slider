@@ -1,38 +1,37 @@
 <?php
-
 $content = [
-    'page_title' => 'Learning Objectives',
-    'title'      => 'Learning Objectives',
-    'subtitle'   => 'By the end of the lesson, students will be able to:',
+    'type' => 'type4',
 
-    'outcomes' => [
+    'title'    => 'Learning Objectives',
+    'subtitle' => 'By the end of the lesson, students will be able to:',
+
+    'objectives' => [
         [
-            'label' => '',
-            'text'  => 'Describe Common Roommate And Friendship Problems',
+            'emoji' => '🏠',
+            'title' => 'Describe common roommate and friendship problems',
         ],
         [
-            'label' => '',
-            'text'  => 'Use Vocabulary For Complaints And Annoying Habits',
+            'emoji' => '😤',
+            'title' => 'Use vocabulary for complaints and annoying habits',
         ],
         [
-            'label' => '',
-            'text'  => 'Describe People’s Behaviour Using Adjectives',
+            'emoji' => '👥',
+            'title' => 'Describe people’s behaviour using adjectives',
         ],
         [
-            'label' => '',
-            'text'  => 'Use Always + Present Continuous To Express Annoyance',
+            'emoji' => '🔁',
+            'title' => 'Use always + present continuous to express annoyance',
         ],
         [
-            'label' => '',
-            'text'  => 'Express Opinions And Complaints About Shared Living',
+            'emoji' => '💬',
+            'title' => 'Express opinions and complaints about shared living',
         ],
         [
-            'label' => '',
-            'text'  => 'Role-play Everyday Roommate Situations Naturally',
+            'emoji' => '🎭',
+            'title' => 'Role-play everyday roommate situations naturally',
         ],
     ],
 ];
-
 ?>
 
-@include('slider.objectives.objectives-numbered', ['content' => $content])
+@include('slider.other.learning-objectives', ['content' => $content])

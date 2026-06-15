@@ -1,34 +1,33 @@
 <?php
-
 $content = [
-    'page_title' => 'Learning Objectives',
-    'title'      => 'Learning Objectives',
-    'subtitle'   => 'By the end of the lesson, students will be able to:',
+    'type' => 'type3',
 
-    'outcomes' => [
+    'title'    => 'Learning Objectives',
+    'subtitle' => 'By the end of the lesson, students will be able to:',
+
+    'objectives' => [
         [
-            'label' => '',
-            'text'  => 'Describe Problems With Products Or Services',
+            'emoji' => '🛍️',
+            'title' => 'Describe problems with products or services',
         ],
         [
-            'label' => '',
-            'text'  => 'Make Complaints Politely In Shops Or Restaurants',
+            'emoji' => '🙏',
+            'title' => 'Make complaints politely in shops or restaurants',
         ],
         [
-            'label' => '',
-            'text'  => 'Ask For Help Or Solutions',
+            'emoji' => '🆘',
+            'title' => 'Ask for help or solutions',
         ],
         [
-            'label' => '',
-            'text'  => 'Use Customer Service Vocabulary',
+            'emoji' => '🎧',
+            'title' => 'Use customer service vocabulary',
         ],
         [
-            'label' => '',
-            'text'  => 'Role-play Customer Complaint Situations',
+            'emoji' => '🎭',
+            'title' => 'Role-play customer complaint situations',
         ],
     ],
 ];
-
 ?>
 
-@include('slider.objectives.objectives-numbered', ['content' => $content])
+@include('slider.other.learning-objectives', ['content' => $content])

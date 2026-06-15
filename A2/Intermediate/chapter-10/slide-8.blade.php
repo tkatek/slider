@@ -2,10 +2,9 @@
 $content = [
     'title'    => "Listening",
     'subtitle' => 'Listen to three people talking about text messages. Practice reading the transcript',
-    'question_prompt_label' => 'Listen again and write true or false',
+    'question_prompt_label' => 'Listen again and choose true or false',
     'type' => 'questions_only',
-    'image_panel_col_class'  => 'sm:col-span-0',
-    'answer_panel_col_class' => 'sm:col-span-12',
+
     'audio'   => materialAsset("slider/A2/Intermediate/chapter-10/audios/slide8.mp3"),
     'script'  => [
         "I sometimes send text messages, usually to my parents to say when I’m coming home, but I usually chat on social networking sites. It’s easier if you’re online anyway – and it’s cheaper! I always have my phone with me, so I can see what my friends are doing. It’s really good to know what people are doing. I chat to everybody all the time and we send each other pictures.",

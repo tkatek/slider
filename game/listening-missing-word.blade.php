@@ -11,384 +11,189 @@
     $hasScript = $scriptLines !== [];
     $lines = is_array($content['lines'] ?? null) ? $content['lines'] : [];
     $sounds = is_array($content['sounds'] ?? null) ? $content['sounds'] : [];
+
     $cardClass = trim((string) ($content['card_class'] ?? ''));
     $gridClass = trim((string) ($content['grid_class'] ?? 'grid-cols-1'));
+    $gridClass = $gridClass !== '' ? $gridClass : 'grid-cols-1';
+
+    $themeName = strtolower((string) ($theme['name'] ?? 'default'));
+    $buttonGradient = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500'));
+    $instructionIconClass = 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300';
+    $softButtonClass = 'border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 focus:ring-indigo-300/35 dark:border-indigo-400/20 dark:bg-indigo-950/35 dark:text-indigo-200 dark:hover:bg-indigo-900/45';
+
+    if ($themeName === 'orange') {
+        $instructionIconClass = 'bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-300';
+        $softButtonClass = 'border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 focus:ring-orange-300/35 dark:border-orange-400/20 dark:bg-orange-950/35 dark:text-orange-200 dark:hover:bg-orange-900/45';
+    } elseif ($themeName === 'green') {
+        $instructionIconClass = 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300';
+        $softButtonClass = 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 focus:ring-emerald-300/35 dark:border-emerald-400/20 dark:bg-emerald-950/35 dark:text-emerald-200 dark:hover:bg-emerald-900/45';
+    }
+
+    $componentId = str_replace('.', '_', uniqid('lmw_', true));
+
     $speakerClasses = [
-        'A' => 'lp-speaker-blue',
-        'B' => 'lp-speaker-emerald',
+        'A' => 'from-indigo-500 to-blue-600 shadow-indigo-500/20',
+        'B' => 'from-emerald-500 to-teal-600 shadow-emerald-500/20',
+
+        '1' => 'from-violet-500 to-indigo-600 shadow-violet-500/20',
+        '2' => 'from-sky-500 to-blue-600 shadow-sky-500/20',
+        '3' => 'from-fuchsia-500 to-rose-600 shadow-fuchsia-500/20',
+        '4' => 'from-amber-500 to-orange-600 shadow-amber-500/20',
+        '5' => 'from-emerald-500 to-teal-600 shadow-emerald-500/20',
+        '6' => 'from-cyan-500 to-sky-600 shadow-cyan-500/20',
     ];
+
     $fallbackSpeakerClasses = [
-        'lp-speaker-violet',
-        'lp-speaker-rose',
-        'lp-speaker-sky',
-        'lp-speaker-amber',
+        'from-violet-500 to-indigo-600 shadow-violet-500/20',
+        'from-rose-500 to-pink-600 shadow-rose-500/20',
+        'from-sky-500 to-blue-600 shadow-sky-500/20',
+        'from-amber-500 to-orange-600 shadow-amber-500/20',
+        'from-emerald-500 to-teal-600 shadow-emerald-500/20',
     ];
 @endphp
 
-@section('style')
-    <style>
-        .lt-card {
-            border-radius: 24px;
-            border: 1px solid rgba(226, 232, 240, .95);
-            background: rgba(255, 255, 255, .94);
-            box-shadow: 0 20px 50px rgba(15, 23, 42, .08);
-        }
-
-        .dark .lt-card {
-            border-color: rgba(51, 65, 85, .75);
-            background: rgba(15, 23, 42, .86);
-        }
-
-        .lt-title-panel {
-            border-radius: 20px;
-            border: 1px solid rgba(226, 232, 240, .95);
-            background: linear-gradient(135deg, rgba(248, 250, 252, .96), rgba(255, 255, 255, .86));
-            padding: .9rem 1rem;
-        }
-
-        .dark .lt-title-panel {
-            border-color: rgba(51, 65, 85, .75);
-            background: linear-gradient(135deg, rgba(30, 41, 59, .72), rgba(15, 23, 42, .66));
-        }
-
-        .lt-btn {
-            border-radius: 14px;
-            padding: .65rem 1rem;
-            font-size: .82rem;
-            font-weight: 900;
-            transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease;
-        }
-
-        .lt-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .lt-btn-primary {
-            border: 1px solid rgba(255, 255, 255, .14);
-            background: linear-gradient(135deg, #475569, #111827);
-            color: #fff;
-            box-shadow: 0 10px 24px rgba(15, 23, 42, .16);
-        }
-
-        .lt-btn-soft {
-            border: 1px solid rgba(226, 232, 240, 1);
-            background: #fff;
-            color: #334155;
-            box-shadow: 0 8px 22px rgba(2, 6, 23, .05);
-        }
-
-        .dark .lt-btn-soft {
-            border-color: rgba(51, 65, 85, 1);
-            background: #0f172a;
-            color: #e2e8f0;
-        }
-
-        .lp-dialogue {
-            display: grid;
-            gap: .75rem;
-        }
-
-        .lp-line {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: .7rem;
-            align-items: start;
-            border-radius: 20px;
-            border: 1px solid rgba(226, 232, 240, .88);
-            background: rgba(248, 250, 252, .78);
-            padding: .85rem;
-            box-shadow: 0 10px 26px rgba(15, 23, 42, .04);
-        }
-
-        .dark .lp-line {
-            border-color: rgba(51, 65, 85, .85);
-            background: rgba(2, 6, 23, .28);
-        }
-
-        .lp-speaker {
-            display: inline-flex;
-            min-width: 2.35rem;
-            height: 2.35rem;
-            align-items: center;
-            justify-content: center;
-            border-radius: 16px;
-            color: #fff;
-            font-size: .95rem;
-            font-weight: 1000;
-            box-shadow: 0 10px 20px rgba(15, 23, 42, .12);
-        }
-
-        .lp-speaker-blue {
-            background: linear-gradient(135deg, #6366f1, #2563eb);
-        }
-
-        .lp-speaker-emerald {
-            background: linear-gradient(135deg, #10b981, #0d9488);
-        }
-
-        .lp-speaker-violet {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-        }
-
-        .lp-speaker-rose {
-            background: linear-gradient(135deg, #fb7185, #e11d48);
-        }
-
-        .lp-speaker-sky {
-            background: linear-gradient(135deg, #38bdf8, #0284c7);
-        }
-
-        .lp-speaker-amber {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-
-        .lp-text {
-            color: #0f172a;
-            font-size: .98rem;
-            font-weight: 800;
-            line-height: 2.15;
-        }
-
-        .dark .lp-text {
-            color: #f8fafc;
-        }
-
-        .lp-input {
-            display: inline-block;
-            width: auto;
-            min-width: 5.8rem;
-            max-width: 100%;
-            height: 2.1rem;
-            margin: 0 .16rem;
-            border-radius: 12px;
-            border: 1px solid rgba(203, 213, 225, 1);
-            background: #fff;
-            padding: .35rem .55rem;
-            color: #0f172a;
-            font-size: .88rem;
-            font-weight: 900;
-            line-height: 1;
-            text-align: left;
-            outline: none;
-            transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
-            vertical-align: middle;
-        }
-
-        .lp-input:focus {
-            border-color: rgba(99, 102, 241, .76);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, .16);
-        }
-
-        .lp-input.is-correct {
-            border-color: #16a34a;
-            background: rgba(220, 252, 231, .9);
-            color: #166534;
-        }
-
-        .lp-input.is-wrong {
-            border-color: #dc2626;
-            background: rgba(254, 226, 226, .95);
-            color: #991b1b;
-        }
-
-        .dark .lp-input {
-            border-color: rgba(51, 65, 85, 1);
-            background: rgba(15, 23, 42, .82);
-            color: #f8fafc;
-        }
-
-        .dark .lp-input.is-correct {
-            background: rgba(20, 83, 45, .42);
-            color: #bbf7d0;
-        }
-
-        .dark .lp-input.is-wrong {
-            background: rgba(127, 29, 29, .42);
-            color: #fecaca;
-        }
-
-        .lp-transcript {
-            margin-top: 1rem;
-            border-radius: 20px;
-            border: 1px dashed rgba(148, 163, 184, .48);
-            background: rgba(248, 250, 252, .76);
-            padding: .9rem;
-        }
-
-        .dark .lp-transcript {
-            border-color: rgba(100, 116, 139, .34);
-            background: rgba(15, 23, 42, .34);
-        }
-
-        .lp-transcript-title {
-            margin-bottom: .45rem;
-            color: #475569;
-            font-size: .78rem;
-            font-weight: 1000;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-        }
-
-        .dark .lp-transcript-title {
-            color: #cbd5e1;
-        }
-
-        .lp-transcript p {
-            margin: .3rem 0;
-            color: #334155;
-            font-size: .88rem;
-            font-weight: 750;
-            line-height: 1.55;
-        }
-
-        .dark .lp-transcript p {
-            color: #cbd5e1;
-        }
-
-        @media (max-width: 640px) {
-            .lt-card {
-                border-radius: 20px;
-                padding: .85rem !important;
-            }
-
-            .lt-title-panel {
-                padding: .8rem;
-            }
-
-            .lt-btn {
-                flex: 1 1 0;
-                min-width: 0;
-                padding: .62rem .45rem;
-                font-size: .74rem;
-                border-radius: 12px;
-                white-space: nowrap;
-            }
-
-            .lp-line {
-                grid-template-columns: auto 1fr;
-                gap: .65rem;
-                padding: .8rem;
-            }
-
-            .lp-speaker {
-                min-width: 2.15rem;
-                height: 2.15rem;
-                border-radius: 14px;
-            }
-
-            .lp-text {
-                font-size: .92rem;
-                line-height: 2.05;
-            }
-
-            .lp-input {
-                min-width: 5.2rem;
-                max-width: 100%;
-                height: 2rem;
-                font-size: .82rem;
-            }
-        }
-    </style>
-@endsection
-
 @section('content')
-    <main class="flex min-h-[100dvh] w-full flex-col justify-center">
+    <main class="flex min-h-[100dvh] w-full flex-col justify-center overflow-x-hidden py-3 sm:py-4 lg:py-5">
         @include('slider.components.title-subtitle')
 
-        <section class="mx-auto w-full max-w-6xl px-4 py-5 sm:px-8">
+        <section class="mx-auto w-full max-w-[72rem] px-3 py-3 sm:px-4 lg:px-5 2xl:max-w-[76rem]">
             @if($playerAudio)
-                <div class="mx-auto mb-5 max-w-3xl">
+                <div class="mx-auto mb-4 max-w-3xl">
                     @include('slider.components.audio-player')
                 </div>
             @endif
 
-            <div class="lt-card {{ $cardClass }} p-4 sm:p-6">
-                <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-                    <div class="lt-title-panel min-w-0 flex-1">
-                        <h2 class="text-sm font-black leading-snug text-slate-900 dark:text-white sm:text-lg">
-                            {{ $content['instruction'] ?? 'Listen and complete the activity.' }}
-                        </h2>
+            <div
+                    id="{{ $componentId }}"
+                    class="{{ $cardClass }} mx-auto w-full overflow-hidden rounded-[1.35rem] border border-white/70 bg-white/90 p-3 shadow-2xl shadow-slate-900/5 ring-1 ring-slate-200/70 backdrop-blur-xl dark:border-slate-700/80 dark:bg-slate-950/70 dark:ring-slate-800 sm:rounded-[1.75rem] sm:p-4 lg:p-5"
+            >
+                <div class="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between lg:mb-4">
+                    <div class="min-w-0 flex-1 rounded-2xl border border-slate-200/80 bg-gradient-to-br from-white to-slate-50/80 p-3 shadow-sm dark:border-slate-700/80 dark:from-slate-900/90 dark:to-slate-950/70 sm:p-3.5 lg:p-4">
+                        <div class="flex items-center gap-2.5 sm:gap-3">
+                            <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-black sm:h-9 sm:w-9 {{ $instructionIconClass }}">
+                                ✓
+                            </span>
 
-                        @if(($content['instruction_note'] ?? '') !== '')
-                            <p class="mt-1 text-xs font-bold text-slate-500 dark:text-slate-400 sm:text-sm">
-                                {{ $content['instruction_note'] }}
-                            </p>
-                        @endif
+                            <div class="min-w-0">
+                                <h2 class="text-sm font-black leading-snug text-slate-950 dark:text-white sm:text-base lg:text-lg">
+                                    {{ $content['instruction'] ?? 'Listen and complete the activity.' }}
+                                </h2>
+
+                                @if(($content['instruction_note'] ?? '') !== '')
+                                    <p class="mt-1 text-xs font-bold leading-snug text-slate-500 dark:text-slate-400 sm:text-sm">
+                                        {{ $content['instruction_note'] }}
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="flex flex-wrap items-center justify-end gap-2">
-                        <button id="checkAnswersBtn" type="button" class="lt-btn lt-btn-primary">
+                    <div class="grid w-full shrink-0 grid-cols-2 gap-2 sm:w-auto sm:flex sm:items-center sm:justify-end sm:self-center">
+                        <button
+                                id="{{ $componentId }}_checkAnswersBtn"
+                                data-action="check-answers"
+                                type="button"
+                                class="inline-flex h-10 items-center justify-center rounded-xl px-3 text-xs font-black text-white shadow-lg shadow-slate-900/15 transition duration-150 hover:-translate-y-0.5 hover:brightness-105 focus:outline-none focus:ring-4 focus:ring-slate-900/15 active:translate-y-0 sm:h-11 sm:px-5 {{ $buttonGradient }}"
+                        >
                             <span class="sm:hidden">Check</span>
                             <span class="hidden sm:inline">Check Answers</span>
                         </button>
-                        <button id="revealAnswersBtn" type="button" class="lt-btn lt-btn-soft">
-                            <span class="sm:hidden">Reveal</span>
-                            <span class="hidden sm:inline">Reveal answers</span>
+
+                        <button
+                                id="{{ $componentId }}_revealAnswersBtn"
+                                data-action="reveal-answers"
+                                type="button"
+                                class="inline-flex h-10 items-center justify-center rounded-xl border px-3 text-xs font-black shadow-sm transition duration-150 hover:-translate-y-0.5 focus:outline-none focus:ring-4 active:translate-y-0 sm:h-11 sm:px-5 {{ $softButtonClass }}"
+                        >
+                            <span data-reveal-mobile-label class="sm:hidden">Reveal</span>
+                            <span data-reveal-label class="hidden sm:inline">Reveal answers</span>
                         </button>
-                        <button id="retakeBtn" type="button" class="lt-btn lt-btn-soft">Retake</button>
                     </div>
                 </div>
 
-                <div class="lp-dialogue {{ $gridClass }}">
-                    @php $blankIndex = 0; @endphp
+                @if(count($lines))
+                    <div class="grid {{ $gridClass }} gap-2.5 sm:gap-3">
+                        @php $blankIndex = 0; @endphp
 
-                    @foreach($lines as $line)
-                        @php
-                            $speaker = (string) ($line['speaker'] ?? '');
-                            $speakerKey = strtoupper(trim($speaker));
-                            $speakerClass = $speakerClasses[$speakerKey]
-                                ?? $fallbackSpeakerClasses[$loop->index % count($fallbackSpeakerClasses)];
-                        @endphp
+                        @foreach($lines as $line)
+                            @php
+                                $speaker = trim((string) ($line['speaker'] ?? ''));
+                                $speakerLabel = $speaker !== '' ? $speaker : (string) $loop->iteration;
+                                $speakerKey = strtoupper($speakerLabel);
 
-                        <article class="lp-line">
-                            <div class="lp-speaker {{ $speakerClass }}">
-                                {{ $speaker }}
-                            </div>
+                                $speakerClass = $speakerClasses[$speakerKey]
+                                    ?? $fallbackSpeakerClasses[$loop->index % count($fallbackSpeakerClasses)];
+                            @endphp
 
-                            <div class="lp-text">
-                                @foreach(($line['parts'] ?? []) as $part)
-                                    @if(!empty($part['blank']))
-                                        @php
-                                            $answer = (string) ($part['answer'] ?? '');
-                                            $answers = is_array($part['answers'] ?? null)
-                                                ? implode('|', $part['answers'])
-                                                : $answer;
-                                            $answerOptions = is_array($part['answers'] ?? null)
-                                                ? array_map(static fn ($option) => (string) $option, $part['answers'])
-                                                : [$answer];
-                                            $placeholder = (string) ($part['placeholder'] ?? '');
-                                            $longestInputText = max(array_map('strlen', array_merge($answerOptions, [$placeholder])));
-                                            $inputSize = max(8, min(28, $longestInputText + 2));
-                                        @endphp
+                            <article class="group grid min-h-[4.2rem] grid-cols-[auto,minmax(0,1fr)] items-center gap-2.5 rounded-2xl border border-slate-200/90 bg-white/85 p-3 shadow-sm ring-1 ring-white/60 transition duration-150 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-700/80 dark:bg-slate-950/35 dark:ring-white/5 sm:min-h-[4.35rem] sm:p-3.5 lg:p-4">
+                                <div class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br {{ $speakerClass }} text-sm font-black text-white shadow-lg sm:h-9 sm:w-9 sm:text-base">
+                                    {{ $speakerLabel }}
+                                </div>
 
-                                        <input
-                                                type="text"
-                                                class="lp-input answer-input"
-                                                size="{{ $inputSize }}"
-                                                placeholder="{{ $placeholder }}"
-                                                data-answer="{{ $answers }}"
-                                                data-key="{{ $blankIndex }}"
-                                                autocomplete="off"
-                                                spellcheck="false"
-                                        >
+                                <div class="min-w-0">
+                                    <div class="flex flex-wrap items-baseline gap-x-1.5 gap-y-1.5 text-[0.84rem] font-extrabold leading-6 text-slate-950 dark:text-slate-50 sm:text-[0.9rem] md:text-[0.92rem] lg:text-[0.95rem]">
+                                        @foreach(($line['parts'] ?? []) as $part)
+                                            @if(!empty($part['blank']))
+                                                @php
+                                                    $answer = (string) ($part['answer'] ?? '');
+                                                    $answers = is_array($part['answers'] ?? null)
+                                                        ? implode('|', $part['answers'])
+                                                        : $answer;
 
-                                        @php $blankIndex++; @endphp
-                                    @else
-                                        <span>{{ $part['text'] ?? '' }}</span>
-                                    @endif
-                                @endforeach
-                            </div>
-                        </article>
-                    @endforeach
-                </div>
+                                                    $answerOptions = is_array($part['answers'] ?? null)
+                                                        ? array_map(static fn ($option) => (string) $option, $part['answers'])
+                                                        : [$answer];
+
+                                                    $placeholder = (string) ($part['placeholder'] ?? '');
+                                                    $longestInputText = max(array_map('strlen', array_merge($answerOptions, [$placeholder])));
+                                                    $inputSize = max(8, min(30, $longestInputText + 2));
+                                                @endphp
+
+                                                <textarea
+                                                        class="lp-input answer-input mx-1 inline-block min-h-9 w-[8rem] max-w-full shrink-0 resize-none overflow-hidden rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-xs font-black leading-5 text-slate-950 outline-none transition duration-150 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/15 dark:border-slate-700 dark:bg-slate-950/60 dark:text-slate-50 dark:placeholder:text-slate-500 sm:w-[9rem] sm:text-sm md:w-[10rem] lg:w-[11rem]"
+                                                        rows="1"
+                                                        cols="{{ $inputSize }}"
+                                                        placeholder="{{ $placeholder }}"
+                                                        data-answer="{{ $answers }}"
+                                                        data-key="{{ $blankIndex }}"
+                                                        aria-label="Answer {{ $blankIndex + 1 }}"
+                                                        autocomplete="off"
+                                                        spellcheck="false"
+                                                ></textarea>
+
+                                                @php $blankIndex++; @endphp
+                                            @else
+                                                @php $text = trim((string) ($part['text'] ?? '')); @endphp
+
+                                                @if($text !== '')
+                                                    <span class="min-w-0 break-words">{{ $text }}</span>
+                                                @endif
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </article>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 p-5 text-center text-sm font-black text-slate-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-400">
+                        No activity lines added yet.
+                    </div>
+                @endif
 
                 @if(!empty($content['show_transcript']) && $hasScript)
-                    <div class="lp-transcript">
-                        <div class="lp-transcript-title">Transcript</div>
+                    <div class="mt-4 rounded-2xl border border-dashed border-slate-300/80 bg-slate-50/80 p-4 dark:border-slate-700/80 dark:bg-slate-900/45">
+                        <div class="mb-2 text-xs font-black uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+                            Transcript
+                        </div>
 
-                        @foreach($scriptLines as $scriptLine)
-                            <p>{{ $scriptLine }}</p>
-                        @endforeach
+                        <div class="space-y-2">
+                            @foreach($scriptLines as $scriptLine)
+                                <p class="text-sm font-bold leading-6 text-slate-700 dark:text-slate-200">
+                                    {{ $scriptLine }}
+                                </p>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
             </div>
@@ -398,116 +203,220 @@
 
 @section('script')
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const inputs = Array.from(document.querySelectorAll('.answer-input'));
-            const checkBtn = document.getElementById('checkAnswersBtn');
-            const revealBtn = document.getElementById('revealAnswersBtn');
-            const retakeBtn = document.getElementById('retakeBtn');
-            const sounds = @json($sounds);
-            const sfx = {
-                tap: new Audio(sounds.tap || '/slider/sounds/tap.wav'),
-                correct: new Audio(sounds.correct || '/slider/sounds/correct.wav'),
-                wrong: new Audio(sounds.wrong || '/slider/sounds/wrong.wav'),
-                success: new Audio(sounds.success || '/slider/sounds/success.wav'),
-            };
+        (() => {
+            const initMissingWordActivity = () => {
+                const root = document.getElementById(@json($componentId));
 
-            function playSfx(type) {
-                const sound = sfx[type];
-                if (!sound) return;
+                if (!root || root.dataset.ready === '1') return;
 
-                sound.pause();
-                sound.currentTime = 0;
-                sound.play().catch(() => {});
-            }
+                root.dataset.ready = '1';
 
-            function visibleInputs() {
-                return inputs.filter(input => input.offsetParent !== null);
-            }
+                const inputs = Array.from(root.querySelectorAll('.answer-input'));
+                const checkBtn = root.querySelector('[data-action="check-answers"]');
+                const revealBtn = root.querySelector('[data-action="reveal-answers"]');
+                const revealBtnMobileLabel = root.querySelector('[data-reveal-mobile-label]');
+                const revealBtnLabel = root.querySelector('[data-reveal-label]');
 
-            function normalize(value) {
-                return String(value || '')
-                    .trim()
-                    .toLowerCase()
-                    .replace(/[’‘]/g, "'")
-                    .replace(/[“”]/g, '"')
-                    .replace(/[.,!?;:]+$/g, '')
-                    .replace(/\s+/g, ' ');
-            }
+                let answersRevealed = false;
 
-            function answersFor(input) {
-                return String(input.dataset.answer || '')
-                    .split('|')
-                    .map(normalize)
-                    .filter(Boolean);
-            }
+                const sounds = @json($sounds);
 
-            function clearInputState(input) {
-                input.classList.remove('is-correct', 'is-wrong');
-            }
+                const sfx = {
+                    tap: new Audio(sounds.tap || '/slider/sounds/tap.wav'),
+                    correct: new Audio(sounds.correct || '/slider/sounds/correct.wav'),
+                    wrong: new Audio(sounds.wrong || '/slider/sounds/wrong.wav'),
+                    success: new Audio(sounds.success || '/slider/sounds/success.wav'),
+                };
 
-            function isInputCorrect(input) {
-                const value = normalize(input.value);
-                return value !== '' && answersFor(input).includes(value);
-            }
+                const neutralInputClasses = [
+                    'border-slate-300',
+                    'bg-white',
+                    'text-slate-950',
+                    'dark:border-slate-700',
+                    'dark:bg-slate-950/60',
+                    'dark:text-slate-50',
+                ];
 
-            inputs.forEach(input => {
-                input.addEventListener('focus', () => playSfx('tap'));
-                input.addEventListener('input', () => clearInputState(input));
-            });
+                const correctInputClasses = [
+                    'border-emerald-500',
+                    'bg-emerald-50',
+                    'text-emerald-800',
+                    'dark:border-emerald-400',
+                    'dark:bg-emerald-950/45',
+                    'dark:text-emerald-100',
+                ];
 
-            checkBtn?.addEventListener('click', () => {
-                let correctCount = 0;
-                const currentInputs = visibleInputs();
+                const wrongInputClasses = [
+                    'border-rose-500',
+                    'bg-rose-50',
+                    'text-rose-800',
+                    'dark:border-rose-400',
+                    'dark:bg-rose-950/45',
+                    'dark:text-rose-100',
+                ];
 
-                currentInputs.forEach(input => {
-                    const isCorrect = isInputCorrect(input);
+                const allStateClasses = [
+                    ...neutralInputClasses,
+                    ...correctInputClasses,
+                    ...wrongInputClasses,
+                ];
 
-                    input.classList.remove('is-correct', 'is-wrong');
-                    input.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
+                function playSfx(type) {
+                    const sound = sfx[type];
 
-                    if (isCorrect) correctCount++;
+                    if (!sound) return;
+
+                    sound.pause();
+                    sound.currentTime = 0;
+                    sound.play().catch(() => {});
+                }
+
+                function visibleInputs() {
+                    return inputs.filter(input => input.offsetParent !== null);
+                }
+
+                function resizeInput(input) {
+                    if (!input || input.tagName !== 'TEXTAREA') return;
+
+                    input.style.height = 'auto';
+                    input.style.height = `${input.scrollHeight}px`;
+                }
+
+                function resizeAllInputs() {
+                    inputs.forEach(resizeInput);
+                }
+
+                function normalize(value) {
+                    return String(value || '')
+                        .trim()
+                        .toLowerCase()
+                        .replace(/[’‘]/g, "'")
+                        .replace(/[“”]/g, '"')
+                        .replace(/[.,!?;:]+$/g, '')
+                        .replace(/\s+/g, ' ');
+                }
+
+                function answersFor(input) {
+                    return String(input.dataset.answer || '')
+                        .split('|')
+                        .map(normalize)
+                        .filter(Boolean);
+                }
+
+                function setInputState(input, state = 'neutral') {
+                    input.classList.remove(...allStateClasses);
+
+                    if (state === 'correct') {
+                        input.classList.add(...correctInputClasses);
+                        return;
+                    }
+
+                    if (state === 'wrong') {
+                        input.classList.add(...wrongInputClasses);
+                        return;
+                    }
+
+                    input.classList.add(...neutralInputClasses);
+                }
+
+                function isInputCorrect(input) {
+                    const value = normalize(input.value);
+                    return value !== '' && answersFor(input).includes(value);
+                }
+
+                function setRevealButtonMode(isRevealed) {
+                    answersRevealed = isRevealed;
+
+                    if (revealBtnMobileLabel) {
+                        revealBtnMobileLabel.textContent = isRevealed ? 'Retake' : 'Reveal';
+                    }
+
+                    if (revealBtnLabel) {
+                        revealBtnLabel.textContent = isRevealed ? 'Retake' : 'Reveal answers';
+                    }
+                }
+
+                function retakeActivity() {
+                    visibleInputs().forEach(input => {
+                        input.value = '';
+                        setInputState(input, 'neutral');
+                        resizeInput(input);
+                    });
+
+                    setRevealButtonMode(false);
+                }
+
+                inputs.forEach(input => {
+                    input.addEventListener('focus', () => playSfx('tap'));
+                    input.addEventListener('input', () => {
+                        setInputState(input, 'neutral');
+                        resizeInput(input);
+                    });
+
+                    setInputState(input, 'neutral');
+                    resizeInput(input);
                 });
 
-                playSfx(correctCount === currentInputs.length && currentInputs.length > 0 ? 'correct' : 'wrong');
-            });
+                window.addEventListener('resize', resizeAllInputs);
 
-            revealBtn?.addEventListener('click', () => {
-                visibleInputs().forEach(input => {
-                    const answer = String(input.dataset.answer || '').split('|')[0].trim();
+                checkBtn?.addEventListener('click', () => {
+                    const currentInputs = visibleInputs();
+                    let correctCount = 0;
 
-                    if (!answer) return;
+                    currentInputs.forEach(input => {
+                        const isCorrect = isInputCorrect(input);
 
-                    input.value = answer;
-                    input.classList.remove('is-wrong');
-                    input.classList.add('is-correct');
+                        setInputState(input, isCorrect ? 'correct' : 'wrong');
+
+                        if (isCorrect) correctCount++;
+                    });
+
+                    playSfx(correctCount === currentInputs.length && currentInputs.length > 0 ? 'correct' : 'wrong');
                 });
 
-                playSfx('success');
-            });
+                revealBtn?.addEventListener('click', () => {
+                    if (answersRevealed) {
+                        retakeActivity();
+                        return;
+                    }
 
-            retakeBtn?.addEventListener('click', () => {
-                visibleInputs().forEach(input => {
-                    input.value = '';
-                    input.classList.remove('is-correct', 'is-wrong');
+                    visibleInputs().forEach(input => {
+                        const answer = String(input.dataset.answer || '').split('|')[0].trim();
+
+                        if (!answer) return;
+
+                        input.value = answer;
+                        setInputState(input, 'correct');
+                        resizeInput(input);
+                    });
+
+                    setRevealButtonMode(true);
+                    playSfx('success');
                 });
-            });
 
-            function stopSlideMedia() {
-                window.stopAudioPlayer?.();
+                function stopSlideMedia() {
+                    window.stopAudioPlayer?.();
+                }
+
+                window.stopSlideAudio = () => {
+                    stopSlideMedia();
+                };
+
+                window.destroySlide = () => {
+                    stopSlideMedia();
+                };
+
+                window.resetSlide = () => {
+                    stopSlideMedia();
+                    retakeActivity();
+                };
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initMissingWordActivity, { once: true });
+            } else {
+                initMissingWordActivity();
             }
-
-            window.stopSlideAudio = () => {
-                stopSlideMedia();
-            };
-
-            window.destroySlide = () => {
-                stopSlideMedia();
-            };
-
-            window.resetSlide = () => {
-                stopSlideMedia();
-                retakeBtn?.click();
-            };
-        });
+        })();
     </script>
 @endsection

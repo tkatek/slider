@@ -29,28 +29,28 @@ $content = [
 
     'questions' => [
         [
-            'prompt'  => 'Elliot booked his holiday ___.',
-            'correct' => 'at a travel agency',
-            'options' => ['online', 'at a travel agency'],
+            'prompt'  => 'Elliot booked his holiday . . . . . .',
+            'correct' => 'At a travel agency',
+            'options' => ['Online', 'At a travel agency'],
         ],
         [
-            'prompt'  => 'He’s going to Stockholm for a ___.',
-            'correct' => 'weekend',
-            'options' => ['weekend', 'week'],
+            'prompt'  => 'He’s going to Stockholm for a . . . . . .',
+            'correct' => 'Week',
+            'options' => ['Weekend', 'Week'],
         ],
         [
-            'prompt'  => 'He’s going to stay in a ___.',
-            'correct' => '3-star hotel',
+            'prompt'  => 'He’s going to stay in a . . . . . .',
+            'correct' => '4-star hotel',
             'options' => ['3-star hotel', '4-star hotel'],
         ],
         [
-            'prompt'  => 'Elliot is going in ___.',
+            'prompt'  => 'Elliot is going in . . . . . .',
             'correct' => 'May',
             'options' => ['March', 'May'],
         ],
         [
-            'prompt'  => '___ has a friend called Karin in Stockholm.',
-            'correct' => 'Elliot',
+            'prompt'  => '. . . . . . has a friend called Karin in Stockholm.',
+            'correct' => 'Louise',
             'options' => ['Louise', 'Elliot'],
         ],
     ],

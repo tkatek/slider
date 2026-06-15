@@ -40,6 +40,7 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
             cursor: grabbing !important;
             transition: none !important;
             will-change: left, top, transform;
+            touch-action: none !important;
         }
 
         .returning {
@@ -314,9 +315,6 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
             color: rgba(254,226,226,.95);
         }
 
-        .thin-scroll::-webkit-scrollbar { height: 10px; width: 10px; }
-        .thin-scroll::-webkit-scrollbar-thumb { background: rgba(100,116,139,.28); border-radius: 999px; border: 3px solid transparent; background-clip: content-box; }
-        .dark .thin-scroll::-webkit-scrollbar-thumb { background: rgba(148,163,184,.22); border: 3px solid transparent; background-clip: content-box; }
 
         @media (prefers-reduced-motion: reduce) {
             .returning { transition: none; }
@@ -354,8 +352,6 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
         $categoriesSource = isset($content['categories']) && is_array($content['categories'])
             ? $content['categories']
             : [];
-        $desktopGameWidth = isset($content['desktop_game_width']) ? (float) $content['desktop_game_width'] : 70;
-        $desktopPoolWidth = isset($content['desktop_pool_width']) ? (float) $content['desktop_pool_width'] : 30;
         $categoryMaxWidthOverride = $content['category_max_width'] ?? null;
         $categoryContentGridClass = $content['category_content_grid_class'] ?? null;
         $initialVisibleSlots = max(1, (int) ($content['initial_visible_slots'] ?? 1));
@@ -429,13 +425,15 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
             $categoryMaxWidth = $categoryMaxWidthOverride;
         }
         $isImagePoolType = $poolItemType === 'image';
-        $poolPosition = 'auto';
-        $poolPlacement = $isImagePoolType ? 'bottom' : 'top';
+        $poolPlacement = $content['pool_placement'] ?? ($isImagePoolType ? 'bottom' : 'top');
+        $poolPlacement = in_array($poolPlacement, ['top', 'bottom'], true)
+            ? $poolPlacement
+            : ($isImagePoolType ? 'bottom' : 'top');
         $isTopPool = $poolPlacement === 'top';
     @endphp
 
 
-    <main class="flex min-h-[100dvh] w-full flex-col" style="--dd-game-width: {{ $desktopGameWidth }}%; --dd-pool-width: {{ $desktopPoolWidth }}%;">
+    <main class="flex min-h-[100dvh] w-full flex-col">
         <div id="ddShell" class="mx-auto flex min-h-[100dvh] w-full max-w-[1500px] flex-col px-3 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6">
             <div class="shrink-0">
                 @include('slider.components.title-subtitle')
@@ -544,21 +542,6 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
 
                 @include('slider.components.game-win-modal')
 
-                <div class="hidden">
-                    <div class="ring-4 ring-indigo-500/30"></div>
-                    <div class="ring-2 ring-indigo-500/40 bg-indigo-50/60 dark:bg-indigo-500/10"></div>
-                    <div class="ring-2 ring-emerald-400/50"></div>
-                    <div class="ring-2 ring-red-400/70"></div>
-                    <div class="border-red-300 bg-red-50 text-red-700 dark:bg-red-500/15 dark:border-red-400/40 dark:text-red-100"></div>
-                    <div class="bg-slate-100 text-slate-700 ring-slate-300/50 border-slate-300/70 dark:bg-slate-800/70 dark:border-slate-500/50 dark:text-slate-100"></div>
-                    <div class="bg-slate-700 bg-indigo-600 bg-sky-600 bg-emerald-600 bg-violet-600 bg-cyan-600 dark:bg-slate-600 dark:bg-indigo-700 dark:bg-sky-700 dark:bg-emerald-700 dark:bg-violet-700 dark:bg-cyan-700"></div>
-                    <div class="bg-gradient-to-br from-sky-500 to-blue-600"></div>
-                    <div class="bg-gradient-to-br from-fuchsia-500 to-purple-600"></div>
-                    <div class="bg-gradient-to-br from-emerald-500 to-teal-600"></div>
-                    <div class="bg-gradient-to-br from-amber-500 to-orange-600"></div>
-                    <div class="bg-gradient-to-br from-indigo-500 to-violet-600"></div>
-                    <div class="bg-gradient-to-br from-cyan-500 to-sky-600"></div>
-                </div>
 
                 <template id="tileTpl">
                     @if($poolItemType === 'image')
@@ -795,11 +778,13 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
 
             gameColumn.classList.remove('justify-center');
             requestAnimationFrame(() => {
-                const pageHeight = Math.max(
-                    document.documentElement.scrollHeight || 0,
-                    document.body.scrollHeight || 0
-                );
-                const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+                const layout = document.querySelector('.slide-layout');
+                const pageHeight = layout
+                    ? layout.scrollHeight
+                    : Math.max(document.documentElement.scrollHeight || 0, document.body.scrollHeight || 0);
+                const viewportHeight = layout
+                    ? layout.clientHeight
+                    : (window.innerHeight || document.documentElement.clientHeight || 0);
                 const fitsWithoutScroll = pageHeight <= viewportHeight + 4;
                 gameColumn.classList.toggle('justify-center', fitsWithoutScroll);
             });
@@ -917,8 +902,13 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                 this.poolStartIndex = 0;
                 this.lastVisibleCap = 0;
 
-                this.scrollThreshold = this.isImageType ? 70 : 80;
-                this.scrollSpeed = this.isImageType ? 10 : 6;
+                this.pendingDrag = null;
+                this.dragStartThreshold = 6;
+                this.lastClientX = 0;
+                this.lastClientY = 0;
+                this.activeScrollContainer = null;
+                this.scrollThreshold = this.isImageType ? 72 : 82;
+                this.scrollSpeed = this.isImageType ? 12 : 8;
                 this._scrollTimer = null;
 
                 this.handlePointerMove = this.handlePointerMove.bind(this);
@@ -967,17 +957,23 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                 });
             }
 
-            stopDragTracking(){
+            stopAutoScroll(){
                 if (this._scrollTimer) {
                     clearInterval(this._scrollTimer);
                     this._scrollTimer = null;
                 }
+                this.activeScrollContainer = null;
+            }
+
+            stopDragTracking(){
+                this.stopAutoScroll();
 
                 if (this._raf) {
                     cancelAnimationFrame(this._raf);
                     this._raf = null;
                 }
 
+                this.pendingDrag = null;
                 document.removeEventListener('pointermove', this.handlePointerMove);
                 document.removeEventListener('pointerup', this.handlePointerUp);
                 document.removeEventListener('pointercancel', this.handlePointerCancel);
@@ -1705,8 +1701,7 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
 
                     this.lockTileIntoSlot(item, targetBox, slot, {
                         revealed: true,
-                        countAsMistake: true,
-                        countAsCorrect: false
+                        countAsMistake: true
                     });
                 });
 
@@ -1725,9 +1720,26 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
 
             handlePointerDown(e, item){
                 if (item.classList.contains('locked') || this.gameCompleted || this.isRevealingAnswers) return;
+                if (this.draggedItem || this.pendingDrag) return;
+                if (e.button !== undefined && e.button !== 0) return;
+
+                this.pendingDrag = {
+                    item,
+                    pointerId: e.pointerId,
+                    startX: e.clientX,
+                    startY: e.clientY,
+                };
+
+                item.setPointerCapture?.(e.pointerId);
+                document.addEventListener('pointermove', this.handlePointerMove, { passive: false });
+                document.addEventListener('pointerup', this.handlePointerUp, { passive: false });
+                document.addEventListener('pointercancel', this.handlePointerCancel, { passive: false });
+            }
+
+            beginDrag(e, item){
+                if (!item || !item.isConnected) return false;
 
                 e.preventDefault();
-                item.setPointerCapture?.(e.pointerId);
                 document.body.classList.add('dd-drag-active');
 
                 this.draggedItem = item;
@@ -1755,15 +1767,32 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                 item.style.left = (e.clientX - this.offsetX) + 'px';
                 item.style.top  = (e.clientY - this.offsetY) + 'px';
 
-                document.addEventListener('pointermove', this.handlePointerMove, { passive: false });
-                document.addEventListener('pointerup', this.handlePointerUp, { passive: false });
-                document.addEventListener('pointercancel', this.handlePointerCancel, { passive: false });
+                return true;
             }
 
             handlePointerMove(e){
+                if (this.pendingDrag && !this.draggedItem) {
+                    if (e.pointerId !== this.pendingDrag.pointerId) return;
+
+                    const dx = e.clientX - this.pendingDrag.startX;
+                    const dy = e.clientY - this.pendingDrag.startY;
+                    const distance = Math.hypot(dx, dy);
+
+                    if (distance < this.dragStartThreshold) return;
+
+                    const item = this.pendingDrag.item;
+                    this.pendingDrag = null;
+                    if (!this.beginDrag(e, item)) {
+                        this.stopDragTracking();
+                        return;
+                    }
+                }
+
                 if (!this.draggedItem) return;
                 e.preventDefault();
 
+                this.lastClientX = e.clientX;
+                this.lastClientY = e.clientY;
                 this._mx = e.clientX - this.offsetX;
                 this._my = e.clientY - this.offsetY;
 
@@ -1780,33 +1809,177 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                 this.handleAutoScroll(e);
             }
 
+            isDocumentScroller(scroller){
+                return !scroller || scroller === window || scroller === document || scroller === document.body || scroller === document.documentElement || scroller === document.scrollingElement;
+            }
+
+            getDocumentScroller(){
+                return document.scrollingElement || document.documentElement || document.body;
+            }
+
+            canScrollElement(el){
+                if (!el) return false;
+
+                if (this.isDocumentScroller(el)) {
+                    const doc = this.getDocumentScroller();
+                    return (doc.scrollHeight || 0) > (window.innerHeight || document.documentElement.clientHeight || 0) + 2;
+                }
+
+                const style = window.getComputedStyle(el);
+                const overflowY = style.overflowY || '';
+                const canProgrammaticallyScroll = /(auto|scroll|overlay|hidden)/.test(overflowY);
+                return canProgrammaticallyScroll && (el.scrollHeight || 0) > (el.clientHeight || 0) + 2;
+            }
+
+            getAutoScrollContainer(){
+                const candidates = [
+                    document.querySelector('.slide-layout'),
+                    document.getElementById('ddShell')?.closest?.('.slide-layout'),
+                    this.getDocumentScroller(),
+                ].filter(Boolean);
+
+                return candidates.find((el, index, arr) => arr.indexOf(el) === index && this.canScrollElement(el)) || this.getDocumentScroller();
+            }
+
+            getScrollerRect(scroller){
+                const vh = window.innerHeight || document.documentElement.clientHeight || 0;
+
+                if (this.isDocumentScroller(scroller)) {
+                    return { top: 0, bottom: vh, height: vh };
+                }
+
+                const rect = scroller.getBoundingClientRect();
+                let top = Math.max(0, rect.top);
+                let bottom = Math.min(vh, rect.bottom);
+
+                if (POOL_PLACEMENT === 'bottom') {
+                    const poolBar = document.getElementById('poolBar');
+                    const poolRect = poolBar?.getBoundingClientRect?.();
+                    if (poolRect && poolRect.top > top) {
+                        bottom = Math.min(bottom, poolRect.top);
+                    }
+                }
+
+                if (bottom <= top) {
+                    top = 0;
+                    bottom = vh;
+                }
+
+                return { top, bottom, height: bottom - top };
+            }
+
+            getScrollPosition(scroller){
+                if (this.isDocumentScroller(scroller)) {
+                    const doc = this.getDocumentScroller();
+                    return window.pageYOffset || doc.scrollTop || document.body.scrollTop || 0;
+                }
+
+                return scroller.scrollTop || 0;
+            }
+
+            getMaxScroll(scroller){
+                if (this.isDocumentScroller(scroller)) {
+                    const doc = this.getDocumentScroller();
+                    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+                    return Math.max(0, (doc.scrollHeight || 0) - viewportHeight);
+                }
+
+                return Math.max(0, (scroller.scrollHeight || 0) - (scroller.clientHeight || 0));
+            }
+
+            canScrollDirection(scroller, direction){
+                const current = this.getScrollPosition(scroller);
+                const max = this.getMaxScroll(scroller);
+                return direction < 0 ? current > 1 : current < max - 1;
+            }
+
+            scrollContainerBy(scroller, amount){
+                if (!amount) return false;
+
+                const before = this.getScrollPosition(scroller);
+
+                if (this.isDocumentScroller(scroller)) {
+                    window.scrollBy(0, amount);
+                } else {
+                    scroller.scrollTop += amount;
+                }
+
+                const after = this.getScrollPosition(scroller);
+                return Math.abs(after - before) > 0.5;
+            }
+
+            getAutoScrollDirection(scroller, y){
+                const rect = this.getScrollerRect(scroller);
+                const threshold = Math.min(this.scrollThreshold, Math.max(42, rect.height * 0.25));
+
+                if (y >= rect.top - 4 && y <= rect.top + threshold && this.canScrollDirection(scroller, -1)) {
+                    return -1;
+                }
+
+                if (y <= rect.bottom + 4 && y >= rect.bottom - threshold && this.canScrollDirection(scroller, 1)) {
+                    return 1;
+                }
+
+                return 0;
+            }
+
             handleAutoScroll(e) {
-                if (this._scrollTimer) {
-                    clearInterval(this._scrollTimer);
-                    this._scrollTimer = null;
+                this.lastClientX = e.clientX;
+                this.lastClientY = e.clientY;
+
+                const scroller = this.getAutoScrollContainer();
+                const direction = this.getAutoScrollDirection(scroller, this.lastClientY);
+
+                if (!direction) {
+                    this.stopAutoScroll();
+                    return;
                 }
 
-                const y = e.clientY;
-                const vh = window.innerHeight;
-                let dir = 0;
+                this.activeScrollContainer = scroller;
 
-                if (y < this.scrollThreshold && y > 0) {
-                    dir = -1;
-                } else if (y > vh - this.scrollThreshold && y < vh) {
-                    dir = 1;
-                }
+                if (this._scrollTimer) return;
 
-                if (dir !== 0) {
-                    this._scrollTimer = setInterval(() => {
-                        window.scrollBy(0, dir * this.scrollSpeed);
-                        this.checkHover(e.clientX, e.clientY);
-                    }, 16);
-                }
+                this._scrollTimer = setInterval(() => {
+                    if (!this.draggedItem) {
+                        this.stopAutoScroll();
+                        return;
+                    }
+
+                    const activeScroller = this.getAutoScrollContainer();
+                    const activeDirection = this.getAutoScrollDirection(activeScroller, this.lastClientY);
+
+                    if (!activeDirection) {
+                        this.stopAutoScroll();
+                        return;
+                    }
+
+                    const moved = this.scrollContainerBy(activeScroller, activeDirection * this.scrollSpeed);
+                    if (!moved) {
+                        this.stopAutoScroll();
+                        return;
+                    }
+
+                    updateTopPoolSticky();
+                    this.checkHover(this.lastClientX, this.lastClientY);
+                }, 16);
             }
 
             handlePointerUp(e){
-                if (!this.draggedItem) return;
+                if (this.pendingDrag && !this.draggedItem) {
+                    if (e.pointerId !== this.pendingDrag.pointerId) return;
+                    try { this.pendingDrag.item?.releasePointerCapture?.(e.pointerId); } catch (error) {}
+                    this.stopDragTracking();
+                    this.clearDragInteractionState();
+                    return;
+                }
 
+                if (!this.draggedItem) {
+                    this.stopDragTracking();
+                    this.clearDragInteractionState();
+                    return;
+                }
+
+                try { this.draggedItem.releasePointerCapture?.(e.pointerId); } catch (error) {}
                 this.stopDragTracking();
                 this.clearDragInteractionState();
 
@@ -1851,9 +2024,16 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
             getDropTarget(x, y){
                 if (!this.draggedItem) return null;
 
-                this.draggedItem.hidden = true;
-                const below = document.elementFromPoint(x, y);
-                this.draggedItem.hidden = false;
+                let below = null;
+                const wasHidden = this.draggedItem.hidden;
+
+                try {
+                    this.draggedItem.hidden = true;
+                    below = document.elementFromPoint(x, y);
+                } finally {
+                    this.draggedItem.hidden = wasHidden;
+                }
+
                 if (!below) return null;
 
                 const pool = below.closest('#poolBar, #poolContent');

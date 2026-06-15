@@ -1,7 +1,7 @@
 <?php
 $content = [
     'video'      => materialAsset(''),
-    'thumbnail'  => materialAsset(''),
+    'thumbnail'  => materialAsset('slider/B1/Beginner/chapter-2/img/slide6.webp'),
     'isQuiz'     => 0,
     'subtitles'  => [
         ['start' => 0,    'end' => 3,    'text' => 'When Jake found a shivering stray on the roadside,'],

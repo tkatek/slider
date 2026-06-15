@@ -1,6 +1,7 @@
 @extends("slider.simple-layout")
 
 @php
+    $content = is_array($content ?? null) ? $content : [];
     $gameType = $content['type'] ?? 'emoji';
     $initialAudio = $content['audio'] ?? ($content['questions'][0]['audio'] ?? null);
     $optionType = $content['option_type'] ?? 'text';
@@ -23,12 +24,24 @@
     $themeName = strtolower((string) ($theme['name'] ?? 'default'));
     $isOrangeTheme = $themeName === 'orange';
     $isGreenTheme = $themeName === 'green';
-    $primaryButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500'));
-
+    $primaryButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500 hover:from-indigo-500 hover:to-blue-400'));
+    if ($primaryButtonClass === '') {
+        $primaryButtonClass = 'bg-gradient-to-br from-indigo-600 to-blue-500 hover:from-indigo-500 hover:to-blue-400';
+    }
     if ($isGreenTheme) {
         $primaryButtonClass = 'bg-gradient-to-br from-emerald-700 via-emerald-600 to-green-500 dark:from-emerald-300 dark:via-emerald-400 dark:to-green-400 dark:text-emerald-950';
     }
+    if ($isOrangeTheme && empty($theme['button_primary_color'])) {
+        $primaryButtonClass = 'bg-gradient-to-br from-orange-500 via-orange-600 to-amber-500';
+    }
 
+    if ($isOrangeTheme) {
+        $mcaAccentStyle = '--mca-accent-bg: rgba(255, 237, 213, .96); --mca-accent-bg-hover: rgba(254, 215, 170, .96); --mca-accent-border: rgba(251, 146, 60, .55); --mca-accent-text: rgb(194, 65, 12); --mca-accent-ring: rgba(251, 146, 60, .24); --mca-accent-bg-dark: rgba(154, 52, 18, .32); --mca-accent-bg-hover-dark: rgba(154, 52, 18, .46); --mca-accent-border-dark: rgba(251, 146, 60, .48); --mca-accent-text-dark: rgb(255, 237, 213); --mca-accent-ring-dark: rgba(251, 146, 60, .22);';
+    } elseif ($isGreenTheme) {
+        $mcaAccentStyle = '--mca-accent-bg: rgba(220, 252, 231, .96); --mca-accent-bg-hover: rgba(187, 247, 208, .96); --mca-accent-border: rgba(34, 197, 94, .50); --mca-accent-text: rgb(21, 128, 61); --mca-accent-ring: rgba(34, 197, 94, .22); --mca-accent-bg-dark: rgba(20, 83, 45, .34); --mca-accent-bg-hover-dark: rgba(20, 83, 45, .50); --mca-accent-border-dark: rgba(74, 222, 128, .46); --mca-accent-text-dark: rgb(220, 252, 231); --mca-accent-ring-dark: rgba(74, 222, 128, .22);';
+    } else {
+        $mcaAccentStyle = '--mca-accent-bg: rgba(238, 242, 255, .96); --mca-accent-bg-hover: rgba(224, 231, 255, .98); --mca-accent-border: rgba(129, 140, 248, .48); --mca-accent-text: rgb(67, 56, 202); --mca-accent-ring: rgba(99, 102, 241, .24); --mca-accent-bg-dark: rgba(67, 56, 202, .26); --mca-accent-bg-hover-dark: rgba(67, 56, 202, .38); --mca-accent-border-dark: rgba(129, 140, 248, .46); --mca-accent-text-dark: rgb(224, 231, 255); --mca-accent-ring-dark: rgba(129, 140, 248, .22);';
+    }
     $rawReadingPassage = $content['passage'] ?? $content['reading'] ?? $content['reading_passage'] ?? [];
     $readingPassage = is_array($rawReadingPassage)
         ? array_values(array_filter(array_map(static fn ($paragraph) => trim((string) $paragraph), $rawReadingPassage), static fn ($paragraph) => $paragraph !== ''))
@@ -50,30 +63,34 @@
         ?? ($gameType === 'image' ? 'sm:col-span-7' : ($gameType === 'emoji' ? '' : ($gameType === 'reading' ? 'sm:col-span-6' : 'sm:col-span-5')));
     $answerPanelColClass = $content['answer_panel_col_class']
         ?? ($gameType === 'image' ? 'sm:col-span-5' : ($gameType === 'emoji' ? '' : ($gameType === 'reading' ? 'sm:col-span-6' : (($gameType != 'questions_only' && $gameType !== 'audio') ? 'sm:col-span-7' : 'col-span-12'))));
-    $imagePanelInnerClass = $content['image_panel_inner_class'] ?? 'h-full p-2 sm:p-4 lg:p-5';
-    $answerPanelInnerClass = $content['answer_panel_inner_class'] ?? 'h-full p-5 sm:p-6 text-left';
+    $imagePanelInnerClass = $content['image_panel_inner_class'] ?? 'h-full p-3 sm:p-4 lg:p-5';
+    $answerPanelInnerClass = $content['answer_panel_inner_class'] ?? 'h-full p-4 sm:p-5 lg:p-6 text-left';
     $questionPromptLabel = $content['question_prompt_label'] ?? 'Choose the correct answer:';
-    $readingCardLightGlowOne = $isOrangeTheme ? 'rgba(254, 215, 170, .42)' : 'rgba(191,219,254,.42)';
-    $readingCardLightGlowTwo = $isOrangeTheme ? 'rgba(253, 186, 116, .30)' : 'rgba(199,210,254,.34)';
-    $readingCardDarkGlowOne = $isOrangeTheme ? 'rgba(249, 115, 22, .18)' : 'rgba(59,130,246,.18)';
-    $readingCardDarkGlowTwo = $isOrangeTheme ? 'rgba(251, 146, 60, .14)' : 'rgba(129,140,248,.14)';
-    $readingAccentGradient = $isOrangeTheme
-        ? 'linear-gradient(180deg, #fb923c 0%, #f97316 52%, #ea580c 100%)'
-        : 'linear-gradient(180deg, #38bdf8 0%, #4f46e5 52%, #8b5cf6 100%)';
-    $readingBadgeBorder = $isOrangeTheme ? 'rgba(251, 146, 60, .24)' : 'rgba(148,163,184,.22)';
-    $readingBadgeBg = $isOrangeTheme ? 'rgba(255, 247, 237, .82)' : 'rgba(255,255,255,.72)';
-    $readingBadgeDarkBorder = $isOrangeTheme ? 'rgba(251, 146, 60, .24)' : 'rgba(148,163,184,.18)';
-    $readingBadgeDarkBg = $isOrangeTheme ? 'rgba(124, 45, 18, .34)' : 'rgba(15,23,42,.64)';
-    $readingBadgeText = $isOrangeTheme ? '#c2410c' : '#475569';
-    $readingBadgeDarkText = $isOrangeTheme ? '#fdba74' : '#cbd5e1';
-    $readingDotGradient = $isOrangeTheme
-        ? 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)'
-        : 'linear-gradient(135deg, #38bdf8 0%, #6366f1 100%)';
-    $readingDropCapLight = $isOrangeTheme ? '#c2410c' : '#4338ca';
-    $readingDropCapDark = $isOrangeTheme ? '#fdba74' : '#93c5fd';
+    if ($isOrangeTheme) {
+        $readingAccentClass = 'bg-gradient-to-b from-orange-400 via-orange-500 to-orange-600';
+        $readingCardGlowClass = 'bg-[radial-gradient(120%_120%_at_0%_0%,rgba(254,215,170,.30)_0%,transparent_46%),radial-gradient(120%_120%_at_100%_0%,rgba(253,186,116,.18)_0%,transparent_44%)] dark:bg-[radial-gradient(120%_120%_at_0%_0%,rgba(249,115,22,.14)_0%,transparent_46%),radial-gradient(120%_120%_at_100%_0%,rgba(251,146,60,.10)_0%,transparent_44%)]';
+        $readingBadgeClass = 'border-orange-200/70 bg-orange-50/90 text-orange-700 dark:border-orange-400/25 dark:bg-orange-950/40 dark:text-orange-200';
+        $readingDotClass = 'bg-gradient-to-br from-orange-400 to-orange-600';
+        $readingDropCapClass = 'first-letter:text-orange-700 dark:first-letter:text-orange-300';
+    } elseif ($isGreenTheme) {
+        $readingAccentClass = 'bg-gradient-to-b from-emerald-400 via-green-500 to-teal-600';
+        $readingCardGlowClass = 'bg-[radial-gradient(120%_120%_at_0%_0%,rgba(187,247,208,.28)_0%,transparent_46%),radial-gradient(120%_120%_at_100%_0%,rgba(167,243,208,.20)_0%,transparent_44%)] dark:bg-[radial-gradient(120%_120%_at_0%_0%,rgba(34,197,94,.14)_0%,transparent_46%),radial-gradient(120%_120%_at_100%_0%,rgba(45,212,191,.10)_0%,transparent_44%)]';
+        $readingBadgeClass = 'border-emerald-200/70 bg-emerald-50/90 text-emerald-700 dark:border-emerald-400/25 dark:bg-emerald-950/40 dark:text-emerald-200';
+        $readingDotClass = 'bg-gradient-to-br from-emerald-400 to-teal-600';
+        $readingDropCapClass = 'first-letter:text-emerald-700 dark:first-letter:text-emerald-300';
+    } else {
+        $readingAccentClass = 'bg-gradient-to-b from-sky-400 via-indigo-500 to-violet-500';
+        $readingCardGlowClass = 'bg-[radial-gradient(120%_120%_at_0%_0%,rgba(191,219,254,.30)_0%,transparent_46%),radial-gradient(120%_120%_at_100%_0%,rgba(199,210,254,.22)_0%,transparent_44%)] dark:bg-[radial-gradient(120%_120%_at_0%_0%,rgba(59,130,246,.14)_0%,transparent_46%),radial-gradient(120%_120%_at_100%_0%,rgba(129,140,248,.10)_0%,transparent_44%)]';
+        $readingBadgeClass = 'border-slate-200/80 bg-white/75 text-slate-500 dark:border-slate-700/60 dark:bg-slate-900/60 dark:text-slate-300';
+        $readingDotClass = 'bg-gradient-to-br from-sky-400 to-indigo-500';
+        $readingDropCapClass = 'first-letter:text-indigo-700 dark:first-letter:text-blue-300';
+    }
+
     $optionsBank = $content['optionsBank'] ?? [];
-    $optionsGridClass = $content['options_grid_class'] ?? 'mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4';
-    $gameCardWidth = $content['game_card_width'] ?? ($gameType === 'emoji' ||  $gameType === 'audio'||  $gameType === 'questions_only'? 'max-w-5xl' : 'max-w-[92rem]');
+    $optionsGridClass = $content['options_grid_class'] ?? ($optionType === 'image'
+        ? 'mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4 sm:gap-3'
+        : 'mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3');
+    $gameCardWidth = $content['game_card_width'] ?? ($gameType === 'emoji' || $gameType === 'audio' || $gameType === 'questions_only' ? 'max-w-5xl' : 'max-w-[1320px]');
     $imageOptionTileClass = trim((string) ($content['image_option_tile_class'] ?? ''));
     $showImageOptionLabel = array_key_exists('show_image_option_label', $content)
         ? (bool) $content['show_image_option_label']
@@ -116,750 +133,84 @@
     $scriptLines = $firstQuestionScriptLines !== [] ? $firstQuestionScriptLines : $globalScriptLines;
     $hasAnyScript = $globalScriptLines !== [] || $hasQuestionScript;
     $hasScript = $hasAnyScript;
+
+    $questionMeta = array_values($content['questions'] ?? []);
+    $maxPromptChars = 0;
+    $maxOptionCount = 0;
+    foreach ($questionMeta as $questionForMeta) {
+        $maxPromptChars = max($maxPromptChars, mb_strlen(trim((string) ($questionForMeta['prompt'] ?? ''))));
+        $maxOptionCount = max($maxOptionCount, is_array($questionForMeta['options'] ?? null) ? count($questionForMeta['options']) : 0);
+    }
+
+    $verticalAlignment = trim((string) ($content['vertical_alignment'] ?? 'auto'));
+    if (!in_array($verticalAlignment, ['auto', 'top', 'center'], true)) {
+        $verticalAlignment = 'auto';
+    }
+
+    $isContentHeavyGame = in_array($gameType, ['reading', 'image', 'character_audios'], true) || $maxPromptChars > 120 || $maxOptionCount > 6;
+    $topAlignGame = $verticalAlignment === 'top' || ($verticalAlignment === 'auto' && $isContentHeavyGame);
+    $mainStackClass = $topAlignGame
+        ? 'justify-start py-4 sm:py-5'
+        : 'justify-center py-4 sm:py-5';
+    $mainFlowClass = $topAlignGame
+        ? 'pt-2 sm:pt-3 lg:pt-4'
+        : 'pt-0';
+
+    $readingDropCap = array_key_exists('reading_dropcap', $content)
+        ? !empty($content['reading_dropcap'])
+        : false;
 @endphp
 
 @section("style")
     <style>
-        .modal-scroll{
-            scrollbar-width:thin;
-            scrollbar-color:rgba(99,102,241,.72) rgba(226,232,240,.42);
-            scrollbar-gutter:stable;
+        #mcaReadingCard {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
-        .modal-scroll::-webkit-scrollbar{
-            height:12px;
-            width:12px;
-        }
-
-        .modal-scroll::-webkit-scrollbar-track{
-            margin-block:14px;
-            border-radius:999px;
-            background:rgba(226,232,240,.42);
-            border:4px solid transparent;
-            background-clip:content-box;
-        }
-
-        .modal-scroll::-webkit-scrollbar-thumb{
-            border-radius:999px;
-            border:3px solid transparent;
-            background:
-                    linear-gradient(135deg, #38bdf8 0%, #6366f1 54%, #8b5cf6 100%)
-                    content-box;
-            box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);
-        }
-
-        .modal-scroll::-webkit-scrollbar-thumb:hover{
-            background:
-                    linear-gradient(135deg, #0ea5e9 0%, #4f46e5 54%, #7c3aed 100%)
-                    content-box;
-        }
-
-        .dark .modal-scroll{
-            scrollbar-color:rgba(129,140,248,.82) rgba(30,41,59,.66);
-        }
-
-        .dark .modal-scroll::-webkit-scrollbar-track{
-            background:rgba(30,41,59,.66);
-        }
-
-        .game-modal-shell{
-            position:relative;
-            min-height:100%;
-            width:100%;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            padding:1rem;
-        }
-
-        .game-modal-card{
-            position:relative;
-            width:100%;
-            overflow:hidden;
-            border-radius:1.5rem;
-            border:1px solid rgba(226,232,240,.9);
-            background:rgba(255,255,255,.98);
-            box-shadow:0 24px 70px -40px rgba(15,23,42,.28);
-        }
-
-        .dark .game-modal-card{
-            border-color:rgba(51,65,85,.9);
-            background:rgba(15,23,42,.98);
-            box-shadow:0 24px 70px -40px rgba(0,0,0,.55);
-        }
-
-        .game-modal-stat{
-            border-radius:1rem;
-            border:1px solid rgba(226,232,240,.9);
-            background:rgba(248,250,252,.9);
-        }
-
-        .dark .game-modal-stat{
-            border-color:rgba(51,65,85,.9);
-            background:rgba(15,23,42,.86);
-        }
-
-        .game-modal-close{
-            display:inline-flex;
-            height:2.9rem;
-            width:2.9rem;
-            align-items:center;
-            justify-content:center;
-            border-radius:.9rem;
-            border:1px solid rgba(251,146,60,.35);
-            background:rgba(255,237,213,.95);
-            color:#c2410c;
-            box-shadow:0 8px 22px rgba(234,88,12,.10);
-            cursor:pointer;
-            user-select:none;
-            -webkit-tap-highlight-color:transparent;
-            touch-action:manipulation;
-            transition:background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
-        }
-
-        .game-modal-close:focus-visible{
-            outline:2px solid rgba(249,115,22,.45);
-            outline-offset:2px;
-        }
-
-        .game-modal-close:hover{
-            background:rgb(254 215 170);
-            border-color:rgb(253 186 116);
-            color:#9a3412;
-            transform:scale(1.04);
-            box-shadow:0 10px 24px rgba(234,88,12,.14);
-        }
-
-        .dark .game-modal-close{
-            border-color:rgba(194,65,12,.45);
-            background:rgba(154,52,18,.35);
-            color:rgb(254 215 170);
-            box-shadow:0 8px 22px rgba(120,53,15,.16);
-        }
-
-        .dark .game-modal-close:hover{
-            background:rgba(154,52,18,.5);
-            color:rgb(254 237 213);
-        }
-
-        .game-modal-close-sm{
-            height:2.25rem;
-            width:2.25rem;
-            border-radius:.75rem;
-        }
-
-        .game-btn{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:.5rem;
-            border-radius:.5rem;
-            padding:.375rem .75rem;
-            font-size:.75rem;
-            font-weight:900;
-            transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease, background-color .2s ease;
-        }
-
-        .mca-btn-primary,
-        .game-modal-primary-btn{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:.5rem;
-            border-radius:.5rem;
-            padding:.375rem .75rem;
-            font-size:.75rem;
-            font-weight:900;
-            color:#fff;
-            border:1px solid rgba(255,255,255,.2);
-            box-shadow:0 10px 24px rgba(79,70,229,.10);
-            transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease, background-color .2s ease;
-        }
-
-        .mca-btn-primary:hover,
-        .game-modal-primary-btn:hover{
-            transform:scale(1.05);
-        }
-
-        .mca-btn-primary:active,
-        .game-modal-primary-btn:active{
-            transform:scale(.95);
-        }
-
-        .mca-btn-reveal{
-            color:rgb(154 52 18);
-            border-color:rgb(253 186 116);
-            background:rgb(255 237 213);
-            box-shadow:0 8px 22px rgba(234,88,12,.10);
-        }
-
-        .mca-btn-reveal:hover{
-            background:rgb(254 215 170);
-            box-shadow:0 10px 24px rgba(234,88,12,.14);
-        }
-
-        .mca-btn-script{
-            box-shadow:0 10px 24px rgba(59,130,246,.14);
-        }
-
-        .mca-btn-script:hover{
-            box-shadow:0 12px 28px rgba(59,130,246,.20);
-        }
-
-        .mca-btn-secondary,
-        .action-btn-soft,
-        .game-modal-secondary-btn{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:.5rem;
-            border-radius:.5rem;
-            padding:.375rem .75rem;
-            font-size:.75rem;
-            font-weight:900;
-            color:rgb(15 23 42);
-            border:1px solid rgb(226 232 240);
-            background:#fff;
-            box-shadow:0 8px 22px rgba(2,6,23,.05);
-            transition:transform .2s ease, background .2s ease, box-shadow .2s ease, opacity .2s ease, color .2s ease, border-color .2s ease;
-        }
-
-        .mca-btn-secondary:hover,
-        .action-btn-soft:hover,
-        .game-modal-secondary-btn:hover{
-            transform:scale(1.05);
-            background:rgb(248 250 252);
-        }
-
-        .mca-btn-secondary:active,
-        .action-btn-soft:active,
-        .game-modal-secondary-btn:active{
-            transform:scale(.98);
-        }
-
-        .mca-btn-warning{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:.5rem;
-            border-radius:.5rem;
-            padding:.375rem .75rem;
-            font-size:.75rem;
-            font-weight:900;
-            color:rgb(120 53 15);
-            border:1px solid rgb(253 186 116);
-            background:rgb(254 243 199);
-            box-shadow:0 8px 22px rgba(120,53,15,.10);
-            transition:transform .2s ease, background .2s ease, box-shadow .2s ease, opacity .2s ease, color .2s ease, border-color .2s ease;
-        }
-
-        .mca-btn-warning:hover{
-            transform:scale(1.05);
-            background:rgb(253 230 138);
-        }
-
-        .mca-btn-warning:active{
-            transform:scale(.98);
-        }
-
-        .play-hit {
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .play-hit:focus-visible {
-            outline: none;
-        }
-
-        .wave-bar {
+        #mcaReadingCard::-webkit-scrollbar {
             display: none;
-            width: 3px;
-            height: 10px;
-            background: currentColor;
-            border-radius: 999px;
-            margin: 0 1px;
+            width: 0;
+            height: 0;
         }
 
-        .audio-listen-btn.playing .wave-bar {
-            display: block;
-            animation: waveGrowth .6s infinite ease-in-out;
+        #questionIndicator {
+            min-width: 3.35rem;
+            white-space: nowrap;
+            line-height: 1;
         }
 
-        .audio-listen-btn.playing .static-icon {
-            display: none;
-        }
-
-        .mca-native-audio {
-            display: none;
-        }
-
-        .mca-audio-track {
-            position: relative;
-            height: 10px;
+        #winModal h1:first-of-type,
+        #winModal h2:first-of-type,
+        #winModal h3:first-of-type {
             width: 100%;
-            border-radius: 999px;
-            overflow: hidden;
-            background: rgba(199,210,254,0.55);
+            text-align: center !important;
         }
 
-        .dark .mca-audio-track {
-            background: rgba(99,102,241,0.25);
-        }
-
-        .mca-audio-fill {
-            height: 100%;
-            width: 0%;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #4f46e5 0%, #8b5cf6 100%);
-        }
-
-        .mca-audio-knob {
-            position: absolute;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 14px;
-            height: 14px;
-            border-radius: 9999px;
-            background: white;
-            border: 2px solid #4f46e5;
-            box-shadow: 0 6px 14px rgba(2,6,23,0.18);
-            left: 0%;
-            pointer-events: none;
-        }
-
-        .mca-inline-audio-box{
-            padding:.75rem .85rem;
-        }
-
-        .mca-inline-audio-row{
-            display:flex;
-            align-items:center;
-            gap:.75rem;
-        }
-
-        .mca-inline-audio-main{
-            flex:1;
-            min-width:0;
-            display:flex;
-            align-items:center;
-            gap:.65rem;
-        }
-
-        .mca-inline-audio-progress{
-            flex:1;
-            min-width:0;
-            display:flex;
-            flex-direction:column;
-            gap:.35rem;
-        }
-
-        .mca-inline-audio-btn{
-            height:2.5rem;
-            width:2.5rem;
-            flex-shrink:0;
-        }
-
-        .mca-inline-audio-icon{
-            height:1rem;
-            width:1rem;
-        }
-
-        .mca-inline-audio-track{
-            margin-top:0;
-            height:8px;
-        }
-
-        .mca-inline-audio-times{
-            font-size:10px;
-        }
-
-        .mca-inline-script-btn{
-            flex-shrink:0;
-            padding:.32rem .62rem;
-            font-size:.7rem;
-        }
-
-        .game-modal-primary-btn{
-            color:#fff;
-        }
-
-        .reading-pane{
-            height:100%;
-            padding:1rem;
-        }
-
-        .reading-pane.is-left{
-            text-align:left;
-        }
-
-        .reading-pane.is-plain{
-            padding:.9rem 1rem;
-        }
-
-        .reading-pane.is-compact{
-            padding:.85rem .95rem;
-        }
-
-        .reading-card{
-            position:relative;
-            height:100%;
-            overflow:auto;
-            border-radius:1.65rem;
-            border:1px solid rgba(226,232,240,.82);
-            background:
-                    radial-gradient(120% 120% at 0% 0%, {{ $readingCardLightGlowOne }} 0%, transparent 46%),
-                    radial-gradient(120% 120% at 100% 0%, {{ $readingCardLightGlowTwo }} 0%, transparent 44%),
-                    linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(248,250,252,.92) 100%);
-            padding:1.2rem;
-            box-shadow:0 22px 60px -38px rgba(15,23,42,.28);
-        }
-
-        .dark .reading-card{
-            border-color:rgba(71,85,105,.88);
-            background:
-                    radial-gradient(120% 120% at 0% 0%, {{ $readingCardDarkGlowOne }} 0%, transparent 46%),
-                    radial-gradient(120% 120% at 100% 0%, {{ $readingCardDarkGlowTwo }} 0%, transparent 44%),
-                    linear-gradient(180deg, rgba(15,23,42,.96) 0%, rgba(2,6,23,.94) 100%);
-            box-shadow:0 24px 64px -38px rgba(0,0,0,.52);
-        }
-
-        .reading-card::before{
-            content:"";
-            position:absolute;
-            inset:0 auto 0 0;
-            width:6px;
-            background:{{ $readingAccentGradient }};
-            opacity:.9;
-        }
-
-        .reading-card.is-plain-mode{
-            border-color:rgba(226,232,240,.72);
-            box-shadow:0 18px 52px -40px rgba(15,23,42,.25);
-        }
-
-        .dark .reading-card.is-plain-mode{
-            border-color:rgba(71,85,105,.78);
-        }
-
-        .reading-header{
-            position:relative;
-            padding-left:.35rem;
-        }
-
-        .reading-badge{
-            display:inline-flex;
-            align-items:center;
-            gap:.45rem;
-            border-radius:999px;
-            border:1px solid {{ $readingBadgeBorder }};
-            background:{{ $readingBadgeBg }};
-            padding:.45rem .78rem;
-            font-size:.7rem;
-            font-weight:900;
-            letter-spacing:.18em;
-            text-transform:uppercase;
-            color:{{ $readingBadgeText }};
-            box-shadow:0 10px 24px rgba(15,23,42,.06);
-        }
-
-        .dark .reading-badge{
-            border-color:{{ $readingBadgeDarkBorder }};
-            background:{{ $readingBadgeDarkBg }};
-            color:{{ $readingBadgeDarkText }};
-        }
-
-        .reading-badge-dot{
-            height:.5rem;
-            width:.5rem;
-            border-radius:999px;
-            background:{{ $readingDotGradient }};
-        }
-
-        .reading-label{
-            font-size:.78rem;
-            font-weight:900;
-            letter-spacing:.16em;
-            text-transform:uppercase;
-            color:#64748b;
-        }
-
-        .dark .reading-label{
-            color:#94a3b8;
-        }
-
-        .reading-title{
-            margin-top:.9rem;
-            max-width:24ch;
-            font-size:1.4rem;
-            line-height:1.06;
-            font-weight:800;
-            letter-spacing:-.05em;
-            color:#0f172a;
-        }
-
-        .dark .reading-title{
-            color:#f8fafc;
-        }
-
-        .reading-copy{
-            margin-top:1.1rem;
-            display:grid;
-            gap:.95rem;
-        }
-
-        .reading-pane.is-compact .reading-copy{
-            margin-top:.9rem;
-            gap:.75rem;
-        }
-
-        .reading-copy p{
-            margin:0;
-            position:relative;
-            padding:0 .1rem;
-            font-size:.9rem;
-            line-height:1.7;
-            font-weight:600;
-            letter-spacing:-.012em;
-            color:#475569;
-        }
-
-        .dark .reading-copy p{
-            color:#cbd5e1;
-        }
-
-        .reading-rich-block{
-            margin:0;
-            min-width:0;
-        }
-
-        .reading-rich-block + .reading-rich-block{
-            margin-top:.4rem;
-        }
-
-        .reading-rich-block table{
-            width:100%;
-            border-collapse:separate;
-            border-spacing:0;
-            overflow:hidden;
-            border-radius:1rem;
-            border:1px solid rgba(148,163,184,.28);
-            background:rgba(255,255,255,.92);
-            box-shadow:0 16px 40px -34px rgba(15,23,42,.28);
-        }
-
-        .dark .reading-rich-block table{
-            border-color:rgba(71,85,105,.78);
-            background:rgba(15,23,42,.86);
-        }
-
-        .reading-rich-block th,
-        .reading-rich-block td{
-            padding:.72rem .8rem;
-            text-align:left;
-            font-size:.88rem;
-            line-height:1.4;
-            border-right:1px solid rgba(226,232,240,.82);
-            border-bottom:1px solid rgba(226,232,240,.82);
-        }
-
-        .dark .reading-rich-block th,
-        .dark .reading-rich-block td{
-            border-right-color:rgba(71,85,105,.82);
-            border-bottom-color:rgba(71,85,105,.82);
-        }
-
-        .reading-rich-block th{
-            background:linear-gradient(135deg, rgba(59,130,246,.13), rgba(99,102,241,.10));
-            font-weight:900;
-            color:#0f172a;
-            letter-spacing:.02em;
-        }
-
-        .dark .reading-rich-block th{
-            background:linear-gradient(135deg, rgba(59,130,246,.18), rgba(99,102,241,.16));
-            color:#f8fafc;
-        }
-
-        .reading-rich-block td{
-            font-weight:700;
-            color:#334155;
-        }
-
-        .dark .reading-rich-block td{
-            color:#e2e8f0;
-        }
-
-        .reading-rich-block tr:last-child td{
-            border-bottom:none;
-        }
-
-        .reading-rich-block th:last-child,
-        .reading-rich-block td:last-child{
-            border-right:none;
-        }
-
-        .reading-copy p:first-child::first-letter{
-            float:left;
-            margin:.08rem .5rem 0 0;
-            font-size:2.35rem;
-            line-height:.86;
-            font-weight:900;
-            color:{{ $readingDropCapLight }};
-        }
-
-        .dark .reading-copy p:first-child::first-letter{
-            color:{{ $readingDropCapDark }};
-        }
-
-        .reading-pane.is-compact .reading-copy p{
-            line-height:1.62;
-        }
-
-        .reading-pane.is-small-text .reading-copy p{
-            font-size:.8rem;
-            line-height:1.5;
-        }
-
-        .dark .mca-btn-secondary,
-        .dark .action-btn-soft,
-        .dark .game-modal-secondary-btn{
-            color:#fff;
-            border-color:rgb(51 65 85);
-            background:rgb(30 41 59);
-        }
-
-        .dark .mca-btn-secondary:hover,
-        .dark .action-btn-soft:hover,
-        .dark .game-modal-secondary-btn:hover{
-            background:rgb(51 65 85);
-        }
-
-        .dark .mca-btn-warning{
-            color:rgb(254 243 199);
-            border-color:rgba(180, 83, 9, .45);
-            background:rgba(120, 53, 15, .35);
-        }
-
-        .dark .mca-btn-warning:hover{
-            background:rgba(120, 53, 15, .5);
-        }
-
-        .dark .mca-btn-reveal{
-            color:rgb(254 215 170);
-            border-color:rgba(194, 65, 12, .45);
-            background:rgba(154, 52, 18, .35);
-        }
-
-        .dark .mca-btn-reveal:hover{
-            background:rgba(154, 52, 18, .5);
-        }
-
-        @media (min-width: 640px){
-            .game-modal-shell{
-                padding:1.5rem;
-            }
-
-            .mca-inline-audio-box{
-                padding:.875rem 1.1rem;
-            }
-
-            .mca-inline-audio-row{
-                gap:1rem;
-            }
-
-            .mca-inline-audio-main{
-                gap:.75rem;
-            }
-
-            .mca-inline-audio-btn{
-                height:3rem;
-                width:3rem;
-            }
-
-            .mca-inline-audio-icon{
-                height:1.25rem;
-                width:1.25rem;
-            }
-
-            .mca-inline-audio-track{
-                height:10px;
-            }
-
-            .mca-inline-audio-times{
-                font-size:11px;
-            }
-
-            .mca-inline-script-btn{
-                padding:.375rem .75rem;
-                font-size:.75rem;
-            }
-
-            .reading-pane{
-                padding:1.15rem;
-            }
-
-            .reading-pane.is-plain,
-            .reading-pane.is-compact{
-                padding:1rem 1.1rem;
-            }
-
-            .reading-card{
-                padding:1.45rem 1.5rem;
-            }
-
-            .reading-title{
-                font-size:1.75rem;
-            }
-
-            .reading-copy p{
-                font-size:.97rem;
-            }
-
-            .reading-pane.is-small-text .reading-copy p{
-                font-size:.86rem;
-                line-height:1.52;
-            }
-        }
-
-        @media (min-width: 1024px){
-            .reading-pane{
-                padding:1.25rem;
-            }
-
-            .reading-pane.is-plain,
-            .reading-pane.is-compact{
-                padding:1.05rem 1.15rem;
-            }
-
-            .reading-card{
-                padding:1.55rem 1.65rem;
-            }
-
-            .reading-copy p{
-                font-size:1.2rem;
-            }
-
-            .reading-pane.is-small-text .reading-copy p{
-                font-size:.95rem;
-                line-height:1.55;
-            }
+        #winModal .game-win-header,
+        #winModal .win-modal-header,
+        #winModal [data-game-win-header] {
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
         }
     </style>
 @endsection
 
 @section("content")
-    <div class="font-sans relative isolate min-h-[100dvh] overflow-x-hidden overflow-y-auto dark:text-slate-100 transition-colors duration-300">
-        <main id="app" class="w-full max-w-[96rem] min-h-[100dvh] px-4 sm:px-8 lg:px-10 mx-auto pt-3 sm:pt-4 pb-6 sm:pb-8 flex flex-col justify-center">
-            <section class="p-2 sm:p-3 lg:p-4 flex-none flex flex-col">
-                <div class="grid place-items-center text-center gap-2 sm:gap-3 auto-rows-max">
+    <div class="font-sans relative isolate min-h-[100dvh] overflow-x-hidden overflow-y-auto dark:text-slate-100 transition-colors duration-300" style="{{ $mcaAccentStyle }}">
+        <main id="app" class="mx-auto flex min-h-[100dvh] w-full max-w-[1500px] flex-col {{ $mainStackClass }} px-3 pb-4 sm:px-5 sm:pb-5 lg:px-7">
+            <section class="{{ $mainFlowClass }} flex flex-none flex-col">
+                <div class="grid place-items-center text-center gap-2 sm:gap-2.5 auto-rows-max">
                     @include('slider.components.title-subtitle', [
-                        'titleWrapClass' => 'header-spacing my-2 px-4 text-center sm:my-3 sm:px-6 lg:px-8',
+                        'titleWrapClass' => 'header-spacing my-1 px-4 text-center sm:my-2 sm:px-6 lg:px-8',
                         'titleSpacingClass' => 'space-y-2',
                     ])
 
                     @include('slider.components.game-status')
 
-                    <section id="gameCard" class="relative w-full {{ $gameCardWidth }} p-1 sm:p-2.5 lg:p-3 flex-none min-h-[420px] select-none">
-                        <div id="questionPanel" class="grid h-full grid-cols-1 {{ $gameType === 'emoji' ? 'sm:grid-cols-[minmax(0,30%)_minmax(0,70%)]' : 'sm:grid-cols-12' }} gap-0 items-stretch overflow-hidden rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl">
+                    <section id="gameCard" class="relative w-full {{ $gameCardWidth }} flex-none select-none p-1.5 sm:p-2.5 lg:p-3">
+                        <div id="questionPanel" class="grid min-h-0 grid-cols-1 {{ $gameType === 'emoji' ? 'sm:grid-cols-[minmax(0,30%)_minmax(0,70%)]' : 'sm:grid-cols-12' }} items-stretch overflow-hidden rounded-[1.6rem] border border-slate-200/70 bg-white/75 shadow-[0_18px_55px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60">
                             @if($gameType!="questions_only" && $gameType !== 'audio')
                                 <div class="{{ $imagePanelColClass }}">
                                     @if($gameType === 'character_audios')
@@ -891,31 +242,43 @@
                                             </div>
                                         </div>
                                     @elseif($gameType === 'reading')
-                                        <div class="reading-pane{{ $readingAlign === 'left' ? ' is-left' : '' }}{{ $readingPlain ? ' is-plain' : '' }}{{ $readingCompact ? ' is-compact' : '' }}{{ in_array($readingTextSize, ['small', 'sm'], true) ? ' is-small-text' : '' }}">
-                                            <div class="reading-card{{ $readingPlain ? ' is-plain-mode' : '' }}">
-                                                <div class="reading-header">
+                                        <div class="h-full min-h-0 p-2.5 text-left sm:p-3">
+                                            <div id="mcaReadingCard" class="relative min-h-[230px] overflow-hidden rounded-[1.2rem] border border-slate-200/60 bg-white/65 px-3.5 py-3 shadow-sm backdrop-blur dark:border-slate-700/55 dark:bg-slate-950/25 sm:px-4 sm:py-3.5 {{ $readingCardGlowClass }}">
+                                                <div class="pointer-events-none absolute inset-y-3 left-0 w-1 rounded-full {{ $readingAccentClass }}"></div>
+                                                <div class="relative z-[1] pl-1.5">
                                                     @if($showReadingBadge)
-                                                        <div class="reading-badge">
-                                                            <span class="reading-badge-dot"></span>
+                                                        <div class="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] shadow-sm {{ $readingBadgeClass }}">
+                                                            <span class="h-2 w-2 rounded-full {{ $readingDotClass }}"></span>
                                                             <span>Reading Passage</span>
                                                         </div>
                                                     @endif
 
                                                     @if($readingTitle !== '')
-                                                        <h2 class="reading-title">{{ $readingTitle }}</h2>
+                                                        <h2 class="mt-2.5 max-w-[28ch] text-xl font-black leading-[1.06] tracking-[-0.04em] text-slate-950 dark:text-white sm:text-2xl lg:text-[1.65rem]">
+                                                            {{ $readingTitle }}
+                                                        </h2>
                                                     @endif
-                                                </div>
 
-                                                <div class="reading-copy">
-                                                    @forelse($readingPassage as $paragraph)
-                                                        @if($readingAllowHtml)
-                                                            <div class="reading-rich-block">{!! $paragraph !!}</div>
-                                                        @else
-                                                            <p>{{ $paragraph }}</p>
-                                                        @endif
-                                                    @empty
-                                                        <p>Add `passage` or `reading` in `$content` to show the reading text here.</p>
-                                                    @endforelse
+                                                    <div class="mt-3 grid gap-2 text-left {{ $readingCompact ? 'sm:gap-2' : 'sm:gap-2.5' }}">
+                                                        @forelse($readingPassage as $paragraph)
+                                                            @if($readingAllowHtml)
+                                                                <div class="min-w-0 text-sm font-semibold leading-[1.6] text-slate-600 dark:text-slate-300 sm:text-base lg:text-[1.03rem]
+                                                                    [&_table]:w-full [&_table]:border-separate [&_table]:border-spacing-0 [&_table]:overflow-hidden [&_table]:rounded-2xl [&_table]:border [&_table]:border-slate-200/70 [&_table]:bg-white/85 [&_table]:shadow-sm dark:[&_table]:border-slate-700/60 dark:[&_table]:bg-slate-900/45
+                                                                    [&_th]:border-b [&_th]:border-r [&_th]:border-slate-200/70 [&_th]:bg-slate-50 [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:text-sm [&_th]:font-black [&_th]:text-slate-900 dark:[&_th]:border-slate-700/60 dark:[&_th]:bg-slate-800/60 dark:[&_th]:text-slate-100
+                                                                    [&_td]:border-b [&_td]:border-r [&_td]:border-slate-200/70 [&_td]:px-3 [&_td]:py-2 [&_td]:text-sm [&_td]:font-bold [&_td]:text-slate-700 dark:[&_td]:border-slate-700/60 dark:[&_td]:text-slate-200">
+                                                                    {!! $paragraph !!}
+                                                                </div>
+                                                            @else
+                                                                <p class="m-0 text-sm font-semibold leading-[1.55] tracking-[-0.01em] text-slate-600 dark:text-slate-300 sm:text-[15px] lg:text-base {{ $readingTextSize === 'small' || $readingTextSize === 'sm' ? 'lg:text-sm' : '' }} {{ $loop->first && $readingDropCap ? 'first-letter:float-left first-letter:mr-2 first-letter:mt-1 first-letter:text-4xl first-letter:font-black first-letter:leading-[0.85] ' . $readingDropCapClass : '' }}">
+                                                                    {{ $paragraph }}
+                                                                </p>
+                                                            @endif
+                                                        @empty
+                                                            <p class="m-0 text-sm font-semibold leading-[1.62] text-slate-600 dark:text-slate-300 sm:text-base">
+                                                                Add `passage` or `reading` in `$content` to show the reading text here.
+                                                            </p>
+                                                        @endforelse
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -923,7 +286,7 @@
                                         <div class="{{ $imagePanelInnerClass }}">
                                             <div
                                                     id="imageViewport"
-                                                    class="relative mx-auto w-full overflow-hidden {{ $imageRadius }} {{ $enableImageZoom ? 'cursor-zoom-in' : '' }}"
+                                                    class="relative mx-auto w-full max-h-[52dvh] overflow-hidden {{ $imageRadius }} {{ $enableImageZoom ? 'cursor-zoom-in' : '' }}"
                                                     style="aspect-ratio: 4 / 3;"
                                             >
                                                 <img
@@ -938,7 +301,7 @@
                                         </div>
 
                                     @else
-                                        <div class="h-full flex items-center justify-center min-h-[140px] px-4 py-4">
+                                        <div class="flex min-h-[120px] items-center justify-center px-4 py-4 lg:h-full">
                                             <div id="qEmoji" class="text-6xl sm:text-7xl leading-none select-none">👋</div>
                                         </div>
                                     @endif
@@ -948,24 +311,30 @@
                             <div class="{{ $answerPanelColClass }} {{ ($gameType !== 'questions_only' && $gameType !== 'audio') ? 'border-t border-slate-200/70 dark:border-slate-800 sm:border-t-0 sm:border-l' : '' }}">
                                 <div class="{{ $answerPanelInnerClass }}">
                                     <div class="flex items-center justify-between gap-2 sm:gap-3">
-                                        <div id="questionPromptLabel" class="min-w-0 text-[11px] sm:text-base font-extrabold text-slate-500 dark:text-slate-400">
-                                            {{ $questionPromptLabel }}
+                                        <div class="flex min-w-0 flex-col gap-1 text-left sm:flex-row sm:items-center sm:gap-2">
+                                            <div id="questionPromptLabel" class="min-w-0 text-[11px] font-black tracking-[-0.01em] text-slate-500 dark:text-slate-400 sm:text-sm">
+                                                {{ $questionPromptLabel }}
+                                            </div>
+                                            <span id="questionIndicator" class="inline-flex shrink-0 items-center justify-center rounded-full border border-slate-200/70 bg-white/75 px-2.5 py-1 text-[10px] font-black text-slate-500 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/45 dark:text-slate-300">
+                                                1 of 1
+                                            </span>
                                         </div>
 
                                         <button
                                                 id="btnRevealCorrection"
-                                                class="mca-btn-primary mca-btn-reveal shrink-0 whitespace-nowrap"
+                                                type="button"
+                                                class="inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-[color:var(--mca-accent-border)] bg-[var(--mca-accent-bg)] px-2.5 py-1.5 text-[11px] font-black text-[color:var(--mca-accent-text)] shadow-sm transition duration-200 ease-out hover:scale-105 hover:bg-[var(--mca-accent-bg-hover)] active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--mca-accent-ring)] dark:border-[color:var(--mca-accent-border-dark)] dark:bg-[var(--mca-accent-bg-dark)] dark:text-[color:var(--mca-accent-text-dark)] dark:hover:bg-[var(--mca-accent-bg-hover-dark)] dark:focus-visible:ring-[color:var(--mca-accent-ring-dark)] sm:px-3 sm:text-xs"
                                         >
                                             Reveal correction
                                         </button>
                                     </div>
 
-                                    <div id="sharedAudioPlayerWrap" class="mt-4 mb-4{{ empty($playerAudio) ? ' hidden' : '' }}">
+                                    <div id="sharedAudioPlayerWrap" class="my-3{{ empty($playerAudio) ? ' hidden' : '' }}">
                                         @include('slider.components.audio-player')
                                     </div>
 
-                                    <div id="qPrompt" class="my-4 flex items-start gap-3 text-base sm:text-lg lg:text-[1.15rem] font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
-                                        <span id="qPromptNumber" class="inline-flex shrink-0 items-center justify-center rounded-full bg-slate-100 px-3 py-1 text-sm font-black text-slate-700 dark:bg-slate-800 dark:text-slate-100">
+                                    <div id="qPrompt" class="my-3 flex items-start gap-2.5 text-left text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.08rem]">
+                                        <span id="qPromptNumber" class="inline-flex shrink-0 items-center justify-center rounded-full border border-slate-200/70 bg-white/80 px-2.5 py-1 text-xs font-black text-slate-600 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/40 dark:text-slate-200">
                                             1.
                                         </span>
                                         <span id="qPromptText" class="min-w-0">
@@ -977,34 +346,38 @@
                                 </div>
                             </div>
 
-                            <div class="col-span-full border-t border-slate-200/70 dark:border-slate-800 px-5 py-5 sm:px-6 sm:py-6">
-                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div class="col-span-full border-t border-slate-200/70 px-3 py-3 dark:border-slate-800 sm:px-4 lg:px-5">
+                                <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
                                     <button
                                             id="btnRestart"
-                                            class="w-full action-btn-soft py-3"
+                                            type="button"
+                                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300/70 bg-white/75 px-3 py-2.5 text-xs font-black text-slate-600 shadow-sm transition duration-200 ease-out hover:scale-[1.02] hover:bg-white active:scale-95 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-200 dark:hover:bg-slate-800 sm:text-sm"
                                     >
-                                        Restart 🔁
+                                        Restart
                                     </button>
 
                                     <button
                                             id="btnHint"
-                                            class="w-full mca-btn-warning py-3"
+                                            type="button"
+                                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[color:var(--mca-accent-border)] bg-[var(--mca-accent-bg)] px-3 py-2.5 text-xs font-black text-[color:var(--mca-accent-text)] shadow-sm transition duration-200 ease-out hover:scale-[1.02] hover:bg-[var(--mca-accent-bg-hover)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-55 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--mca-accent-ring)] dark:border-[color:var(--mca-accent-border-dark)] dark:bg-[var(--mca-accent-bg-dark)] dark:text-[color:var(--mca-accent-text-dark)] dark:hover:bg-[var(--mca-accent-bg-hover-dark)] dark:focus-visible:ring-[color:var(--mca-accent-ring-dark)] sm:text-sm"
                                     >
-                                        Hint 💡 (<span id="hintBadge">2</span>)
+                                        Hint (<span id="hintBadge">2</span>)
                                     </button>
 
                                     <button
                                             id="btnPrev"
-                                            class="w-full action-btn-soft py-3"
+                                            type="button"
+                                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300/70 bg-white/75 px-3 py-2.5 text-xs font-black text-slate-600 shadow-sm transition duration-200 ease-out hover:scale-[1.02] hover:bg-white active:scale-95 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-200 dark:hover:bg-slate-800 sm:text-sm"
                                     >
-                                        Previous
+                                        &lsaquo; Previous
                                     </button>
 
                                     <button
                                             id="btnNext"
-                                            class="w-full mca-btn-primary py-3 {{ $primaryButtonClass }}"
+                                            type="button"
+                                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-xs font-black text-white shadow-[0_10px_24px_rgba(79,70,229,.14)] transition duration-200 ease-out hover:scale-[1.03] active:scale-95 sm:text-sm {{ $primaryButtonClass }}"
                                     >
-                                        Next
+                                        Next &rsaquo;
                                     </button>
                                 </div>
                             </div>
@@ -1019,12 +392,16 @@
             </section>
         </main>
 
-        <div id="toastOne" class="fixed left-1/2 -translate-x-1/2 bottom-24 opacity-0 pointer-events-none z-50">
-            <div class="px-6 py-2 rounded-full bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 font-black dark:text-white">
+        <div id="toastOne" class="pointer-events-none fixed bottom-24 left-1/2 z-50 -translate-x-1/2 opacity-0">
+            <div class="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-black text-slate-900 shadow-2xl dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                 <span id="toastIcon"></span>
                 <span id="toastText"></span>
             </div>
         </div>
+
+        <div id="mcaLiveRegion" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+        <div class="hidden !border-[color:var(--mca-accent-border)] !bg-[var(--mca-accent-bg)] !text-[color:var(--mca-accent-text)] ring-[color:var(--mca-accent-ring)] dark:!border-[color:var(--mca-accent-border-dark)] dark:!bg-[var(--mca-accent-bg-dark)] dark:!text-[color:var(--mca-accent-text-dark)] dark:ring-[color:var(--mca-accent-ring-dark)] hover:border-[color:var(--mca-accent-border)] focus-visible:ring-[color:var(--mca-accent-ring)] dark:hover:border-[color:var(--mca-accent-border-dark)] dark:focus-visible:ring-[color:var(--mca-accent-ring-dark)]"></div>
     </div>
 @endsection
 
@@ -1033,7 +410,7 @@
         (() => {
             const GAME_TYPE = @json($gameType);
             const OPTION_TYPE = @json($optionType);
-            const QUESTIONS = @json($content['questions']);
+            const QUESTIONS = @json($content['questions'] ?? []);
             const DEFAULT_AUDIO = @json($content['audio'] ?? null);
             const ENABLE_IMAGE_ZOOM = @json($enableImageZoom);
             const IMAGE_SCALE = @json($imageScale);
@@ -1056,6 +433,7 @@
             let wrongedQuestions = new Set();
             let completedQuestions = new Set();
             let revealedQuestions = new Set();
+            let hintedQuestions = new Set();
             let selectedCorrectValues = new Map();
             const scoredQuestionCount = QUESTIONS.filter((question) => !isPersonalQuestion(question)).length;
 
@@ -1079,6 +457,8 @@
             const continueBtnModal = document.getElementById('continueBtnModal');
             const btnPrev = document.getElementById('btnPrev');
             const btnNext = document.getElementById('btnNext');
+            const questionIndicator = document.getElementById('questionIndicator');
+            const liveRegion = document.getElementById('mcaLiveRegion');
             const characterAudios = Array.from(document.querySelectorAll('.character-audio'));
             const imageViewport = document.getElementById('imageViewport');
             const questionImage = document.getElementById('questionImage');
@@ -1322,7 +702,8 @@
                     const forcedRatio = forcedWidth > 0 && forcedHeight > 0 ? forcedWidth / forcedHeight : 1;
 
                     imageViewport.style.aspectRatio = IMAGE_ASPECT_RATIO;
-                    imageViewport.style.width = `min(100%, calc(72vh * ${forcedRatio} * ${IMAGE_SCALE}))`;
+                    const forcedVhFactor = window.innerHeight < 820 ? 50 : 60;
+                    imageViewport.style.width = `min(100%, calc(${forcedVhFactor}vh * ${forcedRatio} * ${IMAGE_SCALE}))`;
                     return;
                 }
 
@@ -1331,7 +712,8 @@
 
                 const ratio = naturalWidth / naturalHeight;
                 imageViewport.style.aspectRatio = `${naturalWidth} / ${naturalHeight}`;
-                imageViewport.style.width = `min(100%, calc(72vh * ${ratio} * ${IMAGE_SCALE}))`;
+                const vhFactor = window.innerHeight < 820 ? 50 : 60;
+                imageViewport.style.width = `min(100%, calc(${vhFactor}vh * ${ratio} * ${IMAGE_SCALE}))`;
             }
 
             function applyImageBaseTransform() {
@@ -1364,19 +746,45 @@
                 applyImageBaseTransform();
             }
 
-            function startTimer() {
-                clearInterval(timerInt);
-                timerInt = setInterval(() => {
-                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
-                    const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
-                    const secs = String(elapsed % 60).padStart(2, '0');
-                    document.getElementById('gameTimer').textContent = `${mins}:${secs}`;
-                }, 1000);
+            function formatElapsedTime() {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+                const secs = String(elapsed % 60).padStart(2, '0');
+                return `${mins}:${secs}`;
             }
 
+            function updateTimerDisplay() {
+                const timerEl = document.getElementById('gameTimer');
+                if (timerEl) timerEl.textContent = formatElapsedTime();
+            }
+
+            function startTimer() {
+                clearInterval(timerInt);
+                updateTimerDisplay();
+                timerInt = setInterval(updateTimerDisplay, 1000);
+            }
+
+            let toastFallbackTimer = null;
             function showToast(text, icon = "✨") {
-                document.getElementById('toastIcon').textContent = icon;
-                document.getElementById('toastText').textContent = text;
+                const toastIcon = document.getElementById('toastIcon');
+                const toastText = document.getElementById('toastText');
+                const toast = document.getElementById('toastOne');
+                if (toastIcon) toastIcon.textContent = icon;
+                if (toastText) toastText.textContent = text;
+                if (liveRegion) liveRegion.textContent = `${icon} ${text}`;
+                if (!toast) return;
+
+                if (toastFallbackTimer) {
+                    clearTimeout(toastFallbackTimer);
+                    toastFallbackTimer = null;
+                }
+
+                if (!window.gsap) {
+                    toast.style.opacity = '1';
+                    toast.style.transform = 'translateX(-50%) translateY(0)';
+                    toastFallbackTimer = setTimeout(() => { toast.style.opacity = '0'; }, 1250);
+                    return;
+                }
 
                 gsap.timeline()
                     .to("#toastOne", { opacity: 1, y: 0, duration: 0.3 })
@@ -1387,7 +795,15 @@
                 return String(value ?? '')
                     .replace(/&/g, '&amp;')
                     .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;');
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+
+            function formatCorrectionText(value) {
+                return escapeHtml(value)
+                    .replace(/&lt;br\s*\/?&gt;/gi, '<br>')
+                    .replace(/\r?\n/g, '<br>');
             }
 
             function buildCorrectionHTML(question, isRevealed) {
@@ -1395,31 +811,31 @@
 
                 if (isPersonalQuestion(question)) {
                     return `
-                        <span>${escapeHtml(getQuestionPrompt(question))}</span>
+                        <span>${formatCorrectionText(getQuestionPrompt(question))}</span>
                         <span class="inline-flex rounded-xl bg-indigo-100/80 px-3 py-1 text-indigo-900 ring-1 ring-indigo-300/70 dark:bg-indigo-400/10 dark:text-indigo-100 dark:ring-indigo-300/30">Personal answer</span>
                     `;
                 }
 
                 const answers = getExpectedOptions(question);
                 const answerClass = isRevealed
-                    ? 'bg-rose-100/80 text-rose-900 ring-1 ring-rose-300/70 dark:bg-rose-400/10 dark:text-rose-100 dark:ring-rose-300/30'
-                    : 'bg-emerald-100/80 text-emerald-900 ring-1 ring-emerald-300/70 dark:bg-emerald-400/10 dark:text-emerald-100 dark:ring-emerald-300/30';
+                    ? 'font-black text-rose-700 dark:text-rose-300'
+                    : 'font-black text-emerald-700 dark:text-emerald-300';
 
                 return `
-                    <span>${escapeHtml(getQuestionPrompt(question))}</span>
+                    <span>${formatCorrectionText(getQuestionPrompt(question))}</span>
                     ${answers.map((answer) => `
-                        <span class="inline-flex rounded-xl px-3 py-1 ${answerClass}">${escapeHtml(answer.label || answer.value || '')}</span>
+                        <span class="inline ${answerClass}">${escapeHtml(answer.label || answer.value || '')}</span>
                     `).join('')}
                 `;
             }
 
             function buildAllCorrectionsHTML() {
                 return QUESTIONS.map((question, questionIndex) => `
-                    <div class="mb-2 flex items-baseline gap-2">
-                        <span class="pt-1 text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    <div class="mb-1.5 flex items-start gap-2 last:mb-0">
+                        <span class="shrink-0 text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                             ${questionIndex + 1}.
                         </span>
-                        <span class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-2">${buildCorrectionHTML(question, revealedQuestions.has(questionIndex))}</span>
+                        <span class="min-w-0 text-sm font-bold leading-[1.45] text-slate-900 dark:text-white sm:text-[15px]">${buildCorrectionHTML(question, revealedQuestions.has(questionIndex))}</span>
                     </div>
                 `).join('');
             }
@@ -1440,10 +856,12 @@
                 document.getElementById('finalMistakes').textContent = wrongTries;
                 setResultsCorrectionVisible(showCorrection);
                 winModal?.classList.remove('hidden');
+                document.documentElement.classList.add('overflow-hidden');
             }
 
             function closeResultsOverlay() {
                 winModal?.classList.add('hidden');
+                document.documentElement.classList.remove('overflow-hidden');
             }
 
             function restartGame() {
@@ -1459,6 +877,7 @@
                 wrongedQuestions = new Set();
                 completedQuestions = new Set();
                 revealedQuestions = new Set();
+                hintedQuestions = new Set();
                 selectedCorrectValues = new Map();
                 startTime = Date.now();
                 document.getElementById('tilesCount').textContent = `0/${QUESTIONS.length}`;
@@ -1558,11 +977,51 @@
                 return Math.min(progressedQuestions.size, QUESTIONS.length);
             }
 
+            function isQuestionFinished(questionIndex) {
+                return completedQuestions.has(questionIndex) || revealedQuestions.has(questionIndex);
+            }
+
+            function isGameComplete() {
+                if (!Array.isArray(QUESTIONS) || QUESTIONS.length === 0) return false;
+                return QUESTIONS.every((question, questionIndex) => isQuestionFinished(questionIndex));
+            }
+
+            function findNextOpenQuestion(fromIndex) {
+                if (!Array.isArray(QUESTIONS) || QUESTIONS.length === 0) return -1;
+
+                for (let questionIndex = fromIndex + 1; questionIndex < QUESTIONS.length; questionIndex++) {
+                    if (!isQuestionFinished(questionIndex)) return questionIndex;
+                }
+
+                for (let questionIndex = 0; questionIndex <= fromIndex; questionIndex++) {
+                    if (!isQuestionFinished(questionIndex)) return questionIndex;
+                }
+
+                return -1;
+            }
+
+            function advanceAfterQuestionComplete() {
+                setTimeout(() => {
+                    if (isGameComplete()) {
+                        finishGame();
+                        return;
+                    }
+
+                    const nextOpenQuestion = findNextOpenQuestion(idx);
+                    if (nextOpenQuestion >= 0) {
+                        idx = nextOpenQuestion;
+                        renderQuestion();
+                    }
+                }, 600);
+            }
+
+
             function updateStatusUI() {
                 document.getElementById('tilesCount').textContent = `${getProgressCount()}/${QUESTIONS.length}`;
                 document.getElementById('correctCount').textContent = String(firstTryCorrect);
                 document.getElementById('mistakesCount').textContent = String(wrongTries);
                 document.getElementById('hintBadge').textContent = String(hintsLeft);
+                if (questionIndicator) questionIndicator.textContent = QUESTIONS.length > 0 ? `${idx + 1} of ${QUESTIONS.length}` : 'No questions';
                 setNavDisabledState(document.getElementById('btnHint'), hintsLeft <= 0 || isPersonalQuestion(QUESTIONS[idx]));
                 setNavDisabledState(btnPrev, idx <= 0);
                 setNavDisabledState(btnNext, idx >= QUESTIONS.length - 1);
@@ -1572,7 +1031,8 @@
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.dataset.value = String(option.value);
-                button.className = "p-4 text-left text-sm sm:text-base font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white leading-[1.35] hover:scale-[1.02] transition-all shadow-sm active:scale-95";
+                button.setAttribute('aria-label', String(option.label || option.value || 'Answer option'));
+                button.className = "min-h-[48px] rounded-2xl border border-slate-200/70 bg-white/80 px-4 py-3 text-left text-sm font-black leading-[1.35] text-slate-900 shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:border-[color:var(--mca-accent-border)] hover:shadow-md active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--mca-accent-ring)] dark:border-slate-700/60 dark:bg-slate-900/45 dark:text-slate-100 dark:hover:border-[color:var(--mca-accent-border-dark)] dark:focus-visible:ring-[color:var(--mca-accent-ring-dark)] sm:text-base";
                 button.textContent = option.label;
                 button.onclick = () => answerChoice(option.value, button);
                 return button;
@@ -1583,10 +1043,11 @@
                 button.type = 'button';
                 button.dataset.value = String(option.value);
                 button.dataset.label = option.label;
+                button.setAttribute('aria-label', String(option.label || option.value || 'Image answer option'));
                 button.className =
                     "group relative w-full aspect-square overflow-hidden rounded-2xl p-1.5 sm:p-2 " +
-                    "border border-slate-200/70 bg-white/60 shadow-lg backdrop-blur-xl dark:border-slate-700/30 dark:bg-slate-950/35 " +
-                    "transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30" +
+                    "border border-slate-200/70 bg-white/75 shadow-[0_10px_26px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/40 " +
+                    "transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--mca-accent-ring)] dark:focus-visible:ring-[color:var(--mca-accent-ring-dark)]" +
                     (IMAGE_OPTION_TILE_CLASS ? ` ${IMAGE_OPTION_TILE_CLASS}` : '');
 
                 const inner = document.createElement('div');
@@ -1622,8 +1083,8 @@
                 if (SHOW_IMAGE_OPTION_LABEL) {
                     const label = document.createElement('div');
                     label.className =
-                        "pointer-events-none absolute inset-x-2 bottom-2 rounded-xl border border-white/70 bg-white/90 px-3 py-2 text-center text-xs font-black " +
-                        "text-slate-900 shadow-md dark:border-slate-700/50 dark:bg-slate-900/85 dark:text-slate-50";
+                        "pointer-events-none absolute inset-x-2 bottom-2 flex min-h-[2.4rem] items-center justify-center rounded-xl border border-white/80 bg-white/95 px-3 py-2.5 text-center text-xs font-black " +
+                        "text-slate-900 shadow-md backdrop-blur dark:border-slate-700/60 dark:bg-slate-950/90 dark:text-slate-50 sm:text-sm";
                     label.textContent = option.label || option.value || 'Option';
                     button.appendChild(label);
                 }
@@ -1642,8 +1103,7 @@
                     return;
                 }
 
-                button.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
-                button.classList.remove('dark:bg-slate-800', 'dark:text-white');
+                button.classList.add('!border-emerald-400/80', '!bg-emerald-50', '!text-emerald-900', 'ring-2', 'ring-emerald-300/60', 'dark:!bg-emerald-950/30', 'dark:!text-emerald-100', 'dark:ring-emerald-300/30');
             }
 
             function markWrong(button) {
@@ -1652,22 +1112,31 @@
                     return;
                 }
 
-                button.classList.add('bg-rose-500', 'text-white', 'opacity-50', 'border-rose-600');
-                button.classList.remove('dark:bg-slate-800', 'dark:text-white');
+                button.classList.add('!border-rose-400/80', '!bg-rose-50', '!text-rose-900', 'opacity-75', 'ring-2', 'ring-rose-300/60', 'dark:!bg-rose-950/30', 'dark:!text-rose-100', 'dark:ring-rose-300/30');
             }
 
             function markSelected(button) {
                 if (OPTION_TYPE === 'image') {
-                    button.classList.add('ring-4', 'ring-indigo-400/70', 'border-indigo-400');
+                    button.classList.add('ring-4', 'ring-[color:var(--mca-accent-ring)]', 'border-[color:var(--mca-accent-border)]', 'dark:ring-[color:var(--mca-accent-ring-dark)]', 'dark:border-[color:var(--mca-accent-border-dark)]');
                     return;
                 }
 
-                button.classList.add('bg-indigo-500', 'text-white', 'border-indigo-600');
-                button.classList.remove('dark:bg-slate-800', 'dark:text-white');
+                button.classList.add('!border-[color:var(--mca-accent-border)]', '!bg-[var(--mca-accent-bg)]', '!text-[color:var(--mca-accent-text)]', 'ring-2', 'ring-[color:var(--mca-accent-ring)]', 'dark:!border-[color:var(--mca-accent-border-dark)]', 'dark:!bg-[var(--mca-accent-bg-dark)]', 'dark:!text-[color:var(--mca-accent-text-dark)]', 'dark:ring-[color:var(--mca-accent-ring-dark)]');
             }
 
             function renderQuestion() {
-                const q = QUESTIONS[idx];
+                if (!Array.isArray(QUESTIONS) || QUESTIONS.length === 0) {
+                    const qPromptText = document.getElementById('qPromptText');
+                    const qPromptNumber = document.getElementById('qPromptNumber');
+                    const grid = document.getElementById('optionsGrid');
+                    if (qPromptNumber) qPromptNumber.textContent = '-';
+                    if (qPromptText) qPromptText.textContent = 'No questions found.';
+                    if (grid) grid.innerHTML = '';
+                    updateStatusUI();
+                    return;
+                }
+
+                const q = QUESTIONS[idx] || {};
 
                 if (GAME_TYPE === 'emoji') {
                     const qEmoji = document.getElementById('qEmoji');
@@ -1698,9 +1167,18 @@
                 const selectedValues = selectedCorrectValues.get(idx) || new Set();
                 const isCompletedQuestion = completedQuestions.has(idx);
 
+                const rawOptions = Array.isArray(q.options) ? q.options : [];
                 const renderedOptions = SHUFFLE_OPTIONS
-                    ? shuffle((q.options || []).map(normalizeOption))
-                    : (q.options || []).map(normalizeOption);
+                    ? shuffle(rawOptions.map(normalizeOption))
+                    : rawOptions.map(normalizeOption);
+
+                if (renderedOptions.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.className = 'rounded-2xl border border-slate-200/70 bg-white/80 px-4 py-3 text-sm font-bold text-slate-600 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/45 dark:text-slate-300';
+                    empty.textContent = 'No answer options found.';
+                    grid.appendChild(empty);
+                    return;
+                }
 
                 renderedOptions.forEach((option, visualIndex) => {
                     const button = OPTION_TYPE === 'image'
@@ -1740,14 +1218,7 @@
 
                     showToast("Answer saved", "OK");
 
-                    setTimeout(() => {
-                        if (idx < QUESTIONS.length - 1) {
-                            idx += 1;
-                            renderQuestion();
-                        } else {
-                            finishGame();
-                        }
-                    }, 600);
+                    advanceAfterQuestionComplete();
                     return;
                 }
 
@@ -1767,7 +1238,7 @@
                     if (selectedValues.size >= expectedValues.size) {
                         completedQuestions.add(idx);
 
-                        if (!wrongedQuestions.has(idx)) {
+                        if (!wrongedQuestions.has(idx) && !hintedQuestions.has(idx)) {
                             firstTryCorrect++;
                         }
 
@@ -1777,14 +1248,7 @@
                             optionButton.disabled = true;
                         });
 
-                        setTimeout(() => {
-                            if (idx < QUESTIONS.length - 1) {
-                                idx += 1;
-                                renderQuestion();
-                            } else {
-                                finishGame();
-                            }
-                        }, 600);
+                        advanceAfterQuestionComplete();
                     } else {
                         updateStatusUI();
                     }
@@ -1811,8 +1275,9 @@
 
                 if (wrong) {
                     hintsLeft--;
+                    hintedQuestions.add(idx);
                     wrong.disabled = true;
-                    wrong.classList.add('opacity-30', 'grayscale');
+                    wrong.classList.add('opacity-35', 'grayscale');
                     updateStatusUI();
                     showToast("Hint used!", "💡");
                 }
@@ -1862,10 +1327,21 @@
             continueBtnModal?.addEventListener('click', () => {
                 stopSharedAudioPlayer();
                 stopCharacterAudios();
-                if (window.parent?.nextSlide) {
-                    window.parent.nextSlide();
-                }
+                try {
+                    if (window.parent && typeof window.parent.nextSlide === 'function') {
+                        window.parent.nextSlide();
+                        return;
+                    }
+                } catch (e) {}
+
+                try {
+                    window.parent.postMessage({ type: 'BEC_NAV', action: 'next' }, '*');
+                } catch (e) {}
             });
+
+            window.resetSlide = () => {
+                restartGame();
+            };
 
             window.stopSlideAudio = () => {
                 stopSharedAudioPlayer();

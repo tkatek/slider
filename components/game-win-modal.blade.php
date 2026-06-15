@@ -8,7 +8,7 @@
     $modalEmojiClass = trim((string) ($modalEmojiClass ?? 'game-win-emoji mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border text-3xl shadow-lg shadow-slate-950/10 sm:h-20 sm:w-20 sm:text-4xl'));
     $modalOverlayClass = trim((string) ($modalOverlayClass ?? 'game-win-overlay absolute inset-0 bg-slate-950/45 backdrop-blur-md dark:bg-black/65'));
     $modalWrapClass = trim((string) ($modalWrapClass ?? 'relative flex min-h-full w-full items-center justify-center p-5 sm:p-8'));
-    $modalPanelClass = trim((string) ($modalPanelClass ?? 'game-win-panel relative w-full max-w-xl max-h-[88dvh] overflow-y-auto rounded-[1.75rem] border bg-white/95 shadow-2xl shadow-slate-950/20 ring-1 ring-white/70 dark:bg-slate-950/95 dark:shadow-black/30 dark:ring-white/10'));
+    $modalPanelClass = trim((string) ($modalPanelClass ?? 'game-win-panel relative w-full max-w-2xl max-h-[88dvh] overflow-y-auto rounded-[1.75rem] border bg-white/95 shadow-2xl shadow-slate-950/20 ring-1 ring-white/70 dark:bg-slate-950/95 dark:shadow-black/30 dark:ring-white/10'));
     $modalContentClass = trim((string) ($modalContentClass ?? 'p-6 text-center sm:p-8'));
     $modalTopBarClass = trim((string) ($modalTopBarClass ?? 'mb-3 flex items-center justify-between gap-3 text-left'));
     $modalExtraView = trim((string) ($modalExtraView ?? ''));
