@@ -4,26 +4,34 @@ $customTitle = "Writing";
 
 $customSubtitle = "You borrowed something from your friend and accidentally damaged it. Write a short apology message.";
 
-$customCalloutText = "
-<span class='font-black text-yellow-500 dark:text-yellow-300'>Include:</span><br>
-&bull; what happened<br>
-&bull; your apology<br>
-&bull; how you feel<br>
-&bull; your solution<br><br>
+$customModelAnswer = "Hi Omar,
 
-<span class='font-black text-yellow-500 dark:text-yellow-300'>Use:</span><br>
-&bull; 50–70 words
-";
-
-$customPlaceholder = "Hi Omar,
-
-I’m really sorry, but I accidentally dropped your headphones yesterday, and now
-one side isn’t working properly. I feel terrible about it. I’d like to buy you a new pair
+I'm really sorry, but I accidentally dropped your headphones yesterday, and now
+one side isn't working properly. I feel terrible about it. I'd like to buy you a new pair
 or pay for the repair.
 
 Sorry again,
 
 Ali";
+
+$customCalloutText = "
+<div class='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+    <div>
+        <span class='font-black text-slate-700 dark:text-slate-200'>Include:</span><br>
+        &bull; what happened<br>
+        &bull; your apology<br>
+        &bull; how you feel<br>
+        &bull; your solution
+    </div>
+
+    <div>
+        <span class='font-black text-slate-700 dark:text-slate-200'>Use:</span><br>
+        &bull; 50&ndash;70 words
+    </div>
+</div>
+";
+
+$customPlaceholder = "";
 
 if (auth()->check()){
     $user = auth()->user();
@@ -59,8 +67,9 @@ $content = [
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
     'callout_text' => $customCalloutText,
+    'model_answer' => trim((string) ($customModelAnswer ?? '')),
     'page_title' => $finalTitle,
-    'placeholder' => $customPlaceholder
+    'placeholder' => $customPlaceholder,
 ];
 ?>
 

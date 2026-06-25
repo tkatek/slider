@@ -1,7 +1,7 @@
 <?php
 $content = [
     'title' => 'Practice 3',
-    'subtitle' => "Drag and drop each keyword next to it's definition",
+    'subtitle' => "Drag and drop each keyword next to its definition",
     'type' => 'image',
 
     'categories' => [

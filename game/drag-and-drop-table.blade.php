@@ -2,18 +2,23 @@
 
 @section('style')
     <style>
-        #poolBar[data-pool-placement="top"].is-stuck {
-            position: fixed !important;
-            top: var(--dd-top-pool-offset, 0px) !important;
-            left: 0;
-            right: 0;
-            z-index: 2200;
-            padding-left: .75rem;
-            padding-right: .75rem;
+        #poolBar[data-pool-placement="top"] {
+            top: calc(var(--dd-top-pool-offset, 0px) + .5rem);
         }
 
-        #poolBar[data-pool-placement="top"].is-stuck > div {
-            max-width: min(1500px, calc(100vw - 1.5rem));
+        @media (min-width: 640px) {
+            #poolBar[data-pool-placement="top"] {
+                top: calc(var(--dd-top-pool-offset, 0px) + .75rem);
+            }
+        }
+
+        #poolBar[data-pool-placement="top"].is-stuck {
+            position: fixed !important;
+            top: var(--dd-pool-fixed-top, calc(var(--dd-top-pool-offset, 0px) + .5rem)) !important;
+            left: var(--dd-pool-fixed-left, 0px) !important;
+            right: auto !important;
+            width: var(--dd-pool-fixed-width, 100%) !important;
+            z-index: 2200;
         }
 
         #poolBar[data-pool-placement="top"].is-stuck > div > div {
@@ -322,8 +327,8 @@
             <template id="tileTpl">
                 @if($isImagePoolType)
                     <div
-                            class="draggable-item word-tile relative aspect-square w-[58px] cursor-grab select-none overflow-hidden rounded-xl border border-white/60 bg-white/95 shadow-[0_8px_18px_rgba(2,6,23,0.12)] touch-none dark:border-slate-700/60 dark:bg-slate-900/85 sm:w-[68px] md:w-[74px]"
-                            style="touch-action:none;"
+                            class="draggable-item word-tile relative aspect-square w-[58px] cursor-grab select-none overflow-hidden rounded-xl border border-white/60 bg-white/95 shadow-[0_8px_18px_rgba(2,6,23,0.12)] touch-pan-y dark:border-slate-700/60 dark:bg-slate-900/85 sm:w-[68px] md:w-[74px]"
+                            style="touch-action: pan-y;"
                             draggable="false"
                             role="img"
                             aria-label=""
@@ -333,7 +338,7 @@
                 @else
                     <div
                             class="draggable-item word-tile relative flex min-h-[34px] max-w-full cursor-grab select-none items-center justify-center rounded-xl border border-white/20 px-3 py-2 pl-5 text-center text-[11px] font-black leading-tight text-white shadow-[0_8px_18px_rgba(2,6,23,0.12)] touch-none sm:min-h-[38px] sm:px-3.5 sm:py-2 sm:pl-5 sm:text-sm before:absolute before:left-2 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-white/55"
-                            style="touch-action:none;"
+                            style="touch-action: pan-y;"
                             draggable="false"
                     ></div>
                 @endif
@@ -387,64 +392,142 @@
 
         function updatePoolSafeSpace() {
             const shell = document.getElementById('ddShell');
-            if (shell) {
-                shell.style.paddingBottom = '';
-            }
-
+            shell?.style.removeProperty('padding-bottom');
             document.documentElement.style.setProperty('--dd-table-bank-safe-space', '0px');
-            requestAnimationFrame(updateTopPoolSticky);
+            requestTopPoolStickyUpdate();
         }
 
         let topPoolStickyMarker = null;
+        let topPoolStickySpacer = null;
+        let topPoolStickyFrame = null;
         let topPoolStickyInitialized = false;
 
-        function getScrollParentsForTopPool() {
-            const parents = [window];
-            const layout = document.querySelector('.slide-layout');
-            const viewport = document.getElementById('slideViewport');
+        function getTopPoolOffset(poolBar) {
+            const computedTop = poolBar ? parseFloat(getComputedStyle(poolBar).top) : NaN;
+            if (Number.isFinite(computedTop)) return computedTop;
 
-            if (layout) parents.push(layout);
-            if (viewport) parents.push(viewport);
-
-            return parents;
-        }
-
-        function getTopPoolOffset() {
             const raw = getComputedStyle(document.documentElement).getPropertyValue('--dd-top-pool-offset') || '0';
             const value = parseFloat(raw);
             return Number.isFinite(value) ? value : 0;
         }
 
+        function getScrollParentsForElement(element) {
+            const parents = [];
+            const overflowPattern = /^(auto|scroll|overlay)$/;
+            let node = element?.parentElement || null;
+
+            while (node && node !== document.body && node !== document.documentElement) {
+                const overflowY = getComputedStyle(node).overflowY;
+                if (overflowPattern.test(overflowY)) parents.push(node);
+                node = node.parentElement;
+            }
+
+            parents.push(window);
+            return [...new Set(parents)];
+        }
+
+        function requestTopPoolStickyUpdate() {
+            if (topPoolStickyFrame !== null) return;
+
+            topPoolStickyFrame = requestAnimationFrame(() => {
+                topPoolStickyFrame = null;
+                updateTopPoolSticky();
+            });
+        }
+
         function updateTopPoolSticky() {
             const poolBar = document.getElementById('poolBar');
-            const gameColumn = document.getElementById('ddGameColumn');
+            if (!poolBar || !topPoolStickyMarker || !topPoolStickySpacer) return;
 
-            if (!poolBar || !gameColumn || !topPoolStickyMarker) return;
+            const topOffset = getTopPoolOffset(poolBar);
+            const markerTop = topPoolStickyMarker.getBoundingClientRect().top;
+            const shouldStick = markerTop <= topOffset;
 
-            const offset = getTopPoolOffset();
-            const shouldStick = topPoolStickyMarker.getBoundingClientRect().top <= offset;
+            if (!shouldStick) {
+                poolBar.classList.remove('is-stuck');
+                poolBar.style.removeProperty('--dd-pool-fixed-left');
+                poolBar.style.removeProperty('--dd-pool-fixed-width');
+                poolBar.style.removeProperty('--dd-pool-fixed-top');
+                topPoolStickySpacer.classList.add('hidden');
+                topPoolStickySpacer.style.height = '';
+                return;
+            }
 
-            poolBar.classList.toggle('is-stuck', shouldStick);
-            gameColumn.style.paddingTop = shouldStick ? `${poolBar.offsetHeight + 12}px` : '';
+            const sourceRect = poolBar.classList.contains('is-stuck')
+                ? topPoolStickySpacer.getBoundingClientRect()
+                : poolBar.getBoundingClientRect();
+
+            poolBar.style.setProperty('--dd-pool-fixed-left', `${Math.max(0, sourceRect.left)}px`);
+            poolBar.style.setProperty('--dd-pool-fixed-width', `${sourceRect.width}px`);
+            poolBar.style.setProperty('--dd-pool-fixed-top', `${topOffset}px`);
+
+            topPoolStickySpacer.style.height = `${poolBar.offsetHeight}px`;
+            topPoolStickySpacer.classList.remove('hidden');
+            poolBar.classList.add('is-stuck');
         }
 
         function setupTopPoolSticky() {
             if (topPoolStickyInitialized) return;
 
             const poolBar = document.getElementById('poolBar');
-            if (!poolBar) return;
+            if (!poolBar || !poolBar.parentNode) return;
 
             topPoolStickyInitialized = true;
+
             topPoolStickyMarker = document.createElement('div');
             topPoolStickyMarker.setAttribute('aria-hidden', 'true');
-            topPoolStickyMarker.className = 'h-0 w-full';
-            poolBar.parentNode.insertBefore(topPoolStickyMarker, poolBar);
+            topPoolStickyMarker.className = 'h-0 w-full shrink-0';
 
-            getScrollParentsForTopPool().forEach((target) => {
-                target.addEventListener('scroll', updateTopPoolSticky, { passive: true });
+            topPoolStickySpacer = document.createElement('div');
+            topPoolStickySpacer.setAttribute('aria-hidden', 'true');
+            topPoolStickySpacer.className = 'hidden w-full shrink-0';
+
+            poolBar.parentNode.insertBefore(topPoolStickyMarker, poolBar);
+            poolBar.parentNode.insertBefore(topPoolStickySpacer, poolBar);
+
+            getScrollParentsForElement(poolBar).forEach((target) => {
+                target.addEventListener('scroll', requestTopPoolStickyUpdate, { passive: true });
             });
 
-            requestAnimationFrame(updateTopPoolSticky);
+            requestTopPoolStickyUpdate();
+        }
+
+        function getVerticalScrollContainer(element) {
+            const overflowPattern = /^(auto|scroll|overlay)$/;
+            let fallback = null;
+            let node = element?.parentElement || null;
+
+            while (node && node !== document.body && node !== document.documentElement) {
+                const overflowY = getComputedStyle(node).overflowY;
+
+                if (overflowPattern.test(overflowY)) {
+                    if (!fallback) fallback = node;
+                    if (node.scrollHeight > node.clientHeight + 1) return node;
+                }
+
+                node = node.parentElement;
+            }
+
+            const rootScroller = document.scrollingElement || document.documentElement;
+            if (rootScroller && rootScroller.scrollHeight > rootScroller.clientHeight + 1) {
+                return rootScroller;
+            }
+
+            return fallback || rootScroller;
+        }
+
+        function getScrollViewportRect(scroller) {
+            const rootScroller = document.scrollingElement || document.documentElement;
+
+            if (!scroller || scroller === rootScroller || scroller === document.body || scroller === document.documentElement) {
+                return { top: 0, bottom: window.innerHeight };
+            }
+
+            const rect = scroller.getBoundingClientRect();
+            return {
+                top: Math.max(0, rect.top),
+                bottom: Math.min(window.innerHeight, rect.bottom),
+            };
         }
 
         window.stopSlideAudio = function () {
@@ -489,7 +572,15 @@
                 this.isRevealingAnswers = false;
                 this.poolStartIndex = 0;
                 this.lastVisibleCap = 0;
-                this.scrollTimer = null;
+                this.pendingDrag = null;
+                this.dragScrollContainer = null;
+                this.autoScrollFrame = null;
+                this.autoScrollDelta = 0;
+                this.lastPointerX = 0;
+                this.lastPointerY = 0;
+                this.touchDragDelay = 180;
+                this.mouseDragThreshold = 4;
+                this.touchDragThreshold = 8;
                 this.playableTileTotal = ITEMS.filter((item) => !item.placed).length;
 
                 this.tileSkins = [
@@ -507,6 +598,7 @@
                 this.handlePointerMove = this.handlePointerMove.bind(this);
                 this.handlePointerUp = this.handlePointerUp.bind(this);
                 this.handlePointerCancel = this.handlePointerCancel.bind(this);
+                this.runAutoScroll = this.runAutoScroll.bind(this);
                 this.handlePoolPrev = this.handlePoolPrev.bind(this);
                 this.handlePoolNext = this.handlePoolNext.bind(this);
                 this.handleRevealAnswers = this.handleRevealAnswers.bind(this);
@@ -792,13 +884,43 @@
             }
 
             handlePointerDown(event, item) {
-                if (!item || item.classList.contains('locked') || this.gameCompleted || this.isRevealingAnswers) return;
+                if (
+                    !item ||
+                    item.classList.contains('locked') ||
+                    this.gameCompleted ||
+                    this.isRevealingAnswers ||
+                    this.draggedItem ||
+                    this.pendingDrag
+                ) return;
 
-                event.preventDefault();
+                if (event.isPrimary === false) return;
+                if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+                this.pointerId = event.pointerId;
+                this.dragScrollContainer = getVerticalScrollContainer(document.getElementById('ddShell') || item);
+                this.pendingDrag = {
+                    item,
+                    pointerType: event.pointerType || 'mouse',
+                    startX: event.clientX,
+                    startY: event.clientY,
+                    lastX: event.clientX,
+                    lastY: event.clientY,
+                    startedAt: performance.now(),
+                    mode: 'pending',
+                };
+
+                document.addEventListener('pointermove', this.handlePointerMove, { passive: false });
+                document.addEventListener('pointerup', this.handlePointerUp);
+                document.addEventListener('pointercancel', this.handlePointerCancel);
+            }
+
+            beginDrag(event, item) {
+                if (!item || this.draggedItem) return;
+                if (event.cancelable) event.preventDefault();
 
                 this.draggedItem = item;
                 this.originalParent = item.parentElement;
-                this.pointerId = event.pointerId;
+                this.pendingDrag = null;
 
                 document.body.classList.add('dd-drag-active');
                 document.body.style.userSelect = 'none';
@@ -823,15 +945,13 @@
 
                 this.offsetX = event.clientX - rect.left;
                 this.offsetY = event.clientY - rect.top;
+                this.lastPointerX = event.clientX;
+                this.lastPointerY = event.clientY;
 
                 document.body.appendChild(item);
                 this.updatePosition(event.clientX, event.clientY);
 
-                try { item.setPointerCapture(event.pointerId); } catch (_) {}
-
-                document.addEventListener('pointermove', this.handlePointerMove, { passive: false });
-                document.addEventListener('pointerup', this.handlePointerUp);
-                document.addEventListener('pointercancel', this.handlePointerCancel);
+                try { item.setPointerCapture(this.pointerId); } catch (_) {}
             }
 
             updatePosition(x, y) {
@@ -840,41 +960,142 @@
                 this.draggedItem.style.top = (y - this.offsetY) + 'px';
             }
 
-            handlePointerMove(event) {
-                if (!this.draggedItem) return;
-                if (this.pointerId !== null && event.pointerId !== this.pointerId) return;
+            scrollPendingGesture(event) {
+                const pending = this.pendingDrag;
+                const scroller = this.dragScrollContainer;
+                if (!pending || !scroller) return;
 
-                event.preventDefault();
+                if (event.cancelable) event.preventDefault();
+
+                const deltaY = pending.lastY - event.clientY;
+                pending.lastX = event.clientX;
+                pending.lastY = event.clientY;
+
+                if (deltaY) scroller.scrollTop += deltaY;
+            }
+
+            handlePointerMove(event) {
+                if (this.pointerId === null || event.pointerId !== this.pointerId) return;
+
+                this.lastPointerX = event.clientX;
+                this.lastPointerY = event.clientY;
+
+                if (!this.draggedItem) {
+                    const pending = this.pendingDrag;
+                    if (!pending) return;
+
+                    if (pending.mode === 'scrolling') {
+                        this.scrollPendingGesture(event);
+                        return;
+                    }
+
+                    const dx = event.clientX - pending.startX;
+                    const dy = event.clientY - pending.startY;
+                    const distance = Math.hypot(dx, dy);
+                    const isTouch = pending.pointerType === 'touch';
+                    const threshold = isTouch ? this.touchDragThreshold : this.mouseDragThreshold;
+
+                    if (distance < threshold) return;
+
+                    const elapsed = performance.now() - pending.startedAt;
+                    const hasHorizontalDragIntent = isTouch && Math.abs(dx) >= 12 && Math.abs(dx) > Math.abs(dy) * 1.35;
+
+                    if (isTouch && elapsed < this.touchDragDelay && !hasHorizontalDragIntent) {
+                        pending.mode = 'scrolling';
+                        this.scrollPendingGesture(event);
+                        return;
+                    }
+
+                    this.beginDrag(event, pending.item);
+                    if (!this.draggedItem) return;
+                }
+
+                if (event.cancelable) event.preventDefault();
                 this.updatePosition(event.clientX, event.clientY);
                 this.autoScroll(event.clientX, event.clientY);
                 this.checkHover(event.clientX, event.clientY);
             }
 
             autoScroll(x, y) {
-                clearInterval(this.scrollTimer);
+                this.lastPointerX = x;
+                this.lastPointerY = y;
+
+                const scroller = this.dragScrollContainer;
+                if (!scroller) {
+                    this.stopAutoScroll();
+                    return;
+                }
+
+                const viewport = getScrollViewportRect(scroller);
+                if (viewport.bottom <= viewport.top) {
+                    this.stopAutoScroll();
+                    return;
+                }
 
                 const poolBar = document.getElementById('poolBar');
-                const poolHeight = poolBar ? Math.ceil(poolBar.getBoundingClientRect().height || 0) : 0;
-                const thresholdTop = Math.max(72, poolHeight + 24);
-                const thresholdBottom = 76;
-                const speed = 10;
+                const poolRect = poolBar?.getBoundingClientRect();
+                const bottomThreshold = 76;
+                let topTrigger = viewport.top + 72;
+                const bottomTrigger = viewport.bottom - bottomThreshold;
+
+                if (poolRect && poolRect.bottom > viewport.top && poolRect.top < viewport.bottom) {
+                    topTrigger = Math.max(topTrigger, Math.min(bottomTrigger - 24, poolRect.bottom + 24));
+                }
+
                 let dy = 0;
 
-                if (y < thresholdTop) dy = -speed;
-                if (y > window.innerHeight - thresholdBottom) dy = speed;
+                if (y < topTrigger) {
+                    const depth = Math.min(1, Math.max(0, (topTrigger - y) / 80));
+                    dy = -Math.ceil(4 + (10 * depth));
+                } else if (y > bottomTrigger) {
+                    const depth = Math.min(1, Math.max(0, (y - bottomTrigger) / 80));
+                    dy = Math.ceil(4 + (10 * depth));
+                }
 
-                if (!dy) return;
+                const maxScrollTop = Math.max(0, scroller.scrollHeight - scroller.clientHeight);
+                if ((dy < 0 && scroller.scrollTop <= 0) || (dy > 0 && scroller.scrollTop >= maxScrollTop)) {
+                    dy = 0;
+                }
 
-                this.scrollTimer = setInterval(() => {
-                    const layout = document.querySelector('.slide-layout');
-                    const scrollingElement = document.scrollingElement || document.documentElement;
+                this.autoScrollDelta = dy;
 
-                    window.scrollBy(0, dy);
-                    if (scrollingElement) scrollingElement.scrollTop += dy;
-                    if (layout && layout.scrollHeight > layout.clientHeight) layout.scrollTop += dy;
+                if (!dy) {
+                    this.stopAutoScroll();
+                    return;
+                }
 
-                    this.checkHover(x, y);
-                }, 16);
+                if (this.autoScrollFrame === null) {
+                    this.autoScrollFrame = requestAnimationFrame(this.runAutoScroll);
+                }
+            }
+
+            runAutoScroll() {
+                this.autoScrollFrame = null;
+
+                if (!this.draggedItem || !this.autoScrollDelta || !this.dragScrollContainer) return;
+
+                const scroller = this.dragScrollContainer;
+                const maxScrollTop = Math.max(0, scroller.scrollHeight - scroller.clientHeight);
+                const currentScrollTop = scroller.scrollTop;
+                const nextScrollTop = Math.max(0, Math.min(maxScrollTop, currentScrollTop + this.autoScrollDelta));
+
+                if (nextScrollTop === currentScrollTop) {
+                    this.autoScrollDelta = 0;
+                    return;
+                }
+
+                scroller.scrollTop = nextScrollTop;
+                this.checkHover(this.lastPointerX, this.lastPointerY);
+                this.autoScrollFrame = requestAnimationFrame(this.runAutoScroll);
+            }
+
+            stopAutoScroll() {
+                this.autoScrollDelta = 0;
+
+                if (this.autoScrollFrame !== null) {
+                    cancelAnimationFrame(this.autoScrollFrame);
+                    this.autoScrollFrame = null;
+                }
             }
 
             checkHover(x, y) {
@@ -893,19 +1114,42 @@
                 return { zone: below?.closest?.('.dropzone') || null };
             }
 
-            cleanupDrag() {
-                clearInterval(this.scrollTimer);
-                document.body.classList.remove('dd-drag-active');
-                document.body.style.userSelect = '';
+            removePointerListeners() {
                 document.removeEventListener('pointermove', this.handlePointerMove);
                 document.removeEventListener('pointerup', this.handlePointerUp);
                 document.removeEventListener('pointercancel', this.handlePointerCancel);
+            }
+
+            cleanupPendingInteraction() {
+                this.stopAutoScroll();
+                this.removePointerListeners();
+                this.pendingDrag = null;
+                this.dragScrollContainer = null;
+                this.pointerId = null;
+            }
+
+            cleanupDrag() {
+                this.stopAutoScroll();
+
+                try {
+                    if (this.draggedItem && this.pointerId !== null && this.draggedItem.hasPointerCapture?.(this.pointerId)) {
+                        this.draggedItem.releasePointerCapture(this.pointerId);
+                    }
+                } catch (_) {}
+
+                document.body.classList.remove('dd-drag-active');
+                document.body.style.userSelect = '';
+                this.removePointerListeners();
                 this.clearDropStates();
             }
 
             handlePointerUp(event) {
-                if (!this.draggedItem) return;
-                if (this.pointerId !== null && event.pointerId !== this.pointerId) return;
+                if (this.pointerId === null || event.pointerId !== this.pointerId) return;
+
+                if (!this.draggedItem) {
+                    this.cleanupPendingInteraction();
+                    return;
+                }
 
                 this.cleanupDrag();
 
@@ -926,8 +1170,14 @@
                 this.fail({ countAsMistake: droppedOnZone });
             }
 
-            handlePointerCancel() {
-                if (!this.draggedItem) return;
+            handlePointerCancel(event) {
+                if (this.pointerId === null || (event && event.pointerId !== this.pointerId)) return;
+
+                if (!this.draggedItem) {
+                    this.cleanupPendingInteraction();
+                    return;
+                }
+
                 this.cleanupDrag();
                 this.fail({ countAsMistake: false });
             }
@@ -1022,9 +1272,12 @@
             }
 
             resetDragState() {
+                this.stopAutoScroll();
                 this.draggedItem = null;
+                this.pendingDrag = null;
                 this.placeholder = null;
                 this.originalParent = null;
+                this.dragScrollContainer = null;
                 this.pointerId = null;
             }
 
@@ -1033,7 +1286,7 @@
             }
 
             handleRevealAnswers() {
-                if (this.draggedItem || this.isRevealingAnswers || this.gameCompleted || this.hasUsedReveal) return;
+                if (this.draggedItem || this.pendingDrag || this.isRevealingAnswers || this.gameCompleted || this.hasUsedReveal) return;
 
                 const remainingTiles = this.getRemainingTiles();
                 if (!remainingTiles.length) return;
@@ -1097,16 +1350,16 @@
             updatePoolSafeSpace();
             dragDropTableGame.init();
             setupTopPoolSticky();
-            updateTopPoolSticky();
+            requestTopPoolStickyUpdate();
 
             window.addEventListener('resize', () => {
                 updatePoolSafeSpace();
                 dragDropTableGame.refreshPoolVisibility();
-                updateTopPoolSticky();
+                requestTopPoolStickyUpdate();
             }, { passive: true });
 
-            setTimeout(() => { updatePoolSafeSpace(); updateTopPoolSticky(); }, 120);
-            setTimeout(() => { updatePoolSafeSpace(); updateTopPoolSticky(); }, 420);
+            setTimeout(requestTopPoolStickyUpdate, 120);
+            setTimeout(requestTopPoolStickyUpdate, 420);
         });
     </script>
 @endsection

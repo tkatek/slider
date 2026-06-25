@@ -35,6 +35,11 @@
 
     $lessonClass = trim((string) ($content['lesson_class'] ?? 'text-[1.9rem] sm:text-[2.35rem] md:text-[2.8rem] lg:text-[3.25rem] xl:text-[3.75rem]'));
     $lessonAllowHtml = !empty($content['lesson_allow_html']);
+    $preserveRepeatedSpaces = static function (string $value): string {
+        return preg_replace_callback('/ {2,}/', static function (array $matches): string {
+            return str_repeat('&nbsp;', strlen($matches[0]));
+        }, e($value));
+    };
 
     $pageTitle = $isOutro
         ? $title
@@ -99,7 +104,7 @@
                                                         @if($lessonAllowHtml)
                                                             {!! $lesson !!}
                                                         @else
-                                                            {{ $lesson }}
+                                                            {!! $preserveRepeatedSpaces($lesson) !!}
                                                         @endif
                                                     </span>
                                                 </h1>

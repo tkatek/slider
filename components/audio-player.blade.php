@@ -1,6 +1,7 @@
 @php
     $audioPlayerUid = $audioPlayerUid ?? ('audio_player_' . substr(md5(($playerAudio ?? '') . uniqid('', true)), 0, 10));
     $audioPlayerFloating = $audioPlayerFloating ?? true;
+    $audioPlayerScriptAllowHtml = !empty($audioPlayerScriptAllowHtml);
 @endphp
 
 <style>
@@ -379,7 +380,11 @@
 
                                     <div class="min-w-0 flex-1">
                                         <div class="text-xs font-semibold text-slate-700 dark:text-slate-200 sm:text-sm">
-                                            {{ $line }}
+                                            @if($audioPlayerScriptAllowHtml)
+                                                {!! $line !!}
+                                            @else
+                                                {{ $line }}
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

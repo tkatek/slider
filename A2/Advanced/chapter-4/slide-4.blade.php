@@ -1,12 +1,12 @@
 <?php
 $content = [
-    'video'     => materialAsset('slider/A2/Advanced/chapter-1/'),
+    'video'     => materialAsset('slider/A2/Advanced/chapter-4/video/have-you-ever-encrypted/have-you-ever.m3u8'),
     'thumbnail' => materialAsset('slider/A2/Advanced/chapter-4/img/slide4.webp'),
     'isQuiz'    => 0,
 
     'questions' => [
         [
-            'time'           => 12.5,
+            'time'           => 10200,
             'type'           => 'multiple_choice',
             'question'       => '1. Has John ever been to Italy?',
             'options'        => [
@@ -14,11 +14,11 @@ $content = [
                 'Yes, he has.',
                 'He wants to go.',
             ],
-            'correct_answer' => 'Yes, he has.',
+            'correct_answer' => 1,
             'points'         => 1,
         ],
         [
-            'time'           => 16.5,
+            'time'           => 15200,
             'type'           => 'multiple_choice',
             'question'       => '2. Has John ever visited Ireland?',
             'options'        => [
@@ -26,11 +26,11 @@ $content = [
                 "No, he hasn't.",
                 'He is there now.',
             ],
-            'correct_answer' => "No, he hasn't.",
+            'correct_answer' => 1,
             'points'         => 1,
         ],
         [
-            'time'           => 21.5,
+            'time'           => 21900,
             'type'           => 'multiple_choice',
             'question'       => '3. How many times has John eaten Sushi?',
             'options'        => [
@@ -38,11 +38,11 @@ $content = [
                 'Only once.',
                 'Many times.',
             ],
-            'correct_answer' => 'Many times.',
+            'correct_answer' => 2,
             'points'         => 1,
         ],
         [
-            'time'           => 24.5,
+            'time'           => 27200,
             'type'           => 'multiple_choice',
             'question'       => '4. Has John ever played golf?',
             'options'        => [
@@ -50,7 +50,7 @@ $content = [
                 'Yes, he plays every week.',
                 "He doesn't like golf.",
             ],
-            'correct_answer' => 'No, he has never played.',
+            'correct_answer' => 0,
             'points'         => 1,
         ],
     ],
@@ -59,14 +59,14 @@ $content = [
         ['start' => 0,  'end' => 3,  'text' => 'Lady: Hello John, can I ask you some questions?'],
         ['start' => 3,  'end' => 7,  'text' => 'John: Of course.'],
 
-        ['start' => 7,  'end' => 12, 'text' => 'Lady: Have you been to Italy?'],
-        ['start' => 12, 'end' => 12.8, 'text' => 'John: Yes, I have.'],
+        ['start' => 7,  'end' => 8, 'text' => 'Lady: Have you been to Italy?'],
+        ['start' => 8.5, 'end' => 10, 'text' => 'John: Yes, I have.'],
 
-        ['start' => 12.8, 'end' => 16, 'text' => 'Lady: Have you ever been to Ireland?'],
-        ['start' => 16,   'end' => 16.8, 'text' => "John: No, I haven't."],
+        ['start' => 11.8, 'end' => 13.5, 'text' => 'Lady: Have you ever been to Ireland?'],
+        ['start' => 13.8,   'end' => 15, 'text' => "John: No, I haven't."],
 
-        ['start' => 16.8, 'end' => 21, 'text' => 'Lady: Have you ever eaten Sushi?'],
-        ['start' => 21,   'end' => 21.8, 'text' => 'John: Yes, I have, many times.'],
+        ['start' => 16.8, 'end' => 19, 'text' => 'Lady: Have you ever eaten Sushi?'],
+        ['start' => 19,   'end' => 21.8, 'text' => 'John: Yes, I have, many times.'],
 
         ['start' => 21.8, 'end' => 24, 'text' => 'Lady: Have you ever played golf?'],
         ['start' => 24,   'end' => 27, 'text' => 'John: No, I have never played golf.'],

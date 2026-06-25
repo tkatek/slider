@@ -35,19 +35,19 @@ $content = [
 
     'questions' => [
         [
-            'prompt'  => 'What is he apologizing for?',
-            'correct' => 'He hit her car.',
+            'prompt'  => 'What is she apologizing for?',
+            'correct' => 'She hit his car.',
             'options' => [
-                'He hit her car.',
-                'He scratched her bicycle.',
+                'She hit his car.',
+                'She scratched his bicycle.',
             ],
         ],
         [
-            'prompt'  => 'What is he apologizing for?',
-            'correct' => 'He forgot her birthday.',
+            'prompt'  => 'What is she apologizing for?',
+            'correct' => 'She forgot her birthday.',
             'options' => [
-                'He forgot their date.',
-                'He forgot her birthday.',
+                'She forgot their date.',
+                'She forgot her birthday.',
             ],
         ],
         [

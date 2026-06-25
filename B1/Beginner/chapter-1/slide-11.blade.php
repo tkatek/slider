@@ -16,7 +16,7 @@ $content = [
     'scramble' => [
         'Would you mind feeding my cat on Saturday?',
         'Would you be able to help me move into my new house?',
-        'could you please water my plants on Saturday?',
+        'Could you please water my plants on Saturday?',
         'Would you mind helping me carry this bag?',
         "Would you be able to take care of my house while I'm gone?",
     ],

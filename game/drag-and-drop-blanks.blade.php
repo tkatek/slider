@@ -1174,7 +1174,9 @@
                              class="relative isolate {{ $dialogueCardClass }} text-left overflow-hidden rounded-[1.6rem] border border-slate-200/70 bg-white/70 shadow-[0_18px_55px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60 lg:overflow-visible mb-4">
                             <div id="ddbDialogueInner" class="relative z-[1] px-3 py-3 sm:px-4 sm:py-3.5 lg:overflow-visible">
                                 <div class="space-y-2.5 sm:space-y-3">
-                                    @include('slider.components.audio-player')
+                                    @include('slider.components.audio-player', [
+                                        'audioPlayerScriptAllowHtml' => true,
+                                    ])
 
                                     <div class="ddb-game-section w-full rounded-[1.2rem]">
                                         @if($isSpeakerMatchingMode)

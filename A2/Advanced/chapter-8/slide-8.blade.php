@@ -1,14 +1,14 @@
 <?php
 $content = [
-    'video'     => materialAsset('slider/A2/'),
+    'video'     => materialAsset('slider/A2/Advanced/chapter-8/video/risks-encrypted/risks.m3u8'),
     'thumbnail' => materialAsset('slider/A2/Advanced/chapter-8/img/slide8.webp'),
     'isQuiz'    => 1,
 
     'questions' => [
         [
-            'time' => 12000,
+            'time' => 5200,
             'type' => 'multiple_choice',
-            'question' => 'What does the speaker say about success?',
+            'question' => '1. What does the speaker say about success?',
             'options' => [
                 'Success needs risks.',
                 'Success is easy.',
@@ -19,9 +19,9 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 32000,
+            'time' => 30200,
             'type' => 'multiple_choice',
-            'question' => 'What did the speaker do after failing an audition?',
+            'question' => '2. What did the speaker do after failing an audition?',
             'options' => [
                 'He quit acting.',
                 'He became angry.',
@@ -32,22 +32,9 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 62000,
+            'time' => 42700,
             'type' => 'multiple_choice',
-            'question' => 'What does “Fall forward” mean?',
-            'options' => [
-                'Stop trying',
-                'Learn from failure',
-                'Avoid risks',
-                'Forget mistakes',
-            ],
-            'correct_answer' => 1,
-            'points' => 10,
-        ],
-        [
-            'time' => 82000,
-            'type' => 'multiple_choice',
-            'question' => 'Why does the speaker mention Reggie Jackson and Thomas Edison?',
+            'question' => '3. Why does the speaker mention Reggie Jackson and Thomas Edison?',
             'options' => [
                 'To show famous people',
                 'To show people who failed and succeeded',
@@ -58,9 +45,22 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 112000,
+            'time' => 49700,
             'type' => 'multiple_choice',
-            'question' => 'According to the video, what can help define your life?',
+            'question' => '4. What does “Fall forward” mean?',
+            'options' => [
+                'Stop trying',
+                'Learn from failure',
+                'Avoid risks',
+                'Forget mistakes',
+            ],
+            'correct_answer' => 1,
+            'points' => 10,
+        ],
+        [
+            'time' => 63700,
+            'type' => 'multiple_choice',
+            'question' => '5. According to the video, what can help define your life?',
             'options' => [
                 'Your failures only',
                 'Your school only',
@@ -75,62 +75,62 @@ $content = [
     'subtitles' => [
         [
             'start' => 0,
-            'end' => 7,
+            'end' => 5,
             'text' => 'I learned that nothing in life is important unless you take risks.',
         ],
         [
-            'start' => 7,
-            'end' => 13,
+            'start' => 5.5,
+            'end' => 9.5,
             'text' => 'Nelson Mandela said: “There is no passion in playing small.”',
         ],
         [
-            'start' => 13,
-            'end' => 22,
+            'start' => 10,
+            'end' => 17.5,
             'text' => 'In the acting business, people fail many times. Early in my career, I auditioned for a musical, but I did not get the job.',
         ],
         [
-            'start' => 22,
-            'end' => 34,
+            'start' => 17.7,
+            'end' => 27,
             'text' => 'But I did not quit. I prepared for the next audition, and the next one. I failed many times, but I continued trying.',
         ],
         [
-            'start' => 34,
-            'end' => 42,
+            'start' => 27,
+            'end' => 30,
             'text' => 'Every failure can help you move closer to success.',
         ],
         [
-            'start' => 42,
-            'end' => 55,
+            'start' => 30.7,
+            'end' => 37,
             'text' => 'For example, baseball player Reggie Jackson failed many times, but people remember his success.',
         ],
         [
-            'start' => 55,
-            'end' => 65,
+            'start' => 37.7,
+            'end' => 42.5,
             'text' => 'Thomas Edison also failed many experiments before inventing the light bulb.',
         ],
         [
-            'start' => 65,
-            'end' => 72,
+            'start' => 43,
+            'end' => 46,
             'text' => 'The important thing is: “Fall forward.”',
         ],
         [
-            'start' => 72,
-            'end' => 82,
+            'start' => 46.5,
+            'end' => 49.5,
             'text' => 'This means learning from failure and continuing to try.',
         ],
         [
-            'start' => 82,
-            'end' => 94,
+            'start' => 50,
+            'end' => 56.5,
             'text' => 'If you want something new, you must do something new. You must take risks and believe in yourself.',
         ],
         [
-            'start' => 94,
-            'end' => 108,
+            'start' => 57,
+            'end' => 63.5,
             'text' => 'In the end, your choices, the people you meet, and the risks you take will help define your life.',
         ],
         [
-            'start' => 108,
-            'end' => 116,
+            'start' => 64,
+            'end' => 68,
             'text' => 'So remember: “Don’t be afraid to fail. Fall forward.”',
         ],
     ],

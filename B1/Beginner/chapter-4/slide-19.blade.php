@@ -4,19 +4,27 @@ $customTitle = "Writing";
 
 $customSubtitle = "Write a short review of a movie, show, concert, or game.";
 
-$customCalloutText = "
-<span class='font-black text-yellow-500 dark:text-yellow-300'>Include:</span><br>
-&bull; what it was<br>
-&bull; what happened<br>
-&bull; your opinion<br>
-&bull; Why you prefer it<br><br>
+$customModelAnswer = "I recently watched a comedy movie called Night at the Museum. The story was about a security guard who discovered that the museum characters came alive at night. Many funny and exciting events happened during the movie. I really enjoyed the film because it was entertaining and full of adventure. The actors were also very good. I would definitely recommend this movie to anyone who enjoys comedy and family-friendly entertainment.";
 
-<span class='font-black text-yellow-500 dark:text-yellow-300'>Use:</span><br>
-&bull; 60–80 words<br>
-&bull; the provided model as a guide
+$customCalloutText = "
+<div class='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+    <div>
+        <span class='font-black text-slate-700 dark:text-slate-200'>Include:</span><br>
+        &bull; what it was<br>
+        &bull; what happened<br>
+        &bull; your opinion<br>
+        &bull; why you prefer it
+    </div>
+
+    <div>
+        <span class='font-black text-slate-700 dark:text-slate-200'>Use:</span><br>
+        &bull; 60&ndash;80 words<br>
+        &bull; the provided model as a guide
+    </div>
+</div>
 ";
 
-$customPlaceholder = "I recently watched a comedy movie called Night at the Museum. The story was about a security guard who discovered that the museum characters came alive at night. Many funny and exciting events happened during the movie. I really enjoyed the film because it was entertaining and full of adventure. The actors were also very good. I would definitely recommend this movie to anyone who enjoys comedy and family-friendly entertainment.";
+$customPlaceholder = "";
 
 if (auth()->check()){
     $user = auth()->user();
@@ -52,8 +60,9 @@ $content = [
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
     'callout_text' => $customCalloutText,
+    'model_answer' => trim((string) ($customModelAnswer ?? '')),
     'page_title' => $finalTitle,
-    'placeholder' => $customPlaceholder
+    'placeholder' => $customPlaceholder,
 ];
 ?>
 

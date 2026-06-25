@@ -64,7 +64,7 @@ $content = [
                                 <ul class="mt-4 space-y-3 text-sm sm:text-base font-bold leading-[1.45] text-slate-800 dark:text-slate-100">
                                     <li class="flex items-start gap-3">
                                         <span class="mt-1 h-2.5 w-2.5 flex-none rounded-full bg-slate-900 dark:bg-slate-100"></span>
-                                        <span>“The crocodile <span class="font-black text-emerald-600 dark:text-emerald-300">is stealing</span> the sausages.” (can be adapted)</span>
+                                        <span>“The crocodile <span class="font-black text-emerald-600 dark:text-emerald-300">is stealing</span> the sausages.” </span>
                                     </li>
 
                                     <li class="flex items-start gap-3">

@@ -8,6 +8,7 @@
     $practiceNote = $practiceNote ?? ($content['practice_note'] ?? '');
 
     $gameTitleClass = $titleClass ?? ($content['title_class'] ?? 'text-4xl md:text-5xl lg:text-6xl');
+    $gameSubtitleClass = $subtitleClass ?? ($content['subtitle_class'] ?? 'text-base sm:text-lg lg:text-[1.15rem]');
 
     // Theme fallback
     $primaryGradient = $theme['primary_color'] ?? 'bg-gradient-to-r from-indigo-500 to-blue-500';
@@ -21,7 +22,7 @@
     </h1>
 
     @if($gameSubtitle !== '')
-        <p class="mx-auto max-w-5xl text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.15rem]">
+        <p class="mx-auto max-w-5xl {{ $gameSubtitleClass }} font-bold leading-[1.45] text-slate-900 dark:text-slate-100">
             {!! $gameSubtitle !!}
         </p>
     @endif

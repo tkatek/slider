@@ -1,12 +1,12 @@
 <?php
 $content = [
-    'video'     => materialAsset('slider/A2/Advanced/chapter-1/'),
+    'video'     => materialAsset('slider/A2/Advanced/chapter-2/video/unusual-jobs-encrypted/unusual-jobs.m3u8'),
     'thumbnail' => materialAsset('slider/A2/Advanced/chapter-2/img/slide5.webp'),
     'isQuiz'    => 0,
 
     'questions' => [
         [
-            'time'           => 32,
+            'time'           => 26200,
             'type'           => 'multiple_choice',
             'question'       => 'What does a professional sleeper do?',
             'options'        => [
@@ -15,11 +15,11 @@ $content = [
                 'Cooks food',
                 'Works at funerals',
             ],
-            'correct_answer' => 'Tests beds by sleeping',
+            'correct_answer' => 1,
             'points'         => 1,
         ],
         [
-            'time'           => 48,
+            'time'           => 38000,
             'type'           => 'multiple_choice',
             'question'       => 'Why do people taste pet food?',
             'options'        => [
@@ -28,11 +28,11 @@ $content = [
                 'To check if it is good and healthy',
                 'To give it to animals',
             ],
-            'correct_answer' => 'To check if it is good and healthy',
+            'correct_answer' => 2,
             'points'         => 1,
         ],
         [
-            'time'           => 64,
+            'time'           => 51200,
             'type'           => 'multiple_choice',
             'question'       => 'What does a water slide tester do?',
             'options'        => [
@@ -41,11 +41,11 @@ $content = [
                 'Tries and rates water slides',
                 'Sells tickets',
             ],
-            'correct_answer' => 'Tries and rates water slides',
+            'correct_answer' => 2,
             'points'         => 1,
         ],
         [
-            'time'           => 78,
+            'time'           => 58700,
             'type'           => 'multiple_choice',
             'question'       => 'Where does a professional mourner work?',
             'options'        => [
@@ -54,11 +54,11 @@ $content = [
                 'At a school',
                 'At funerals',
             ],
-            'correct_answer' => 'At funerals',
+            'correct_answer' => 3,
             'points'         => 1,
         ],
         [
-            'time'           => 92,
+            'time'           => 66300,
             'type'           => 'multiple_choice',
             'question'       => 'What is the main idea of the text?',
             'options'        => [
@@ -67,33 +67,33 @@ $content = [
                 'Jobs are always difficult',
                 'People should not work',
             ],
-            'correct_answer' => 'Unusual jobs can be interesting and real',
+            'correct_answer' => 1,
             'points'         => 1,
         ],
     ],
 
     'subtitles'  => [
-        ['start' => 0,  'end' => 5,  'text' => 'You should think about your job again.'],
-        ['start' => 5,  'end' => 12, 'text' => 'Imagine waking up and working as a professional sleeper, or testing water slides for your job.'],
-        ['start' => 12, 'end' => 17, 'text' => 'Are you curious? Let’s look at some unusual jobs.'],
+        ['start' => 0,  'end' => 2,  'text' => 'You should think about your job again.'],
+        ['start' => 2.5,  'end' => 9, 'text' => 'Imagine waking up and working as a professional sleeper, or testing water slides for your job.'],
+        ['start' => 9.5, 'end' => 11, 'text' => 'Are you curious? '],
+        ['start' => 12, 'end' => 14.5, 'text' => 'Let’s look at some unusual jobs.'],
+        ['start' => 15.5, 'end' => 18, 'text' => 'First, a professional sleeper.'],
+        ['start' => 20, 'end' => 23, 'text' => 'Companies pay people to sleep and test beds.'],
+        ['start' => 23.5, 'end' => 26, 'text' => 'They check if the beds are comfortable.'],
 
-        ['start' => 17, 'end' => 21, 'text' => 'First, a professional sleeper.'],
-        ['start' => 21, 'end' => 27, 'text' => 'Companies pay people to sleep and test beds.'],
-        ['start' => 27, 'end' => 32, 'text' => 'They check if the beds are comfortable.'],
+        ['start' => 28.7, 'end' => 30.5, 'text' => 'Next, a pet food taster.'],
+        ['start' => 32, 'end' => 34, 'text' => 'These people taste pet food.'],
+        ['start' => 34.5, 'end' => 38, 'text' => 'They check if the food is good and healthy for animals.'],
 
-        ['start' => 32, 'end' => 36, 'text' => 'Next, a pet food taster.'],
-        ['start' => 36, 'end' => 41, 'text' => 'These people taste pet food.'],
-        ['start' => 41, 'end' => 48, 'text' => 'They check if the food is good and healthy for animals.'],
+        ['start' => 38, 'end' => 44, 'text' => 'Now, for exciting jobs: a water slide tester.'],
+        ['start' => 44.7, 'end' => 48, 'text' => 'They travel to different places and try water slides.'],
+        ['start' => 48, 'end' => 51, 'text' => 'They say which slides are the best.'],
 
-        ['start' => 48, 'end' => 53, 'text' => 'Now, for exciting jobs: a water slide tester.'],
-        ['start' => 53, 'end' => 60, 'text' => 'They travel to different places and try water slides.'],
-        ['start' => 60, 'end' => 64, 'text' => 'They say which slides are the best.'],
+        ['start' => 52, 'end' => 54, 'text' => 'Finally, a professional mourner.'],
+        ['start' => 55, 'end' => 58.5, 'text' => 'These people go to funerals and show sadness.'],
 
-        ['start' => 64, 'end' => 69, 'text' => 'Finally, a professional mourner.'],
-        ['start' => 69, 'end' => 78, 'text' => 'These people go to funerals and show sadness.'],
-
-        ['start' => 78, 'end' => 84, 'text' => 'So, when you think about your future job,'],
-        ['start' => 84, 'end' => 92, 'text' => 'maybe try something different and unusual.'],
+        ['start' => 59.5, 'end' => 63, 'text' => 'So, when you think about your future job,'],
+        ['start' => 63, 'end' => 66, 'text' => 'maybe try something different and unusual.'],
     ],
 ];
 ?>

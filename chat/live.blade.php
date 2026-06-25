@@ -2,7 +2,7 @@
 
 @section("style")
     @php
-        $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
+        $isOrangeTheme = ($theme['name'] ?? null) === 'orange' || ($content['accent'] ?? null) === 'orange';
         $calloutBorderColor = $isOrangeTheme ? 'rgba(251, 146, 60, 0.26)' : 'rgba(99, 102, 241, 0.22)';
         $calloutBgStart = $isOrangeTheme ? 'rgba(251, 191, 36, 0.14)' : 'rgba(99, 102, 241, 0.12)';
         $calloutBgEnd = $isOrangeTheme ? 'rgba(249, 115, 22, 0.10)' : 'rgba(14, 165, 233, 0.08)';
@@ -68,6 +68,7 @@
 @section("content")
     @php
         $chatCallout = trim((string) ($content['callout_text'] ?? ''));
+        $modelAnswer = trim((string) ($content['model_answer'] ?? ''));
     @endphp
 
     <div class="min-h-[100dvh] flex flex-col items-center justify-center">
@@ -92,6 +93,44 @@
     </div>
 
     <div id="toastContainer" class="fixed bottom-8 right-8 flex flex-col gap-3 z-[2000]"></div>
+
+    @if($modelAnswer !== '')
+        <div
+                id="modelAnswerModal"
+                class="fixed inset-0 z-[2100] hidden items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modelAnswerTitle"
+        >
+            <button
+                    type="button"
+                    class="absolute inset-0 cursor-default"
+                    aria-label="Close model answer"
+                    data-close-model-answer
+            ></button>
+
+            <section class="relative w-full max-w-xl overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-5 shadow-2xl shadow-slate-950/20 dark:border-slate-700 dark:bg-slate-900 sm:p-6">
+                <div class="flex items-start justify-between gap-4">
+                    <h2 id="modelAnswerTitle" class="text-2xl font-black leading-tight text-slate-950 dark:text-white">
+                        Model answer
+                    </h2>
+
+                    <button
+                            type="button"
+                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xl font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
+                            aria-label="Close model answer"
+                            data-close-model-answer
+                    >
+                        &times;
+                    </button>
+                </div>
+
+                <div class="mt-5 rounded-2xl border border-orange-200 bg-orange-50/70 p-4 dark:border-orange-500/25 dark:bg-orange-500/10">
+                    <p class="whitespace-pre-wrap text-base font-bold leading-relaxed text-slate-800 dark:text-slate-100 sm:text-lg">{{ $modelAnswer }}</p>
+                </div>
+            </section>
+        </div>
+    @endif
 @endsection
 
 @section('script')
@@ -107,6 +146,7 @@
         const myName = @json($content['user']['name'] . ' ' . $content['user']['last_name']);
         const myAvatar = @json($content['user_avatar']);
         const customPlaceholder = @json($content['placeholder'] ?? 'Type here...');
+        const modelAnswerText = @json(trim((string) ($content['model_answer'] ?? '')));
 
         const inputSideImage = @json($content['image'] ?? null);
         const hasInputSideImage = !!inputSideImage;
@@ -114,6 +154,15 @@
         window.addEventListener('DOMContentLoaded', () => {
             initPusher();
             renderInitialGrid();
+            document.querySelectorAll('[data-close-model-answer]').forEach((button) => {
+                button.addEventListener('click', closeModelAnswer);
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeModelAnswer();
+                }
+            });
 
             // GSAP Entrance
             gsap.to("#mainTitle", {
@@ -187,6 +236,13 @@
                             <h3 class="font-bold text-slate-900 dark:text-slate-100 leading-none">You</h3>
                             <span class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">${isTeacher ? 'Teacher' : 'Student'}</span>
                         </div>
+                        ${modelAnswerText ? `
+                            <button type="button"
+                                onclick="openModelAnswer()"
+                                class="ml-auto shrink-0 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-xs font-black text-orange-700 transition hover:-translate-y-0.5 hover:bg-orange-100 dark:border-orange-500/30 dark:bg-orange-500/10 dark:text-orange-200 dark:hover:bg-orange-500/20 sm:text-sm">
+                                Model answer
+                            </button>
+                        ` : ''}
                     </div>
 
                     <div class="space-y-4 flex-1 flex flex-col">
@@ -205,6 +261,24 @@
             `;
 
             container.prepend(card);
+        }
+
+        function openModelAnswer() {
+            if (!modelAnswerText) return;
+
+            const modal = document.getElementById('modelAnswerModal');
+            if (!modal) return;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModelAnswer() {
+            const modal = document.getElementById('modelAnswerModal');
+            if (!modal) return;
+
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }
 
         function handleInputImageError(img) {

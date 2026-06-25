@@ -1,9 +1,8 @@
 <?php
 $content = [
-
     'title' => 'Practice 6',
     'subtitle' => '',
-    'activity_title' => 'Join the sentences halves:',
+    'activity_title' => 'Join the sentence halves:',
     'left_label' => 'A',
     'right_label' => 'B',
 
@@ -12,55 +11,55 @@ $content = [
             'id' => 'a',
             'left' => [
                 'type' => 'word',
-                'text' => 'If I was the president,',
+                'text' => 'a) If I was the president,',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'I would spend more money on schools.',
+                'text' => '5) I would spend more money on schools.',
             ],
         ],
         [
             'id' => 'b',
             'left' => [
                 'type' => 'word',
-                'text' => 'If my friends and I met David Beckham,',
+                'text' => 'b) If my friends and I met David Beckham,',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => "we’d play football with him.",
+                'text' => "4) we’d play football with him.",
             ],
         ],
         [
             'id' => 'c',
             'left' => [
                 'type' => 'word',
-                'text' => 'If a lion escaped from the zoo,',
+                'text' => 'c) If a lion escaped from the zoo,',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'everybody would run away',
+                'text' => '2) everybody would run away',
             ],
         ],
         [
             'id' => 'd',
             'left' => [
                 'type' => 'word',
-                'text' => 'If I went out every night,',
+                'text' => 'd) If I went out every night,',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => "I wouldn’t have much money at the end of the month.",
+                'text' => "1) I wouldn’t have much money at the end of the month.",
             ],
         ],
         [
             'id' => 'e',
             'left' => [
                 'type' => 'word',
-                'text' => 'If my brother was taller,',
+                'text' => 'e) If my brother was taller,',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'he would become a professional basketball.',
+                'text' => '3) he would become a professional basketball.',
             ],
         ],
     ],

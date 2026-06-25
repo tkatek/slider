@@ -2,7 +2,7 @@
 
 $content = [
     'title'    => 'Practice 5',
-    'subtitle' => 'Choose the correct answer',
+    'subtitle' => '',
 
     'instruction'      => 'Complete with the correct form',
     'instruction_note' => '',

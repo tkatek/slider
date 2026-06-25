@@ -2,9 +2,12 @@
 
 @php
     $content = [
-        'page_title' => 'The 3 States of Wishes',
-        'title'      => 'The 3 States of Wishes',
-        'subtitle'   => 'We use “wish” to talk about things that are not true, and that we want to change.',
+
+        'title'      => 'Grammar',
+        'subtitle'   => 'Making Wishes: Wish = If Only',
+
+        'content_title'    => 'The 3 States of Wishes',
+        'content_subtitle' => 'We use “wish” to talk about things that are not true, and that we want to change.',
 
         'states' => [
             [
@@ -81,6 +84,16 @@
         @include('slider.components.title-subtitle')
 
         <section class="mx-auto w-full max-w-[92rem] px-3 py-3 sm:px-5 lg:px-6">
+            <div class="mx-auto mb-4 max-w-5xl rounded-3xl border border-slate-200 bg-white/90 px-5 py-4 text-center shadow-sm dark:border-slate-700 dark:bg-slate-900/80 sm:px-7">
+                <h2 class="text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl lg:text-4xl">
+                    {{ $content['content_title'] }}
+                </h2>
+
+                <p class="mx-auto mt-2 max-w-3xl text-sm font-bold leading-relaxed text-slate-600 dark:text-slate-300 sm:text-base lg:text-lg">
+                    {{ $content['content_subtitle'] }}
+                </p>
+            </div>
+
             <div class="grid gap-4 lg:grid-cols-3">
                 @foreach($content['states'] as $state)
                     @php($stateTheme = $state['theme'])

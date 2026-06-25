@@ -19,7 +19,7 @@
                 'md' => 3,
                 'lg' => 3,
             ],
-            'gap' => 'gap-3 sm:gap-4 lg:gap-5', 
+            'gap' => 'gap-3 sm:gap-4 lg:gap-5',
             'card_height' => 'h-36 sm:h-40 md:h-44 lg:h-48',
         ],
         'sounds' => [

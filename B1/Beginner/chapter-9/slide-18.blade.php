@@ -1,14 +1,15 @@
 <?php
-// 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Writing: Advice Corner";
 
 $customSubtitle = "A friend wrote to you about a problem. Choose ONE problem and write 80–100 words giving advice.";
+
+$customModelAnswer = "If I were you, I would make a study plan and review your lessons every day. I would also get enough sleep before the exam. If I were you, I wouldn't spend too much time on social media. You could ask your teacher for help if you have questions. Good luck! I'm sure you will do well.";
 
 $customCalloutText = "
 <div class='grid grid-cols-1 sm:grid-cols-2 gap-4 text-slate-800 dark:text-slate-100'>
 
     <div class='rounded-xl border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/40'>
-        <p class='mb-3 text-sm font-bold uppercase tracking-wide text-emerald-600 dark:text-emerald-400'>
+        <p class='mb-3 text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200'>
             Choose ONE Problem
         </p>
 
@@ -21,21 +22,20 @@ $customCalloutText = "
     </div>
 
     <div class='rounded-xl border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/40'>
-        <p class='mb-3 text-sm font-bold uppercase tracking-wide text-emerald-600 dark:text-emerald-400'>
+        <p class='mb-3 text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200'>
             Include
         </p>
 
         <ul class='space-y-2 text-sm leading-relaxed text-slate-700 dark:text-slate-200'>
-            <li>✓ At least 3 pieces of advice</li>
-            <li>✓ At least 2 sentences using \"If I were you...\"</li>
-            <li>✓ A friendly closing sentence</li>
+            <li>At least 3 pieces of advice</li>
+            <li>At least 2 sentences using \"If I were you...\"</li>
+            <li>A friendly closing sentence</li>
         </ul>
-
     </div>
 
 </div>";
 
-$customPlaceholder = "If I were you, I would make a study plan and review your lessons every day. I would also get enough sleep before the exam. If I were you, I wouldn't spend too much time on social media. You could ask your teacher for help if you have questions. Good luck! I'm sure you will do well.";
+$customPlaceholder = "";
 
 if (auth()->check()){
     $user = auth()->user();
@@ -71,8 +71,9 @@ $content = [
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
     'callout_text' => $customCalloutText,
+    'model_answer' => trim((string) ($customModelAnswer ?? '')),
     'page_title' => $finalTitle,
-    'placeholder' => $customPlaceholder
+    'placeholder' => $customPlaceholder,
 ];
 ?>
 

@@ -4,7 +4,7 @@ $content = [
     'subtitle' => 'Asking for reasons',
 
     'instruction' => 'Listen to the conversation, Write the missing words.',
-    'instruction_note' => 'ractice the conversation with a partner. Be sure to use the correct intonation.',
+    'instruction_note' => 'Practice the conversation with a partner. Be sure to use the correct intonation.',
 
     'audio' => materialAsset('slider/B1/Beginner/chapter-3/audios/slide12.mp3'),
 
@@ -32,12 +32,7 @@ $content = [
         [
             'speaker' => 'A',
             'parts' => [
-                ['text' => ''],
-                ['blank' => true, 'answer' => 'Where'],
-                ['text' => ' '],
-                ['blank' => true, 'answer' => 'were'],
-                ['text' => ' '],
-                ['blank' => true, 'answer' => 'you'],
+                ['blank' => true, 'answer' => 'Where were you'],
                 ['text' => ' this afternoon? You were supposed to meet me for lunch.'],
             ],
         ],
@@ -51,11 +46,7 @@ $content = [
             'speaker' => 'A',
             'parts' => [
                 ['text' => 'Oh, '],
-                ['blank' => true, 'answer' => 'are'],
-                ['text' => ' '],
-                ['blank' => true, 'answer' => 'you'],
-                ['text' => ' '],
-                ['blank' => true, 'answer' => 'okay'],
+                ['blank' => true, 'answer' => 'are you okay'],
                 ['text' => '?'],
             ],
         ],
@@ -74,12 +65,7 @@ $content = [
         [
             'speaker' => 'B',
             'parts' => [
-                ['text' => ''],
-                ['blank' => true, 'answer' => 'Is'],
-                ['text' => ' '],
-                ['blank' => true, 'answer' => 'something'],
-                ['text' => ' '],
-                ['blank' => true, 'answer' => 'wrong'],
+                ['blank' => true, 'answer' => 'Is something wrong'],
                 ['text' => ' with your Internet connection?'],
             ],
         ],

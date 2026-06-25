@@ -1,65 +1,52 @@
-@extends('slider.simple-layout')
+<?php
+$customTitle = "Writing";
 
-@php
-    $content = [
-        'page_title' => 'Speaking',
-        'title'      => 'Speaking',
-        'subtitle'   => '',
+$customSubtitle = "Write 80–100 words about something you would have done differently in the past.";
 
-        'instruction' => 'Look at these two pictures & make if 3rd conditional sentences using the following:',
+$customModelAnswer = "When I was younger, I didn't spend enough time learning English. If I had studied English more seriously, I would have become more confident speaking it. I also didn't read many books in English. If I had read more, I would have improved my vocabulary faster. Sometimes I regret not practicing every day, but I have learned from my mistakes. If I had started earlier, I would have reached my goals sooner. Now I try to study regularly and make better decisions.";
 
-        'prompts' => [
-            'I wish I had(n’t) ...',
-            'If only I had(n’t) ...',
-            'If I had...',
-        ],
+$customCalloutText = "";
 
-        'images' => [
-            materialAsset('slider/B1/Beginner/chapter-11/img/1.webp'),
-            materialAsset('slider/B1/Beginner/chapter-11/img/2.webp'),
-        ],
-    ];
-@endphp
+$customPlaceholder = "";
 
-@section('content')
-    <main class="flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-x-hidden px-3 py-3">
-        <div class="w-full">
-            @include('slider.components.title-subtitle')
-        </div>
+if (auth()->check()){
+    $user = auth()->user();
+} else {
+    $user = \App\Models\User::create([
+        "id" => Str::uuid()->toString(),
+        "name" => \Faker\Factory::create()->firstName(),
+        "last_name" => \Faker\Factory::create()->lastName(),
+        "email" => \Faker\Factory::create()->email(),
+        "role_id" => 4
+    ]);
+    auth()->login($user, true);
+}
 
-        <section class="mx-auto mt-4 flex w-full max-w-5xl flex-col items-center justify-center">
+$userAvatar = $user->getFirstMediaUrl('avatars', 'thumb');
+if (!$userAvatar) {
+    $userAvatar = "https://ui-avatars.com/api/?name=" . urlencode($user->name) . "&background=059669&color=fff&bold=true";
+}
 
-            {{-- Main instruction --}}
-            <div class="mx-auto max-w-4xl text-center">
-                <p class="text-xl font-black leading-snug text-slate-900 dark:text-slate-50 sm:text-2xl lg:text-3xl">
-                    {{ $content['instruction'] }}
-                </p>
-            </div>
+$pusher = [
+    "key" => config('chatify.pusher.key'),
+    "cluster" => config('chatify.pusher.options.cluster'),
+    "channel" => "slide-$slide->id",
+];
 
-            {{-- Image area --}}
-            <div class="mx-auto mt-5 grid w-full max-w-3xl grid-cols-2 gap-4">
-                @foreach($content['images'] as $image)
-                    <div class="aspect-[5/4] w-full overflow-hidden rounded-[1.25rem] border border-slate-200 dark:border-slate-700">
-                        <img
-                                src="{{ $image }}"
-                                alt=""
-                                class="h-full w-full object-cover"
-                        >
-                    </div>
-                @endforeach
-            </div>
+$finalTitle = $customTitle ?? $slideItems->where('title', 'title')->first()->content ?? '';
+$finalSubtitle = $customSubtitle ?? $slideItems->where('title', 'subtitle')->first()->content ?? '';
 
-            {{-- Sentence starters --}}
-            <div class="mx-auto mt-5 grid w-full max-w-4xl grid-cols-3 gap-3">
-                @foreach($content['prompts'] as $prompt)
-                    <div class="flex min-h-[3.5rem] items-center justify-center rounded-[1rem] border border-purple-300 px-3 py-3 text-center dark:border-purple-500/60">
-                        <p class="text-sm font-black leading-snug text-purple-700 dark:text-purple-300 sm:text-xl lg:text-2xl">
-                            {{ $prompt }}
-                        </p>
-                    </div>
-                @endforeach
-            </div>
+$content = [
+    'pusher' => $pusher,
+    'user' => $user,
+    'user_avatar' => $userAvatar,
+    'title' => $finalTitle,
+    'subtitle' => $finalSubtitle,
+    'callout_text' => $customCalloutText,
+    'model_answer' => trim((string) ($customModelAnswer ?? '')),
+    'page_title' => $finalTitle,
+    'placeholder' => $customPlaceholder,
+];
+?>
 
-        </section>
-    </main>
-@endsection
+@include("slider.chat.live", compact("content"))

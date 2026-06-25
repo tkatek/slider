@@ -1,26 +1,35 @@
 <?php
-// 1. MODIFY THESE TO CHANGE THE TEXT
+
 $customTitle = "Writing: At the Seaside Today";
 
 $customSubtitle = "Write a short paragraph (60–80 words) about a day at the seaside.";
 
+$customModelAnswer = "People usually go to the seaside in summer. Today, my family and I are sitting on the sand. My brother is surfing, and I am wearing sunglasses and a sun hat. We often swim and eat ice cream at the beach. Some people are playing with a ball, and others are looking for shells near the waves.";
+
 $customCalloutText = "
+<div class='grid grid-cols-1 gap-4 sm:grid-cols-3'>
+    <div>
+        <span class='font-black text-slate-700 dark:text-slate-200'>Use:</span><br>
+        &bull; Present Simple for facts and routines<br>
+        &bull; Present Continuous for actions happening now
+    </div>
 
-<span class='font-black text-emerald-600 dark:text-emerald-300'>Use:</span><br>
-&bull; Present Simple for facts and routines.<br>
-&bull; Present Continuous for actions happening now.<br><br>
+    <div>
+        <span class='font-black text-slate-700 dark:text-slate-200'>Include:</span><br>
+        &bull; activities at the beach<br>
+        &bull; what people usually do<br>
+        &bull; what people are doing now<br>
+        &bull; seaside vocabulary
+    </div>
 
-<span class='font-black text-emerald-600 dark:text-emerald-300'>Include:</span><br>
-&bull; activities at the beach<br>
-&bull; what people usually do<br>
-&bull; what people are doing now<br>
-&bull; seaside vocabulary<br><br>
+    <div>
+        <span class='font-black text-slate-700 dark:text-slate-200'>Useful Words:</span><br>
+        <span class='text-slate-700 dark:text-slate-200'>sand, wave, sunglasses, surfboard, towel, boat, shell, sun cream</span>
+    </div>
+</div>
+";
 
-<span class='font-black text-emerald-600 dark:text-emerald-300'>Useful Words:</span><br>
-<span class='text-slate-700 dark:text-slate-200'>sand, wave, sunglasses, surfboard, towel, boat, shell, sun cream</span>";
-
-// Use \n for line breaks in the placeholder
-$customPlaceholder = "People usually go to the seaside in summer. Today, my family and I are sitting on the sand. My brother is\nsurfing, and I am wearing sunglasses and a sun hat. We often swim and eat ice cream at the beach.";
+$customPlaceholder = "";
 
 if (auth()->check()){
     $user = auth()->user();
@@ -56,8 +65,9 @@ $content = [
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
     'callout_text' => $customCalloutText,
+    'model_answer' => trim((string) ($customModelAnswer ?? '')),
     'page_title' => $finalTitle,
-    'placeholder' => $customPlaceholder
+    'placeholder' => $customPlaceholder,
 ];
 ?>
 

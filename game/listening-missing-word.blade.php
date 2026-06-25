@@ -162,6 +162,12 @@
                                                 ></textarea>
 
                                                 @php $blankIndex++; @endphp
+                                            @elseif(array_key_exists('html', $part))
+                                                @php $html = trim((string) ($part['html'] ?? '')); @endphp
+
+                                                @if($html !== '')
+                                                    <span class="min-w-0 break-words">{!! $html !!}</span>
+                                                @endif
                                             @else
                                                 @php $text = trim((string) ($part['text'] ?? '')); @endphp
 

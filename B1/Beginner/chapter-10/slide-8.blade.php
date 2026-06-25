@@ -1,6 +1,5 @@
 <?php
 $content = [
-
     'title' => 'Practice 3',
     'subtitle' => '',
     'activity_title' => 'Match the Words with Their Definitions',
@@ -9,80 +8,80 @@ $content = [
 
     'pairs' => [
         [
-            'id' => 'c',
+            'id' => 'vanish',
             'left' => [
                 'type' => 'word',
-                'text' => 'Vanish',
+                'text' => '1. vanish',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'To disappear suddenly.',
+                'text' => 'c. To disappear suddenly.',
             ],
         ],
         [
-            'id' => 'd',
+            'id' => 'magnifying-glass',
             'left' => [
                 'type' => 'word',
-                'text' => 'Magnifying glass',
+                'text' => '2. magnifying glass',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'A tool that makes small things look larger.',
+                'text' => 'd. A tool that makes small things look larger.',
             ],
         ],
         [
-            'id' => 'a',
+            'id' => 'assume',
             'left' => [
                 'type' => 'word',
-                'text' => 'Assume',
+                'text' => '3. assume',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'To think something is true without checking.',
+                'text' => 'a. To think something is true without checking.',
             ],
         ],
         [
-            'id' => 'b',
+            'id' => 'crumbs',
             'left' => [
                 'type' => 'word',
-                'text' => 'Crumbs',
+                'text' => '4. crumbs',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'Small pieces of food that fall from a larger piece.',
+                'text' => 'b. Small pieces of food that fall from a larger piece.',
             ],
         ],
         [
-            'id' => 'f',
+            'id' => 'investigate',
             'left' => [
                 'type' => 'word',
-                'text' => 'Investigate',
+                'text' => '5. investigate',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'To try to find out what happened or discover the truth.',
+                'text' => 'f. To try to find out what happened or discover the truth.',
             ],
         ],
         [
-            'id' => 'e',
+            'id' => 'clue',
             'left' => [
                 'type' => 'word',
-                'text' => 'Clue',
+                'text' => '6. clue',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'Something that helps you solve a mystery or problem.',
+                'text' => 'e. Something that helps you solve a mystery or problem.',
             ],
         ],
     ],
 
     'right_order' => [
-        'a',
-        'b',
-        'c',
-        'd',
-        'e',
-        'f',
+        'assume',
+        'crumbs',
+        'vanish',
+        'magnifying-glass',
+        'clue',
+        'investigate',
     ],
 ];
 ?>

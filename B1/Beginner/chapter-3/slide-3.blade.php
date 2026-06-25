@@ -2,7 +2,7 @@
 $content = [
     'type'=>'emoji',
 
-    'title'    => 'Practice 1: Warm-up',
+    'title'    => 'Warm up:  Practice 1',
     'subtitle' => 'Random acts of kindness',
 
     'questions' => [

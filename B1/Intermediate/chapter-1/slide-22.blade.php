@@ -1,11 +1,10 @@
 <?php
-
 $content = [
     'type'      => 'outro',
     'title'     => 'Thank You!',
-    'subtitle'  => "Remember:<br>There’s no use crying over spilled milk",
+    'subtitle'  => "",
     'badge'     => 'Lesson Complete',
-    'image'     => materialAsset('slider/B1/Beginner/chapter-11/img/thankyou.webp'),
+    'image'     => materialAsset('slider/B1/Intermediate/chapter-1/img/slide1.webp'),
     'image_alt' => 'Thank you',
     'button'    => 'Start Again',
 ];

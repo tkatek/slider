@@ -1,14 +1,15 @@
 <?php
-// 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Writing Activity: If I Won the Lottery";
 
 $customSubtitle = "Write 80–100 words about what you would do if you won the lottery.";
+
+$customModelAnswer = "If I won the lottery, I would buy a large house and a new car. I would also travel to different countries with my family. I would help poor children by giving money to charities. I would save some money in the bank for the future. I would not spend all my money at once because I would want to be careful with it.";
 
 $customCalloutText = "
 <div class='grid grid-cols-1 sm:grid-cols-2 gap-4 text-slate-800 dark:text-slate-100'>
 
     <div class='rounded-xl border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/40'>
-        <p class='mb-3 text-sm font-bold uppercase tracking-wide text-emerald-600 dark:text-emerald-400'>
+        <p class='mb-3 text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200'>
             Include
         </p>
 
@@ -30,7 +31,7 @@ $customCalloutText = "
     </div>
 
     <div class='rounded-xl border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/40'>
-        <p class='mb-3 text-sm font-bold uppercase tracking-wide text-emerald-600 dark:text-emerald-400'>
+        <p class='mb-3 text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200'>
             Useful Language
         </p>
 
@@ -46,7 +47,7 @@ $customCalloutText = "
 
 </div>";
 
-$customPlaceholder = "If I won the lottery, I would buy a large house and a new car. I would also travel to different countries with my family. I would help poor children by giving money to charities. I would save some money in the bank for the future. I would not spend all my money at once because I would want to be careful with it.";
+$customPlaceholder = "";
 
 if (auth()->check()){
     $user = auth()->user();
@@ -82,8 +83,9 @@ $content = [
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
     'callout_text' => $customCalloutText,
+    'model_answer' => trim((string) ($customModelAnswer ?? '')),
     'page_title' => $finalTitle,
-    'placeholder' => $customPlaceholder
+    'placeholder' => $customPlaceholder,
 ];
 ?>
 

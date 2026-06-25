@@ -1,14 +1,14 @@
 <?php
 $content = [
-    'video'     => materialAsset('slider/A2/Advanced/chapter-1/'),
+    'video'     => materialAsset('slider/A2/Advanced/chapter-1/videos/jobs-encrypted/jobs.m3u8'),
     'thumbnail' => materialAsset('slider/A2/Advanced/chapter-1/img/slide15.webp'),
     'isQuiz'    => 1,
 
     'questions' => [
         [
-            'time'           => 8,
+            'time'           => 7600,
             'type'           => 'multiple_choice',
-            'question'       => 'Choose the correct options. Does Samantha like her job?',
+            'question'       => 'Does Samantha like her job?',
             'options'        => [
                 'She dislikes everything',
                 "She doesn't like her job",
@@ -19,9 +19,9 @@ $content = [
             'points'         => 1,
         ],
         [
-            'time'           => 18,
+            'time'           => 19000,
             'type'           => 'multiple_choice',
-            'question'       => 'Choose the correct options. What does she like about her job?',
+            'question'       => 'What does she like about her job?',
             'options'        => [
                 'co-workers',
                 'teaching students',
@@ -32,12 +32,12 @@ $content = [
             'points'         => 1,
         ],
         [
-            'time'           => 29,
+            'time'           => 30600,
             'type'           => 'multiple_choice',
-            'question'       => "Choose the correct options. Which of the things below doesn't she like about her job?",
+            'question'       => "Which of the things below doesn't she like about her job?",
             'options'        => [
                 'waking up early',
-                'her boss',
+                'preparing for classes',
                 'the students',
                 'correcting homework',
             ],
@@ -45,9 +45,9 @@ $content = [
             'points'         => 1,
         ],
         [
-            'time'           => 41,
+            'time'           => 41600,
             'type'           => 'multiple_choice',
-            'question'       => 'Choose the correct options. How does she describe the principal?',
+            'question'       => 'How does she describe the principal?',
             'options'        => [
                 'A pushover and helpful',
                 'Strict and helpful',
@@ -58,9 +58,9 @@ $content = [
             'points'         => 1,
         ],
         [
-            'time'           => 53,
+            'time'           => 41700,
             'type'           => 'multiple_choice',
-            'question'       => "Choose the correct options. Does Tony think that she's satisfied overall with her job?",
+            'question'       => "Does Tony think that she's satisfied overall with her job?",
             'options'        => [
                 'Yes',
                 'No',
@@ -70,7 +70,23 @@ $content = [
         ],
     ],
 
-    'subtitles' => [],
+    'subtitles'  => [
+        ['start' => 0, 'end' => 2,  'text' => "Do you like your job Samantha"],
+        ['start' => 2, 'end' => 7.5,  'text' => "I like many things about my job but there is somethings that i don't like"],
+
+        ['start' => 8, 'end' => 10,  'text' => 'What do you like about your job?'],
+        ['start' => 10, 'end' => 14,  'text' => "I like my co-workers and i don't mind preparing for my classes"],
+
+        ['start' => 14, 'end' => 18.7,  'text' => 'I love to teach my students and i even like to correct homework and assignments'],
+        ['start' => 20, 'end' => 23.5,  'text' => "Emm very interesting, what don't you like about your job?"],
+
+        ['start' => 24, 'end' => 26,  'text' => "I don't like to work overtime" ],
+        ['start' => 26, 'end' => 30.5,  'text' => "I don't like it when my students misbehave, I don't like waking up early"],
+
+        ['start' => 31, 'end' => 38.5,  'text' => "And sometimes i don't like my boss, our principle Mr Scott is very strict but sometimes he's very helpful too" ],
+        ['start' => 38.7, 'end' => 41.5,  'text' => 'It sounds like overall you are happy with your job'],
+
+    ],
 ];
 ?>
 

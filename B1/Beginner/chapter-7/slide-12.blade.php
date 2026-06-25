@@ -2,7 +2,7 @@
 
 $content = [
     'title' => 'Practice 6',
-    'subtitle' => "Drag and drop each keywoard next to it's definition",
+    'subtitle' => "Read the sentences & drop each one in the right column",
     'pool_item_type' => 'image',
     'image_text_style' => 'overlay',
 

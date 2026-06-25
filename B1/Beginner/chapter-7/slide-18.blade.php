@@ -3,6 +3,8 @@ $customTitle = "Writing: My Three Wishes";
 
 $customSubtitle = "Write a short paragraph (80–100 words).";
 
+$customModelAnswer = "I wish I could play the piano because I love music and I would like to perform for my family. I also wish I could speak Spanish because I want to travel to Spain and talk to local people. Finally, I wish I had a talent for drawing because I enjoy art and creative activities. I think learning new skills makes life more interesting and helps people express themselves in different ways.";
+
 $customCalloutText = "
 <p class='mb-3 font-black text-slate-900 dark:text-slate-100'>Include:</p>
 
@@ -12,7 +14,7 @@ $customCalloutText = "
     <li>one talent you wish you had</li>
 </ul>";
 
-$customPlaceholder = "I wish I could play the piano. I also wish I could speak Spanish because I would like to travel to Spain. Finally, I wish I could draw well because I enjoy art. I think learning new skills makes life more interesting and helps people communicate with others.";
+$customPlaceholder = "";
 
 if (auth()->check()){
     $user = auth()->user();
@@ -48,8 +50,9 @@ $content = [
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
     'callout_text' => $customCalloutText,
+    'model_answer' => trim((string) ($customModelAnswer ?? '')),
     'page_title' => $finalTitle,
-    'placeholder' => $customPlaceholder
+    'placeholder' => $customPlaceholder,
 ];
 ?>
 

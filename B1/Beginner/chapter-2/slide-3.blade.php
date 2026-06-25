@@ -1,7 +1,7 @@
 <?php
 $content = [
     'page_title' => 'practice.1',
-    'title'      => 'Practice 1: Warm-up',
+    'title'      => 'Warm up:  Practice 1',
     'subtitle'   => '',
 
     'instructions' => [

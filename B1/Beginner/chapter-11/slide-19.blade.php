@@ -1,144 +1,65 @@
-<?php
+@extends('slider.simple-layout')
 
-$content = [
-    'title'    => 'Reading Comprehension',
-    'subtitle' => 'Read Becky’s regrets and complete the sentences:<br><br>I didn’t study much at school, so I didn’t pass my exams. It was difficult to find a job because I didn’t have any qualifications. I got married very young and I made the wrong decision. I had three children so I stayed at home and didn’t work. I got divorced when the children were small so I went to live with my mother. I didn’t meet another partner because I wasn’t able to go out. I never went abroad because I was always broke. I’ve had a hard life.',
+@php
+    $content = [
+        'page_title' => 'Speaking',
+        'title'      => 'Speaking',
+        'subtitle'   => '',
 
-    'instruction'      => '',
-    'instruction_note' => 'Complete the sentences',
+        'instruction' => 'Look at these two pictures & make if 3rd conditional sentences using the following:',
 
-    'grid_class' => 'grid-cols-1',
+        'prompts' => [
+            'I wish I had(n’t) ...',
+            'If only I had(n’t) ...',
+            'If I had...',
+        ],
 
-    'lines' => [
-        [
-            'speaker' => '1',
-            'parts' => [
-                ['text' => 'If she '],
-                [
-                    'blank' => true,
-                    'answer' => 'had studied',
-                    'answers' => ['had studied'],
-                ],
-                ['text' => ' more at school, she '],
-                [
-                    'blank' => true,
-                    'answer' => 'would have passed',
-                    'answers' => ['would have passed'],
-                ],
-                ['text' => ' her exams.'],
-            ],
+        'images' => [
+            materialAsset('slider/B1/Beginner/chapter-11/img/1.webp'),
+            materialAsset('slider/B1/Beginner/chapter-11/img/2.webp'),
         ],
-        [
-            'speaker' => '2',
-            'parts' => [
-                ['text' => 'If she '],
-                [
-                    'blank' => true,
-                    'answer' => 'had had',
-                    'answers' => ['had had'],
-                ],
-                ['text' => ' some qualifications, she '],
-                [
-                    'blank' => true,
-                    'answer' => 'would have found',
-                    'answers' => ['would have found'],
-                ],
-                ['text' => ' a job more easily.'],
-            ],
-        ],
-        [
-            'speaker' => '3',
-            'parts' => [
-                ['text' => 'If she '],
-                [
-                    'blank' => true,
-                    'answer' => 'hadn’t got married',
-                    'answers' => ['hadn’t got married', "hadn't got married"],
-                ],
-                ['text' => ' so young, she '],
-                [
-                    'blank' => true,
-                    'answer' => 'wouldn’t have made',
-                    'answers' => ['wouldn’t have made', "wouldn't have made"],
-                ],
-                ['text' => ' the wrong decision.'],
-            ],
-        ],
-        [
-            'speaker' => '4',
-            'parts' => [
-                ['text' => 'She '],
-                [
-                    'blank' => true,
-                    'answer' => 'wouldn’t have stayed',
-                    'answers' => ['wouldn’t have stayed', "wouldn't have stayed"],
-                ],
-                ['text' => ' at home if she '],
-                [
-                    'blank' => true,
-                    'answer' => 'hadn’t had',
-                    'answers' => ['hadn’t had', "hadn't had"],
-                ],
-                ['text' => ' three children.'],
-            ],
-        ],
-        [
-            'speaker' => '5',
-            'parts' => [
-                ['text' => 'She '],
-                [
-                    'blank' => true,
-                    'answer' => 'wouldn’t have gone',
-                    'answers' => ['wouldn’t have gone', "wouldn't have gone"],
-                ],
-                ['text' => ' to live with her mother if she '],
-                [
-                    'blank' => true,
-                    'answer' => 'hadn’t got',
-                    'answers' => ['hadn’t got', "hadn't got"],
-                ],
-                ['text' => ' divorced.'],
-            ],
-        ],
-        [
-            'speaker' => '6',
-            'parts' => [
-                ['text' => 'If she '],
-                [
-                    'blank' => true,
-                    'answer' => 'had been able',
-                    'answers' => ['had been able'],
-                ],
-                ['text' => ' to go out, she '],
-                [
-                    'blank' => true,
-                    'answer' => 'would have met',
-                    'answers' => ['would have met'],
-                ],
-                ['text' => ' another partner.'],
-            ],
-        ],
-        [
-            'speaker' => '7',
-            'parts' => [
-                ['text' => 'She '],
-                [
-                    'blank' => true,
-                    'answer' => 'would have gone',
-                    'answers' => ['would have gone'],
-                ],
-                ['text' => ' abroad if she '],
-                [
-                    'blank' => true,
-                    'answer' => 'hadn’t always been',
-                    'answers' => ['hadn’t always been', "hadn't always been", 'hadn’t been', "hadn't been"],
-                ],
-                ['text' => ' broke.'],
-            ],
-        ],
-    ],
-];
+    ];
+@endphp
 
-?>
+@section('content')
+    <main class="flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-x-hidden px-3 py-3">
+        <div class="w-full">
+            @include('slider.components.title-subtitle')
+        </div>
 
-@include('slider.game.listening-missing-word', ['content' => $content])
+        <section class="mx-auto mt-4 flex w-full max-w-5xl flex-col items-center justify-center">
+
+            {{-- Main instruction --}}
+            <div class="mx-auto max-w-4xl text-center">
+                <p class="text-xl font-black leading-snug text-slate-900 dark:text-slate-50 sm:text-2xl lg:text-3xl">
+                    {{ $content['instruction'] }}
+                </p>
+            </div>
+
+            {{-- Image area --}}
+            <div class="mx-auto mt-5 grid w-full max-w-3xl grid-cols-2 gap-4">
+                @foreach($content['images'] as $image)
+                    <div class="aspect-[5/4] w-full overflow-hidden rounded-[1.25rem] border border-slate-200 dark:border-slate-700">
+                        <img
+                                src="{{ $image }}"
+                                alt=""
+                                class="h-full w-full object-cover"
+                        >
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Sentence starters --}}
+            <div class="mx-auto mt-5 grid w-full max-w-4xl grid-cols-3 gap-3">
+                @foreach($content['prompts'] as $prompt)
+                    <div class="flex min-h-[3.5rem] items-center justify-center rounded-[1rem] border border-purple-300 px-3 py-3 text-center dark:border-purple-500/60">
+                        <p class="text-sm font-black leading-snug text-purple-700 dark:text-purple-300 sm:text-xl lg:text-2xl">
+                            {{ $prompt }}
+                        </p>
+                    </div>
+                @endforeach
+            </div>
+
+        </section>
+    </main>
+@endsection

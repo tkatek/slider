@@ -12,88 +12,88 @@ $content = [
             'id' => 'camping',
             'left' => [
                 'type' => 'word',
-                'text' => 'Camping',
+                'text' => '1. Camping',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'Staying In A Tent Outdoors',
+                'text' => 'c. Staying in a tent outdoors',
             ],
         ],
         [
             'id' => 'photography',
             'left' => [
                 'type' => 'word',
-                'text' => 'Photography',
+                'text' => '2. Photography',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'Taking Pictures',
+                'text' => 'a. Taking pictures',
             ],
         ],
         [
             'id' => 'gardening',
             'left' => [
                 'type' => 'word',
-                'text' => 'Gardening',
+                'text' => '3. Gardening',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'Growing Flowers And Plants',
+                'text' => 'd. Growing flowers and plants',
             ],
         ],
         [
             'id' => 'cycling',
             'left' => [
                 'type' => 'word',
-                'text' => 'Cycling',
+                'text' => '4. Cycling',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'Riding A Bicycle',
+                'text' => 'e. Riding a bicycle',
             ],
         ],
         [
             'id' => 'jogging',
             'left' => [
                 'type' => 'word',
-                'text' => 'Jogging',
+                'text' => '5. Jogging',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'Running Slowly For Exercise',
+                'text' => 'f. Running slowly for exercise',
             ],
         ],
         [
             'id' => 'chatting',
             'left' => [
                 'type' => 'word',
-                'text' => 'Chatting',
+                'text' => '6. Chatting',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'Talking With Friends',
+                'text' => 'b. Talking with friends',
             ],
         ],
         [
             'id' => 'cooking',
             'left' => [
                 'type' => 'word',
-                'text' => 'Cooking',
+                'text' => '7. Cooking',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'Preparing Food',
+                'text' => 'g. Preparing food',
             ],
         ],
         [
             'id' => 'swimming',
             'left' => [
                 'type' => 'word',
-                'text' => 'Swimming',
+                'text' => '8. Swimming',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'Moving Through Water',
+                'text' => 'h. Moving through water',
             ],
         ],
     ],

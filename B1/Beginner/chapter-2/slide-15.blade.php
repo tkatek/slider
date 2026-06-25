@@ -10,21 +10,21 @@ $content = [
     'reading_title'   => '8 random acts of kindness you can do today',
 
 
-    'passage' => "Call a friend that you haven’t spoken to for a while
+    'passage' => "1. Call a friend that you haven’t spoken to for a while
 
-Offer to pick up some groceries for your elderly neighbour
+2. Offer to pick up some groceries for your elderly neighbour
 
-Make a donation to a charity
+3. Make a donation to a charity
 
-Lend your ear - listen to your colleague who is having a bad day
+4. Lend your ear - listen to your colleague who is having a bad day
 
-Take a minute to help someone who is lost
+5. Take a minute to help someone who is lost
 
-Tell someone you know that you are proud of them
+6. Tell someone you know that you are proud of them
 
-Help your parents with household chores
+7. Help your parents with household chores
 
-Send an encouraging text message or voice memo to a friend who might be feeling down.",
+8. Send an encouraging text message or voice memo to a friend who might be feeling down.",
 
     'question_prompt_label' => 'Choose the correct answer according to the passage you’ve just read:',
 

@@ -12,66 +12,66 @@ $content = [
             'id' => 'stray-dog',
             'left' => [
                 'type' => 'word',
-                'text' => 'Stray dog',
+                'text' => '1. stray dog',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'an animal without a home',
+                'text' => 'c. an animal without a home',
             ],
         ],
         [
             'id' => 'companion',
             'left' => [
                 'type' => 'word',
-                'text' => 'Companion',
+                'text' => '2. companion',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'a close friend who stays with you',
+                'text' => 'a. a close friend who stays with you',
             ],
         ],
         [
             'id' => 'collapse',
             'left' => [
                 'type' => 'word',
-                'text' => 'Collapse',
+                'text' => '3. collapse',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'suddenly fall down',
+                'text' => 'd. suddenly fall down',
             ],
         ],
         [
             'id' => 'rescue',
             'left' => [
                 'type' => 'word',
-                'text' => 'Rescue',
+                'text' => '4. rescue',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'save someone from danger',
+                'text' => 'b. save someone from danger',
             ],
         ],
         [
             'id' => 'kindness',
             'left' => [
                 'type' => 'word',
-                'text' => 'Kindness',
+                'text' => '5. kindness',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'being caring and helpful',
+                'text' => 'e. being caring and helpful',
             ],
         ],
         [
             'id' => 'reminder',
             'left' => [
                 'type' => 'word',
-                'text' => 'Reminder',
+                'text' => '6. reminder',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'something that helps you remember',
+                'text' => 'f. something that helps you remember',
             ],
         ],
     ],

@@ -3,6 +3,7 @@ $content = [
     'page_title' => '',
     'title'      => 'Speaking Time: Practice 4',
     'subtitle'   => 'What would happen if...?',
+    'subtitle_class' => 'text-2xl sm:text-3xl lg:text-4xl',
     'instruction' => 'Remember to use this pattern: If my best friend travelled to another country, I would be very sad',
     'box_label' => 'Question',
 

@@ -3,6 +3,7 @@
 $content = [
     'page_title' => 'Grammar',
     'title'      => 'Accepting and Refusing Polite Requests',
+    'title_class' => 'text-2xl sm:text-4xl lg:text-5xl',
     'subtitle'   => '',
 
     'cards_grid_class' => 'mt-7 grid grid-cols-1 gap-4',

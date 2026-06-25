@@ -1,14 +1,15 @@
 <?php
-// 1. MODIFY THESE TO CHANGE THE TEXT
 $customTitle = "Writing: Before It Happened...";
 
 $customSubtitle = "Think About An Important Day";
+
+$customModelAnswer = "Last month, I had an important English exam. Before I arrived at school, I had reviewed my notes. I had also eaten breakfast and prepared my bag. By the time the exam started, I had finished all my revision. After I had completed the test, I felt relaxed and happy. I had never felt so prepared before, so it was a very positive day for me.";
 
 $customCalloutText = "
 <div class='grid grid-cols-1 gap-4 text-slate-800 dark:text-slate-100 lg:grid-cols-3'>
 
     <div class='rounded-xl border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/40'>
-                <p class='mb-3 text-sm font-bold uppercase tracking-wide text-emerald-600 dark:text-emerald-400'>
+        <p class='mb-3 text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200'>
             Examples
         </p>
 
@@ -21,19 +22,19 @@ $customCalloutText = "
     </div>
 
     <div class='rounded-xl border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/40'>
-        <p class='mb-3 text-sm font-bold uppercase tracking-wide text-emerald-600 dark:text-emerald-400'>
+        <p class='mb-3 text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200'>
             Writing Task
         </p>
 
         <ul class='space-y-2 text-sm leading-relaxed text-slate-700 dark:text-slate-200'>
-            <li>✓ Write 80–100 words about what happened.</li>
-            <li>✓ Use at least 3 Past Perfect sentences.</li>
-            <li>✓ Use one of these words: <strong>before</strong>, <strong>after</strong>, <strong>by the time</strong>.</li>
+            <li>Write 80–100 words about what happened.</li>
+            <li>Use at least 3 Past Perfect sentences.</li>
+            <li>Use one of these words: <strong>before</strong>, <strong>after</strong>, <strong>by the time</strong>.</li>
         </ul>
     </div>
 
     <div class='rounded-xl border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/40'>
-        <p class='mb-3 text-sm font-bold uppercase tracking-wide text-emerald-600 dark:text-emerald-400'>
+        <p class='mb-3 text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200'>
             Useful Starters
         </p>
 
@@ -48,7 +49,7 @@ $customCalloutText = "
 
 </div>";
 
-$customPlaceholder = "Last month, I had an important English exam. Before I arrived at school, I had reviewed my notes. I had also eaten breakfast and prepared my bag. By the time the exam started, I had finished all my revision. After I had completed the test, I felt relaxed and happy.";
+$customPlaceholder = "";
 
 if (auth()->check()){
     $user = auth()->user();
@@ -84,8 +85,9 @@ $content = [
     'title' => $finalTitle,
     'subtitle' => $finalSubtitle,
     'callout_text' => $customCalloutText,
+    'model_answer' => trim((string) ($customModelAnswer ?? '')),
     'page_title' => $finalTitle,
-    'placeholder' => $customPlaceholder
+    'placeholder' => $customPlaceholder,
 ];
 ?>
 

@@ -12,55 +12,55 @@ $content = [
             'id' => 'favour',
             'left' => [
                 'type' => 'word',
-                'text' => 'Favour',
+                'text' => '1. favour',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'Help that someone asks for',
+                'text' => 'c. help that someone asks for',
             ],
         ],
         [
             'id' => 'feed',
             'left' => [
                 'type' => 'word',
-                'text' => 'Feed',
+                'text' => '2. feed',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'To give food to',
+                'text' => 'd. to give food to',
             ],
         ],
         [
             'id' => 'lend',
             'left' => [
                 'type' => 'word',
-                'text' => 'Lend',
+                'text' => '3. lend',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'To give something temporarily',
+                'text' => 'a. to give something temporarily',
             ],
         ],
         [
             'id' => 'take-care-of',
             'left' => [
                 'type' => 'word',
-                'text' => 'Take care of',
+                'text' => '4. take care of',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'To look after something',
+                'text' => 'b. to look after something',
             ],
         ],
         [
             'id' => 'move-into',
             'left' => [
                 'type' => 'word',
-                'text' => 'Move into',
+                'text' => '5. move into',
             ],
             'right' => [
                 'type' => 'word',
-                'text' => 'To begin living in a new place',
+                'text' => 'e. to begin living in a new place',
             ],
         ],
     ],
