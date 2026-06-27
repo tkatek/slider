@@ -31,12 +31,12 @@ $appData = [
                         pqPanel: '0 28px 80px rgba(38,35,92,.14)',
                     },
                     screens: {
-                        short: { raw: '(min-width: 768px) and (max-height: 760px)' },
-                        laptop: { raw: '(min-width: 1280px) and (max-height: 840px)' },
-                        desktop: { raw: '(min-width: 1440px)' },
-                        wide: { raw: '(min-width: 1536px)' },
-                        ultra: { raw: '(min-width: 1800px)' },
-                        sidebar: { raw: '(min-width: 1280px)' },
+                        short: {raw: '(min-width: 768px) and (max-height: 760px)'},
+                        laptop: {raw: '(min-width: 1280px) and (max-height: 840px)'},
+                        desktop: {raw: '(min-width: 1440px)'},
+                        wide: {raw: '(min-width: 1536px)'},
+                        ultra: {raw: '(min-width: 1800px)'},
+                        sidebar: {raw: '(min-width: 1280px)'},
                     },
                 },
             },
@@ -46,10 +46,13 @@ $appData = [
     <link href="https://vjs.zencdn.net/8.16.1/video-js.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800;900&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        :root { --pq-ease: cubic-bezier(.2, .8, .2, 1); }
+        :root {
+            --pq-ease: cubic-bezier(.2, .8, .2, 1);
+        }
 
         button:focus-visible,
         [tabindex]:focus-visible {
@@ -60,49 +63,103 @@ $appData = [
         [data-question-content],
         .pq-transcript-panel {
             scrollbar-width: thin;
-            scrollbar-color: rgba(102,93,232,.24) transparent;
+            scrollbar-color: rgba(102, 93, 232, .24) transparent;
         }
-        [data-question-content]::-webkit-scrollbar { width: 6px; }
+
+        [data-question-content]::-webkit-scrollbar {
+            width: 6px;
+        }
+
         [data-question-content]::-webkit-scrollbar-thumb,
         .pq-transcript-panel::-webkit-scrollbar-thumb {
             border-radius: 999px;
-            background: rgba(102,93,232,.24);
-        }
-        .pq-transcript-panel::-webkit-scrollbar { width: 5px; }
-        @media (max-width: 520px) {
-            [data-question-content], .pq-transcript-panel { scrollbar-width: none; -ms-overflow-style: none; }
-            [data-question-content]::-webkit-scrollbar, .pq-transcript-panel::-webkit-scrollbar { display: none; width: 0; height: 0; }
+            background: rgba(102, 93, 232, .24);
         }
 
-        .pq-panel.is-page-transitioning { pointer-events: none; }
+        .pq-transcript-panel::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        @media (max-width: 520px) {
+            [data-question-content], .pq-transcript-panel {
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            [data-question-content]::-webkit-scrollbar, .pq-transcript-panel::-webkit-scrollbar {
+                display: none;
+                width: 0;
+                height: 0;
+            }
+        }
+
         .pq-panel.is-page-transitioning [data-question-content],
-        .pq-panel.is-page-transitioning [data-section-title] { animation: pqPageOut 180ms ease-in both; }
+        .pq-panel.is-page-transitioning [data-section-title] {
+            animation: pqPageOut 180ms ease-in both;
+        }
+
         .pq-panel.is-revealing [data-question-content],
         .pq-panel.is-revealing [data-section-title],
-        .pq-panel.is-revealing [data-page-counter] { animation: pqPageIn 420ms var(--pq-ease) both; }
+        .pq-panel.is-revealing [data-page-counter] {
+            animation: pqPageIn 420ms var(--pq-ease) both;
+        }
 
         .pq-progress-bar::after {
             position: absolute;
             inset: 0;
-            background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,.72) 48%, transparent 74%);
+            background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, .72) 48%, transparent 74%);
             content: "";
             transform: translateX(-120%);
             animation: pqProgressShine 2.8s ease-in-out infinite;
         }
-        [data-progress-track] { touch-action: none; user-select: none; }
-        [data-progress-track].is-scrubbing { cursor: grabbing; }
-        .pq-section-dot { animation: pqSectionDot 2.8s ease-in-out infinite; }
-        .pq-image-frame img { animation: pqImageReveal 560ms var(--pq-ease) both; }
-        @media (hover:hover) and (pointer:fine) { .pq-image-frame:hover img { filter: saturate(1.04) contrast(1.015); transform: scale(1.018); } }
 
-        .pq-list-row { position: relative; overflow: hidden; animation: pqOptionEnter 430ms var(--pq-ease) both; }
-        .pq-list-row:nth-child(1) { animation-delay: 30ms; }
-        .pq-list-row:nth-child(2) { animation-delay: 70ms; }
-        .pq-list-row:nth-child(3) { animation-delay: 110ms; }
-        .pq-list-row:nth-child(4) { animation-delay: 150ms; }
-        .pq-list-row:nth-child(5) { animation-delay: 190ms; }
-        .pq-list-row:nth-child(6) { animation-delay: 230ms; }
-        .pq-list-row:nth-child(n+7) { animation-delay: 270ms; }
+        .pq-section-dot {
+            animation: pqSectionDot 2.8s ease-in-out infinite;
+        }
+
+        .pq-image-frame img {
+            animation: pqImageReveal 560ms var(--pq-ease) both;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .pq-image-frame:hover img {
+                filter: saturate(1.04) contrast(1.015);
+                transform: scale(1.018);
+            }
+        }
+
+        .pq-list-row {
+            animation: pqOptionEnter 430ms var(--pq-ease) both;
+        }
+
+        .pq-list-row:nth-child(1) {
+            animation-delay: 30ms;
+        }
+
+        .pq-list-row:nth-child(2) {
+            animation-delay: 70ms;
+        }
+
+        .pq-list-row:nth-child(3) {
+            animation-delay: 110ms;
+        }
+
+        .pq-list-row:nth-child(4) {
+            animation-delay: 150ms;
+        }
+
+        .pq-list-row:nth-child(5) {
+            animation-delay: 190ms;
+        }
+
+        .pq-list-row:nth-child(6) {
+            animation-delay: 230ms;
+        }
+
+        .pq-list-row:nth-child(n+7) {
+            animation-delay: 270ms;
+        }
+
         .pq-list-row::before {
             position: absolute;
             inset: 0 auto 0 0;
@@ -114,10 +171,12 @@ $appData = [
             transform: scaleY(.35);
             transition: opacity 180ms ease, transform 180ms var(--pq-ease);
         }
-        .is-audio-playing.pq-list-row { border-color: rgba(102,93,232,.3) !important; background: linear-gradient(135deg, rgba(245,244,255,.98), rgba(255,249,248,.96)) !important; box-shadow: 0 14px 30px rgba(91,80,220,.14) !important; }
-        .is-audio-playing.pq-list-row::before { opacity: 1; transform: scaleY(1); }
 
-        .pq-audio-btn { position: relative; isolation: isolate; overflow: visible; }
+        .is-audio-playing.pq-list-row::before {
+            opacity: 1;
+            transform: scaleY(1);
+        }
+
         .pq-audio-btn::before {
             position: absolute;
             inset: -6px;
@@ -129,161 +188,372 @@ $appData = [
             transform: scale(.8);
             pointer-events: none;
         }
-        .pq-audio-btn > * { position: relative; z-index: 1; }
-        .pq-audio-wave { display: none; }
-        .pq-audio-wave span { transform-origin: center bottom; animation: pqAudioBar .58s ease-in-out infinite alternate; }
-        .pq-audio-wave span:nth-child(2) { animation-delay: 120ms; }
-        .pq-audio-wave span:nth-child(3) { animation-delay: 240ms; }
-        .pq-audio-btn.is-playing { transform: scale(1.055); box-shadow: 0 16px 32px rgba(91,80,220,.34) !important; }
-        .pq-audio-btn.is-playing::before { animation: pqAudioRing 1.45s ease-out infinite; }
-        .pq-audio-btn.is-playing .pq-audio-icon { display: none; }
-        .pq-audio-btn.is-playing .pq-audio-wave { display: inline-flex; }
-        [data-audio-text], [data-audio-copy] { transition: color 180ms ease, text-shadow 180ms ease; }
-        .is-audio-playing [data-audio-text] { color: #554bd2 !important; animation: pqTextPulse 1.05s ease-in-out infinite alternate; }
-        .is-audio-playing [data-audio-copy] { color: #665de8 !important; animation: pqTextPulseSoft 1.15s ease-in-out infinite alternate; }
-        .pq-reveal-caret { display: inline-block; margin-left: .08em; color: #665de8; font-weight: 900; animation: pqRevealCaretBlink .82s steps(1) infinite; }
 
-        [data-conversation-mobile-button] { display: inline-flex !important; }
-        .pq-conversation-line [data-conversation-bubble-button] { display: none !important; position: absolute; top: .95rem; right: .95rem; }
-        @media (min-width: 1024px) {
-            [data-conversation-mobile-button] { display: none !important; }
-            .pq-conversation-line.is-active [data-conversation-bubble-button],
-            .is-conversation-idle .pq-conversation-line[data-conversation-starter="true"] [data-conversation-bubble-button] { display: inline-flex !important; }
-            .pq-conversation-line[data-side="left"]::after,
-            .pq-conversation-line[data-side="right"]::after { position: absolute; top: 1.55rem; width: 0; height: 0; content: ""; border-top: .6rem solid transparent; border-bottom: .6rem solid transparent; }
-            .pq-conversation-line[data-side="left"]::after { left: -.72rem; border-right: .72rem solid #111827; }
-            .pq-conversation-line[data-side="right"]::after { right: -.72rem; border-left: .72rem solid #111827; }
+        .pq-audio-btn > * {
+            position: relative;
+            z-index: 1;
         }
-        .pq-conversation-speaker.is-active figure,
-        .pq-conversation-line.is-active { border-color: rgba(102, 93, 232, .72) !important; box-shadow: 0 14px 32px rgba(91, 80, 220, .16) !important; }
-        .pq-conversation-line.is-active { background: linear-gradient(135deg, rgba(245,244,255,.98), rgba(255,249,248,.96)) !important; }
-        .pq-conversation-line.is-active [data-conversation-text] { color: #554bd2 !important; }
+
+        .pq-audio-wave {
+            display: none;
+        }
+
+        .pq-audio-wave span {
+            transform-origin: center bottom;
+            animation: pqAudioBar .58s ease-in-out infinite alternate;
+        }
+
+        .pq-audio-wave span:nth-child(2) {
+            animation-delay: 120ms;
+        }
+
+        .pq-audio-wave span:nth-child(3) {
+            animation-delay: 240ms;
+        }
+
+        .pq-audio-btn.is-playing::before {
+            animation: pqAudioRing 1.45s ease-out infinite;
+        }
+
+        .pq-audio-btn.is-playing .pq-audio-icon {
+            display: none;
+        }
+
+        .pq-audio-btn.is-playing .pq-audio-wave {
+            display: inline-flex;
+        }
+
+        [data-audio-text], [data-audio-copy] {
+            transition: color 180ms ease, text-shadow 180ms ease;
+        }
+
+        .pq-reveal-caret {
+            display: inline-block;
+            margin-left: .08em;
+            color: #665de8;
+            font-weight: 900;
+            animation: pqRevealCaretBlink .82s steps(1) infinite;
+        }
+
+        [data-conversation-mobile-button] {
+            display: inline-flex !important;
+        }
+
+        .pq-conversation-line [data-conversation-bubble-button] {
+            display: none !important;
+            position: absolute;
+            top: .95rem;
+            right: .95rem;
+        }
+
+        @media (min-width: 1024px) {
+            [data-conversation-mobile-button] {
+                display: none !important;
+            }
+
+            .pq-conversation-line.is-active [data-conversation-bubble-button],
+            .is-conversation-idle .pq-conversation-line[data-conversation-starter="true"] [data-conversation-bubble-button] {
+                display: inline-flex !important;
+            }
+
+            .pq-conversation-line[data-side="left"]::after,
+            .pq-conversation-line[data-side="right"]::after {
+                position: absolute;
+                top: 1.55rem;
+                width: 0;
+                height: 0;
+                content: "";
+                border-top: .6rem solid transparent;
+                border-bottom: .6rem solid transparent;
+            }
+
+            .pq-conversation-line[data-side="left"]::after {
+                left: -.72rem;
+                border-right: .72rem solid #111827;
+            }
+
+            .pq-conversation-line[data-side="right"]::after {
+                right: -.72rem;
+                border-left: .72rem solid #111827;
+            }
+        }
 
         .pq-video-wrap .video-js,
         .pq-video-wrap > video,
         .pq-short-video-wrap .video-js,
-        .pq-short-video-wrap > video { width: 100% !important; height: 100% !important; margin: 0 auto; background: #090910; font-family: inherit; }
+        .pq-short-video-wrap > video {
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 auto;
+            background: #090910;
+            font-family: inherit;
+        }
+
         .pq-video-wrap .video-js .vjs-tech,
         .pq-video-wrap .video-js .vjs-poster,
         .pq-video-wrap .video-js .vjs-poster img,
         .pq-short-video-wrap .video-js .vjs-tech,
         .pq-short-video-wrap .video-js .vjs-poster,
-        .pq-short-video-wrap .video-js .vjs-poster img { width: 100%; height: 100%; object-fit: contain !important; object-position: center center !important; }
+        .pq-short-video-wrap .video-js .vjs-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain !important;
+            object-position: center center !important;
+        }
+
         .pq-video-wrap .vjs-picture-in-picture-control,
-        .pq-short-video-wrap .vjs-picture-in-picture-control { display: none !important; }
+        .pq-short-video-wrap .vjs-picture-in-picture-control {
+            display: none !important;
+        }
+
         .pq-video-wrap .video-js .vjs-big-play-button {
-            top: 50% !important; left: 50% !important; width: 3.75rem; height: 3.75rem; margin: 0;
-            transform: translate(-50%, -50%); border: 0; border-radius: 999px;
-            background: linear-gradient(145deg, rgba(124,127,246,.96), rgba(102,93,232,.96));
-            box-shadow: 0 14px 34px rgba(18,18,40,.32); line-height: 3.75rem;
+            top: 50% !important;
+            left: 50% !important;
+            width: 3.75rem;
+            height: 3.75rem;
+            margin: 0;
+            transform: translate(-50%, -50%);
+            border: 0;
+            border-radius: 999px;
+            background: linear-gradient(145deg, rgba(124, 127, 246, .96), rgba(102, 93, 232, .96));
+            box-shadow: 0 14px 34px rgba(18, 18, 40, .32);
+            line-height: 3.75rem;
         }
+
         .pq-video-wrap .video-js:hover .vjs-big-play-button,
-        .pq-video-wrap .video-js .vjs-big-play-button:focus { filter: brightness(1.06); transform: translate(-50%, -50%) scale(1.06); }
-        .pq-video-wrap .video-js .vjs-big-play-button .vjs-icon-placeholder::before { font-size: 2.25rem; line-height: 3.75rem; text-shadow: none; }
-        @media (min-width: 1024px) {
-            .pq-video-wrap .video-js .vjs-big-play-button { width: 4.35rem; height: 4.35rem; line-height: 4.35rem; }
-            .pq-video-wrap .video-js .vjs-big-play-button .vjs-icon-placeholder::before { font-size: 2.5rem; line-height: 4.35rem; }
+        .pq-video-wrap .video-js .vjs-big-play-button:focus {
+            filter: brightness(1.06);
+            transform: translate(-50%, -50%) scale(1.06);
         }
+
+        .pq-video-wrap .video-js .vjs-big-play-button .vjs-icon-placeholder::before {
+            font-size: 2.25rem;
+            line-height: 3.75rem;
+            text-shadow: none;
+        }
+
+        @media (min-width: 1024px) {
+            .pq-video-wrap .video-js .vjs-big-play-button {
+                width: 4.35rem;
+                height: 4.35rem;
+                line-height: 4.35rem;
+            }
+
+            .pq-video-wrap .video-js .vjs-big-play-button .vjs-icon-placeholder::before {
+                font-size: 2.5rem;
+                line-height: 4.35rem;
+            }
+        }
+
         .pq-video-wrap .pq-vjs-cc-button .vjs-icon-placeholder,
-        .pq-short-video-wrap .pq-vjs-cc-button .vjs-icon-placeholder { display: grid; place-items: center; width: 100%; height: 100%; font-size: .78rem; font-weight: 950; letter-spacing: .02em; line-height: 1; text-shadow: none; }
+        .pq-short-video-wrap .pq-vjs-cc-button .vjs-icon-placeholder {
+            display: grid;
+            place-items: center;
+            width: 100%;
+            height: 100%;
+            font-size: .66rem;
+            font-weight: 900;
+            letter-spacing: 0;
+            line-height: 1;
+            text-shadow: none;
+        }
+
+        .pq-video-wrap .pq-vjs-cc-button,
+        .pq-short-video-wrap .pq-vjs-cc-button {
+            width: 2.55em !important;
+            min-width: 2.55em !important;
+            height: 100% !important;
+            color: rgba(255, 255, 255, .78);
+            background: transparent !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+        }
+
         .pq-video-wrap .pq-vjs-cc-button .vjs-icon-placeholder::before,
-        .pq-short-video-wrap .pq-vjs-cc-button .vjs-icon-placeholder::before { content: "" !important; }
+        .pq-short-video-wrap .pq-vjs-cc-button .vjs-icon-placeholder::before {
+            content: "" !important;
+        }
+
         .pq-video-wrap .pq-vjs-cc-button.is-active,
         .pq-video-wrap .pq-vjs-cc-button:hover,
         .pq-short-video-wrap .pq-vjs-cc-button.is-active,
-        .pq-short-video-wrap .pq-vjs-cc-button:hover { color: #fff; background: rgba(102, 93, 232, .92); }
+        .pq-short-video-wrap .pq-vjs-cc-button:hover {
+            color: #fff;
+            background: transparent !important;
+        }
+
+        .pq-video-wrap .pq-vjs-cc-button.is-active .vjs-icon-placeholder,
+        .pq-short-video-wrap .pq-vjs-cc-button.is-active .vjs-icon-placeholder {
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: .2em;
+        }
+
         .pq-video-wrap .video-js .vjs-control-bar,
-        .pq-short-video-wrap .video-js .vjs-control-bar { transition: opacity 120ms ease, visibility 120ms ease, transform 120ms ease !important; }
+        .pq-short-video-wrap .video-js .vjs-control-bar {
+            transition: opacity 120ms ease, visibility 120ms ease, transform 120ms ease !important;
+        }
+
         .pq-video-wrap .video-js.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar,
-        .pq-short-video-wrap .video-js.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar { opacity: 0 !important; visibility: hidden !important; transform: translateY(100%) !important; pointer-events: none !important; }
-        .pq-video-caption-overlay.is-visible .pq-video-caption-text { opacity: 1; transform: translateY(0) scale(1); }
+        .pq-short-video-wrap .video-js.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(100%) !important;
+            pointer-events: none !important;
+        }
+
+        .pq-video-caption-overlay.is-visible .pq-video-caption-text {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
         .pq-video-wrap .video-js.vjs-user-active .pq-video-caption-overlay,
-        .pq-video-wrap .video-js.vjs-paused .pq-video-caption-overlay { bottom: clamp(3.85rem, 12%, 5rem); }
-        .pq-video-wrap .video-js.vjs-user-inactive.vjs-playing .pq-video-caption-overlay { bottom: clamp(.8rem, 4%, 1.75rem); }
+        .pq-video-wrap .video-js.vjs-paused .pq-video-caption-overlay {
+            bottom: clamp(3.85rem, 12%, 5rem);
+        }
+
+        .pq-video-wrap .video-js.vjs-user-inactive.vjs-playing .pq-video-caption-overlay {
+            bottom: clamp(.8rem, 4%, 1.75rem);
+        }
+
         .pq-short-video-wrap .video-js.vjs-user-active .pq-video-caption-overlay,
-        .pq-short-video-wrap .video-js.vjs-paused .pq-video-caption-overlay { bottom: clamp(4rem, 12%, 5.5rem); }
-        .pq-short-video-wrap .video-js.vjs-user-inactive.vjs-playing .pq-video-caption-overlay { bottom: clamp(2.25rem, 8%, 4.75rem); }
-        .video-js.vjs-fullscreen .pq-video-caption-overlay { bottom: clamp(2.1rem, 7%, 5.2rem); z-index: 10000; width: min(86%, 70rem); }
-        .video-js.vjs-fullscreen .pq-video-caption-text { border-radius: 1rem; padding: .7rem 1.1rem; font-size: clamp(1.05rem, 2.1vw, 1.7rem); }
+        .pq-short-video-wrap .video-js.vjs-paused .pq-video-caption-overlay {
+            bottom: clamp(4rem, 12%, 5.5rem);
+        }
 
-        .pq-short-video-overlay.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .pq-short-video-overlay:hover .pq-short-play-circle { transform: scale(1.045); }
+        .pq-short-video-wrap .video-js.vjs-user-inactive.vjs-playing .pq-video-caption-overlay {
+            bottom: clamp(2.25rem, 8%, 4.75rem);
+        }
 
-        .pq-transcript-row.is-active { background: linear-gradient(135deg, rgba(102,93,232,.12), rgba(255,255,255,.98)); }
-        .pq-transcript-row.is-active .pq-transcript-time,
-        .pq-transcript-row.is-active .pq-transcript-text,
-        .pq-transcript-row.is-active .pq-transcript-chevron { color: #554bd2; }
+        .video-js.vjs-fullscreen .pq-video-caption-overlay {
+            bottom: clamp(2.1rem, 7%, 5.2rem);
+            z-index: 10000;
+            width: min(86%, 70rem);
+        }
 
-        .pq-quiz-item { display: none; }
-        .pq-quiz-item.is-current { display: block; animation: pqPageIn 300ms var(--pq-ease) both; }
-        .pq-quiz-option.is-correct { border-color: rgba(34,197,94,.9) !important; background: rgba(240,253,244,.96) !important; color: #15803d !important; box-shadow: 0 8px 20px rgba(34,197,94,.12) !important; }
-        .pq-quiz-option.is-wrong { border-color: rgba(239,68,68,.88) !important; background: rgba(254,242,242,.96) !important; color: #b91c1c !important; animation: pqShake 320ms ease; }
-        .pq-quiz-item.is-correct-flash .pq-quiz-question { color: #15803d; }
-        .pq-quiz-item.is-wrong-flash .pq-quiz-question { color: #b91c1c; }
+        .video-js.vjs-fullscreen .pq-video-caption-text {
+            border-radius: .8rem;
+            padding: .55rem .85rem;
+            font-size: clamp(.82rem, 1.55vw, 1.18rem);
+        }
 
-        .pq-action-button,
-        .pq-action-button *,
-        button[data-prev-button],
-        button[data-next-button],
-        button[data-quiz-submit] { transition: none !important; }
-        .pq-action-button::before { display: none !important; content: none !important; }
-        .pq-action-button:hover,
-        .pq-action-button:active,
-        button[data-prev-button]:hover,
-        button[data-prev-button]:active,
-        button[data-next-button]:hover,
-        button[data-next-button]:active,
-        button[data-quiz-submit]:hover,
-        button[data-quiz-submit]:active { transform: none !important; }
+        .pq-short-video-overlay.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
 
+        .pq-short-video-overlay:hover .pq-short-play-circle {
+            transform: scale(1.045);
+        }
+
+        .pq-quiz-item {
+            display: none;
+        }
+
+        .pq-quiz-item.is-current {
+            display: block;
+            animation: pqPageIn 300ms var(--pq-ease) both;
+        }
 
         /* RESPONSIVE_FIXES_V2: laptop video, transcript, and short-mobile behavior */
-        @media (min-width: 1280px) and (max-height: 840px) {
+        @media (min-width: 1280px) {
             .pq-video-no-quiz .pq-video-main-column {
-                max-width: min(100%, 48rem) !important;
+                max-width: min(100%, 58rem) !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
             }
 
             .pq-video-no-quiz .pq-video-wrap {
-                max-height: min(44dvh, 22rem) !important;
+                max-height: min(54dvh, 31rem) !important;
             }
 
             .pq-video-no-quiz.is-transcript-open .pq-video-wrap {
-                height: min(37dvh, 18rem) !important;
-                max-height: min(37dvh, 18rem) !important;
+                max-height: min(46dvh, 26rem) !important;
+            }
+
+            .pq-video-no-quiz .pq-transcript-panel {
+                max-height: 5.75rem !important;
+            }
+        }
+
+        @media (min-width: 1536px) {
+            .pq-video-no-quiz .pq-video-main-column {
+                max-width: min(100%, 64rem) !important;
+            }
+
+            .pq-video-no-quiz .pq-video-wrap {
+                max-height: min(56dvh, 34rem) !important;
+            }
+
+            .pq-video-no-quiz.is-transcript-open .pq-video-wrap {
+                max-height: min(48dvh, 28rem) !important;
+            }
+        }
+
+        @media (min-width: 1280px) and (max-height: 840px) {
+            .pq-video-no-quiz .pq-video-main-column {
+                max-width: min(100%, 62rem) !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+
+            .pq-video-no-quiz .pq-video-wrap {
+                max-height: min(52dvh, 26rem) !important;
+            }
+
+            .pq-video-no-quiz.is-transcript-open .pq-video-wrap {
+                height: min(44dvh, 22rem) !important;
+                max-height: min(44dvh, 22rem) !important;
             }
 
             .pq-video-no-quiz.is-transcript-open .pq-transcript-panel {
-                max-height: 5.25rem !important;
+                max-height: 4.75rem !important;
             }
 
             .pq-video-no-quiz.is-transcript-open .pq-transcript-row {
-                min-height: 1.8rem !important;
-                padding-top: .25rem !important;
-                padding-bottom: .25rem !important;
+                min-height: 1.7rem !important;
+                padding-top: .2rem !important;
+                padding-bottom: .2rem !important;
             }
 
             .pq-video-has-quiz .pq-video-wrap {
-                max-height: min(48dvh, 24rem) !important;
+                max-height: min(54dvh, 27rem) !important;
             }
 
             .pq-video-has-quiz.is-transcript-open .pq-video-wrap {
-                max-height: min(42dvh, 21rem) !important;
+                height: min(46dvh, 23rem) !important;
+                max-height: min(46dvh, 23rem) !important;
             }
 
             .pq-video-has-quiz .pq-transcript-panel {
-                max-height: 5rem !important;
+                max-height: 4.75rem !important;
             }
 
             .pq-video-has-quiz .pq-transcript-row {
-                min-height: 1.8rem !important;
-                padding-top: .25rem !important;
-                padding-bottom: .25rem !important;
+                min-height: 1.7rem !important;
+                padding-top: .2rem !important;
+                padding-bottom: .2rem !important;
+            }
+        }
+
+        @media (min-width: 1536px) and (min-height: 841px) {
+            .pq-video-has-quiz .pq-video-wrap {
+                max-height: min(54dvh, 32rem) !important;
+            }
+
+            .pq-video-has-quiz.is-transcript-open .pq-video-wrap {
+                max-height: min(48dvh, 28rem) !important;
+            }
+
+            .pq-video-has-quiz .pq-transcript-panel {
+                max-height: 5.75rem !important;
             }
         }
 
         @media (max-width: 767px) {
             .pq-video-has-quiz .pq-video-inner-layout {
-                gap: .85rem !important;
+                gap: 1rem !important;
             }
 
             .pq-video-has-quiz .pq-video-main-column,
@@ -307,13 +577,17 @@ $appData = [
             }
 
             .pq-video-has-quiz .pq-video-side-column {
-                margin-top: .35rem !important;
+                margin-top: .45rem !important;
             }
 
             .pq-video-has-quiz .pq-quiz-question {
-                margin-bottom: .55rem !important;
-                font-size: clamp(1.02rem, 4.8vw, 1.22rem) !important;
+                margin-bottom: .7rem !important;
+                font-size: clamp(1.08rem, 4.8vw, 1.28rem) !important;
                 line-height: 1.06 !important;
+            }
+
+            .pq-video-has-quiz .pq-quiz-option {
+                min-height: 2.85rem !important;
             }
         }
 
@@ -362,29 +636,167 @@ $appData = [
         }
 
         @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .001ms !important; }
+            *, *::before, *::after {
+                animation-duration: .001ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: .001ms !important;
+            }
         }
 
-        @keyframes pqPageOut { to { opacity: 0; transform: translateX(-16px) scale(.988); } }
-        @keyframes pqPageIn { from { opacity: 0; transform: translateX(22px) scale(.985); } to { opacity: 1; transform: translateX(0) scale(1); } }
-        @keyframes pqImageReveal { from { opacity: 0; transform: scale(1.035); } to { opacity: 1; transform: scale(1); } }
-        @keyframes pqOptionEnter { from { opacity: 0; transform: translateY(11px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes pqAudioRing { 0% { opacity: .75; transform: scale(.84); } 100% { opacity: 0; transform: scale(1.34); } }
-        @keyframes pqAudioBar { from { transform: scaleY(.48); opacity: .72; } to { transform: scaleY(1.14); opacity: 1; } }
-        @keyframes pqTextPulse { from { text-shadow: 0 0 0 rgba(102,93,232,0); } to { text-shadow: 0 7px 20px rgba(102,93,232,.2); } }
-        @keyframes pqTextPulseSoft { from { text-shadow: 0 0 0 rgba(102,93,232,0); } to { text-shadow: 0 5px 16px rgba(102,93,232,.14); } }
-        @keyframes pqRevealCaretBlink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes pqProgressShine { 0%,55% { transform: translateX(-120%); } 82%,100% { transform: translateX(120%); } }
-        @keyframes pqSectionDot { 0%,100% { transform: scale(1); box-shadow: 0 0 0 4px rgba(255,138,122,.12); } 50% { transform: scale(1.08); box-shadow: 0 0 0 7px rgba(255,138,122,.06); } }
-        @keyframes pqOrbOne { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(2.8rem,1.8rem,0) scale(1.08); } }
-        @keyframes pqOrbTwo { from { transform: translate3d(0,0,0) scale(1.05); } to { transform: translate3d(-2.2rem,-1.5rem,0) scale(.96); } }
-        @keyframes pqOrbThree { from { transform: translate3d(0,-.5rem,0); } to { transform: translate3d(-1.5rem,1.5rem,0); } }
-        @keyframes pqShake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+        @keyframes pqPageOut {
+            to {
+                opacity: 0;
+                transform: translateX(-16px) scale(.988);
+            }
+        }
+
+        @keyframes pqPageIn {
+            from {
+                opacity: 0;
+                transform: translateX(22px) scale(.985);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes pqImageReveal {
+            from {
+                opacity: 0;
+                transform: scale(1.035);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pqOptionEnter {
+            from {
+                opacity: 0;
+                transform: translateY(11px) scale(.985);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes pqAudioRing {
+            0% {
+                opacity: .75;
+                transform: scale(.84);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.34);
+            }
+        }
+
+        @keyframes pqAudioBar {
+            from {
+                transform: scaleY(.48);
+                opacity: .72;
+            }
+            to {
+                transform: scaleY(1.14);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pqTextPulse {
+            from {
+                text-shadow: 0 0 0 rgba(102, 93, 232, 0);
+            }
+            to {
+                text-shadow: 0 7px 20px rgba(102, 93, 232, .2);
+            }
+        }
+
+        @keyframes pqTextPulseSoft {
+            from {
+                text-shadow: 0 0 0 rgba(102, 93, 232, 0);
+            }
+            to {
+                text-shadow: 0 5px 16px rgba(102, 93, 232, .14);
+            }
+        }
+
+        @keyframes pqRevealCaretBlink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes pqProgressShine {
+            0%, 55% {
+                transform: translateX(-120%);
+            }
+            82%, 100% {
+                transform: translateX(120%);
+            }
+        }
+
+        @keyframes pqSectionDot {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 4px rgba(255, 138, 122, .12);
+            }
+            50% {
+                transform: scale(1.08);
+                box-shadow: 0 0 0 7px rgba(255, 138, 122, .06);
+            }
+        }
+
+        @keyframes pqOrbOne {
+            from {
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+            to {
+                transform: translate3d(2.8rem, 1.8rem, 0) scale(1.08);
+            }
+        }
+
+        @keyframes pqOrbTwo {
+            from {
+                transform: translate3d(0, 0, 0) scale(1.05);
+            }
+            to {
+                transform: translate3d(-2.2rem, -1.5rem, 0) scale(.96);
+            }
+        }
+
+        @keyframes pqOrbThree {
+            from {
+                transform: translate3d(0, -.5rem, 0);
+            }
+            to {
+                transform: translate3d(-1.5rem, 1.5rem, 0);
+            }
+        } 
+
+        @keyframes pqShake {
+            0%, 100% {
+                transform: translateX(0); 
+            }
+            25% {
+                transform: translateX(-4px);
+            }
+            75% {
+                transform: translateX(4px);  
+            }
+        }
     </style>
 </head>
 <body class="relative min-h-dvh overflow-hidden overscroll-none bg-[radial-gradient(circle_at_12%_10%,rgba(124,127,246,.16),transparent_29rem),radial-gradient(circle_at_92%_88%,rgba(255,138,122,.14),transparent_28rem),linear-gradient(145deg,#fbfcff_0%,#f4f5ff_48%,#eef3ff_100%)] font-sans text-[#1a1b2e] antialiased">
 {{-- TAILWIND-FIRST BUILD 2026-06-25: sidebar menu + stable video frame transcript + compact video quiz + no-crop shorts + no action-button animation --}}
-<div class="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(102,93,232,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(102,93,232,.035)_1px,transparent_1px)] bg-[length:34px_34px] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,.5),transparent_78%)]" aria-hidden="true"></div>
+<div class="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(102,93,232,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(102,93,232,.035)_1px,transparent_1px)] bg-[length:34px_34px] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,.5),transparent_78%)]"
+     aria-hidden="true"></div>
 @include("slider.menu", ["active" => "speaking"])
 <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
     <span class="pq-orb pq-orb-one pointer-events-none absolute -top-32 -left-28 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_35%_35%,rgba(255,255,255,.98),rgba(124,127,246,.22)_48%,transparent_72%)] opacity-90 blur-[3px] will-change-transform [animation:pqOrbOne_12s_ease-in-out_infinite_alternate]"></span>
@@ -397,27 +809,40 @@ $appData = [
             class="pq-panel grid h-full min-h-0 w-full max-w-[1280px] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-[1.5rem] border border-[#e8e6f2] bg-white/95 p-[clamp(.58rem,1.15dvh,.9rem)] shadow-[0_18px_46px_rgba(38,35,92,.09)] backdrop-blur-xl sm:rounded-[1.75rem] sm:p-4 sm:shadow-[0_28px_80px_rgba(38,35,92,.14)] md:p-5 lg:max-w-[1440px] lg:rounded-[2rem] lg:p-6 xl:max-w-[1520px] xl:p-7 2xl:max-w-[1600px] laptop:!rounded-[1.5rem] laptop:!p-4 short:!rounded-[1.35rem] short:!p-[clamp(.78rem,2vh,1rem)]"
             data-question-card
     >
-        <header class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] grid-areas-none items-center gap-x-2 gap-y-2 py-[.12rem] md:gap-x-4 md:gap-y-3 short:!gap-y-[.45rem]" data-question-heading>
-            <div class="inline-flex min-h-[2.75rem] w-fit max-w-full min-w-0 items-center gap-2 overflow-visible rounded-full border border-[#dfdcff] bg-gradient-to-br from-white to-[#f1efff] px-3 py-2.5 text-[clamp(.9rem,4.4vw,1.12rem)] font-black leading-[1.35] tracking-[-.026em] text-[#665de8] shadow-[0_10px_26px_rgba(64,58,153,.09)] sm:min-h-[3rem] sm:px-4 md:min-h-[3.2rem] md:px-5 md:text-[1.05rem] short:!min-h-[2.55rem]" data-section-title>
+        <header class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] grid-areas-none items-center gap-x-2 gap-y-2 py-[.12rem] md:gap-x-4 md:gap-y-3 short:!gap-y-[.45rem]"
+                data-question-heading>
+            <div class="inline-flex min-h-[2.75rem] w-fit max-w-full min-w-0 items-center gap-2 overflow-visible rounded-full border border-[#dfdcff] bg-gradient-to-br from-white to-[#f1efff] px-3 py-2.5 text-[clamp(.9rem,4.4vw,1.12rem)] font-black leading-[1.35] tracking-[-.026em] text-[#665de8] shadow-[0_10px_26px_rgba(64,58,153,.09)] sm:min-h-[3rem] sm:px-4 md:min-h-[3.2rem] md:px-5 md:text-[1.05rem] short:!min-h-[2.55rem]"
+                 data-section-title>
                 <span class="pq-section-dot h-2.5 w-2.5 shrink-0 rounded-full border-2 border-white bg-gradient-to-br from-[#ff8a7a] to-[#ffb37c]"></span>
-                <span class="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap leading-[1.35] pb-[2px] pt-[1px]" data-section-name></span>
+                <span class="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap leading-[1.35] pb-[2px] pt-[1px]"
+                      data-section-name></span>
             </div>
 
-            <div class="inline-flex min-h-[2.75rem] min-w-[3.75rem] items-center justify-center rounded-full border border-[#e4e1fb] bg-white/90 px-3 py-2.5 text-[.84rem] font-black leading-[1.35] text-[#665de8] shadow-[0_10px_24px_rgba(38,35,92,.07)] sm:min-h-[3rem] sm:min-w-[4.15rem] sm:text-base md:min-h-[3.2rem] md:min-w-[4.75rem] short:!min-h-[2.55rem]" data-page-counter></div>
+            <div class="inline-flex min-h-[2.75rem] min-w-[3.75rem] items-center justify-center rounded-full border border-[#e4e1fb] bg-white/90 px-3 py-2.5 text-[.84rem] font-black leading-[1.35] text-[#665de8] shadow-[0_10px_24px_rgba(38,35,92,.07)] sm:min-h-[3rem] sm:min-w-[4.15rem] sm:text-base md:min-h-[3.2rem] md:min-w-[4.75rem] short:!min-h-[2.55rem]"
+                 data-page-counter></div>
 
-            <div class="relative col-span-2 h-[.42rem] cursor-pointer overflow-hidden rounded-full bg-[#eceafd] outline-none ring-offset-2 ring-offset-white hover:bg-[#e2dfff] focus-visible:ring-4 focus-visible:ring-[#766cff]/20 md:h-[.48rem]" data-progress-track role="slider" tabindex="0" aria-label="Go to page" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1">
-                <div class="pq-progress-bar absolute inset-y-0 left-0 w-0 rounded-full bg-gradient-to-r from-[#7c7ff6] to-[#ff8a7a] shadow-[0_0_16px_rgba(102,93,232,.28)] transition-[width] duration-[420ms] ease-out" data-progress-bar></div>
+            <div class="relative col-span-2 h-[.42rem] cursor-pointer touch-none select-none overflow-hidden rounded-full bg-[#eceafd] outline-none ring-offset-2 ring-offset-white hover:bg-[#e2dfff] focus-visible:ring-4 focus-visible:ring-[#766cff]/20 md:h-[.48rem]"
+                 data-progress-track role="slider" tabindex="0" aria-label="Go to page" aria-valuemin="1"
+                 aria-valuemax="1" aria-valuenow="1">
+                <div class="pq-progress-bar absolute inset-y-0 left-0 w-0 rounded-full bg-gradient-to-r from-[#7c7ff6] to-[#ff8a7a] shadow-[0_0_16px_rgba(102,93,232,.28)] transition-[width] duration-[420ms] ease-out"
+                     data-progress-bar></div>
             </div>
         </header>
 
-        <div class="h-full min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain pt-[clamp(.58rem,1.15dvh,.9rem)] pr-1 pb-3 touch-pan-y sm:pt-4 sm:pr-2 md:px-1 md:pb-4 lg:px-3 lg:pt-5 xl:px-4 laptop:!pt-3 laptop:!px-2 laptop:!pb-3 short:!py-[.45rem]" data-question-content></div>
+        <div class="h-full min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain pt-[clamp(.58rem,1.15dvh,.9rem)] pr-1 pb-3 touch-pan-y sm:pt-4 sm:pr-2 md:px-1 md:pb-4 lg:px-3 lg:pt-5 xl:px-4 laptop:!pt-3 laptop:!px-2 laptop:!pb-3 short:!py-[.45rem]"
+             data-question-content></div>
 
-        <nav class="grid grid-cols-2 gap-2 pt-2 sm:gap-3 sm:pt-3 md:mx-auto md:w-full md:max-w-[34rem] lg:ml-auto lg:mr-0 lg:max-w-[36rem] laptop:!max-w-[32rem] laptop:!pt-2 laptop:[&_button]:!min-h-[3rem] short:!max-w-[30rem] short:!gap-[.65rem] short:!pt-[.45rem] short:[&_button]:!min-h-[2.75rem] short:[&_button]:!rounded-[.9rem] short:[&_button]:!px-4 short:[&_button]:!text-[.86rem]" data-nav-actions>
-            <button type="button" class="pq-action-button relative flex min-h-[2.9rem] items-center justify-center gap-2 overflow-hidden rounded-[1rem] border border-[#dcd8ff] bg-[#fbfbff] px-4 text-[.82rem] font-extrabold text-[#554bd2] hover:border-[#cfc9ff] hover:bg-[#f1efff] hover:text-[#4f46d5] sm:min-h-[3.25rem] sm:text-sm lg:min-h-[3.5rem] lg:text-[.95rem]" data-prev-button>
+        <nav class="grid grid-cols-2 gap-2 pt-2 sm:gap-3 sm:pt-3 md:mx-auto md:w-full md:max-w-[34rem] lg:ml-auto lg:mr-0 lg:max-w-[36rem] laptop:!max-w-[32rem] laptop:!pt-2 laptop:[&_button]:!min-h-[3rem] short:!max-w-[30rem] short:!gap-[.65rem] short:!pt-[.45rem] short:[&_button]:!min-h-[2.75rem] short:[&_button]:!rounded-[.9rem] short:[&_button]:!px-4 short:[&_button]:!text-[.86rem]"
+             data-nav-actions>
+            <button type="button"
+                    class="pq-action-button relative flex min-h-[2.9rem] items-center justify-center gap-2 overflow-hidden rounded-[1rem] border border-[#dcd8ff] bg-[#fbfbff] px-4 text-[.82rem] font-extrabold text-[#554bd2] hover:border-[#cfc9ff] hover:bg-[#f1efff] hover:text-[#4f46d5] sm:min-h-[3.25rem] sm:text-sm lg:min-h-[3.5rem] lg:text-[.95rem]"
+                    data-prev-button>
                 <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                 <span>Previous</span>
             </button>
-            <button type="button" class="pq-action-button relative flex min-h-[2.9rem] items-center justify-center gap-2 overflow-hidden rounded-[1rem] border border-transparent bg-gradient-to-br from-[#546be6] via-[#6258e4] to-[#6b4ed5] px-4 text-[.82rem] font-extrabold text-white shadow-[0_12px_28px_rgba(91,80,220,.24)] hover:from-[#4f63dc] hover:via-[#5b51d8] hover:to-[#6046c8] sm:min-h-[3.25rem] sm:text-sm lg:min-h-[3.5rem] lg:text-[.95rem]" data-next-button>
+            <button type="button"
+                    class="pq-action-button relative flex min-h-[2.9rem] items-center justify-center gap-2 overflow-hidden rounded-[1rem] border border-transparent bg-gradient-to-br from-[#546be6] via-[#6258e4] to-[#6b4ed5] px-4 text-[.82rem] font-extrabold text-white shadow-[0_12px_28px_rgba(91,80,220,.24)] hover:from-[#4f63dc] hover:via-[#5b51d8] hover:to-[#6046c8] sm:min-h-[3.25rem] sm:text-sm lg:min-h-[3.5rem] lg:text-[.95rem]"
+                    data-next-button>
                 <span>Next</span>
                 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
             </button>
@@ -441,12 +866,68 @@ $appData = [
     };
 
     const ui = {
-        audioButton: 'pq-audio-btn inline-flex h-[3.05rem] w-[3.05rem] shrink-0 items-center justify-center rounded-full border border-white/60 bg-gradient-to-br from-[#6f73ea] to-[#554bd2] text-white shadow-[0_12px_26px_rgba(91,80,220,.26)] sm:h-[3.2rem] sm:w-[3.2rem] short:!h-[2.8rem] short:!w-[2.8rem]',
+        audioButton: 'pq-audio-btn relative isolate inline-flex h-[3.05rem] w-[3.05rem] shrink-0 items-center justify-center overflow-visible rounded-full border border-white/60 bg-gradient-to-br from-[#6f73ea] to-[#554bd2] text-white shadow-[0_12px_26px_rgba(91,80,220,.26)] sm:h-[3.2rem] sm:w-[3.2rem] short:!h-[2.8rem] short:!w-[2.8rem]',
         title: 'break-words text-balance font-black leading-[1.05] tracking-[-.045em] text-[#191a2b]',
         copy: 'max-w-xl space-y-2 text-[clamp(.98rem,4vw,1.1rem)] font-bold leading-[1.48] text-[#70748a] sm:text-lg lg:max-w-2xl',
         option: 'pq-quiz-option min-h-[2.95rem] w-full rounded-[.95rem] border-2 border-[#eceafa] bg-white px-4 text-center text-[.92rem] font-black leading-tight text-[#55576a] shadow-[0_4px_0_rgba(102,93,232,.06)] sm:min-h-[3.2rem] sm:text-base lg:min-h-[3.35rem] lg:px-5 short:!min-h-[2.65rem] short:!text-[.86rem]',
-        videoOption: 'pq-quiz-option min-h-[2.7rem] w-full rounded-[.82rem] border-2 border-[#eceafa] bg-white px-[.9rem] text-center text-[.86rem] font-black leading-tight text-[#55576a] shadow-[0_4px_0_rgba(102,93,232,.06)] min-[1280px]:min-h-[2.35rem] min-[1280px]:px-[.8rem] min-[1280px]:text-[.8rem] short:!min-h-[2.25rem] short:!text-[.78rem]',
+        videoOption: 'pq-quiz-option min-h-[2.85rem] w-full rounded-[.82rem] border-2 border-[#eceafa] bg-white px-[.95rem] text-center text-[.9rem] font-extrabold leading-tight text-[#55576a] shadow-[0_4px_0_rgba(102,93,232,.06)] min-[1280px]:min-h-[3rem] min-[1280px]:px-4 min-[1280px]:text-[.9rem] min-[1536px]:min-h-[3.25rem] min-[1536px]:text-[.96rem] short:!min-h-[2.85rem] short:!text-[.86rem]',
     };
+
+    const stateClasses = {
+        quizCorrectOption: ['!border-green-500', '!bg-green-50', '!text-green-700', '!shadow-[0_8px_20px_rgba(34,197,94,.12)]'],
+        quizWrongOption: ['!border-red-400', '!bg-red-50', '!text-red-700', 'animate-[pqShake_320ms_ease]'],
+        quizQuestionCorrect: ['!text-green-700'],
+        quizQuestionWrong: ['!text-red-700'],
+        transcriptRowActive: ['bg-[linear-gradient(135deg,rgba(102,93,232,.12),rgba(255,255,255,.98))]'],
+        transcriptTextActive: ['!text-[#554bd2]'],
+        audioButtonPlaying: ['scale-[1.055]', '!shadow-[0_16px_32px_rgba(91,80,220,.34)]'],
+        audioRowPlaying: ['!border-[rgba(102,93,232,.3)]', '!bg-[linear-gradient(135deg,rgba(245,244,255,.98),rgba(255,249,248,.96))]', '!shadow-[0_14px_30px_rgba(91,80,220,.14)]'],
+        audioTextPlaying: ['!text-[#554bd2]', 'animate-[pqTextPulse_1.05s_ease-in-out_infinite_alternate]'],
+        audioCopyPlaying: ['!text-[#665de8]', 'animate-[pqTextPulseSoft_1.15s_ease-in-out_infinite_alternate]'],
+        conversationActiveFrame: ['!border-[rgba(102,93,232,.72)]', '!shadow-[0_14px_32px_rgba(91,80,220,.16)]'],
+        conversationActiveLine: ['!bg-[linear-gradient(135deg,rgba(245,244,255,.98),rgba(255,249,248,.96))]'],
+        conversationTextActive: ['!text-[#554bd2]'],
+    };
+
+    function addClasses(element, classes = []) {
+        if (!element || !classes.length) return;
+        element.classList.add(...classes);
+    }
+
+    function removeClasses(element, classes = []) {
+        if (!element || !classes.length) return;
+        element.classList.remove(...classes);
+    }
+
+    function setAudioVisualState(button, scope, isPlaying) {
+        (isPlaying ? addClasses : removeClasses)(button, stateClasses.audioButtonPlaying);
+
+        if (scope?.classList?.contains('pq-list-row')) {
+            (isPlaying ? addClasses : removeClasses)(scope, stateClasses.audioRowPlaying);
+        }
+
+        scope?.querySelectorAll?.('[data-audio-text]').forEach((target) => {
+            (isPlaying ? addClasses : removeClasses)(target, stateClasses.audioTextPlaying);
+        });
+
+        scope?.querySelectorAll?.('[data-audio-copy]').forEach((target) => {
+            (isPlaying ? addClasses : removeClasses)(target, stateClasses.audioCopyPlaying);
+        });
+    }
+
+    function setConversationLineVisualState(line, isActive) {
+        (isActive ? addClasses : removeClasses)(line, stateClasses.conversationActiveFrame);
+        (isActive ? addClasses : removeClasses)(line, stateClasses.conversationActiveLine);
+
+        line?.querySelectorAll?.('[data-conversation-text]').forEach((target) => {
+            (isActive ? addClasses : removeClasses)(target, stateClasses.conversationTextActive);
+        });
+    }
+
+    function setConversationSpeakerVisualState(speaker, isActive) {
+        const frame = speaker?.querySelector?.('figure');
+        (isActive ? addClasses : removeClasses)(frame, stateClasses.conversationActiveFrame);
+    }
 
     let pages = buildPages(appData.topics || []);
     let pageIndex = 0;
@@ -455,6 +936,7 @@ $appData = [
     let activeAudioScope = null;
     let activeQuizAudio = null;
     let videoJsPlayer = null;
+    let videoInstanceId = 0;
     let revealTimer = null;
     let activeTextReveal = null;
     let conversationState = {
@@ -498,7 +980,8 @@ $appData = [
             sound.pause();
             sound.currentTime = 0;
             const promise = sound.play();
-            if (promise && typeof promise.catch === 'function') promise.catch(() => {});
+            if (promise && typeof promise.catch === 'function') promise.catch(() => {
+            });
         } catch (error) {
         }
     }
@@ -509,12 +992,19 @@ $appData = [
             try {
                 sound.pause();
                 sound.currentTime = 0;
-            } catch (error) {}
+            } catch (error) {
+            }
         });
     }
 
     function fieldHasValue(value) {
         return value !== null && value !== undefined && String(value).trim() !== '';
+    }
+
+    function flagIsEnabled(value) {
+        if (value === true || value === 1) return true;
+        if (value === false || value === 0 || value === undefined || value === null) return false;
+        return ['1', 'true', 'yes', 'on'].includes(String(value).trim().toLowerCase());
     }
 
     function capitalizeFirstLetter(value) {
@@ -664,7 +1154,9 @@ $appData = [
         return chunks;
     }
 
-    function groupChunkSize(items = []) {
+    function groupChunkSize(items = [], hasImages = false) {
+        if (!hasImages) return 9;
+
         const hasTextCopy = items.some((item) => fieldHasValue(item.paragraph || item.description || item.subtitle));
 
         return hasTextCopy ? 6 : 8;
@@ -694,18 +1186,13 @@ $appData = [
                         return;
                     }
 
-                    const chunkSize = groupChunkSize(groupItems);
-                    const groupChunks = groupItems.length > chunkSize ? chunkArray(groupItems, chunkSize) : [groupItems];
-
-                    groupChunks.forEach((items, chunkIndex) => {
-                        output.push({
-                            type: 'group',
-                            sectionTitle,
-                            title: groupTitle,
-                            subtitle: groupSubtitle,
-                            items,
-                            itemOffset: chunkIndex * chunkSize,
-                        });
+                    output.push({
+                        type: 'group',
+                        sectionTitle,
+                        title: groupTitle,
+                        subtitle: groupSubtitle,
+                        items: groupItems,
+                        itemOffset: 0,
                     });
                 });
             }
@@ -742,18 +1229,26 @@ $appData = [
 
     function firstEmoji(value, fallback = '✨') {
         const text = String(value ?? '').trim();
-        if (!text) return fallback;
+        return text || fallback;
+    }
+
+    function badgeGlyphCount(value) {
+        const text = String(value ?? '').trim();
+        if (!text) return 0;
 
         if (typeof Intl !== 'undefined' && Intl.Segmenter) {
-            const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
-            for (const part of segmenter.segment(text)) {
-                const segment = String(part.segment || '').trim();
-                if (fieldHasValue(segment)) return segment;
-            }
+            return Array.from(new Intl.Segmenter(undefined, {granularity: 'grapheme'}).segment(text)).length;
         }
 
-        const match = text.match(/\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?)*|\S/u);
-        return match?.[0] || fallback;
+        return Array.from(text).length;
+    }
+
+    function badgeTextSize(value, singleClass, multiClass) {
+        return badgeGlyphCount(value) > 1 ? multiClass : singleClass;
+    }
+
+    function contentImageFitClass(context = 'learning') {
+        return ['portrait', 'thumbnail', 'feature'].includes(context) ? 'object-cover' : 'object-contain';
     }
 
     function groupCardBadge(item, itemTitle, sectionTitle, index) {
@@ -762,7 +1257,7 @@ $appData = [
         if (fieldHasValue(image)) {
             return `
                 <span class="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-[.95rem] border border-[#e4e1fb] bg-[#f0eeff] shadow-sm sm:h-14 sm:w-14">
-                    <img class="h-full w-full object-cover" src="${escapeHtml(image)}" alt="${escapeHtml(itemTitle)}" loading="lazy" decoding="async">
+                    <img class="h-full w-full ${contentImageFitClass('thumbnail')}" src="${escapeHtml(image)}" alt="${escapeHtml(itemTitle)}" loading="lazy" decoding="async">
                 </span>
             `;
         }
@@ -771,9 +1266,10 @@ $appData = [
             const emoji = fieldHasValue(item.emoji)
                 ? firstEmoji(item.emoji)
                 : firstEmoji(defaultEmojiForText(itemTitle, sectionTitle));
+            const emojiSize = badgeTextSize(emoji, 'text-[1.45rem] sm:text-[1.65rem]', 'text-[1.02rem] leading-none sm:text-[1.12rem]');
 
             return `
-                <span class="grid h-12 w-12 shrink-0 place-items-center rounded-[.95rem] bg-[#f0eeff] text-[1.45rem] font-black text-[#665de8] sm:h-14 sm:w-14 sm:text-[1.65rem]">${escapeHtml(emoji)}</span>
+                <span class="grid h-12 w-12 shrink-0 place-items-center rounded-[.95rem] bg-[#f0eeff] ${emojiSize} font-black text-[#665de8] sm:h-14 sm:w-14">${escapeHtml(emoji)}</span>
             `;
         }
 
@@ -786,7 +1282,7 @@ $appData = [
         if (!fieldHasValue(src)) return '';
 
         const buttonClass = size === 'compact'
-            ? 'pq-audio-btn inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/60 bg-gradient-to-br from-[#6f73ea] to-[#554bd2] text-white shadow-[0_10px_20px_rgba(91,80,220,.24)] sm:h-10 sm:w-10 short:!h-9 short:!w-9'
+            ? 'pq-audio-btn relative isolate inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-visible rounded-full border border-white/60 bg-gradient-to-br from-[#6f73ea] to-[#554bd2] text-white shadow-[0_10px_20px_rgba(91,80,220,.24)] sm:h-10 sm:w-10 min-[1536px]:!h-11 min-[1536px]:!w-11 min-[1800px]:!h-12 min-[1800px]:!w-12 short:!h-9 short:!w-9'
             : ui.audioButton;
 
         const iconClass = size === 'compact' ? 'h-4 w-4' : 'h-5 w-5';
@@ -823,13 +1319,14 @@ $appData = [
         const emoji = fieldHasValue(item.emoji)
             ? firstEmoji(item.emoji)
             : firstEmoji(defaultEmojiForText(itemTitle, page.sectionTitle));
+        const emojiSize = badgeTextSize(emoji, 'text-[clamp(2.6rem,13vw,5rem)]', 'text-[clamp(1.75rem,8vw,3.25rem)]');
 
         const visual = fieldHasValue(image)
-            ? `<img class="h-full w-full object-contain object-center transition duration-500 group-hover:scale-[1.015]" src="${escapeHtml(image)}" alt="${escapeHtml(itemTitle)}" loading="lazy" decoding="async">`
-            : `<div class="grid h-full w-full place-items-center bg-gradient-to-br from-[#f7f6ff] via-white to-[#eef3ff]"><span class="text-[clamp(2.6rem,13vw,5rem)] leading-none drop-shadow-[0_10px_22px_rgba(91,80,220,.14)]">${escapeHtml(emoji)}</span></div>`;
+            ? `<img class="h-full w-full ${contentImageFitClass('learning')} object-center transition duration-500 group-hover:scale-[1.015]" src="${escapeHtml(image)}" alt="${escapeHtml(itemTitle)}" loading="lazy" decoding="async">`
+            : `<div class="grid h-full w-full place-items-center bg-gradient-to-br from-[#f7f6ff] via-white to-[#eef3ff]"><span class="${emojiSize} leading-none drop-shadow-[0_10px_22px_rgba(91,80,220,.14)]">${escapeHtml(emoji)}</span></div>`;
 
         return `
-            <article class="pq-list-row pq-image-card group w-full justify-self-center overflow-hidden rounded-[1.25rem] border border-[#eceafa] bg-white shadow-[0_12px_28px_rgba(38,35,92,.07)] hover:-translate-y-0.5 hover:border-[#dad6ff] hover:shadow-[0_18px_38px_rgba(91,80,220,.12)] sm:rounded-[1.45rem] lg:!max-w-[13.75rem] xl:!max-w-[14.75rem] short:!max-w-[12.25rem]" ${hasAudio(item) ? 'data-audio-scope' : ''}>
+            <article class="pq-list-row pq-image-card group relative w-full justify-self-center overflow-hidden rounded-[1.25rem] border border-[#eceafa] bg-white shadow-[0_12px_28px_rgba(38,35,92,.07)] hover:-translate-y-0.5 hover:border-[#dad6ff] hover:shadow-[0_18px_38px_rgba(91,80,220,.12)] sm:rounded-[1.45rem] lg:!max-w-[13.75rem] xl:!max-w-[14.75rem] short:!max-w-[12.25rem]" ${hasAudio(item) ? 'data-audio-scope' : ''}>
                 <figure class="pq-image-card-media aspect-[4/3] w-full overflow-hidden bg-[#f0eeff] lg:!aspect-square">
                     ${visual}
                 </figure>
@@ -858,23 +1355,24 @@ $appData = [
         const compactEmoji = fieldHasValue(item.emoji)
             ? firstEmoji(item.emoji)
             : firstEmoji(defaultEmojiForText(itemTitle, page.sectionTitle));
+        const compactEmojiSize = badgeTextSize(compactEmoji, 'text-[1.15rem] sm:text-[1.28rem] min-[1536px]:!text-[1.4rem]', 'text-[.9rem] leading-none sm:text-[1rem] min-[1536px]:!text-[1.08rem]');
 
         const badge = isSimplePhraseCard
             ? `
-            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-[.8rem] bg-[#f0eeff] text-[1.15rem] font-black text-[#665de8] sm:h-11 sm:w-11 sm:text-[1.28rem] short:!h-10 short:!w-10">${escapeHtml(compactEmoji)}</span>
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-[.8rem] bg-[#f0eeff] ${compactEmojiSize} font-black text-[#665de8] sm:h-11 sm:w-11 min-[1536px]:!h-12 min-[1536px]:!w-12 short:!h-10 short:!w-10">${escapeHtml(compactEmoji)}</span>
         `
             : groupCardBadge(item, itemTitle, page.sectionTitle, index);
 
         const rowClass = isSimplePhraseCard
             ? isLongPhraseCard
-                ? 'pq-list-row flex min-h-[3.55rem] w-full items-center gap-2.5 rounded-[1rem] border border-[#eceafa] bg-gradient-to-br from-white to-[#fbfbff] px-3.5 py-2.5 shadow-[0_8px_20px_rgba(38,35,92,.055)] sm:min-h-[3.75rem] laptop:!min-h-[3.35rem] laptop:!px-3 laptop:!py-2 short:!min-h-[3.2rem] short:!py-[.55rem]'
-                : 'pq-list-row flex min-h-[3.25rem] w-full items-center gap-2 rounded-[1rem] border border-[#eceafa] bg-gradient-to-br from-white to-[#fbfbff] px-3 py-2 shadow-[0_8px_20px_rgba(38,35,92,.055)] sm:min-h-[3.45rem] laptop:!min-h-[3.2rem] laptop:!px-3 laptop:!py-2 short:!min-h-[3.05rem] short:!py-[.5rem]'
-            : 'pq-list-row flex min-h-[4.1rem] items-center gap-3 rounded-[1.1rem] short:!min-h-[4.05rem] short:!py-[.72rem] border border-[#eceafa] bg-gradient-to-br from-white to-[#fbfbff] px-4 py-3 shadow-[0_8px_20px_rgba(38,35,92,.055)] sm:min-h-[4.8rem] sm:px-5 md:min-h-[5.15rem] laptop:!min-h-[4.25rem] laptop:!px-4 laptop:!py-3';
+                ? 'pq-list-row relative flex min-h-[4.1rem] w-full items-center gap-3 overflow-hidden rounded-[1.05rem] border border-[#eceafa] bg-gradient-to-br from-white to-[#fbfbff] px-4 py-3 shadow-[0_8px_20px_rgba(38,35,92,.055)] sm:min-h-[4.35rem] min-[1536px]:!min-h-[4.65rem] min-[1536px]:!px-5 min-[1536px]:!py-3.5 min-[1800px]:!min-h-[4.9rem] laptop:!min-h-[3.95rem] laptop:!px-4 laptop:!py-2.5 short:!min-h-[3.7rem] short:!py-[.7rem]'
+                : 'pq-list-row relative flex min-h-[4rem] w-full items-center gap-3 overflow-hidden rounded-[1.05rem] border border-[#eceafa] bg-gradient-to-br from-white to-[#fbfbff] px-4 py-3 shadow-[0_8px_20px_rgba(38,35,92,.055)] sm:min-h-[4.25rem] min-[1536px]:!min-h-[4.55rem] min-[1536px]:!px-5 min-[1536px]:!py-3.5 min-[1800px]:!min-h-[4.8rem] laptop:!min-h-[3.85rem] laptop:!px-4 laptop:!py-2.5 short:!min-h-[3.6rem] short:!py-[.65rem]'
+            : 'pq-list-row relative flex min-h-[4.1rem] items-center gap-3 overflow-hidden rounded-[1.1rem] short:!min-h-[4.05rem] short:!py-[.72rem] border border-[#eceafa] bg-gradient-to-br from-white to-[#fbfbff] px-4 py-3 shadow-[0_8px_20px_rgba(38,35,92,.055)] sm:min-h-[4.8rem] sm:px-5 md:min-h-[5.15rem] laptop:!min-h-[4.25rem] laptop:!px-4 laptop:!py-3';
 
         const titleClass = isSimplePhraseCard
             ? isLongPhraseCard
-                ? 'line-clamp-2 text-[.84rem] font-black leading-[1.12] text-[#242538] sm:text-[.92rem] xl:text-[.98rem] short:!text-[.84rem]'
-                : 'line-clamp-2 text-[.86rem] font-black leading-[1.08] text-[#242538] sm:text-[.92rem] xl:text-[.98rem] short:!text-[.84rem]'
+                ? 'line-clamp-2 py-[2px] text-[.9rem] font-black leading-[1.24] text-[#242538] sm:text-[.98rem] min-[1536px]:text-[1.1rem] min-[1800px]:text-[1.16rem] short:!text-[.88rem] short:!leading-[1.2]'
+                : 'line-clamp-2 py-[2px] text-[.92rem] font-black leading-[1.22] text-[#242538] sm:text-[.98rem] min-[1536px]:text-[1.1rem] min-[1800px]:text-[1.16rem] short:!text-[.88rem] short:!leading-[1.18]'
             : 'line-clamp-2 text-[clamp(1rem,3.8vw,1.28rem)] font-black short:!text-[1.05rem] leading-tight text-[#242538]';
 
         const copyClass = 'mt-1 line-clamp-2 text-sm font-bold leading-snug text-[#85889a] short:!text-[.78rem]';
@@ -909,11 +1407,7 @@ $appData = [
 
         const gridClass = shouldUseImageCards
             ? groupImageGridClass(rows)
-            : hasDescriptions
-                ? 'grid-cols-1 min-[760px]:grid-cols-[repeat(auto-fit,minmax(18rem,1fr))]'
-                : isLongPhraseGroup
-                    ? 'grid-cols-1 min-[700px]:grid-cols-[repeat(auto-fit,minmax(19rem,1fr))]'
-                    : 'grid-cols-1 min-[560px]:grid-cols-[repeat(auto-fit,minmax(15rem,1fr))]';
+            : 'grid-cols-1 min-[700px]:!grid-cols-2';
 
         const groupGridKind = shouldUseImageCards
             ? 'pq-group-grid--images'
@@ -923,20 +1417,21 @@ $appData = [
                     ? 'pq-group-grid--long-phrases'
                     : 'pq-group-grid--simple';
 
+        const nonImageGroupMaxWidth = rows.length === 4
+            ? 'max-w-[64rem]'
+            : rows.length <= 6
+                ? 'max-w-[78rem]'
+                : 'max-w-[88rem]';
+
         const groupMaxWidth = shouldUseImageCards
             ? 'max-w-[88rem]'
-            : hasDescriptions
-                ? 'max-w-[76rem]'
-                : isLongPhraseGroup
-                    ? 'max-w-[72rem]'
-                    : 'max-w-[60rem]';
+            : nonImageGroupMaxWidth;
 
         return `
             <article class="pq-group-page mx-auto flex min-h-0 w-full ${groupMaxWidth} flex-col px-1 py-2 text-left sm:px-3 sm:py-4 lg:px-5 lg:py-5 xl:px-6 xl:py-6 laptop:!px-3 laptop:!py-3 short:!max-w-[min(76rem,calc(100vw-5rem))] short:!py-[.65rem]" data-audio-scope>
                 ${title ? `<h1 class="${ui.title} text-[clamp(1.65rem,6vw,2.65rem)] lg:text-[2.75rem] laptop:!text-[clamp(1.8rem,3.4vw,2.35rem)] short:!text-[clamp(1.8rem,4.2vw,2.45rem)]">${escapeDisplay(title)}</h1>` : ''}
                 ${fieldHasValue(page.subtitle) ? `<div class="${ui.copy} ${title ? 'mt-2' : ''}">${textHtml(page.subtitle)}</div>` : ''}
-
-                <div class="pq-group-grid ${groupGridKind} mt-5 grid items-stretch gap-3 pr-1 sm:mt-6 sm:gap-4 ${gridClass} ${shouldUseImageCards ? 'justify-center lg:!grid-cols-[repeat(auto-fit,minmax(10.5rem,13.75rem))] xl:!grid-cols-[repeat(auto-fit,minmax(11.5rem,14.75rem))] short:!grid-cols-[repeat(auto-fit,minmax(9.75rem,12.25rem))]' : ''} xl:gap-5 laptop:!mt-4 laptop:!gap-3 short:!mt-4 short:!gap-[.78rem]" data-group-list>
+                <div class="pq-group-grid ${groupGridKind} mt-5 grid items-stretch gap-3 pr-1 sm:mt-6 sm:gap-4 ${gridClass} ${shouldUseImageCards ? 'justify-center lg:!grid-cols-[repeat(auto-fit,minmax(10.5rem,13.75rem))] xl:!grid-cols-[repeat(auto-fit,minmax(11.5rem,14.75rem))] xl:gap-5 short:!grid-cols-[repeat(auto-fit,minmax(9.75rem,12.25rem))]' : 'min-[1536px]:gap-6 min-[1800px]:gap-7'} laptop:!mt-4 laptop:!gap-3 short:!mt-4 short:!gap-[.78rem]" data-group-list>
                     ${rows.map((item, index) => {
             const globalIndex = Number(page.itemOffset || 0) + index;
             const itemTitle = item.title || item.question || `Item ${globalIndex + 1}`;
@@ -976,7 +1471,7 @@ $appData = [
         return `
                 <aside class="pq-conversation-speaker flex items-center justify-center ${side === 'left' ? 'lg:order-1' : 'lg:order-3'}" data-conversation-speaker="${escapeHtml(side)}">
                     <figure class="relative mx-auto w-full max-w-[9.8rem] rounded-[1.35rem] border-[3px] border-slate-900 bg-white p-1 ${shadow} ${rotate} sm:max-w-[11.5rem] md:max-w-[13rem] lg:max-w-[12rem] lg:rounded-[1.75rem] lg:border-[4px] xl:max-w-[14rem]">
-                        ${image ? `<img class="aspect-square w-full rounded-[1rem] object-cover lg:rounded-[1.35rem]" src="${escapeHtml(image)}" alt="${escapeHtml(name)}" loading="lazy" decoding="async">` : `<div class="aspect-square w-full rounded-[1rem] bg-[#eeedff]"></div>`}
+                        ${image ? `<img class="aspect-square w-full rounded-[1rem] ${contentImageFitClass('portrait')} lg:rounded-[1.35rem]" src="${escapeHtml(image)}" alt="${escapeHtml(name)}" loading="lazy" decoding="async">` : `<div class="aspect-square w-full rounded-[1rem] bg-[#eeedff]"></div>`}
                         <figcaption class="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-lg bg-slate-900 px-3 py-1 text-[.62rem] font-black uppercase leading-none text-white lg:-bottom-3 lg:px-4 lg:py-1.5 lg:text-[.7rem]">
                             ${escapeDisplay(name)}
                         </figcaption>
@@ -1034,11 +1529,11 @@ $appData = [
         }
 
         return `
-                <article class="is-conversation-idle mx-auto w-full max-w-[80rem] px-1 py-1 text-left sm:px-3 sm:py-3 lg:px-5 lg:py-5 laptop:!py-3" data-conversation-page data-conversation-lines="${encodedDialogues}">
+                <article class="is-conversation-idle mx-auto flex min-h-full w-full max-w-[80rem] flex-col justify-center px-1 py-1 text-left sm:px-3 sm:py-3 lg:px-5 lg:py-5 laptop:!justify-start laptop:!py-3 short:!justify-start" data-conversation-page data-conversation-lines="${encodedDialogues}">
                     <h1 class="sr-only">${escapeDisplay(title)}</h1>
                     ${instruction ? `<div class="mx-auto mb-4 max-w-[56rem] rounded-2xl border border-[#eceafa] bg-white/75 px-4 py-3 text-sm font-extrabold leading-snug text-[#70748a] sm:px-5 sm:text-base md:text-center">${instruction}</div>` : ''}
 
-                    <div class="grid grid-cols-2 items-start gap-3 sm:gap-5 md:gap-8 lg:grid-cols-[minmax(9rem,12rem)_minmax(22rem,1fr)_minmax(9rem,12rem)] lg:items-center lg:gap-5 xl:grid-cols-[minmax(10rem,13rem)_minmax(25rem,1fr)_minmax(10rem,13rem)] xl:gap-7">
+                    <div class="mx-auto grid w-full max-w-[74rem] grid-cols-2 items-center gap-3 sm:gap-5 md:gap-8 lg:grid-cols-[minmax(9rem,12rem)_minmax(22rem,1fr)_minmax(9rem,12rem)] lg:gap-5 xl:grid-cols-[minmax(10rem,13rem)_minmax(25rem,1fr)_minmax(10rem,13rem)] xl:gap-7">
                         ${renderConversationSpeaker(page, 'left')}
                         ${renderConversationSpeaker(page, 'right')}
 
@@ -1075,7 +1570,7 @@ $appData = [
         return `
             <article class="pq-single-image-layout mx-auto grid min-h-0 w-full max-w-[76rem] items-start gap-[clamp(.95rem,1.75dvh,1.25rem)] px-1 text-left sm:px-3 md:grid-cols-[minmax(15rem,.95fr)_minmax(16rem,1.05fr)] md:gap-7 lg:max-w-[76rem] lg:grid-cols-[minmax(20rem,1fr)_minmax(20rem,.92fr)] lg:items-center lg:gap-10 lg:py-6 xl:max-w-[82rem] xl:gap-10 2xl:grid-cols-[minmax(24rem,1fr)_minmax(22rem,.9fr)] laptop:!max-w-[min(68rem,calc(100vw-5rem))] laptop:!gap-7 laptop:!py-3 short:!max-w-[min(68rem,calc(100vw-5rem))] short:!grid-cols-[minmax(17rem,.9fr)_minmax(17rem,1.1fr)] short:!gap-7 short:!py-[.65rem]" data-audio-scope>
                 <figure class="pq-image-frame pq-single-image-figure aspect-[5/4] w-full justify-self-center overflow-hidden rounded-[1.25rem] border border-[#eceafa] bg-gradient-to-br from-[#eeedff] to-white shadow-[0_14px_34px_rgba(38,35,92,.09)] md:max-h-[30rem] xl:max-h-[34rem] xl:max-w-[36rem] laptop:!max-h-[calc(100dvh-12.5rem)] laptop:!max-w-[31rem] short:!max-h-[calc(100dvh-13rem)] short:!max-w-[28rem] short:!justify-self-end">
-                    ${image ? `<img class="h-full w-full object-contain object-center" src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy" decoding="async">` : ''}
+                    ${image ? `<img class="h-full w-full ${contentImageFitClass('feature')} object-center" src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy" decoding="async">` : ''}
                 </figure>
 
                 <div class="min-w-0 pt-[clamp(.24rem,.65dvh,.42rem)] md:self-center md:pt-0">
@@ -1171,8 +1666,8 @@ $appData = [
 
         if (fieldHasValue(image)) {
             return `
-                    <div class="pq-quiz-media mb-4 aspect-video w-full overflow-hidden rounded-[1.05rem] border border-[#eceafa] bg-[#090910] shadow-[0_14px_30px_rgba(20,18,48,.16)] ring-1 ring-black/5 sm:mb-5 ${splitMedia ? 'lg:mb-0' : ''}">
-                        <img class="h-full w-full object-contain object-center" src="${escapeHtml(image)}" alt="${escapeHtml(mediaLabel)}" loading="lazy" decoding="async">
+                    <div class="pq-quiz-media mb-4 aspect-video w-full overflow-hidden rounded-[1.15rem] border border-[#eceafa] bg-[#090910] shadow-[0_16px_36px_rgba(20,18,48,.16)] ring-1 ring-black/5 sm:mb-5 ${splitMedia ? 'lg:mb-0 lg:min-h-[15.5rem] min-[1536px]:min-h-[18rem]' : ''}">
+                        <img class="h-full w-full ${contentImageFitClass('learning')} object-center" src="${escapeHtml(image)}" alt="${escapeHtml(mediaLabel)}" loading="lazy" decoding="async">
                     </div>
                 `;
         }
@@ -1188,6 +1683,19 @@ $appData = [
         }
 
         return '';
+    }
+
+    function quizPromptEmojiHtml(item = {}, options = {}) {
+        const emoji = firstEmoji(item.emoji || options.mediaEmoji || '💡✨');
+        const mediaLabel = item.question || options.title || 'Practice prompt';
+
+        return `
+                    <div class="pq-quiz-prompt-emoji mb-3 flex justify-start sm:mb-4 lg:mb-5" aria-label="${escapeHtml(mediaLabel)}">
+                        <div class="inline-flex min-h-[3.55rem] max-w-full items-center justify-center rounded-[1rem] border border-[#eceafa] bg-gradient-to-br from-[#f7f6ff] via-white to-[#eef3ff] px-4 py-3 shadow-[0_10px_24px_rgba(91,80,220,.10)] sm:min-h-[4rem] sm:px-5 lg:min-h-[4.35rem] lg:px-6">
+                            <span class="text-[clamp(2.2rem,8vw,3.6rem)] leading-none drop-shadow-[0_8px_18px_rgba(91,80,220,.14)]" aria-hidden="true">${escapeHtml(emoji)}</span>
+                        </div>
+                    </div>
+                `;
     }
 
     function quizAudioPlayerHtml(item = {}) {
@@ -1249,23 +1757,35 @@ $appData = [
         return `
                 <section class="pq-quiz-block mx-auto w-full ${sectionWidth} text-left" data-quiz-block>
                     ${showTitle ? `<h1 class="${ui.title} mb-4 text-[clamp(1.65rem,5.5vw,2.45rem)] lg:mb-6 lg:text-[2.65rem]">${escapeDisplay(title)}</h1>` : ''}
-                    ${fieldHasValue(sharedAudio) ? quizAudioPlayerHtml({ audio: sharedAudio, scope: 'page' }) : ''}
                     ${questions.map((item, questionIndex) => {
             const imageSrc = item.image || options.mediaImage || '';
+            const hasQuestionAudio = fieldHasValue(item.audio);
             const splitMedia = options.showMedia && fieldHasValue(imageSrc) && !fieldHasValue(item.audio);
-            const mediaHtml = fieldHasValue(item.audio)
+            const hasSharedAudio = fieldHasValue(sharedAudio);
+            const shouldShowPromptEmoji = !isVideoMode && options.showMedia && !fieldHasValue(imageSrc) && !hasQuestionAudio && !hasSharedAudio;
+            const mediaHtml = hasQuestionAudio
                 ? quizAudioPlayerHtml(item)
-                : quizMediaHtml(item, { ...options, splitMedia });
+                : shouldShowPromptEmoji
+                    ? ''
+                    : quizMediaHtml(item, {...options, splitMedia});
+            const promptEmojiHtml = shouldShowPromptEmoji ? quizPromptEmojiHtml(item, options) : '';
+            const sharedAudioHtml = !hasQuestionAudio && hasSharedAudio
+                ? quizAudioPlayerHtml({audio: sharedAudio, scope: 'page'})
+                : '';
             const contentClass = splitMedia ? 'min-w-0 lg:self-center' : '';
             const layoutClass = splitMedia
-                ? 'lg:grid lg:grid-cols-[minmax(18rem,.9fr)_minmax(22rem,1.1fr)] lg:items-center lg:gap-8 xl:grid-cols-[minmax(22rem,.95fr)_minmax(24rem,1.05fr)] xl:gap-10'
+                ? 'mx-auto max-w-[58rem] lg:grid lg:grid-cols-[minmax(22rem,1fr)_minmax(18rem,.8fr)] lg:items-center lg:gap-6 min-[1536px]:max-w-[64rem] min-[1536px]:grid-cols-[minmax(26rem,1fr)_minmax(20rem,.78fr)] min-[1536px]:gap-8'
                 : '';
             const questionClass = isVideoMode
-                ? 'pq-quiz-question ' + ui.title + ' mb-[.58rem] text-[clamp(1rem,1.45vw,1.34rem)] leading-[1.08] tracking-[-.035em] short:!mb-2 short:!text-[clamp(.95rem,1.55vw,1.2rem)]'
-                : 'pq-quiz-question ' + ui.title + ' mb-4 text-[clamp(1.45rem,5.8vw,2.05rem)] sm:mb-5 lg:text-[2.15rem]';
+                ? 'pq-quiz-question ' + ui.title + ' mb-3 text-[clamp(1.08rem,4.7vw,1.28rem)] leading-[1.08] tracking-[-.035em] min-[1280px]:text-[clamp(1.2rem,1.55vw,1.65rem)] min-[1536px]:text-[1.8rem] short:!mb-2 short:!text-[clamp(1rem,1.55vw,1.22rem)]'
+                : splitMedia
+                    ? 'pq-quiz-question ' + ui.title + ' mb-4 text-[clamp(1.55rem,4.8vw,2.15rem)] leading-[1.05] sm:mb-5 lg:mb-4 lg:text-[2.2rem]'
+                    : 'pq-quiz-question ' + ui.title + ' mb-4 text-[clamp(1.45rem,5.8vw,2.05rem)] sm:mb-5 lg:text-[2.15rem]';
             const optionGridClass = isVideoMode
-                ? 'grid grid-cols-1 gap-[.48rem] sm:grid-cols-2 min-[1280px]:grid-cols-1'
-                : 'grid gap-2.5 sm:gap-3 md:grid-cols-2 lg:gap-4';
+                ? 'grid grid-cols-1 gap-[.48rem]'
+                : splitMedia
+                    ? 'grid grid-cols-1 gap-3 lg:gap-3.5'
+                    : 'grid grid-cols-1 gap-2.5 sm:gap-3 lg:gap-4';
             const optionClass = isVideoMode ? ui.videoOption : ui.option;
 
             return `
@@ -1278,9 +1798,18 @@ $appData = [
                             data-accepted-answers="${escapeHtml(JSON.stringify(item.acceptedAnswers))}"
                         >
                             <div class="${layoutClass}">
-                                ${mediaHtml}
+                                ${splitMedia ? `
+                                    <div class="min-w-0">
+                                        <h2 class="${questionClass}">${escapeDisplay(item.question)}</h2>
+                                        ${sharedAudioHtml}
+                                        ${mediaHtml}
+                                    </div>
+                                ` : ''}
                                 <div class="${contentClass}">
-                                    <h2 class="${questionClass}">${escapeDisplay(item.question)}</h2>
+                                    ${promptEmojiHtml}
+                                    ${splitMedia ? '' : `<h2 class="${questionClass}">${escapeDisplay(item.question)}</h2>`}
+                                    ${!splitMedia ? sharedAudioHtml : ''}
+                                    ${!splitMedia ? mediaHtml : ''}
                                     ${item.type === 'input' ? `
                                         <div class="grid gap-3">
                                             <input
@@ -1299,8 +1828,7 @@ $appData = [
                                     ` : `
                                         <div class="${optionGridClass}" role="group" aria-label="${escapeHtml(item.question)}">
                                             ${item.options.map((option, optionIndex) => {
-                const isLastOddOption = !isVideoMode && item.options.length % 2 === 1 && optionIndex === item.options.length - 1;
-                return `<button type="button" class="${optionClass} ${isLastOddOption ? 'md:col-span-2' : ''}" data-quiz-option data-option-index="${optionIndex}">${escapeDisplay(option)}</button>`;
+                return `<button type="button" class="${optionClass}" data-quiz-option data-option-index="${optionIndex}">${escapeDisplay(option)}</button>`;
             }).join('')}
                                         </div>
                                     `}
@@ -1380,21 +1908,22 @@ $appData = [
         const thumbnail = page.thumbnail || page.poster || '';
         const captionLines = transcriptLinesFrom(page);
         const captionPayload = escapeHtml(JSON.stringify(captionLines));
+        const showCc = flagIsEnabled(page.showCC ?? page.showCc ?? page.cc);
+        const videoId = `passingQuestionVideo-${++videoInstanceId}`;
 
         return `
-                <article class="mx-auto grid h-full min-h-0 w-full place-items-center overflow-hidden px-0 py-1" data-short-video-page>
+                <article class="mx-auto grid h-full min-h-0 w-full place-items-center overflow-hidden px-0 py-1" data-short-video-page data-video-show-cc="${showCc ? 'true' : 'false'}">
                     <h1 class="sr-only">${escapeDisplay(title)}</h1>
 
                     <div class="pq-short-video-stage grid h-full min-h-0 w-full place-items-center overflow-hidden">
                         <div class="pq-video-wrap pq-short-video-wrap pq-short-video-shell relative isolate aspect-[9/16] h-[min(100%,calc(100dvh-12.5rem),50rem)] max-h-full max-w-[min(100%,28rem)] laptop:!h-[min(100%,calc(100dvh-13rem),34rem)] laptop:!max-w-[min(100%,21rem)] short:!h-[min(100%,calc(100dvh-13.25rem),31rem)] short:!max-w-[min(100%,19rem)] overflow-hidden rounded-[1.75rem] bg-[#090910] shadow-[0_24px_60px_rgba(20,18,48,.22)] ring-1 ring-black/5 max-[767px]:h-[min(100%,calc(100dvh-10.75rem),38rem)] max-[767px]:max-w-[min(100%,22rem)]" data-video-captions="${captionPayload}">
                             <video
-                                id="passingQuestionVideo"
+                                id="${videoId}"
                                 class="video-js vjs-default-skin h-full w-full bg-black object-contain"
                                 controls
                                 playsinline
                                 webkit-playsinline
                                 preload="auto"
-                                autoplay
                                 disablePictureInPicture
                                 controlsList="nodownload noremoteplayback noplaybackrate"
                                 ${fieldHasValue(thumbnail) ? `poster="${escapeHtml(thumbnail)}"` : ''}
@@ -1403,7 +1932,7 @@ $appData = [
                                 <source src="${escapeHtml(video)}" type="${mediaType(video)}">
                             </video>
                             <div class="pq-video-caption-overlay pointer-events-none absolute left-1/2 bottom-[clamp(2.25rem,8%,4.75rem)] z-[80] flex w-[min(88%,22rem)] -translate-x-1/2 justify-center text-center" data-video-caption-overlay aria-live="polite" aria-hidden="true">
-                                <span class="pq-video-caption-text inline-block max-w-full rounded-[.72rem] border border-white/10 bg-slate-950/85 px-[.68rem] py-[.44rem] text-[clamp(.86rem,3.6vw,1.05rem)] font-extrabold leading-[1.32] tracking-[-.012em] text-white opacity-0 shadow-[0_12px_34px_rgba(0,0,0,.34)] backdrop-blur-md transition duration-300 [transform:translateY(12px)_scale(.96)]" data-video-caption-text></span>
+                                <span class="pq-video-caption-text inline-block max-w-full rounded-[.62rem] border border-white/10 bg-slate-950/85 px-[.58rem] py-[.34rem] text-[clamp(.72rem,3.1vw,.9rem)] font-extrabold leading-[1.25] text-white opacity-0 shadow-[0_10px_28px_rgba(0,0,0,.3)] backdrop-blur-md transition duration-300 [transform:translateY(10px)_scale(.96)]" data-video-caption-text></span>
                             </div>
 
                             ${fieldHasValue(thumbnail) ? `
@@ -1436,28 +1965,31 @@ $appData = [
                     ${description ? `<div class="${ui.copy} mt-2 text-[clamp(.92rem,3.7vw,1.05rem)] lg:text-lg">${description}</div>` : ''}
                 </div>`
             : '';
-        const quizHtml = renderQuizBlock(quizQuestionsFrom(page), { showTitle: false, videoMode: true });
+        const quizHtml = renderQuizBlock(quizQuestionsFrom(page), {showTitle: false, videoMode: true});
         const hasQuizArea = fieldHasValue(quizHtml);
-        const articleWidth = hasQuizArea ? 'max-w-[100rem] short:!max-w-[min(100%,90rem)]' : 'max-w-[96rem] short:!max-w-[min(100%,90rem)]';
+        const articleWidth = hasQuizArea
+            ? 'max-w-[100rem] short:!max-w-[min(100%,90rem)]'
+            : 'max-w-[76rem] min-[1536px]:max-w-[82rem] short:!max-w-[min(100%,68rem)]';
         const contentLayout = hasQuizArea
-            ? 'pq-video-inner-layout flex min-h-0 flex-col gap-4 sm:gap-5 min-[1280px]:grid min-[1280px]:grid-cols-[minmax(0,1fr)_minmax(14rem,18rem)] min-[1280px]:items-start min-[1280px]:gap-5 min-[1536px]:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] min-[1536px]:gap-6 2xl:grid-cols-[minmax(0,1fr)_minmax(20rem,25rem)] short:!gap-4'
+            ? 'pq-video-inner-layout flex min-h-0 flex-col gap-5 sm:gap-5 min-[1280px]:grid min-[1280px]:grid-cols-[minmax(0,1fr)_minmax(12rem,15.5rem)] min-[1280px]:items-start min-[1280px]:gap-4 min-[1536px]:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] min-[1536px]:gap-6 2xl:grid-cols-[minmax(0,1fr)_minmax(20rem,25rem)] short:!gap-4'
             : 'pq-video-inner-layout flex flex-col';
         const videoPageState = hasQuizArea ? 'pq-video-has-quiz' : 'pq-video-no-quiz';
+        const showCc = flagIsEnabled(page.showCC ?? page.showCc ?? page.cc);
+        const videoId = `passingQuestionVideo-${++videoInstanceId}`;
 
         return `
-                <article class="pq-mobile-video-card pq-video-page-layout ${videoPageState} mx-auto flex h-full min-h-0 w-full ${articleWidth} flex-col px-1 text-left sm:px-3 lg:px-5" data-video-page>
+                <article class="pq-mobile-video-card pq-video-page-layout ${videoPageState} mx-auto flex h-full min-h-0 w-full ${articleWidth} flex-col px-1 text-left sm:px-3 lg:px-5" data-video-page data-video-show-cc="${showCc ? 'true' : 'false'}">
                     ${headingHtml}
                     <div class="${contentLayout}">
                         <div class="pq-video-main-column w-full min-h-0 shrink-0 sm:mx-auto sm:max-w-[86rem] min-[1280px]:mx-0 min-[1280px]:max-w-none">
                             <div class="pq-video-wrap relative aspect-video w-full max-h-[calc(100dvh-13rem)] overflow-hidden rounded-t-[1.05rem] bg-[#090910] shadow-[0_14px_30px_rgba(20,18,48,.16)] ring-1 ring-black/5 max-[520px]:max-h-[min(31dvh,15.8rem)] short:!max-h-[calc(100dvh-13rem)] lg:rounded-t-[1.25rem]" data-video-captions="${captionPayload}">
                                 <video
-                                    id="passingQuestionVideo"
+                                    id="${videoId}"
                                     class="video-js vjs-default-skin h-full w-full bg-black object-contain"
                                     controls
                                     playsinline
                                     webkit-playsinline
                                     preload="auto"
-                                    autoplay
                                     disablePictureInPicture
                                     controlsList="nodownload noremoteplayback noplaybackrate"
                                     ${fieldHasValue(page.thumbnail) ? `poster="${escapeHtml(page.thumbnail)}"` : ''}
@@ -1466,7 +1998,7 @@ $appData = [
                                     <source src="${escapeHtml(video)}" type="${mediaType(video)}">
                                 </video>
                                 <div class="pq-video-caption-overlay pointer-events-none absolute left-1/2 bottom-[clamp(.8rem,4%,1.75rem)] z-[80] flex w-[min(90%,54rem)] -translate-x-1/2 justify-center text-center" data-video-caption-overlay aria-live="polite" aria-hidden="true">
-                                    <span class="pq-video-caption-text inline-block max-w-full rounded-[.8rem] border border-white/10 bg-slate-950/85 px-[.82rem] py-2 text-[clamp(.88rem,3.4vw,1.16rem)] font-extrabold leading-[1.32] tracking-[-.012em] text-white opacity-0 shadow-[0_12px_34px_rgba(0,0,0,.34)] backdrop-blur-md transition duration-300 [transform:translateY(12px)_scale(.96)] lg:rounded-[.95rem] lg:px-[1.05rem] lg:py-[.62rem] lg:text-[clamp(1rem,1.35vw,1.35rem)]" data-video-caption-text></span>
+                                    <span class="pq-video-caption-text inline-block max-w-full rounded-[.68rem] border border-white/10 bg-slate-950/85 px-[.62rem] py-[.42rem] text-[clamp(.74rem,3vw,.94rem)] font-extrabold leading-[1.25] text-white opacity-0 shadow-[0_10px_28px_rgba(0,0,0,.3)] backdrop-blur-md transition duration-300 [transform:translateY(10px)_scale(.96)] lg:rounded-[.78rem] lg:px-[.78rem] lg:py-[.48rem] lg:text-[clamp(.82rem,1.05vw,1.04rem)]" data-video-caption-text></span>
                                 </div>
                                 <p class="hidden bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800" data-video-status></p>
                             </div>
@@ -1474,7 +2006,7 @@ $appData = [
                         </div>
 
                         ${hasQuizArea ? `
-                            <div class="pq-video-side-column w-full min-h-0 shrink-0 sm:mx-auto sm:max-w-[72rem] min-[1280px]:mx-0 min-[1280px]:max-w-[18rem] min-[1536px]:max-w-[24rem] 2xl:max-w-[25rem] short:!max-w-[18.5rem]">
+                            <div class="pq-video-side-column w-full min-h-0 shrink-0 sm:mx-auto sm:max-w-[72rem] min-[1280px]:mx-0 min-[1280px]:max-w-[15.5rem] min-[1536px]:max-w-[24rem] 2xl:max-w-[25rem] short:!max-w-[18.5rem]">
                                 ${quizHtml}
                             </div>
                         ` : ''}
@@ -1501,14 +2033,22 @@ $appData = [
         }
 
         switch (page.type) {
-            case 'group': return renderGroupPage(page);
-            case 'image-conversation': return renderConversationPage(page);
-            case 'image': return renderImagePage(page);
-            case 'short-video': return renderShortVideoPage(page);
-            case 'video': return renderVideoPage(page);
-            case 'quiz': return renderQuizPage(page);
-            case 'audio': return renderAudioPage(page);
-            default: return renderTitlePage(page);
+            case 'group':
+                return renderGroupPage(page);
+            case 'image-conversation':
+                return renderConversationPage(page);
+            case 'image':
+                return renderImagePage(page);
+            case 'short-video':
+                return renderShortVideoPage(page);
+            case 'video':
+                return renderVideoPage(page);
+            case 'quiz':
+                return renderQuizPage(page);
+            case 'audio':
+                return renderAudioPage(page);
+            default:
+                return renderTitlePage(page);
         }
     }
 
@@ -1550,7 +2090,7 @@ $appData = [
         els.next.disabled = pageIndex >= pages.length - 1;
     }
 
-    function render({ animate = false } = {}) {
+    function render({animate = false} = {}) {
         const page = currentPage();
         cleanupMedia();
         applyPageClass(page);
@@ -1581,11 +2121,11 @@ $appData = [
 
         cleanupMedia();
 
-        els.card.classList.add('is-page-transitioning');
+        els.card.classList.add('is-page-transitioning', 'pointer-events-none');
         window.setTimeout(() => {
             pageIndex = nextIndex;
-            els.card.classList.remove('is-page-transitioning');
-            render({ animate: true });
+            els.card.classList.remove('is-page-transitioning', 'pointer-events-none');
+            render({animate: true});
         }, 170);
     }
 
@@ -1604,9 +2144,25 @@ $appData = [
                 if (typeof player.dispose === 'function' && !isDisposed) {
                     player.dispose();
                 }
-            } catch (error) {}
+            } catch (error) {
+            }
 
             videoJsPlayer = null;
+        }
+
+        if (window.videojs && typeof window.videojs.getPlayers === 'function') {
+            try {
+                Object.entries(window.videojs.getPlayers()).forEach(([id, playerInstance]) => {
+                    if (!String(id).startsWith('passingQuestionVideo')) return;
+                    const isDisposed = typeof playerInstance.isDisposed === 'function'
+                        ? playerInstance.isDisposed()
+                        : false;
+                    if (!isDisposed && typeof playerInstance.dispose === 'function') {
+                        playerInstance.dispose();
+                    }
+                });
+            } catch (error) {
+            }
         }
 
         els.content.querySelectorAll('video').forEach((video) => {
@@ -1616,7 +2172,8 @@ $appData = [
                 video.removeAttribute('src');
                 video.querySelectorAll('source').forEach((source) => source.removeAttribute('src'));
                 video.load();
-            } catch (error) {}
+            } catch (error) {
+            }
         });
     }
 
@@ -1639,7 +2196,10 @@ $appData = [
 
         stopTextReveal(true);
 
-        if (activeAudioButton) activeAudioButton.classList.remove('is-playing');
+        if (activeAudioButton) {
+            activeAudioButton.classList.remove('is-playing');
+            setAudioVisualState(activeAudioButton, activeAudioScope, false);
+        }
         if (activeAudioScope) activeAudioScope.classList.remove('is-audio-playing');
 
         audio = null;
@@ -1780,10 +2340,11 @@ $appData = [
         activeAudioScope = scope;
         button.classList.add('is-playing');
         scope?.classList.add('is-audio-playing');
+        setAudioVisualState(button, scope, true);
         startTextReveal(scope, audio);
 
-        audio.addEventListener('ended', stopAudio, { once: true });
-        audio.addEventListener('error', stopAudio, { once: true });
+        audio.addEventListener('ended', stopAudio, {once: true});
+        audio.addEventListener('error', stopAudio, {once: true});
 
         try {
             await audio.play();
@@ -1843,6 +2404,7 @@ $appData = [
         if (totalEl) totalEl.textContent = duration ? formatTime(duration) : '00:00';
         if (toggle) {
             toggle.classList.toggle('is-playing', isPlaying);
+            (isPlaying ? addClasses : removeClasses)(toggle, stateClasses.audioButtonPlaying);
             toggle.setAttribute('aria-label', isPlaying ? 'Pause question audio' : 'Play question audio');
         }
     }
@@ -1850,7 +2412,7 @@ $appData = [
     function stopQuizAudio(reset = false, options = {}) {
         if (!activeQuizAudio?.player) return;
 
-        const { player, media } = activeQuizAudio;
+        const {player, media} = activeQuizAudio;
         const requestedScope = options.scope || 'all';
         const playerScope = player.dataset.quizAudioScope || 'question';
 
@@ -1880,7 +2442,7 @@ $appData = [
         stopAudio();
         stopQuizAudio(false);
 
-        activeQuizAudio = { player, media };
+        activeQuizAudio = {player, media};
         syncQuizAudioPlayer(player);
 
         try {
@@ -1907,7 +2469,7 @@ $appData = [
 
         window.setTimeout(() => {
             if (!item.classList.contains('is-current')) return;
-            playQuizAudioPlayer(player, { forcePlay: true });
+            playQuizAudioPlayer(player, {forcePlay: true});
         }, 140);
     }
 
@@ -1942,7 +2504,7 @@ $appData = [
                     complete.classList.remove('block');
                 }
 
-                stopQuizAudio(true, { scope: 'question' });
+                stopQuizAudio(true, {scope: 'question'});
                 items.forEach((item, itemIndex) => {
                     item.classList.toggle('is-current', itemIndex === index);
                 });
@@ -1959,14 +2521,22 @@ $appData = [
 
                 complete.classList.remove('hidden');
                 complete.classList.add('block');
-                complete.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                complete.scrollIntoView({block: 'nearest', behavior: 'smooth'});
             }
 
             function flash(item, className) {
+                const question = item.querySelector('.pq-quiz-question');
                 item.classList.remove('is-correct-flash', 'is-wrong-flash');
+                removeClasses(question, stateClasses.quizQuestionCorrect);
+                removeClasses(question, stateClasses.quizQuestionWrong);
                 void item.offsetWidth;
                 item.classList.add(className);
-                window.setTimeout(() => item.classList.remove(className), 600);
+                addClasses(question, className === 'is-correct-flash' ? stateClasses.quizQuestionCorrect : stateClasses.quizQuestionWrong);
+                window.setTimeout(() => {
+                    item.classList.remove(className);
+                    removeClasses(question, stateClasses.quizQuestionCorrect);
+                    removeClasses(question, stateClasses.quizQuestionWrong);
+                }, 600);
             }
 
             function normalizeAnswer(value) {
@@ -2063,18 +2633,28 @@ $appData = [
                         if (item.classList.contains('is-locked')) return;
 
                         const selectedIndex = Number(option.dataset.optionIndex || 0);
-                        options.forEach((button) => button.classList.remove('is-wrong'));
+                        options.forEach((button) => {
+                            button.classList.remove('is-wrong');
+                            removeClasses(button, stateClasses.quizWrongOption);
+                        });
 
                         if (selectedIndex !== correctAnswer) {
                             playPracticeSfx('wrong');
                             option.classList.add('is-wrong');
+                            addClasses(option, stateClasses.quizWrongOption);
                             flash(item, 'is-wrong-flash');
-                            window.setTimeout(() => option.classList.remove('is-wrong'), 720);
+                            window.setTimeout(() => {
+                                option.classList.remove('is-wrong');
+                                removeClasses(option, stateClasses.quizWrongOption);
+                            }, 720);
                             return;
                         }
 
                         option.classList.add('is-correct');
-                        options.forEach((button) => { button.disabled = true; });
+                        addClasses(option, stateClasses.quizCorrectOption);
+                        options.forEach((button) => {
+                            button.disabled = true;
+                        });
                         completeItem(item, itemIndex);
                     });
                 });
@@ -2095,6 +2675,10 @@ $appData = [
             const end = Number.isFinite(endRaw) && endRaw > start ? endRaw : nextStart;
             const isActive = time >= start && time < end;
             row.classList.toggle('is-active', isActive);
+            (isActive ? addClasses : removeClasses)(row, stateClasses.transcriptRowActive);
+            row.querySelectorAll('.pq-transcript-time, .pq-transcript-text, .pq-transcript-chevron').forEach((child) => {
+                (isActive ? addClasses : removeClasses)(child, stateClasses.transcriptTextActive);
+            });
         });
 
     }
@@ -2127,7 +2711,7 @@ $appData = [
             overlay.setAttribute('data-video-caption-overlay', '');
             overlay.setAttribute('aria-live', 'polite');
             overlay.setAttribute('aria-hidden', 'true');
-            overlay.innerHTML = '<span class="pq-video-caption-text inline-block max-w-full rounded-[.8rem] border border-white/10 bg-slate-950/85 px-[.82rem] py-2 text-[clamp(.88rem,3.4vw,1.16rem)] font-extrabold leading-[1.32] tracking-[-.012em] text-white opacity-0 shadow-[0_12px_34px_rgba(0,0,0,.34)] backdrop-blur-md transition duration-300 [transform:translateY(12px)_scale(.96)]" data-video-caption-text></span>';
+            overlay.innerHTML = '<span class="pq-video-caption-text inline-block max-w-full rounded-[.68rem] border border-white/10 bg-slate-950/85 px-[.62rem] py-[.42rem] text-[clamp(.74rem,3vw,.94rem)] font-extrabold leading-[1.25] text-white opacity-0 shadow-[0_10px_28px_rgba(0,0,0,.3)] backdrop-blur-md transition duration-300 [transform:translateY(10px)_scale(.96)]" data-video-caption-text></span>';
             playerEl.appendChild(overlay);
         }
 
@@ -2178,7 +2762,7 @@ $appData = [
             return;
         }
 
-        const nativeVideo = els.content.querySelector('#passingQuestionVideo');
+        const nativeVideo = els.content.querySelector('video[data-video-src]');
         const currentTime = videoJsPlayer
             ? Number(videoJsPlayer.currentTime() || 0)
             : Number(nativeVideo?.currentTime || 0);
@@ -2204,16 +2788,49 @@ $appData = [
         overlay.classList.toggle('is-visible', fieldHasValue(text));
     }
 
+    function ensureVideoFullscreenButton(controlBar) {
+        if (!controlBar || !videoJsPlayer) return null;
+
+        let fullscreenButton = controlBar.querySelector('.vjs-fullscreen-control');
+        if (fullscreenButton) return fullscreenButton;
+
+        try {
+            const controlBarComponent = typeof videoJsPlayer.getChild === 'function'
+                ? videoJsPlayer.getChild('controlBar')
+                : null;
+
+            if (controlBarComponent && typeof controlBarComponent.addChild === 'function') {
+                const childCount = typeof controlBarComponent.children === 'function'
+                    ? controlBarComponent.children().length
+                    : undefined;
+
+                controlBarComponent.addChild('FullscreenToggle', {}, childCount);
+                fullscreenButton = controlBar.querySelector('.vjs-fullscreen-control');
+            }
+        } catch (error) {
+        }
+
+        return fullscreenButton;
+    }
+
     function installVideoCcButton() {
-        if (!videoJsPlayer || !videoCaptionLines().length) return;
+        if (!videoJsPlayer) return;
 
         videoJsPlayer.ready(() => {
             const playerEl = videoJsPlayer.el?.();
             const controlBar = playerEl?.querySelector?.('.vjs-control-bar');
-            if (!controlBar || controlBar.querySelector('[data-video-cc-button]')) return;
+            if (!controlBar) return;
 
             controlBar.querySelector('.vjs-picture-in-picture-control')?.remove();
+
+            const fullscreenButton = ensureVideoFullscreenButton(controlBar);
+            if (!videoCaptionLines().length) return;
+
             ensureVideoCaptionOverlay();
+            if (controlBar.querySelector('[data-video-cc-button]')) {
+                setVideoCaptionsEnabled(currentVideoPageRoot()?.dataset.videoShowCc === 'true');
+                return;
+            }
 
             const button = document.createElement('button');
             button.type = 'button';
@@ -2230,11 +2847,10 @@ $appData = [
                 setVideoCaptionsEnabled(!isVideoCcEnabled());
             });
 
-            const fullscreenButton = controlBar.querySelector('.vjs-fullscreen-control');
             if (fullscreenButton) controlBar.insertBefore(button, fullscreenButton);
             else controlBar.appendChild(button);
 
-            setVideoCaptionsEnabled(false);
+            setVideoCaptionsEnabled(currentVideoPageRoot()?.dataset.videoShowCc === 'true');
         });
     }
 
@@ -2261,7 +2877,7 @@ $appData = [
 
             if (isOpen) {
                 const activeRow = shell.querySelector('.pq-transcript-row.is-active');
-                activeRow?.scrollIntoView({ block: 'nearest' });
+                activeRow?.scrollIntoView({block: 'nearest'});
             }
         };
 
@@ -2281,21 +2897,23 @@ $appData = [
                     try {
                         videoJsPlayer.currentTime(start);
                         videoJsPlayer.play();
-                    } catch (error) {}
+                    } catch (error) {
+                    }
                     return;
                 }
 
                 const video = els.content.querySelector('video');
                 if (video) {
                     video.currentTime = start;
-                    video.play().catch(() => {});
+                    video.play().catch(() => {
+                    });
                 }
             });
         });
     }
 
     function setupVideoPlayer() {
-        const video = els.content.querySelector('#passingQuestionVideo');
+        const video = els.content.querySelector('video[data-video-src]');
         if (!video) return;
 
         const status = els.content.querySelector('[data-video-status]');
@@ -2309,15 +2927,24 @@ $appData = [
 
         if (window.videojs) {
             try {
+                const stalePlayer = typeof window.videojs.getPlayer === 'function' && video.id
+                    ? window.videojs.getPlayer(video.id)
+                    : null;
+                if (stalePlayer && typeof stalePlayer.dispose === 'function') {
+                    stalePlayer.dispose();
+                }
+
                 videoJsPlayer = window.videojs(video, {
                     controls: true,
                     autoplay: false,
+                    bigPlayButton: true,
                     fluid: false,
-                    responsive: true,
+                    responsive: false,
                     preload: 'auto',
                     inactivityTimeout: 650,
                     controlBar: {
                         pictureInPictureToggle: false,
+                        fullscreenToggle: true,
                     },
                     html5: {
                         vhs: {
@@ -2330,8 +2957,8 @@ $appData = [
 
                 videoJsPlayer.ready(() => {
                     if (fieldHasValue(src) && typeof videoJsPlayer.src === 'function') {
-                        videoJsPlayer.src({ src, type });
-                        videoJsPlayer.load();
+                        videoJsPlayer.src({src, type});
+                        if (typeof videoJsPlayer.load === 'function') videoJsPlayer.load();
                     }
                     installVideoCcButton();
                 });
@@ -2371,7 +2998,10 @@ $appData = [
             } else {
                 video.src = src;
             }
-            try { video.load(); } catch (error) {}
+            try {
+                video.load();
+            } catch (error) {
+            }
         }
 
         video.addEventListener('timeupdate', () => {
@@ -2389,7 +3019,7 @@ $appData = [
 
     function bindShortVideoOverlay() {
         const overlay = els.content.querySelector('[data-short-video-overlay]');
-        const video = els.content.querySelector('#passingQuestionVideo');
+        const video = els.content.querySelector('video[data-video-src]');
         if (!overlay || !video) return;
 
         const hideOverlay = () => overlay.classList.add('is-hidden');
@@ -2441,13 +3071,17 @@ $appData = [
 
         root.querySelectorAll('[data-conversation-line]').forEach((line) => {
             line.classList.remove('is-active');
+            setConversationLineVisualState(line, false);
             if (!keepCompleted) {
                 const target = line.querySelector('[data-conversation-text]');
                 if (target) target.innerHTML = '';
             }
         });
 
-        root.querySelectorAll('[data-conversation-speaker]').forEach((speaker) => speaker.classList.remove('is-active'));
+        root.querySelectorAll('[data-conversation-speaker]').forEach((speaker) => {
+            speaker.classList.remove('is-active');
+            setConversationSpeakerVisualState(speaker, false);
+        });
         root.querySelectorAll('[data-conversation-toggle]').forEach((button) => {
             button.classList.remove('is-playing');
             button.setAttribute('aria-label', 'Play full conversation');
@@ -2457,9 +3091,15 @@ $appData = [
     function setConversationActive(root, side, lineEl = null) {
         if (!root) return;
 
-        root.querySelectorAll('[data-conversation-line]').forEach((line) => line.classList.toggle('is-active', line === lineEl));
+        root.querySelectorAll('[data-conversation-line]').forEach((line) => {
+            const isActive = line === lineEl;
+            line.classList.toggle('is-active', isActive);
+            setConversationLineVisualState(line, isActive);
+        });
         root.querySelectorAll('[data-conversation-speaker]').forEach((speaker) => {
-            speaker.classList.toggle('is-active', speaker.dataset.conversationSpeaker === side);
+            const isActive = speaker.dataset.conversationSpeaker === side;
+            speaker.classList.toggle('is-active', isActive);
+            setConversationSpeakerVisualState(speaker, isActive);
         });
         root.querySelectorAll('[data-conversation-toggle]').forEach((button) => {
             const isMobileButton = button.hasAttribute('data-conversation-mobile-button');
@@ -2552,8 +3192,8 @@ $appData = [
             }, 40);
 
             if (mediaAudio) {
-                mediaAudio.addEventListener('ended', finish, { once: true });
-                mediaAudio.addEventListener('error', finish, { once: true });
+                mediaAudio.addEventListener('ended', finish, {once: true});
+                mediaAudio.addEventListener('error', finish, {once: true});
             }
         });
     }
@@ -2660,46 +3300,18 @@ $appData = [
                 return;
             }
 
-            if (videoJsPlayer) {
-                try {
-                    const playVideo = () => {
-                        if (typeof videoJsPlayer.muted === 'function') {
-                            videoJsPlayer.muted(false);
-                        }
-                        if (typeof videoJsPlayer.play === 'function') {
-                            attemptPromise(videoJsPlayer.play(), 'video');
-                        }
-                    };
+            if (videoJsPlayer || els.content.querySelector('video[data-video-src]')) return;
 
-                    if (typeof videoJsPlayer.ready === 'function') {
-                        videoJsPlayer.ready(() => window.setTimeout(playVideo, 60));
-                    } else {
-                        playVideo();
-                    }
-                } catch (error) {
-                }
-                return;
-            }
-
-            const nativeVideo = els.content.querySelector('#passingQuestionVideo');
-            if (nativeVideo) {
-                try {
-                    nativeVideo.muted = false;
-                    attemptPromise(nativeVideo.play(), 'video');
-                } catch (error) {
-                }
-                return;
-            }
 
             const sharedQuizAudioPlayer = els.content.querySelector('[data-quiz-audio-player][data-quiz-audio-scope="page"]');
             if (sharedQuizAudioPlayer) {
-                playQuizAudioPlayer(sharedQuizAudioPlayer, { forcePlay: true });
+                playQuizAudioPlayer(sharedQuizAudioPlayer, {forcePlay: true});
                 return;
             }
 
             const currentQuizAudioPlayer = els.content.querySelector('[data-quiz-item].is-current [data-quiz-audio-player]');
             if (currentQuizAudioPlayer) {
-                playQuizAudioPlayer(currentQuizAudioPlayer, { forcePlay: true });
+                playQuizAudioPlayer(currentQuizAudioPlayer, {forcePlay: true});
                 return;
             }
 
@@ -2720,16 +3332,16 @@ $appData = [
         return Math.max(0, Math.min(pages.length - 1, Math.floor(ratio * pages.length)));
     }
 
-    function jumpToPageImmediately(index, { animate = false } = {}) {
+    function jumpToPageImmediately(index, {animate = false} = {}) {
         const nextIndex = Math.max(0, Math.min(pages.length - 1, index));
         if (nextIndex === pageIndex) return;
 
         cleanupMedia();
 
         window.clearTimeout(revealTimer);
-        els.card.classList.remove('is-page-transitioning');
+        els.card.classList.remove('is-page-transitioning', 'pointer-events-none');
         pageIndex = nextIndex;
-        render({ animate });
+        render({animate});
     }
 
     function jumpToProgressClientX(clientX, options = {}) {
@@ -2762,13 +3374,17 @@ $appData = [
 
             isScrubbing = false;
             els.progressTrack.classList.remove('is-scrubbing');
+            els.progressTrack.classList.remove('cursor-grabbing');
 
             if (event && Number.isFinite(event.clientX)) {
-                jumpToProgressClientX(event.clientX, { animate: true });
+                jumpToProgressClientX(event.clientX, {animate: true});
             }
 
             if (event?.pointerId !== undefined && els.progressTrack.releasePointerCapture) {
-                try { els.progressTrack.releasePointerCapture(event.pointerId); } catch (error) {}
+                try {
+                    els.progressTrack.releasePointerCapture(event.pointerId);
+                } catch (error) {
+                }
             }
         };
 
@@ -2780,12 +3396,16 @@ $appData = [
 
             isScrubbing = true;
             els.progressTrack.classList.add('is-scrubbing');
+            els.progressTrack.classList.add('cursor-grabbing');
 
             if (els.progressTrack.setPointerCapture) {
-                try { els.progressTrack.setPointerCapture(event.pointerId); } catch (error) {}
+                try {
+                    els.progressTrack.setPointerCapture(event.pointerId);
+                } catch (error) {
+                }
             }
 
-            requestProgressJump(event.clientX, { animate: false });
+            requestProgressJump(event.clientX, {animate: false});
         });
 
         els.progressTrack.addEventListener('pointermove', (event) => {
@@ -2793,7 +3413,7 @@ $appData = [
 
             event.preventDefault();
             event.stopPropagation();
-            requestProgressJump(event.clientX, { animate: false });
+            requestProgressJump(event.clientX, {animate: false});
         });
 
         els.progressTrack.addEventListener('pointerup', stopScrubbing);
@@ -2848,7 +3468,7 @@ $appData = [
             startX = touch.clientX;
             startY = touch.clientY;
             tracking = true;
-        }, { passive: true });
+        }, {passive: true});
 
         els.card.addEventListener('touchend', (event) => {
             if (!tracking) return;
@@ -2862,11 +3482,11 @@ $appData = [
 
             if (dx < 0) goTo(pageIndex + 1);
             if (dx > 0) goTo(pageIndex - 1);
-        }, { passive: true });
+        }, {passive: true});
     }
 
     bindNavigation();
-    render({ animate: true });
+    render({animate: true});  
 </script>
 </body>
-</html>
+</html> 
