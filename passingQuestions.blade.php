@@ -1,16 +1,28 @@
-﻿<?php
+{{-- SECTION: PHP data for slider questions and menu layout contract. --}}
+<?php
 $questionData = require base_path('resources/views/slider/questions.php');
 
 $appData = [
     'topics' => $questionData['topics'] ?? [],
+    'debug' => (bool) config('app.debug'),
+    'environment' => app()->environment(),
+    'tailwindBuild' => 'cdn-tailwind-browser',
+];
+
+$passingQuestionsMenuContract = [
+    // Menu layout variables shared with the slider shell.
+    'mobileHeaderCssVar' => '--pq-menu-mobile-height',
+    'desktopSidebarCssVar' => '--pq-sidebar-width',
 ];
 ?>
+{{-- SECTION: HTML document head and external assets. --}}
         <!doctype html>
 <html lang="en" class="h-full bg-[#f4f6ff]">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Passing Questions Card</title>
+    {{-- SECTION: Tailwind CDN config for this slider page. --}}
     <script>
         tailwind.config = {
             theme: {
@@ -31,6 +43,7 @@ $appData = [
                         pqPanel: '0 28px 80px rgba(38,35,92,.14)',
                     },
                     screens: {
+                        mobileShort: {raw: '(max-width: 520px) and (max-height: 740px)'},
                         short: {raw: '(min-width: 768px) and (max-height: 760px)'},
                         laptop: {raw: '(min-width: 1280px) and (max-height: 840px)'},
                         desktop: {raw: '(min-width: 1440px)'},
@@ -43,15 +56,32 @@ $appData = [
         };
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.PASSING_QUESTIONS_BOOTSTRAP = {
+            debug: @json($appData['debug'] ?? false),
+            environment: @json($appData['environment'] ?? 'production'),
+            tailwindBuild: @json($appData['tailwindBuild'] ?? 'cdn'),
+            menuContract: @json($passingQuestionsMenuContract),
+        };
+    </script>
     <link href="https://vjs.zencdn.net/8.16.1/video-js.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800;900&display=swap"
           rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    @include("slider.sections.language", ["sectionStyles" => true])
+    @include("slider.sections.listening", ["sectionStyles" => true])
+    @include("slider.sections.practice", ["sectionStyles" => true])
+    @include("slider.sections.revision-test", ["sectionStyles" => true])
+    {{-- SECTION: Custom CSS for slider UI, animation states, video fixes, and responsive rules. --}}
     <style>
+        /* Custom CSS for slider UI, animations, media, and responsive fixes. */
+
         :root {
             --pq-ease: cubic-bezier(.2, .8, .2, 1);
+            --pq-menu-mobile-height: 0px;
+            --pq-sidebar-width: 340px;
         }
 
         button:focus-visible,
@@ -91,6 +121,11 @@ $appData = [
                 width: 0;
                 height: 0;
             }
+
+            .pq-reveal-caret {
+                font-size: .9em !important;
+                vertical-align: baseline !important;
+            }
         }
 
         .pq-panel.is-page-transitioning [data-question-content],
@@ -113,68 +148,31 @@ $appData = [
             animation: pqProgressShine 2.8s ease-in-out infinite;
         }
 
+        [data-progress-track]::before {
+            position: absolute;
+            inset: 50% 0 auto;
+            height: .42rem;
+            border-radius: 999px;
+            background: #eceafd;
+            content: "";
+            transform: translateY(-50%);
+            transition: background-color 180ms ease;
+        }
+
+        [data-progress-track]:hover::before {
+            background: #e2dfff;
+        }
+
+        [data-progress-track][aria-disabled="true"] {
+            cursor: not-allowed;
+        }
+
+        [data-progress-track][aria-disabled="true"]::before {
+            background: #f0eeff;
+        }
+
         .pq-section-dot {
             animation: pqSectionDot 2.8s ease-in-out infinite;
-        }
-
-        .pq-image-frame img {
-            animation: pqImageReveal 560ms var(--pq-ease) both;
-        }
-
-        @media (hover: hover) and (pointer: fine) {
-            .pq-image-frame:hover img {
-                filter: saturate(1.04) contrast(1.015);
-                transform: scale(1.018);
-            }
-        }
-
-        .pq-list-row {
-            animation: pqOptionEnter 430ms var(--pq-ease) both;
-        }
-
-        .pq-list-row:nth-child(1) {
-            animation-delay: 30ms;
-        }
-
-        .pq-list-row:nth-child(2) {
-            animation-delay: 70ms;
-        }
-
-        .pq-list-row:nth-child(3) {
-            animation-delay: 110ms;
-        }
-
-        .pq-list-row:nth-child(4) {
-            animation-delay: 150ms;
-        }
-
-        .pq-list-row:nth-child(5) {
-            animation-delay: 190ms;
-        }
-
-        .pq-list-row:nth-child(6) {
-            animation-delay: 230ms;
-        }
-
-        .pq-list-row:nth-child(n+7) {
-            animation-delay: 270ms;
-        }
-
-        .pq-list-row::before {
-            position: absolute;
-            inset: 0 auto 0 0;
-            width: 4px;
-            border-radius: 0 999px 999px 0;
-            background: linear-gradient(to bottom, #7c7ff6, #ff8a7a);
-            content: "";
-            opacity: 0;
-            transform: scaleY(.35);
-            transition: opacity 180ms ease, transform 180ms var(--pq-ease);
-        }
-
-        .is-audio-playing.pq-list-row::before {
-            opacity: 1;
-            transform: scaleY(1);
         }
 
         .pq-audio-btn::before {
@@ -227,6 +225,16 @@ $appData = [
             transition: color 180ms ease, text-shadow 180ms ease;
         }
 
+        .is-audio-playing [data-audio-text],
+        [data-audio-text].is-audio-text-active {
+            color: #554bd2 !important;
+        }
+
+        .is-audio-playing [data-audio-copy],
+        [data-audio-copy].is-audio-copy-active {
+            color: #665de8 !important;
+        }
+
         .pq-reveal-caret {
             display: inline-block;
             margin-left: .08em;
@@ -235,412 +243,32 @@ $appData = [
             animation: pqRevealCaretBlink .82s steps(1) infinite;
         }
 
-        [data-conversation-mobile-button] {
-            display: inline-flex !important;
-        }
-
-        .pq-conversation-line [data-conversation-bubble-button] {
-            display: none !important;
-            position: absolute;
-            top: .95rem;
-            right: .95rem;
-        }
-
-        @media (min-width: 1024px) {
-            [data-conversation-mobile-button] {
-                display: none !important;
-            }
-
-            .pq-conversation-line.is-active [data-conversation-bubble-button],
-            .is-conversation-idle .pq-conversation-line[data-conversation-starter="true"] [data-conversation-bubble-button] {
-                display: inline-flex !important;
-            }
-
-            .pq-conversation-line[data-side="left"]::after,
-            .pq-conversation-line[data-side="right"]::after {
-                position: absolute;
-                top: 1.55rem;
-                width: 0;
-                height: 0;
-                content: "";
-                border-top: .6rem solid transparent;
-                border-bottom: .6rem solid transparent;
-            }
-
-            .pq-conversation-line[data-side="left"]::after {
-                left: -.72rem;
-                border-right: .72rem solid #111827;
-            }
-
-            .pq-conversation-line[data-side="right"]::after {
-                right: -.72rem;
-                border-left: .72rem solid #111827;
-            }
-        }
-
-        .pq-video-wrap .video-js,
-        .pq-video-wrap > video,
-        .pq-short-video-wrap .video-js,
-        .pq-short-video-wrap > video {
-            width: 100% !important;
-            height: 100% !important;
-            margin: 0 auto;
-            background: #090910;
-            font-family: inherit;
-        }
-
-        .pq-video-wrap .video-js .vjs-tech,
-        .pq-video-wrap .video-js .vjs-poster,
-        .pq-video-wrap .video-js .vjs-poster img,
-        .pq-short-video-wrap .video-js .vjs-tech,
-        .pq-short-video-wrap .video-js .vjs-poster,
-        .pq-short-video-wrap .video-js .vjs-poster img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain !important;
-            object-position: center center !important;
-        }
-
-        .pq-video-wrap .vjs-picture-in-picture-control,
-        .pq-short-video-wrap .vjs-picture-in-picture-control {
-            display: none !important;
-        }
-
-        .pq-video-wrap .video-js .vjs-big-play-button {
-            top: 50% !important;
-            left: 50% !important;
-            width: 3.75rem;
-            height: 3.75rem;
-            margin: 0;
-            transform: translate(-50%, -50%);
-            border: 0;
-            border-radius: 999px;
-            background: linear-gradient(145deg, rgba(124, 127, 246, .96), rgba(102, 93, 232, .96));
-            box-shadow: 0 14px 34px rgba(18, 18, 40, .32);
-            line-height: 3.75rem;
-        }
-
-        .pq-video-wrap .video-js:hover .vjs-big-play-button,
-        .pq-video-wrap .video-js .vjs-big-play-button:focus {
-            filter: brightness(1.06);
-            transform: translate(-50%, -50%) scale(1.06);
-        }
-
-        .pq-video-wrap .video-js .vjs-big-play-button .vjs-icon-placeholder::before {
-            font-size: 2.25rem;
-            line-height: 3.75rem;
-            text-shadow: none;
-        }
-
-        @media (min-width: 1024px) {
-            .pq-video-wrap .video-js .vjs-big-play-button {
-                width: 4.35rem;
-                height: 4.35rem;
-                line-height: 4.35rem;
-            }
-
-            .pq-video-wrap .video-js .vjs-big-play-button .vjs-icon-placeholder::before {
-                font-size: 2.5rem;
-                line-height: 4.35rem;
-            }
-        }
-
-        .pq-video-wrap .pq-vjs-cc-button .vjs-icon-placeholder,
-        .pq-short-video-wrap .pq-vjs-cc-button .vjs-icon-placeholder {
-            display: grid;
-            place-items: center;
-            width: 100%;
-            height: 100%;
-            font-size: .66rem;
-            font-weight: 900;
-            letter-spacing: 0;
-            line-height: 1;
-            text-shadow: none;
-        }
-
-        .pq-video-wrap .pq-vjs-cc-button,
-        .pq-short-video-wrap .pq-vjs-cc-button {
-            width: 2.55em !important;
-            min-width: 2.55em !important;
-            height: 100% !important;
-            color: rgba(255, 255, 255, .78);
-            background: transparent !important;
-            border-radius: 0 !important;
-            box-shadow: none !important;
-        }
-
-        .pq-video-wrap .pq-vjs-cc-button .vjs-icon-placeholder::before,
-        .pq-short-video-wrap .pq-vjs-cc-button .vjs-icon-placeholder::before {
-            content: "" !important;
-        }
-
-        .pq-video-wrap .pq-vjs-cc-button.is-active,
-        .pq-video-wrap .pq-vjs-cc-button:hover,
-        .pq-short-video-wrap .pq-vjs-cc-button.is-active,
-        .pq-short-video-wrap .pq-vjs-cc-button:hover {
-            color: #fff;
-            background: transparent !important;
-        }
-
-        .pq-video-wrap .pq-vjs-cc-button.is-active .vjs-icon-placeholder,
-        .pq-short-video-wrap .pq-vjs-cc-button.is-active .vjs-icon-placeholder {
-            text-decoration: underline;
-            text-decoration-thickness: 2px;
-            text-underline-offset: .2em;
-        }
-
-        .pq-video-wrap .video-js .vjs-control-bar,
-        .pq-short-video-wrap .video-js .vjs-control-bar {
-            transition: opacity 120ms ease, visibility 120ms ease, transform 120ms ease !important;
-        }
-
-        .pq-video-wrap .video-js.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar,
-        .pq-short-video-wrap .video-js.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            transform: translateY(100%) !important;
-            pointer-events: none !important;
-        }
-
-        .pq-video-caption-overlay.is-visible .pq-video-caption-text {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        .pq-video-wrap .video-js.vjs-user-active .pq-video-caption-overlay,
-        .pq-video-wrap .video-js.vjs-paused .pq-video-caption-overlay {
-            bottom: clamp(3.85rem, 12%, 5rem);
-        }
-
-        .pq-video-wrap .video-js.vjs-user-inactive.vjs-playing .pq-video-caption-overlay {
-            bottom: clamp(.8rem, 4%, 1.75rem);
-        }
-
-        .pq-short-video-wrap .video-js.vjs-user-active .pq-video-caption-overlay,
-        .pq-short-video-wrap .video-js.vjs-paused .pq-video-caption-overlay {
-            bottom: clamp(4rem, 12%, 5.5rem);
-        }
-
-        .pq-short-video-wrap .video-js.vjs-user-inactive.vjs-playing .pq-video-caption-overlay {
-            bottom: clamp(2.25rem, 8%, 4.75rem);
-        }
-
-        .video-js.vjs-fullscreen .pq-video-caption-overlay {
-            bottom: clamp(2.1rem, 7%, 5.2rem);
-            z-index: 10000;
-            width: min(86%, 70rem);
-        }
-
-        .video-js.vjs-fullscreen .pq-video-caption-text {
-            border-radius: .8rem;
-            padding: .55rem .85rem;
-            font-size: clamp(.82rem, 1.55vw, 1.18rem);
-        }
-
-        .pq-short-video-overlay.is-hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .pq-short-video-overlay:hover .pq-short-play-circle {
-            transform: scale(1.045);
-        }
-
-        .pq-quiz-item {
-            display: none;
-        }
-
-        .pq-quiz-item.is-current {
-            display: block;
-            animation: pqPageIn 300ms var(--pq-ease) both;
-        }
-
-        /* RESPONSIVE_FIXES_V2: laptop video, transcript, and short-mobile behavior */
-        @media (min-width: 1280px) {
-            .pq-video-no-quiz .pq-video-main-column {
-                max-width: min(100%, 58rem) !important;
-                margin-left: auto !important;
-                margin-right: auto !important;
-            }
-
-            .pq-video-no-quiz .pq-video-wrap {
-                max-height: min(54dvh, 31rem) !important;
-            }
-
-            .pq-video-no-quiz.is-transcript-open .pq-video-wrap {
-                max-height: min(46dvh, 26rem) !important;
-            }
-
-            .pq-video-no-quiz .pq-transcript-panel {
-                max-height: 5.75rem !important;
-            }
-        }
-
-        @media (min-width: 1536px) {
-            .pq-video-no-quiz .pq-video-main-column {
-                max-width: min(100%, 64rem) !important;
-            }
-
-            .pq-video-no-quiz .pq-video-wrap {
-                max-height: min(56dvh, 34rem) !important;
-            }
-
-            .pq-video-no-quiz.is-transcript-open .pq-video-wrap {
-                max-height: min(48dvh, 28rem) !important;
-            }
-        }
-
-        @media (min-width: 1280px) and (max-height: 840px) {
-            .pq-video-no-quiz .pq-video-main-column {
-                max-width: min(100%, 62rem) !important;
-                margin-left: auto !important;
-                margin-right: auto !important;
-            }
-
-            .pq-video-no-quiz .pq-video-wrap {
-                max-height: min(52dvh, 26rem) !important;
-            }
-
-            .pq-video-no-quiz.is-transcript-open .pq-video-wrap {
-                height: min(44dvh, 22rem) !important;
-                max-height: min(44dvh, 22rem) !important;
-            }
-
-            .pq-video-no-quiz.is-transcript-open .pq-transcript-panel {
-                max-height: 4.75rem !important;
-            }
-
-            .pq-video-no-quiz.is-transcript-open .pq-transcript-row {
-                min-height: 1.7rem !important;
-                padding-top: .2rem !important;
-                padding-bottom: .2rem !important;
-            }
-
-            .pq-video-has-quiz .pq-video-wrap {
-                max-height: min(54dvh, 27rem) !important;
-            }
-
-            .pq-video-has-quiz.is-transcript-open .pq-video-wrap {
-                height: min(46dvh, 23rem) !important;
-                max-height: min(46dvh, 23rem) !important;
-            }
-
-            .pq-video-has-quiz .pq-transcript-panel {
-                max-height: 4.75rem !important;
-            }
-
-            .pq-video-has-quiz .pq-transcript-row {
-                min-height: 1.7rem !important;
-                padding-top: .2rem !important;
-                padding-bottom: .2rem !important;
-            }
-        }
-
-        @media (min-width: 1536px) and (min-height: 841px) {
-            .pq-video-has-quiz .pq-video-wrap {
-                max-height: min(54dvh, 32rem) !important;
-            }
-
-            .pq-video-has-quiz.is-transcript-open .pq-video-wrap {
-                max-height: min(48dvh, 28rem) !important;
-            }
-
-            .pq-video-has-quiz .pq-transcript-panel {
-                max-height: 5.75rem !important;
-            }
-        }
-
-        @media (max-width: 767px) {
-            .pq-video-has-quiz .pq-video-inner-layout {
-                gap: 1rem !important;
-            }
-
-            .pq-video-has-quiz .pq-video-main-column,
-            .pq-video-has-quiz .pq-video-side-column {
-                flex-shrink: 0 !important;
-            }
-
-            .pq-video-has-quiz.is-transcript-open .pq-video-wrap {
-                height: min(27dvh, 11.75rem) !important;
-                max-height: min(27dvh, 11.75rem) !important;
-            }
-
-            .pq-video-has-quiz.is-transcript-open .pq-transcript-panel {
-                max-height: 4.6rem !important;
-            }
-
-            .pq-video-has-quiz.is-transcript-open .pq-transcript-row {
-                min-height: 1.72rem !important;
-                padding-top: .24rem !important;
-                padding-bottom: .24rem !important;
-            }
-
-            .pq-video-has-quiz .pq-video-side-column {
-                margin-top: .45rem !important;
-            }
-
-            .pq-video-has-quiz .pq-quiz-question {
-                margin-bottom: .7rem !important;
-                font-size: clamp(1.08rem, 4.8vw, 1.28rem) !important;
-                line-height: 1.06 !important;
-            }
-
-            .pq-video-has-quiz .pq-quiz-option {
-                min-height: 2.85rem !important;
-            }
-        }
-
-        @media (max-width: 420px) and (max-height: 700px) {
-            .pq-short-video-shell {
-                height: min(100%, calc(100dvh - 15.75rem), 24.5rem) !important;
-                max-width: min(100%, 15.75rem) !important;
-                border-radius: 1.35rem !important;
-            }
-
-            [data-short-video-page] {
-                padding-top: .25rem !important;
-                padding-bottom: .25rem !important;
-            }
-
-            [data-nav-actions] {
-                padding-top: .45rem !important;
-                gap: .5rem !important;
-            }
-
-            [data-nav-actions] button {
-                min-height: 2.75rem !important;
-                border-radius: .9rem !important;
-            }
-
-            .pq-video-has-quiz.is-transcript-open .pq-video-wrap {
-                height: min(25dvh, 10.75rem) !important;
-                max-height: min(25dvh, 10.75rem) !important;
-            }
-
-            .pq-video-has-quiz.is-transcript-open .pq-transcript-panel {
-                max-height: 3.85rem !important;
-            }
-
-            .pq-video-has-quiz .pq-quiz-question {
-                font-size: 1rem !important;
-                line-height: 1.05 !important;
-            }
-        }
-
-        @media (max-width: 420px) and (min-height: 701px) {
-            .pq-short-video-shell {
-                height: min(100%, calc(100dvh - 14.25rem), 31rem) !important;
-                max-width: min(100%, 18.25rem) !important;
-            }
-        }
-
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: .001ms !important;
                 animation-iteration-count: 1 !important;
                 scroll-behavior: auto !important;
                 transition-duration: .001ms !important;
+            }
+
+            .pq-panel.is-page-transitioning [data-question-content],
+            .pq-panel.is-page-transitioning [data-section-title],
+            .pq-panel.is-revealing [data-question-content],
+            .pq-panel.is-revealing [data-section-title],
+            .pq-panel.is-revealing [data-page-counter],
+            .pq-list-row,
+            .pq-image-frame img,
+            .pq-audio-btn::before,
+            .pq-section-dot,
+            .pq-reveal-caret {
+                animation: none !important;
+                transform: none !important;
+            }
+
+            .pq-audio-btn.is-playing .pq-audio-wave span,
+            [data-audio-text],
+            [data-audio-copy] {
+                animation: none !important;
             }
         }
 
@@ -778,70 +406,73 @@ $appData = [
             to {
                 transform: translate3d(-1.5rem, 1.5rem, 0);
             }
-        } 
+        }
 
         @keyframes pqShake {
             0%, 100% {
-                transform: translateX(0); 
+                transform: translateX(0);
             }
             25% {
-                transform: translateX(-4px);
+                transform: translateX(-4px);  
             }
             75% {
-                transform: translateX(4px);  
+                transform: translateX(4px);
             }
         }
-    </style>
+    </style> 
 </head>
+{{-- SECTION: Static HTML shell for background, menu, card, content outlet, and navigation. --}}
 <body class="relative min-h-dvh overflow-hidden overscroll-none bg-[radial-gradient(circle_at_12%_10%,rgba(124,127,246,.16),transparent_29rem),radial-gradient(circle_at_92%_88%,rgba(255,138,122,.14),transparent_28rem),linear-gradient(145deg,#fbfcff_0%,#f4f5ff_48%,#eef3ff_100%)] font-sans text-[#1a1b2e] antialiased">
-{{-- TAILWIND-FIRST BUILD 2026-06-25: sidebar menu + stable video frame transcript + compact video quiz + no-crop shorts + no action-button animation --}}
+{{-- Background visuals. --}}
 <div class="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(102,93,232,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(102,93,232,.035)_1px,transparent_1px)] bg-[length:34px_34px] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,.5),transparent_78%)]"
      aria-hidden="true"></div>
-@include("slider.menu", ["active" => "speaking"])
+
 <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
     <span class="pq-orb pq-orb-one pointer-events-none absolute -top-32 -left-28 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_35%_35%,rgba(255,255,255,.98),rgba(124,127,246,.22)_48%,transparent_72%)] opacity-90 blur-[3px] will-change-transform [animation:pqOrbOne_12s_ease-in-out_infinite_alternate]"></span>
     <span class="pq-orb pq-orb-two pointer-events-none absolute -right-32 -bottom-36 h-[25rem] w-[25rem] rounded-full bg-[radial-gradient(circle_at_42%_42%,rgba(255,255,255,.58),rgba(255,138,122,.2)_48%,transparent_73%)] opacity-90 blur-[3px] will-change-transform [animation:pqOrbTwo_15s_ease-in-out_infinite_alternate]"></span>
     <span class="pq-orb pq-orb-three pointer-events-none absolute right-[5%] top-[40%] h-32 w-32 rounded-full bg-[radial-gradient(circle,rgba(66,207,162,.14),transparent_68%)] opacity-90 blur-[3px] will-change-transform [animation:pqOrbThree_10s_ease-in-out_infinite_alternate]"></span>
 </div>
-
-<main class="pq-page fixed top-0 right-0 bottom-[calc(72px+env(safe-area-inset-bottom))] left-0 z-[1] grid min-h-0 w-auto place-items-center overflow-hidden p-[max(8px,env(safe-area-inset-top,0px))_max(8px,env(safe-area-inset-right,0px))_max(8px,env(safe-area-inset-bottom,0px))_max(8px,env(safe-area-inset-left,0px))] min-[421px]:bottom-[calc(96px+env(safe-area-inset-bottom))] min-[681px]:bottom-[calc(96px+env(safe-area-inset-bottom))] min-[1280px]:bottom-0 min-[1280px]:left-[340px] sm:p-[max(14px,env(safe-area-inset-top,0px))_max(14px,env(safe-area-inset-right,0px))_max(14px,env(safe-area-inset-bottom,0px))_max(14px,env(safe-area-inset-left,0px))] lg:p-[max(20px,env(safe-area-inset-top,0px))_max(20px,env(safe-area-inset-right,0px))_max(20px,env(safe-area-inset-bottom,0px))_max(20px,env(safe-area-inset-left,0px))] 2xl:p-[max(26px,env(safe-area-inset-top,0px))_max(26px,env(safe-area-inset-right,0px))_max(26px,env(safe-area-inset-bottom,0px))_max(26px,env(safe-area-inset-left,0px))] laptop:!p-[max(12px,env(safe-area-inset-top,0px))_max(12px,env(safe-area-inset-right,0px))_max(12px,env(safe-area-inset-bottom,0px))_max(12px,env(safe-area-inset-left,0px))] short:!p-[max(10px,env(safe-area-inset-top,0px))_max(10px,env(safe-area-inset-right,0px))_max(10px,env(safe-area-inset-bottom,0px))_max(10px,env(safe-area-inset-left,0px))]">
+@include("slider.menu", ["active" => "speaking"])
+{{-- External menu/header contract: slider.menu may set --pq-menu-mobile-height and --pq-sidebar-width. --}}
+<main class="pq-page fixed top-[var(--pq-menu-mobile-height)] right-0 bottom-[calc(72px+env(safe-area-inset-bottom,0px))] left-0 z-[1] grid min-h-0 w-auto place-items-center overflow-hidden p-[max(8px,env(safe-area-inset-top,0px))_max(8px,env(safe-area-inset-right,0px))_8px_max(8px,env(safe-area-inset-left,0px))] min-[1280px]:top-0 min-[1280px]:bottom-0 min-[1280px]:left-[var(--pq-sidebar-width)] sm:p-[max(14px,env(safe-area-inset-top,0px))_max(14px,env(safe-area-inset-right,0px))_14px_max(14px,env(safe-area-inset-left,0px))] lg:p-[max(20px,env(safe-area-inset-top,0px))_max(20px,env(safe-area-inset-right,0px))_max(20px,env(safe-area-inset-bottom,0px))_max(20px,env(safe-area-inset-left,0px))] 2xl:p-[max(26px,env(safe-area-inset-top,0px))_max(26px,env(safe-area-inset-right,0px))_max(26px,env(safe-area-inset-bottom,0px))_max(26px,env(safe-area-inset-left,0px))] laptop:!p-[max(12px,env(safe-area-inset-top,0px))_max(12px,env(safe-area-inset-right,0px))_max(12px,env(safe-area-inset-bottom,0px))_max(12px,env(safe-area-inset-left,0px))] short:!p-[max(10px,env(safe-area-inset-top,0px))_max(10px,env(safe-area-inset-right,0px))_max(10px,env(safe-area-inset-bottom,0px))_max(10px,env(safe-area-inset-left,0px))]">
     <section
-            class="pq-panel grid h-full min-h-0 w-full max-w-[1280px] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-[1.5rem] border border-[#e8e6f2] bg-white/95 p-[clamp(.58rem,1.15dvh,.9rem)] shadow-[0_18px_46px_rgba(38,35,92,.09)] backdrop-blur-xl sm:rounded-[1.75rem] sm:p-4 sm:shadow-[0_28px_80px_rgba(38,35,92,.14)] md:p-5 lg:max-w-[1440px] lg:rounded-[2rem] lg:p-6 xl:max-w-[1520px] xl:p-7 2xl:max-w-[1600px] laptop:!rounded-[1.5rem] laptop:!p-4 short:!rounded-[1.35rem] short:!p-[clamp(.78rem,2vh,1rem)]"
+            class="pq-panel grid h-full min-h-0 w-full max-w-[1280px] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-[1.5rem] border border-[#e8e6f2] bg-white/95 p-[clamp(.58rem,1.15dvh,.9rem)] shadow-[0_18px_46px_rgba(38,35,92,.09)] backdrop-blur-xl max-[520px]:!rounded-[1.15rem] max-[520px]:!p-[.7rem] sm:rounded-[1.75rem] sm:p-4 sm:shadow-[0_28px_80px_rgba(38,35,92,.14)] md:p-5 lg:max-w-[1440px] lg:rounded-[2rem] lg:p-6 xl:max-w-[1520px] xl:p-7 2xl:max-w-[1600px] laptop:!rounded-[1.5rem] laptop:!p-4 short:!rounded-[1.35rem] short:!p-[clamp(.78rem,2vh,1rem)]"
             data-question-card
     >
-        <header class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] grid-areas-none items-center gap-x-2 gap-y-2 py-[.12rem] md:gap-x-4 md:gap-y-3 short:!gap-y-[.45rem]"
+        <header class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1.5 py-0 md:gap-x-4 md:gap-y-2.5 short:!gap-y-[.35rem]"
                 data-question-heading>
-            <div class="inline-flex min-h-[2.75rem] w-fit max-w-full min-w-0 items-center gap-2 overflow-visible rounded-full border border-[#dfdcff] bg-gradient-to-br from-white to-[#f1efff] px-3 py-2.5 text-[clamp(.9rem,4.4vw,1.12rem)] font-black leading-[1.35] tracking-[-.026em] text-[#665de8] shadow-[0_10px_26px_rgba(64,58,153,.09)] sm:min-h-[3rem] sm:px-4 md:min-h-[3.2rem] md:px-5 md:text-[1.05rem] short:!min-h-[2.55rem]"
+            <div class="inline-flex min-h-[2.25rem] w-fit max-w-full min-w-0 items-center gap-1.5 overflow-visible rounded-full border border-[#dfdcff] bg-gradient-to-br from-white to-[#f1efff] px-2.5 py-1.5 text-[.82rem] font-bold leading-[1.25] tracking-[-.02em] text-[#665de8] shadow-[0_8px_20px_rgba(64,58,153,.08)] sm:min-h-[2.65rem] sm:gap-2 sm:px-3.5 sm:py-2 sm:text-[.95rem] md:min-h-[2.85rem] md:px-4 md:text-[1rem] short:!min-h-[2.25rem]"
                  data-section-title>
-                <span class="pq-section-dot h-2.5 w-2.5 shrink-0 rounded-full border-2 border-white bg-gradient-to-br from-[#ff8a7a] to-[#ffb37c]"></span>
+                <span class="pq-section-dot h-2 w-2 shrink-0 rounded-full border-2 border-white bg-gradient-to-br from-[#ff8a7a] to-[#ffb37c] sm:h-2.5 sm:w-2.5"></span>
                 <span class="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap leading-[1.35] pb-[2px] pt-[1px]"
                       data-section-name></span>
             </div>
 
-            <div class="inline-flex min-h-[2.75rem] min-w-[3.75rem] items-center justify-center rounded-full border border-[#e4e1fb] bg-white/90 px-3 py-2.5 text-[.84rem] font-black leading-[1.35] text-[#665de8] shadow-[0_10px_24px_rgba(38,35,92,.07)] sm:min-h-[3rem] sm:min-w-[4.15rem] sm:text-base md:min-h-[3.2rem] md:min-w-[4.75rem] short:!min-h-[2.55rem]"
+            <div class="inline-flex min-h-[2.25rem] min-w-[3.2rem] items-center justify-center rounded-full border border-[#e4e1fb] bg-white/90 px-2.5 py-1.5 text-[.76rem] font-bold leading-[1.25] text-[#665de8] shadow-[0_8px_18px_rgba(38,35,92,.06)] transition focus-within:border-[#cfc9ff] focus-within:ring-4 focus-within:ring-[#766cff]/10 sm:min-h-[2.65rem] sm:min-w-[3.75rem] sm:px-3 sm:py-2 sm:text-[.9rem] md:min-h-[2.85rem] md:min-w-[4.25rem] md:text-[.96rem] short:!min-h-[2.25rem]"
                  data-page-counter></div>
 
-            <div class="relative col-span-2 h-[.42rem] cursor-pointer touch-none select-none overflow-hidden rounded-full bg-[#eceafd] outline-none ring-offset-2 ring-offset-white hover:bg-[#e2dfff] focus-visible:ring-4 focus-visible:ring-[#766cff]/20 md:h-[.48rem]"
+            <div class="relative col-span-2 h-5 cursor-pointer touch-none select-none overflow-visible rounded-full bg-transparent outline-none ring-offset-2 ring-offset-white focus-visible:ring-4 focus-visible:ring-[#766cff]/20"
                  data-progress-track role="slider" tabindex="0" aria-label="Go to page" aria-valuemin="1"
                  aria-valuemax="1" aria-valuenow="1">
-                <div class="pq-progress-bar absolute inset-y-0 left-0 w-0 rounded-full bg-gradient-to-r from-[#7c7ff6] to-[#ff8a7a] shadow-[0_0_16px_rgba(102,93,232,.28)] transition-[width] duration-[420ms] ease-out"
+                <div class="pq-progress-bar absolute left-0 top-1/2 z-[1] h-[.42rem] w-0 -translate-y-1/2 rounded-full bg-gradient-to-r from-[#7c7ff6] to-[#ff8a7a] shadow-[0_0_16px_rgba(102,93,232,.28)] transition-[width] duration-[420ms] ease-out md:h-[.48rem]"
                      data-progress-bar></div>
+                <div class="pointer-events-none absolute inset-x-0 top-1/2 z-10 -translate-y-1/2" data-level-markers></div>
             </div>
         </header>
 
-        <div class="h-full min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain pt-[clamp(.58rem,1.15dvh,.9rem)] pr-1 pb-3 touch-pan-y sm:pt-4 sm:pr-2 md:px-1 md:pb-4 lg:px-3 lg:pt-5 xl:px-4 laptop:!pt-3 laptop:!px-2 laptop:!pb-3 short:!py-[.45rem]"
+        <div class="h-full min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain pt-[clamp(.5rem,1dvh,.75rem)] pr-1 pb-3 touch-pan-y sm:pt-2.5 sm:pr-2 md:px-1 md:pb-4 lg:px-3 lg:pt-3 xl:px-4 laptop:!pt-2 laptop:!px-2 laptop:!pb-3 short:!pt-[.45rem] short:!pb-[.45rem]"
              data-question-content></div>
 
-        <nav class="grid grid-cols-2 gap-2 pt-2 sm:gap-3 sm:pt-3 md:mx-auto md:w-full md:max-w-[34rem] lg:ml-auto lg:mr-0 lg:max-w-[36rem] laptop:!max-w-[32rem] laptop:!pt-2 laptop:[&_button]:!min-h-[3rem] short:!max-w-[30rem] short:!gap-[.65rem] short:!pt-[.45rem] short:[&_button]:!min-h-[2.75rem] short:[&_button]:!rounded-[.9rem] short:[&_button]:!px-4 short:[&_button]:!text-[.86rem]"
+        <nav class="grid grid-cols-2 gap-2 pt-2 max-[520px]:!gap-[.6rem] max-[520px]:!pt-[.55rem] max-[520px]:[&_button]:!min-h-[2.85rem] max-[520px]:[&_button]:!rounded-[.95rem] max-[520px]:[&_button]:!text-[.86rem] mobileShort:!gap-[.5rem] mobileShort:!pt-[.45rem] mobileShort:[&_button]:!min-h-[2.75rem] mobileShort:[&_button]:!rounded-[.9rem] sm:gap-3 sm:pt-3 md:mx-auto md:w-full md:max-w-[34rem] lg:ml-auto lg:mr-0 lg:max-w-[36rem] laptop:!max-w-[32rem] laptop:!pt-2 laptop:[&_button]:!min-h-[3rem] short:!max-w-[30rem] short:!gap-[.65rem] short:!pt-[.45rem] short:[&_button]:!min-h-[2.75rem] short:[&_button]:!rounded-[.9rem] short:[&_button]:!px-4 short:[&_button]:!text-[.86rem]"
              data-nav-actions>
             <button type="button"
-                    class="pq-action-button relative flex min-h-[2.9rem] items-center justify-center gap-2 overflow-hidden rounded-[1rem] border border-[#dcd8ff] bg-[#fbfbff] px-4 text-[.82rem] font-extrabold text-[#554bd2] hover:border-[#cfc9ff] hover:bg-[#f1efff] hover:text-[#4f46d5] sm:min-h-[3.25rem] sm:text-sm lg:min-h-[3.5rem] lg:text-[.95rem]"
+                    class="pq-action-button relative flex min-h-[2.9rem] items-center justify-center gap-2 overflow-hidden rounded-[1rem] border border-[#dcd8ff] bg-[#fbfbff] px-4 text-[.82rem] font-bold text-[#554bd2] transition hover:border-[#cfc9ff] hover:bg-[#f1efff] hover:text-[#4f46d5] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:border-[#dcd8ff] disabled:hover:bg-[#fbfbff] disabled:hover:text-[#554bd2] sm:min-h-[3.25rem] sm:text-sm lg:min-h-[3.5rem] lg:text-[.95rem]"
                     data-prev-button>
                 <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                 <span>Previous</span>
             </button>
             <button type="button"
-                    class="pq-action-button relative flex min-h-[2.9rem] items-center justify-center gap-2 overflow-hidden rounded-[1rem] border border-transparent bg-gradient-to-br from-[#546be6] via-[#6258e4] to-[#6b4ed5] px-4 text-[.82rem] font-extrabold text-white shadow-[0_12px_28px_rgba(91,80,220,.24)] hover:from-[#4f63dc] hover:via-[#5b51d8] hover:to-[#6046c8] sm:min-h-[3.25rem] sm:text-sm lg:min-h-[3.5rem] lg:text-[.95rem]"
+                    class="pq-action-button relative flex min-h-[2.9rem] items-center justify-center gap-2 overflow-hidden rounded-[1rem] border border-transparent bg-gradient-to-br from-[#546be6] via-[#6258e4] to-[#6b4ed5] px-4 text-[.82rem] font-bold text-white shadow-[0_12px_28px_rgba(91,80,220,.24)] transition hover:from-[#4f63dc] hover:via-[#5b51d8] hover:to-[#6046c8] disabled:cursor-not-allowed disabled:opacity-45 disabled:shadow-none disabled:hover:from-[#546be6] disabled:hover:via-[#6258e4] disabled:hover:to-[#6b4ed5] sm:min-h-[3.25rem] sm:text-sm lg:min-h-[3.5rem] lg:text-[.95rem]"
                     data-next-button>
                 <span>Next</span>
                 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
@@ -850,8 +481,10 @@ $appData = [
     </section>
 </main>
 
+{{-- SECTION: JavaScript libraries and page application logic. --}}
 <script src="https://vjs.zencdn.net/8.16.1/video.min.js"></script>
 <script>
+    // SECTION: Browser app data and DOM references.
     const appData = @json($appData);
 
     const els = {
@@ -860,6 +493,7 @@ $appData = [
         counter: document.querySelector('[data-page-counter]'),
         progressTrack: document.querySelector('[data-progress-track]'),
         progress: document.querySelector('[data-progress-bar]'),
+        levelMarkers: document.querySelector('[data-level-markers]'),
         content: document.querySelector('[data-question-content]'),
         previous: document.querySelector('[data-prev-button]'),
         next: document.querySelector('[data-next-button]'),
@@ -867,10 +501,10 @@ $appData = [
 
     const ui = {
         audioButton: 'pq-audio-btn relative isolate inline-flex h-[3.05rem] w-[3.05rem] shrink-0 items-center justify-center overflow-visible rounded-full border border-white/60 bg-gradient-to-br from-[#6f73ea] to-[#554bd2] text-white shadow-[0_12px_26px_rgba(91,80,220,.26)] sm:h-[3.2rem] sm:w-[3.2rem] short:!h-[2.8rem] short:!w-[2.8rem]',
-        title: 'break-words text-balance font-black leading-[1.05] tracking-[-.045em] text-[#191a2b]',
+        title: 'break-words text-balance font-bold leading-[1.06] tracking-[-.04em] text-[#191a2b]',
         copy: 'max-w-xl space-y-2 text-[clamp(.98rem,4vw,1.1rem)] font-bold leading-[1.48] text-[#70748a] sm:text-lg lg:max-w-2xl',
-        option: 'pq-quiz-option min-h-[2.95rem] w-full rounded-[.95rem] border-2 border-[#eceafa] bg-white px-4 text-center text-[.92rem] font-black leading-tight text-[#55576a] shadow-[0_4px_0_rgba(102,93,232,.06)] sm:min-h-[3.2rem] sm:text-base lg:min-h-[3.35rem] lg:px-5 short:!min-h-[2.65rem] short:!text-[.86rem]',
-        videoOption: 'pq-quiz-option min-h-[2.85rem] w-full rounded-[.82rem] border-2 border-[#eceafa] bg-white px-[.95rem] text-center text-[.9rem] font-extrabold leading-tight text-[#55576a] shadow-[0_4px_0_rgba(102,93,232,.06)] min-[1280px]:min-h-[3rem] min-[1280px]:px-4 min-[1280px]:text-[.9rem] min-[1536px]:min-h-[3.25rem] min-[1536px]:text-[.96rem] short:!min-h-[2.85rem] short:!text-[.86rem]',
+        option: 'pq-quiz-option min-h-[2.95rem] w-full rounded-[.95rem] border-2 border-[#eceafa] bg-white px-4 text-center text-[.92rem] font-bold leading-tight text-[#55576a] shadow-[0_4px_0_rgba(102,93,232,.06)] disabled:cursor-not-allowed mobileShort:min-h-[2.75rem] mobileShort:px-3 mobileShort:text-[.88rem] sm:min-h-[3.2rem] sm:text-base lg:min-h-[3.35rem] lg:px-5 short:!min-h-[2.65rem] short:!text-[.86rem]',
+        videoOption: 'pq-quiz-option min-h-[2.85rem] w-full rounded-[.82rem] border-2 border-[#eceafa] bg-white px-[.95rem] text-center text-[.9rem] font-bold leading-tight text-[#55576a] shadow-[0_4px_0_rgba(102,93,232,.06)] disabled:cursor-not-allowed min-[1280px]:min-h-[3rem] min-[1280px]:px-4 min-[1280px]:text-[.9rem] min-[1536px]:min-h-[3.25rem] min-[1536px]:text-[.96rem] short:!min-h-[2.85rem] short:!text-[.86rem]',
     };
 
     const stateClasses = {
@@ -882,13 +516,144 @@ $appData = [
         transcriptTextActive: ['!text-[#554bd2]'],
         audioButtonPlaying: ['scale-[1.055]', '!shadow-[0_16px_32px_rgba(91,80,220,.34)]'],
         audioRowPlaying: ['!border-[rgba(102,93,232,.3)]', '!bg-[linear-gradient(135deg,rgba(245,244,255,.98),rgba(255,249,248,.96))]', '!shadow-[0_14px_30px_rgba(91,80,220,.14)]'],
-        audioTextPlaying: ['!text-[#554bd2]', 'animate-[pqTextPulse_1.05s_ease-in-out_infinite_alternate]'],
-        audioCopyPlaying: ['!text-[#665de8]', 'animate-[pqTextPulseSoft_1.15s_ease-in-out_infinite_alternate]'],
+        audioTextPlaying: ['is-audio-text-active'],
+        audioCopyPlaying: ['is-audio-copy-active'],
         conversationActiveFrame: ['!border-[rgba(102,93,232,.72)]', '!shadow-[0_14px_32px_rgba(91,80,220,.16)]'],
         conversationActiveLine: ['!bg-[linear-gradient(135deg,rgba(245,244,255,.98),rgba(255,249,248,.96))]'],
         conversationTextActive: ['!text-[#554bd2]'],
     };
 
+
+    // SECTION: Runtime lifecycle helpers, debug reporting, and page cleanup.
+    const runtime = {
+        debug: Boolean(appData.debug || window.PASSING_QUESTIONS_BOOTSTRAP?.debug),
+        pageDisposers: new Set(),
+        pageTimeouts: new Set(),
+        pageFrames: new Set(),
+    };
+
+    function reportError(error, context = 'Runtime error') {
+        if (!runtime.debug) return;
+        const detail = error instanceof Error ? error : new Error(String(error || 'Unknown error'));
+        console.warn(`[PassingQuestions] ${context}`, detail);
+    }
+
+    function reportMediaError(error, context = 'Media error', statusTarget = null) {
+        reportError(error, context);
+
+        if (!statusTarget) return;
+        statusTarget.classList.remove('hidden');
+        statusTarget.textContent = context;
+    }
+
+    function registerPageDisposer(dispose) {
+        if (typeof dispose !== 'function') return () => {};
+        runtime.pageDisposers.add(dispose);
+        return () => {
+            if (!runtime.pageDisposers.has(dispose)) return;
+            runtime.pageDisposers.delete(dispose);
+            try {
+                dispose();
+            } catch (error) {
+                reportError(error, 'Page cleanup failed');
+            }
+        };
+    }
+
+    function listenPage(target, type, handler, options) {
+        if (!target || typeof target.addEventListener !== 'function') return () => {};
+        target.addEventListener(type, handler, options);
+        return registerPageDisposer(() => target.removeEventListener(type, handler, options));
+    }
+
+    function setPageTimeout(callback, delay = 0) {
+        const id = window.setTimeout(() => {
+            runtime.pageTimeouts.delete(id);
+            callback();
+        }, delay);
+        runtime.pageTimeouts.add(id);
+        return id;
+    }
+
+    function requestPageFrame(callback) {
+        const id = window.requestAnimationFrame((time) => {
+            runtime.pageFrames.delete(id);
+            callback(time);
+        });
+        runtime.pageFrames.add(id);
+        return id;
+    }
+
+    function waitPageDelay(delay = 0) {
+        return new Promise((resolve) => {
+            let settled = false;
+            const finish = () => {
+                if (settled) return;
+                settled = true;
+                runtime.pageTimeouts.delete(id);
+                resolve();
+            };
+            const id = window.setTimeout(finish, delay);
+            runtime.pageTimeouts.add(id);
+            registerPageDisposer(() => {
+                if (settled) return;
+                window.clearTimeout(id);
+                finish();
+            });
+        });
+    }
+
+    function clearPageLifecycle() {
+        runtime.pageTimeouts.forEach((id) => window.clearTimeout(id));
+        runtime.pageFrames.forEach((id) => window.cancelAnimationFrame(id));
+        runtime.pageTimeouts.clear();
+        runtime.pageFrames.clear();
+
+        runtime.pageDisposers.forEach((dispose) => {
+            try {
+                dispose();
+            } catch (error) {
+                reportError(error, 'Page listener cleanup failed');
+            }
+        });
+        runtime.pageDisposers.clear();
+    }
+
+    function isEditableTarget(target) {
+        const element = target instanceof Element ? target : null;
+        if (!element) return false;
+        return Boolean(element.closest('input, textarea, select, [contenteditable="true"], [role="textbox"]'));
+    }
+
+    function syncExternalMenuSpace() {
+        const explicitHeader = document.querySelector('[data-slider-mobile-header], [data-mobile-header], .slider-mobile-header');
+        const desktop = window.matchMedia('(min-width: 1280px)').matches;
+        const height = !desktop && explicitHeader ? Math.ceil(explicitHeader.getBoundingClientRect().height) : 0;
+        document.documentElement.style.setProperty('--pq-menu-mobile-height', `${Math.max(0, height)}px`);
+    }
+
+    // SECTION: Data normalization helpers for clean page objects.
+    function firstFilled(...values) {
+        return values.find(fieldHasValue) ?? '';
+    }
+
+    function normalizePageItem(item = {}, sectionTitle = 'Practice', options = {}) {
+        const normalized = {...item};
+        normalized.sectionTitle = firstFilled(normalized.sectionTitle, sectionTitle, 'Practice');
+        normalized.title = firstFilled(normalized.title, normalized.question, normalized.page_title, normalized.pageTitle, normalized.title);
+        normalized.paragraph = firstFilled(normalized.paragraph, normalized.description, normalized.subtitle, normalized.instruction, normalized.paragraph);
+        normalized.image = firstFilled(normalized.image, normalized.media_image, normalized.mediaImage, normalized.image);
+        normalized.audio = firstFilled(normalized.audio, normalized.sound, normalized.media_audio, normalized.mediaAudio, normalized.audio);
+        normalized.video = firstFilled(normalized.video, normalized.media_video, normalized.mediaVideo, normalized.video);
+
+        if (!options.keepType) {
+            normalized.type = pageTypeForItem(normalized);
+        }
+
+        return normalized;
+    }
+
+    // SECTION: Visual state helpers for audio, quiz, transcript, and conversation UI.
     function addClasses(element, classes = []) {
         if (!element || !classes.length) return;
         element.classList.add(...classes);
@@ -929,8 +694,17 @@ $appData = [
         (isActive ? addClasses : removeClasses)(frame, stateClasses.conversationActiveFrame);
     }
 
+    // SECTION: Revision/test game handlers loaded from the existing Blade partial.
+    @include("slider.sections.language")
+    @include("slider.sections.listening")
+    @include("slider.sections.practice")
+    @include("slider.sections.revision-test")
+
+    // Runtime state for pages, media, video, quizzes, and conversations.
+    // SECTION: Global page, media, quiz, video, and conversation state.
+    const lastSlideStorageKey = `passingQuestions:lastSlide:${window.location.pathname}`;
     let pages = buildPages(appData.topics || []);
-    let pageIndex = 0;
+    let pageIndex = loadLastSlideIndex(pages.length);
     let audio = null;
     let activeAudioButton = null;
     let activeAudioScope = null;
@@ -948,6 +722,7 @@ $appData = [
         activeButton: null,
     };
 
+    // SECTION: Practice sound effects for correct, wrong, and success feedback.
     const practiceSfx = {
         enabled: true,
         sources: {
@@ -980,9 +755,11 @@ $appData = [
             sound.pause();
             sound.currentTime = 0;
             const promise = sound.play();
-            if (promise && typeof promise.catch === 'function') promise.catch(() => {
-            });
+            if (promise && typeof promise.catch === 'function') {
+                promise.catch((error) => reportError(error, `Practice sound "${name}" could not play`));
+            }
         } catch (error) {
+            reportError(error, `Practice sound "${name}" failed`);
         }
     }
 
@@ -993,10 +770,12 @@ $appData = [
                 sound.pause();
                 sound.currentTime = 0;
             } catch (error) {
+                reportError(error, 'Practice sound cleanup failed');
             }
         });
     }
 
+    // SECTION: General text, media, escaping, and page-type helper functions.
     function fieldHasValue(value) {
         return value !== null && value !== undefined && String(value).trim() !== '';
     }
@@ -1134,13 +913,24 @@ $appData = [
     }
 
     function pageTypeForItem(item = {}) {
-        return hasConversation(item) ? 'image-conversation'
-            : hasShortVideo(item) ? 'short-video'
-                : hasVideo(item) ? 'video'
-                    : hasImage(item) ? 'image'
-                        : hasQuiz(item) ? 'quiz'
-                            : hasAudio(item) ? 'audio'
-                                : 'title';
+        const rawType = String(item.type || item.layout || item.activity || '').toLowerCase().replace(/[\s_]+/g, '-');
+        const activityType = String(item.activity?.type || '').toLowerCase().replace(/[\s_]+/g, '-');
+        const isPracticeGame = rawType === 'practice' && [
+            'unjumble-sentence',
+            'unscramble-sentence',
+            'unjumble-letters',
+            'unscramble-letters',
+        ].includes(activityType);
+
+        return ['revision', 'test'].includes(rawType) ? rawType
+            : isPracticeGame ? 'practice'
+                : hasConversation(item) ? 'image-conversation'
+                    : hasShortVideo(item) ? 'short-video'
+                        : hasVideo(item) ? 'video'
+                            : hasQuiz(item) ? 'quiz'
+                                : hasImage(item) ? 'image'
+                                    : hasAudio(item) ? 'audio'
+                                        : 'title';
     }
 
     function chunkArray(items = [], size = 8) {
@@ -1162,6 +952,102 @@ $appData = [
         return hasTextCopy ? 6 : 8;
     }
 
+    function isSupportedAssessmentPractice(activity = {}) {
+        return [
+            'multiple_choice',
+            'audio_choice',
+            'reading_choice',
+            'fill_blank_typing',
+            'word_bank_fill',
+            'unscramble_sentence',
+            'unjumble_sentence',
+            'unscramble_letters',
+            'unjumble_letters',
+        ].includes(String(activity.type || '').toLowerCase());
+    }
+
+    function assessmentPracticeGroupKey(activity = {}) {
+        const type = String(activity.type || '').toLowerCase();
+
+        if (type === 'audio_choice' || fieldHasValue(activity.audio)) return 'audio';
+        if (type === 'reading_choice' || fieldHasValue(activity.passage)) return 'reading';
+        if (type === 'word_bank_fill') return 'word-bank';
+        if (type === 'fill_blank_typing') return 'missing-letters';
+        if (['unscramble_sentence', 'unjumble_sentence', 'unscramble_letters', 'unjumble_letters'].includes(type)) return 'unscramble';
+        if (type === 'multiple_choice' && fieldHasValue(activity.image)) return 'image-choice';
+
+        return 'choice';
+    }
+
+    function assessmentPracticeGroupTitle(groupKey = '') {
+        return {
+            audio: 'Listening Practice',
+            reading: 'Reading Practice',
+            'word-bank': 'Dialogue Practice',
+            'missing-letters': 'Missing Letters',
+            unscramble: 'Word Order Practice',
+            'image-choice': 'Image Practice',
+            choice: 'Practice',
+        }[groupKey] || 'Practice';
+    }
+
+    function assessmentPracticePagesFrom(page = {}, sectionTitle = 'Practice') {
+        const sourceLabel = page.label || page.title || sectionTitle || 'Practice';
+        const groups = [];
+        const groupIndexByKey = new Map();
+
+        function groupFor(activity) {
+            const key = assessmentPracticeGroupKey(activity);
+            if (groupIndexByKey.has(key)) return groups[groupIndexByKey.get(key)];
+
+            const group = {
+                key,
+                title: assessmentPracticeGroupTitle(key),
+                items: [],
+            };
+            groupIndexByKey.set(key, groups.length);
+            groups.push(group);
+            return group;
+        }
+
+        (page.sections || []).forEach((section) => {
+            let sectionPassage = section.passage || '';
+            const activities = Array.isArray(section.activities) ? section.activities : [];
+
+            activities.forEach((activity) => {
+                if (!activity || !isSupportedAssessmentPractice(activity)) return;
+
+                const nextActivity = {
+                    ...activity,
+                    sectionTitle: section.title || sourceLabel,
+                };
+
+                if (fieldHasValue(nextActivity.passage)) sectionPassage = nextActivity.passage;
+                if (!fieldHasValue(nextActivity.passage) && nextActivity.type === 'reading_choice' && fieldHasValue(sectionPassage)) {
+                    nextActivity.passage = sectionPassage;
+                }
+
+                groupFor(nextActivity).items.push(nextActivity);
+            });
+        });
+
+        return groups.filter((group) => group.items.length).map((group) => ({
+            type: 'practice',
+            sectionTitle: 'Practice',
+            title: '',
+            label: `${page.title || sourceLabel} - ${group.title}`,
+            activity: {
+                type: 'assessment_sequence',
+                items: group.items,
+            },
+            practiceGroup: group.key,
+            sourceAssessmentType: page.type || '',
+            sourceAssessmentTitle: page.title || sourceLabel,
+        }));
+    }
+
+    // Normalizes topic/question data into renderable pages.
+    // SECTION: Page builder that normalizes topic/group/question data before rendering.
     function buildPages(topics) {
         const output = [];
 
@@ -1170,18 +1056,16 @@ $appData = [
 
             if (Array.isArray(topic.groups) && topic.groups.length) {
                 topic.groups.forEach((group) => {
-                    const groupItems = Array.isArray(group.questions) ? group.questions : [];
+                    const groupItems = Array.isArray(group.questions)
+                        ? group.questions.map((item) => normalizePageItem(item, sectionTitle, {keepType: true}))
+                        : [];
                     const groupHasImages = groupItems.some((item) => hasImage(item));
                     const groupTitle = Object.prototype.hasOwnProperty.call(group, 'title') ? group.title : sectionTitle;
-                    const groupSubtitle = group.paragraph || group.description || '';
+                    const groupSubtitle = firstFilled(group.paragraph, group.description, group.subtitle);
 
                     if (groupHasImages) {
                         groupItems.forEach((item) => {
-                            output.push({
-                                ...item,
-                                type: pageTypeForItem(item),
-                                sectionTitle,
-                            });
+                            output.push(normalizePageItem(item, sectionTitle));
                         });
                         return;
                     }
@@ -1199,11 +1083,12 @@ $appData = [
 
             if (Array.isArray(topic.questions) && topic.questions.length) {
                 topic.questions.forEach((question) => {
-                    output.push({
-                        ...question,
-                        type: pageTypeForItem(question),
-                        sectionTitle,
-                    });
+                    const page = normalizePageItem(question, sectionTitle);
+                    if (isAssessmentType(page.type)) {
+                        output.push(...assessmentPracticePagesFrom(page, sectionTitle));
+                        return;
+                    }
+                    output.push(page);
                 });
             }
         });
@@ -1211,8 +1096,100 @@ $appData = [
         return output;
     }
 
+    // SECTION: Page progress, header labels, and level marker controls.
     function currentPage() {
         return pages[pageIndex] || null;
+    }
+
+    function loadLastSlideIndex(total = 0) {
+        try {
+            const raw = window.localStorage?.getItem(lastSlideStorageKey);
+            if (raw === null || raw === undefined || raw === '') return 0;
+
+            const saved = Number(raw);
+            if (!Number.isInteger(saved) || saved < 0 || saved >= total) return 0;
+
+            return saved;
+        } catch (error) {
+            reportError(error, 'Could not load saved slide');
+            return 0;
+        }
+    }
+
+    function saveLastSlideIndex(index = pageIndex) {
+        try {
+            if (!Number.isInteger(index) || index < 0 || index >= pages.length) return;
+            window.localStorage?.setItem(lastSlideStorageKey, String(index));
+        } catch (error) {
+            reportError(error, 'Could not save current slide');
+        }
+    }
+
+    function pageDisplayTitle(page = {}) {
+        return String(
+            fieldHasValue(page.title)
+                ? page.title
+                : fieldHasValue(page.question)
+                    ? page.question
+                    : fieldHasValue(page.sectionTitle)
+                        ? page.sectionTitle
+                        : ''
+        ).trim();
+    }
+
+    function levelMarkerTargets() {
+        const labels = ['A1 Intermediate', 'A1 Advanced'];
+
+        return labels.map((label) => {
+            const index = pages.findIndex((page) => pageDisplayTitle(page).toLowerCase() === label.toLowerCase());
+            return index >= 0 ? {label, index} : null;
+        }).filter(Boolean);
+    }
+
+    function updateLevelMarkers() {
+        if (!els.levelMarkers) return;
+
+        els.levelMarkers.querySelectorAll('[data-level-marker]').forEach((marker) => {
+            const markerIndex = Number(marker.dataset.levelIndex || -1);
+            const isReached = markerIndex <= pageIndex;
+            const isCurrent = markerIndex === pageIndex;
+
+            marker.classList.toggle('!bg-[#665de8]', isReached);
+            marker.classList.toggle('!border-white', isReached);
+            marker.classList.toggle('!text-white', isReached);
+            marker.classList.toggle('!bg-white', !isReached);
+            marker.classList.toggle('!border-[#766cff]', !isReached);
+            marker.classList.toggle('ring-2', isCurrent);
+            marker.classList.toggle('ring-[#766cff]/20', isCurrent);
+            marker.setAttribute('aria-current', isCurrent ? 'page' : 'false');
+        });
+    }
+
+    function renderLevelMarkers() {
+        if (!els.levelMarkers || !pages.length) return;
+
+        const maxIndex = Math.max(1, pages.length - 1);
+        const markers = levelMarkerTargets();
+
+        els.levelMarkers.innerHTML = markers.map(({label, index}) => {
+            const left = (index / maxIndex) * 100;
+
+            return `
+                <button
+                    type="button"
+                    class="pointer-events-auto absolute top-1/2 grid h-3 w-3 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 border-white bg-[#665de8] text-[0] text-white shadow-[0_3px_8px_rgba(91,80,220,.20)] transition hover:scale-125 hover:bg-[#554bd2] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#766cff]/20 md:h-4 md:w-4 md:shadow-[0_6px_14px_rgba(91,80,220,.22)]"
+                    style="left: ${left}%;"
+                    data-level-marker
+                    data-level-index="${index}"
+                    aria-label="Go to ${escapeHtml(label)}"
+                    title="${escapeHtml(label)}"
+                >
+                    <span class="sr-only">${escapeDisplay(label)}</span>
+                </button>
+            `;
+        }).join('');
+
+        updateLevelMarkers();
     }
 
     function normalizedLabel(value) {
@@ -1248,9 +1225,10 @@ $appData = [
     }
 
     function contentImageFitClass(context = 'learning') {
-        return ['portrait', 'thumbnail', 'feature'].includes(context) ? 'object-cover' : 'object-contain';
+        return ['portrait', 'thumbnail'].includes(context) ? 'object-cover' : 'object-contain';
     }
 
+    // SECTION: Reusable HTML render helpers for badges, audio buttons, and group cards.
     function groupCardBadge(item, itemTitle, sectionTitle, index) {
         const image = item.image || '';
 
@@ -1269,12 +1247,12 @@ $appData = [
             const emojiSize = badgeTextSize(emoji, 'text-[1.45rem] sm:text-[1.65rem]', 'text-[1.02rem] leading-none sm:text-[1.12rem]');
 
             return `
-                <span class="grid h-12 w-12 shrink-0 place-items-center rounded-[.95rem] bg-[#f0eeff] ${emojiSize} font-black text-[#665de8] sm:h-14 sm:w-14">${escapeHtml(emoji)}</span>
+                <span class="grid h-12 w-12 shrink-0 place-items-center rounded-[.95rem] bg-[#f0eeff] ${emojiSize} font-bold text-[#665de8] sm:h-14 sm:w-14">${escapeHtml(emoji)}</span>
             `;
         }
 
         return `
-            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-[.86rem] bg-[#f0eeff] text-sm font-black text-[#665de8]">${index + 1}</span>
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-[.86rem] bg-[#f0eeff] text-sm font-bold text-[#665de8]">${index + 1}</span>
         `;
     }
 
@@ -1283,9 +1261,11 @@ $appData = [
 
         const buttonClass = size === 'compact'
             ? 'pq-audio-btn relative isolate inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-visible rounded-full border border-white/60 bg-gradient-to-br from-[#6f73ea] to-[#554bd2] text-white shadow-[0_10px_20px_rgba(91,80,220,.24)] sm:h-10 sm:w-10 min-[1536px]:!h-11 min-[1536px]:!w-11 min-[1800px]:!h-12 min-[1800px]:!w-12 short:!h-9 short:!w-9'
-            : ui.audioButton;
+            : size === 'media'
+                ? 'pq-audio-btn relative isolate inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-visible rounded-full border border-white/60 bg-gradient-to-br from-[#6f73ea] to-[#554bd2] text-white shadow-[0_10px_22px_rgba(91,80,220,.24)] sm:h-[2.95rem] sm:w-[2.95rem] short:!h-10 short:!w-10'
+                : ui.audioButton;
 
-        const iconClass = size === 'compact' ? 'h-4 w-4' : 'h-5 w-5';
+        const iconClass = size === 'compact' ? 'h-4 w-4' : size === 'media' ? 'h-[1.1rem] w-[1.1rem] sm:h-5 sm:w-5' : 'h-5 w-5';
 
         return `
             <button type="button" class="${buttonClass}" data-audio-button data-audio-src="${escapeHtml(src)}" aria-label="${escapeHtml(label)}">
@@ -1302,722 +1282,67 @@ $appData = [
         `;
     }
 
-    function groupImageGridClass(rows = []) {
-        const count = rows.length;
-
-        if (count <= 4) return 'grid-cols-2 sm:grid-cols-2 md:grid-cols-4';
-        if (count <= 5) return 'grid-cols-2 sm:grid-cols-3 xl:grid-cols-5';
-        if (count <= 6) return 'grid-cols-2 sm:grid-cols-3 xl:grid-cols-6';
-        if (count <= 10) return 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5';
-        return 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6';
-    }
-
-    function renderGroupImageCard(item, itemTitle, page, index) {
-        const image = item.image || '';
-        const paragraph = textHtml(item.paragraph || item.description || item.subtitle || '');
-        const rowAudio = hasAudio(item) ? audioButton(item.audio, `Play ${itemTitle}`) : '';
-        const emoji = fieldHasValue(item.emoji)
-            ? firstEmoji(item.emoji)
-            : firstEmoji(defaultEmojiForText(itemTitle, page.sectionTitle));
-        const emojiSize = badgeTextSize(emoji, 'text-[clamp(2.6rem,13vw,5rem)]', 'text-[clamp(1.75rem,8vw,3.25rem)]');
-
-        const visual = fieldHasValue(image)
-            ? `<img class="h-full w-full ${contentImageFitClass('learning')} object-center transition duration-500 group-hover:scale-[1.015]" src="${escapeHtml(image)}" alt="${escapeHtml(itemTitle)}" loading="lazy" decoding="async">`
-            : `<div class="grid h-full w-full place-items-center bg-gradient-to-br from-[#f7f6ff] via-white to-[#eef3ff]"><span class="${emojiSize} leading-none drop-shadow-[0_10px_22px_rgba(91,80,220,.14)]">${escapeHtml(emoji)}</span></div>`;
-
-        return `
-            <article class="pq-list-row pq-image-card group relative w-full justify-self-center overflow-hidden rounded-[1.25rem] border border-[#eceafa] bg-white shadow-[0_12px_28px_rgba(38,35,92,.07)] hover:-translate-y-0.5 hover:border-[#dad6ff] hover:shadow-[0_18px_38px_rgba(91,80,220,.12)] sm:rounded-[1.45rem] lg:!max-w-[13.75rem] xl:!max-w-[14.75rem] short:!max-w-[12.25rem]" ${hasAudio(item) ? 'data-audio-scope' : ''}>
-                <figure class="pq-image-card-media aspect-[4/3] w-full overflow-hidden bg-[#f0eeff] lg:!aspect-square">
-                    ${visual}
-                </figure>
-
-                <div class="flex min-h-[4.75rem] items-center gap-3 px-3 py-3 sm:min-h-[5.25rem] sm:px-4 sm:py-3.5 short:!min-h-[4.15rem] short:!py-[.7rem]">
-                    <div class="min-w-0 flex-1">
-                        <h2 class="line-clamp-2 text-[clamp(.95rem,3.6vw,1.15rem)] font-black short:!text-[1.05rem] leading-tight text-[#242538]" data-audio-text>${escapeDisplay(itemTitle)}</h2>
-                        ${paragraph ? `<div class="mt-1 line-clamp-2 text-xs font-bold leading-snug text-[#85889a] sm:text-sm short:!text-[.78rem]" data-audio-copy>${paragraph}</div>` : ''}
-                    </div>
-                    ${rowAudio}
-                </div>
-            </article>
-        `;
-    }
-
-    function renderGroupListRow(item, itemTitle, page, index) {
-        const paragraph = textHtml(item.paragraph || item.description || '');
-        const isSimplePhraseCard = !paragraph && !hasImage(item);
-        const itemTextLength = String(itemTitle || '').length;
-        const isLongPhraseCard = isSimplePhraseCard && itemTextLength > 22;
-
-        const rowAudio = hasAudio(item)
-            ? audioButton(item.audio, `Play ${itemTitle}`, isSimplePhraseCard ? 'compact' : 'default')
-            : '';
-
-        const compactEmoji = fieldHasValue(item.emoji)
-            ? firstEmoji(item.emoji)
-            : firstEmoji(defaultEmojiForText(itemTitle, page.sectionTitle));
-        const compactEmojiSize = badgeTextSize(compactEmoji, 'text-[1.15rem] sm:text-[1.28rem] min-[1536px]:!text-[1.4rem]', 'text-[.9rem] leading-none sm:text-[1rem] min-[1536px]:!text-[1.08rem]');
-
-        const badge = isSimplePhraseCard
-            ? `
-            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-[.8rem] bg-[#f0eeff] ${compactEmojiSize} font-black text-[#665de8] sm:h-11 sm:w-11 min-[1536px]:!h-12 min-[1536px]:!w-12 short:!h-10 short:!w-10">${escapeHtml(compactEmoji)}</span>
-        `
-            : groupCardBadge(item, itemTitle, page.sectionTitle, index);
-
-        const rowClass = isSimplePhraseCard
-            ? isLongPhraseCard
-                ? 'pq-list-row relative flex min-h-[4.1rem] w-full items-center gap-3 overflow-hidden rounded-[1.05rem] border border-[#eceafa] bg-gradient-to-br from-white to-[#fbfbff] px-4 py-3 shadow-[0_8px_20px_rgba(38,35,92,.055)] sm:min-h-[4.35rem] min-[1536px]:!min-h-[4.65rem] min-[1536px]:!px-5 min-[1536px]:!py-3.5 min-[1800px]:!min-h-[4.9rem] laptop:!min-h-[3.95rem] laptop:!px-4 laptop:!py-2.5 short:!min-h-[3.7rem] short:!py-[.7rem]'
-                : 'pq-list-row relative flex min-h-[4rem] w-full items-center gap-3 overflow-hidden rounded-[1.05rem] border border-[#eceafa] bg-gradient-to-br from-white to-[#fbfbff] px-4 py-3 shadow-[0_8px_20px_rgba(38,35,92,.055)] sm:min-h-[4.25rem] min-[1536px]:!min-h-[4.55rem] min-[1536px]:!px-5 min-[1536px]:!py-3.5 min-[1800px]:!min-h-[4.8rem] laptop:!min-h-[3.85rem] laptop:!px-4 laptop:!py-2.5 short:!min-h-[3.6rem] short:!py-[.65rem]'
-            : 'pq-list-row relative flex min-h-[4.1rem] items-center gap-3 overflow-hidden rounded-[1.1rem] short:!min-h-[4.05rem] short:!py-[.72rem] border border-[#eceafa] bg-gradient-to-br from-white to-[#fbfbff] px-4 py-3 shadow-[0_8px_20px_rgba(38,35,92,.055)] sm:min-h-[4.8rem] sm:px-5 md:min-h-[5.15rem] laptop:!min-h-[4.25rem] laptop:!px-4 laptop:!py-3';
-
-        const titleClass = isSimplePhraseCard
-            ? isLongPhraseCard
-                ? 'line-clamp-2 py-[2px] text-[.9rem] font-black leading-[1.24] text-[#242538] sm:text-[.98rem] min-[1536px]:text-[1.1rem] min-[1800px]:text-[1.16rem] short:!text-[.88rem] short:!leading-[1.2]'
-                : 'line-clamp-2 py-[2px] text-[.92rem] font-black leading-[1.22] text-[#242538] sm:text-[.98rem] min-[1536px]:text-[1.1rem] min-[1800px]:text-[1.16rem] short:!text-[.88rem] short:!leading-[1.18]'
-            : 'line-clamp-2 text-[clamp(1rem,3.8vw,1.28rem)] font-black short:!text-[1.05rem] leading-tight text-[#242538]';
-
-        const copyClass = 'mt-1 line-clamp-2 text-sm font-bold leading-snug text-[#85889a] short:!text-[.78rem]';
-
-        return `
-        <div class="${rowClass}" ${hasAudio(item) ? 'data-audio-scope' : ''}>
-            ${badge}
-            <div class="min-w-0 flex-1">
-                <h2 class="${titleClass}" data-audio-text>${escapeDisplay(itemTitle)}</h2>
-                ${paragraph ? `<div class="${copyClass}" data-audio-copy>${paragraph}</div>` : ''}
-            </div>
-            ${rowAudio}
-        </div>
-    `;
-    }
-
-    function renderGroupPage(page) {
-        const rows = page.items || [];
-        const title = fieldHasValue(page.title) ? page.title : '';
-        const hasDescriptions = rows.some((item) => fieldHasValue(item.paragraph || item.description));
-        const shouldUseImageCards = rows.some((item) => hasImage(item));
-        const isSimplePhraseGroup = !shouldUseImageCards && !hasDescriptions;
-
-        const averageTitleLength = rows.length
-            ? rows.reduce((sum, item, index) => {
-            const value = String(item.title || item.question || `Item ${index + 1}` || '');
-            return sum + value.length;
-        }, 0) / rows.length
-            : 0;
-
-        const isLongPhraseGroup = isSimplePhraseGroup && averageTitleLength > 22;
-
-        const gridClass = shouldUseImageCards
-            ? groupImageGridClass(rows)
-            : 'grid-cols-1 min-[700px]:!grid-cols-2';
-
-        const groupGridKind = shouldUseImageCards
-            ? 'pq-group-grid--images'
-            : hasDescriptions
-                ? 'pq-group-grid--text'
-                : isLongPhraseGroup
-                    ? 'pq-group-grid--long-phrases'
-                    : 'pq-group-grid--simple';
-
-        const nonImageGroupMaxWidth = rows.length === 4
-            ? 'max-w-[64rem]'
-            : rows.length <= 6
-                ? 'max-w-[78rem]'
-                : 'max-w-[88rem]';
-
-        const groupMaxWidth = shouldUseImageCards
-            ? 'max-w-[88rem]'
-            : nonImageGroupMaxWidth;
-
-        return `
-            <article class="pq-group-page mx-auto flex min-h-0 w-full ${groupMaxWidth} flex-col px-1 py-2 text-left sm:px-3 sm:py-4 lg:px-5 lg:py-5 xl:px-6 xl:py-6 laptop:!px-3 laptop:!py-3 short:!max-w-[min(76rem,calc(100vw-5rem))] short:!py-[.65rem]" data-audio-scope>
-                ${title ? `<h1 class="${ui.title} text-[clamp(1.65rem,6vw,2.65rem)] lg:text-[2.75rem] laptop:!text-[clamp(1.8rem,3.4vw,2.35rem)] short:!text-[clamp(1.8rem,4.2vw,2.45rem)]">${escapeDisplay(title)}</h1>` : ''}
-                ${fieldHasValue(page.subtitle) ? `<div class="${ui.copy} ${title ? 'mt-2' : ''}">${textHtml(page.subtitle)}</div>` : ''}
-                <div class="pq-group-grid ${groupGridKind} mt-5 grid items-stretch gap-3 pr-1 sm:mt-6 sm:gap-4 ${gridClass} ${shouldUseImageCards ? 'justify-center lg:!grid-cols-[repeat(auto-fit,minmax(10.5rem,13.75rem))] xl:!grid-cols-[repeat(auto-fit,minmax(11.5rem,14.75rem))] xl:gap-5 short:!grid-cols-[repeat(auto-fit,minmax(9.75rem,12.25rem))]' : 'min-[1536px]:gap-6 min-[1800px]:gap-7'} laptop:!mt-4 laptop:!gap-3 short:!mt-4 short:!gap-[.78rem]" data-group-list>
-                    ${rows.map((item, index) => {
-            const globalIndex = Number(page.itemOffset || 0) + index;
-            const itemTitle = item.title || item.question || `Item ${globalIndex + 1}`;
-            return shouldUseImageCards
-                ? renderGroupImageCard(item, itemTitle, page, globalIndex)
-                : renderGroupListRow(item, itemTitle, page, globalIndex);
-        }).join('')}
-                </div>
-            </article>
-        `;
-    }
-
-    function speakerFromSide(page, side) {
-        const people = page.people || {};
-        if (people[side]) return people[side];
-        if (side === 'left') return people.doctor || people.male || {};
-        if (side === 'right') return people.teacher || people.female || {};
-        return {};
-    }
-
-    function speakerName(page, side) {
-        const speaker = speakerFromSide(page, side);
-        return speaker.name || (side === 'left' ? 'Speaker 1' : 'Speaker 2');
-    }
-
-    function speakerImage(page, side) {
-        const speaker = speakerFromSide(page, side);
-        return speaker.image || '';
-    }
-
-    function renderConversationSpeaker(page, side) {
-        const name = speakerName(page, side);
-        const image = speakerImage(page, side);
-        const rotate = side === 'left' ? '-rotate-[2deg]' : 'rotate-[2deg]';
-        const shadow = side === 'left' ? 'shadow-[8px_8px_0_rgba(15,23,42,.10)]' : 'shadow-[10px_10px_0_rgba(15,23,42,.10)]';
-
-        return `
-                <aside class="pq-conversation-speaker flex items-center justify-center ${side === 'left' ? 'lg:order-1' : 'lg:order-3'}" data-conversation-speaker="${escapeHtml(side)}">
-                    <figure class="relative mx-auto w-full max-w-[9.8rem] rounded-[1.35rem] border-[3px] border-slate-900 bg-white p-1 ${shadow} ${rotate} sm:max-w-[11.5rem] md:max-w-[13rem] lg:max-w-[12rem] lg:rounded-[1.75rem] lg:border-[4px] xl:max-w-[14rem]">
-                        ${image ? `<img class="aspect-square w-full rounded-[1rem] ${contentImageFitClass('portrait')} lg:rounded-[1.35rem]" src="${escapeHtml(image)}" alt="${escapeHtml(name)}" loading="lazy" decoding="async">` : `<div class="aspect-square w-full rounded-[1rem] bg-[#eeedff]"></div>`}
-                        <figcaption class="absolute -bottom-2 left-1/2 -translate-x-1/2 rounded-lg bg-slate-900 px-3 py-1 text-[.62rem] font-black uppercase leading-none text-white lg:-bottom-3 lg:px-4 lg:py-1.5 lg:text-[.7rem]">
-                            ${escapeDisplay(name)}
-                        </figcaption>
-                    </figure>
-                </aside>
-            `;
-    }
-
-    function normalizeDialogueLine(page, line = {}, index = 0) {
-        const side = String(line.side || '').toLowerCase() === 'right' ? 'right' : 'left';
-        return {
-            index,
-            side,
-            text: String(line.text || line.title || line.sentence || ''),
-            sound: line.sound || line.audio || '',
-            speaker: line.speaker || speakerName(page, side),
-        };
-    }
-
-    function renderConversationPage(page) {
-        const title = page.title || page.page_title || page.sectionTitle || 'Conversation';
-        const instruction = textHtml(page.paragraph || page.description || page.subtitle || page.instruction || '');
-        const dialogues = Array.isArray(page.dialogues)
-            ? page.dialogues.map((line, index) => normalizeDialogueLine(page, line, index)).filter((line) => fieldHasValue(line.text))
-            : [];
-        const encodedDialogues = escapeHtml(JSON.stringify(dialogues));
-        const starterSide = dialogues[0]?.side || 'left';
-
-        function conversationBubble(side) {
-            const sideAlign = side === 'right'
-                ? 'self-end rounded-[1.35rem_1.35rem_.65rem_1.35rem] bg-[#faf5ff] lg:after:right-[-.72rem] lg:after:border-l-[.72rem] lg:after:border-l-slate-900'
-                : 'self-start rounded-[1.35rem_1.35rem_1.35rem_.65rem] bg-[#eef2ff] lg:after:left-[-.72rem] lg:after:border-r-[.72rem] lg:after:border-r-slate-900';
-
-            return `
-                    <div class="pq-conversation-line relative w-full max-w-[34rem] border-2 border-slate-900 px-4 py-3 shadow-[6px_6px_0_rgba(15,23,42,.08)] sm:px-5 sm:py-4 lg:max-w-none lg:pr-[4.9rem] ${sideAlign}" data-conversation-line data-side="${escapeHtml(side)}" ${side === starterSide ? 'data-conversation-starter="true"' : ''}>
-                        <button type="button" class="${ui.audioButton} h-[2.55rem] w-[2.55rem] sm:h-[2.85rem] sm:w-[2.85rem]" data-conversation-toggle data-conversation-bubble-button aria-label="Play full conversation">
-                            <svg class="pq-audio-icon h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <path d="M4.75 9.35v5.3c0 .52.42.95.95.95h3.05l4.58 3.58c.62.49 1.54.04 1.54-.75V5.57c0-.79-.92-1.24-1.54-.75L8.75 8.4H5.7a.95.95 0 0 0-.95.95Z" fill="currentColor"/>
-                                <path d="M17.25 8.4a4.85 4.85 0 0 1 0 7.2M19.55 6.2a8.05 8.05 0 0 1 0 11.6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
-                            </svg>
-                            <span class="pq-audio-wave items-center gap-[2px]" aria-hidden="true">
-                                <span class="block h-4 w-[3px] rounded-full bg-current"></span>
-                                <span class="block h-5 w-[3px] rounded-full bg-current"></span>
-                                <span class="block h-3.5 w-[3px] rounded-full bg-current"></span>
-                            </span>
-                        </button>
-                        <div class="mb-2 inline-flex rounded-full bg-slate-900 px-3 py-1 text-[.66rem] font-black uppercase leading-none text-white" data-conversation-speaker-name>
-                            ${escapeDisplay(speakerName(page, side))}
-                        </div>
-                        <div class="min-h-[1.65rem] text-[clamp(1rem,4vw,1.2rem)] font-black leading-tight text-slate-900 md:text-[1.15rem] xl:text-[1.25rem]">
-                            <span data-conversation-text></span>
-                        </div>
-                    </div>
-                `;
-        }
-
-        return `
-                <article class="is-conversation-idle mx-auto flex min-h-full w-full max-w-[80rem] flex-col justify-center px-1 py-1 text-left sm:px-3 sm:py-3 lg:px-5 lg:py-5 laptop:!justify-start laptop:!py-3 short:!justify-start" data-conversation-page data-conversation-lines="${encodedDialogues}">
-                    <h1 class="sr-only">${escapeDisplay(title)}</h1>
-                    ${instruction ? `<div class="mx-auto mb-4 max-w-[56rem] rounded-2xl border border-[#eceafa] bg-white/75 px-4 py-3 text-sm font-extrabold leading-snug text-[#70748a] sm:px-5 sm:text-base md:text-center">${instruction}</div>` : ''}
-
-                    <div class="mx-auto grid w-full max-w-[74rem] grid-cols-2 items-center gap-3 sm:gap-5 md:gap-8 lg:grid-cols-[minmax(9rem,12rem)_minmax(22rem,1fr)_minmax(9rem,12rem)] lg:gap-5 xl:grid-cols-[minmax(10rem,13rem)_minmax(25rem,1fr)_minmax(10rem,13rem)] xl:gap-7">
-                        ${renderConversationSpeaker(page, 'left')}
-                        ${renderConversationSpeaker(page, 'right')}
-
-                        <section class="col-span-2 mx-auto flex w-full max-w-[42rem] min-w-0 flex-col gap-3 lg:order-2 lg:col-span-1 lg:max-w-none" data-conversation-script>
-                            <div class="flex justify-center pb-1 lg:hidden">
-                                <button type="button" class="${ui.audioButton}" data-conversation-toggle data-conversation-mobile-button aria-label="Play full conversation">
-                                    <svg class="pq-audio-icon h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                        <path d="M4.75 9.35v5.3c0 .52.42.95.95.95h3.05l4.58 3.58c.62.49 1.54.04 1.54-.75V5.57c0-.79-.92-1.24-1.54-.75L8.75 8.4H5.7a.95.95 0 0 0-.95.95Z" fill="currentColor"/>
-                                        <path d="M17.25 8.4a4.85 4.85 0 0 1 0 7.2M19.55 6.2a8.05 8.05 0 0 1 0 11.6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
-                                    </svg>
-                                    <span class="pq-audio-wave items-center gap-[2px]" aria-hidden="true">
-                                        <span class="block h-4 w-[3px] rounded-full bg-current"></span>
-                                        <span class="block h-5 w-[3px] rounded-full bg-current"></span>
-                                        <span class="block h-3.5 w-[3px] rounded-full bg-current"></span>
-                                    </span>
-                                </button>
-                            </div>
-
-                            <div class="flex flex-col gap-3 sm:gap-4" data-conversation-bubbles>
-                                ${conversationBubble('left')}
-                                ${conversationBubble('right')}
-                            </div>
-                        </section>
-                    </div>
-                </article>
-            `;
-    }
-
-    function renderImagePage(page) {
-        const title = page.title || page.question || page.sectionTitle || 'Practice';
-        const paragraph = textHtml(page.paragraph || page.description || '');
-        const image = page.image;
-
-        return `
-            <article class="pq-single-image-layout mx-auto grid min-h-0 w-full max-w-[76rem] items-start gap-[clamp(.95rem,1.75dvh,1.25rem)] px-1 text-left sm:px-3 md:grid-cols-[minmax(15rem,.95fr)_minmax(16rem,1.05fr)] md:gap-7 lg:max-w-[76rem] lg:grid-cols-[minmax(20rem,1fr)_minmax(20rem,.92fr)] lg:items-center lg:gap-10 lg:py-6 xl:max-w-[82rem] xl:gap-10 2xl:grid-cols-[minmax(24rem,1fr)_minmax(22rem,.9fr)] laptop:!max-w-[min(68rem,calc(100vw-5rem))] laptop:!gap-7 laptop:!py-3 short:!max-w-[min(68rem,calc(100vw-5rem))] short:!grid-cols-[minmax(17rem,.9fr)_minmax(17rem,1.1fr)] short:!gap-7 short:!py-[.65rem]" data-audio-scope>
-                <figure class="pq-image-frame pq-single-image-figure aspect-[5/4] w-full justify-self-center overflow-hidden rounded-[1.25rem] border border-[#eceafa] bg-gradient-to-br from-[#eeedff] to-white shadow-[0_14px_34px_rgba(38,35,92,.09)] md:max-h-[30rem] xl:max-h-[34rem] xl:max-w-[36rem] laptop:!max-h-[calc(100dvh-12.5rem)] laptop:!max-w-[31rem] short:!max-h-[calc(100dvh-13rem)] short:!max-w-[28rem] short:!justify-self-end">
-                    ${image ? `<img class="h-full w-full ${contentImageFitClass('feature')} object-center" src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy" decoding="async">` : ''}
-                </figure>
-
-                <div class="min-w-0 pt-[clamp(.24rem,.65dvh,.42rem)] md:self-center md:pt-0">
-                    <div class="flex min-w-0 items-center justify-between gap-4 lg:gap-6">
-                        <h1 class="${ui.title} text-[clamp(2rem,8.8vw,2.9rem)] md:text-[clamp(2.35rem,4vw,3.45rem)] lg:text-[clamp(2.65rem,3.1vw,4rem)] laptop:!text-[clamp(2.2rem,3vw,3.25rem)] short:!text-[clamp(2.1rem,3.6vw,3.3rem)]" data-audio-text>${escapeDisplay(title)}</h1>
-                        ${audioButton(page.audio, `Play ${title}`)}
-                    </div>
-                    ${paragraph ? `<div class="${ui.copy} mt-3 lg:mt-5 lg:text-xl short:!text-base short:!leading-[1.45]" data-audio-copy>${paragraph}</div>` : ''}
-                </div>
-            </article>
-        `;
-    }
-
-    function renderAudioPage(page) {
-        const title = page.title || page.question || page.sectionTitle || 'Practice';
-        const paragraph = textHtml(page.paragraph || page.description || '');
-
-        return `
-                <article class="mx-auto flex w-full max-w-[60rem] flex-col justify-start px-1 py-3 text-left sm:px-3 sm:py-5 lg:justify-center lg:px-7 lg:py-10" data-audio-scope>
-                    <div class="flex items-center justify-between gap-4 lg:gap-7">
-                        <h1 class="${ui.title} text-[clamp(1.85rem,6vw,4.2rem)] lg:text-[clamp(2.75rem,4vw,4.75rem)]" data-audio-text>${escapeDisplay(title)}</h1>
-                        ${audioButton(page.audio, `Play ${title}`)}
-                    </div>
-                    ${paragraph ? `<div class="${ui.copy} mt-4 lg:mt-6 lg:text-xl" data-audio-copy>${paragraph}</div>` : ''}
-                </article>
-            `;
-    }
-
-    function normalizeQuizQuestion(item = {}, index = 0) {
-        const options = Array.isArray(item.options) ? item.options : [];
-        const rawType = String(item.type || '').toLowerCase();
-        const rawCorrect = item.correct_answer ?? item.correctAnswer ?? item.correct ?? item.answer ?? 0;
-        const acceptedRaw = item.accepted_answers ?? item.acceptedAnswers ?? item.accepted ?? item.correct ?? rawCorrect;
-        const acceptedAnswers = (Array.isArray(acceptedRaw) ? acceptedRaw : [acceptedRaw])
-            .filter(fieldHasValue)
-            .map((answer) => String(answer).trim());
-
-        let correctAnswer = Number(rawCorrect);
-
-        if ((!Number.isFinite(correctAnswer) || correctAnswer < 0) && options.length) {
-            const normalizedCorrect = String(rawCorrect ?? '').trim().toLowerCase();
-            correctAnswer = options.findIndex((option) => String(option).trim().toLowerCase() === normalizedCorrect);
-        }
-
-        if (!Number.isFinite(correctAnswer) || correctAnswer < 0) correctAnswer = 0;
-
-        const isInput = rawType === 'input' || (!options.length && acceptedAnswers.length > 0);
-        const questionText = item.prompt || item.question || item.title || `Question ${index + 1}`;
-        const emoji = fieldHasValue(item.emoji) ? String(item.emoji).trim() : '';
-        const image = item.image || item.media_image || item.mediaImage || item.thumbnail || item.poster || '';
-        const audioSrc = item.audio || item.sound || item.media_audio || item.mediaAudio || '';
-
-        return {
-            type: isInput ? 'input' : 'multiple_choice',
-            emoji,
-            image,
-            audio: audioSrc,
-            question: questionText,
-            displayQuestion: emoji ? `${emoji} ${questionText}` : questionText,
-            options,
-            correctAnswer,
-            acceptedAnswers,
-        };
-    }
-
-    function quizQuestionsFrom(page = {}) {
-        if (Array.isArray(page.quiz) && page.quiz.length) {
-            return page.quiz
-                .map(normalizeQuizQuestion)
-                .filter((item) => item.type === 'input' || item.options.length > 1);
-        }
-
-        if (Array.isArray(page.questions) && page.questions.length) {
-            return page.questions
-                .map(normalizeQuizQuestion)
-                .filter((item) => item.type === 'input' || item.options.length > 1);
-        }
-
-        if (Array.isArray(page.options) && page.options.length > 1) {
-            return [normalizeQuizQuestion(page, 0)];
-        }
-
-        return [];
-    }
-
-    function quizMediaHtml(item = {}, options = {}) {
-        if (!options.showMedia) return '';
-
-        const image = item.image || options.mediaImage || '';
-        const emoji = item.emoji || options.mediaEmoji || '';
-        const mediaLabel = item.question || options.title || 'Quiz media';
-        const splitMedia = Boolean(options.splitMedia);
-
-        if (fieldHasValue(image)) {
-            return `
-                    <div class="pq-quiz-media mb-4 aspect-video w-full overflow-hidden rounded-[1.15rem] border border-[#eceafa] bg-[#090910] shadow-[0_16px_36px_rgba(20,18,48,.16)] ring-1 ring-black/5 sm:mb-5 ${splitMedia ? 'lg:mb-0 lg:min-h-[15.5rem] min-[1536px]:min-h-[18rem]' : ''}">
-                        <img class="h-full w-full ${contentImageFitClass('learning')} object-center" src="${escapeHtml(image)}" alt="${escapeHtml(mediaLabel)}" loading="lazy" decoding="async">
-                    </div>
-                `;
-        }
-
-        if (fieldHasValue(emoji)) {
-            return `
-                    <div class="pq-quiz-emoji-media mb-3 flex justify-start sm:mb-4" aria-label="${escapeHtml(mediaLabel)}">
-                        <div class="inline-flex min-h-[3.4rem] max-w-full items-center justify-center rounded-[1rem] border border-[#eceafa] bg-gradient-to-br from-[#f7f6ff] via-white to-[#eef3ff] px-4 py-3 shadow-[0_10px_24px_rgba(91,80,220,.10)] sm:min-h-[3.85rem] sm:px-5 sm:py-3.5 lg:min-h-[4.1rem] lg:px-6">
-                            <span class="text-[clamp(2.05rem,8vw,3.35rem)] leading-none drop-shadow-[0_8px_18px_rgba(91,80,220,.14)]" aria-hidden="true">${escapeHtml(emoji)}</span>
-                        </div>
-                    </div>
-                `;
-        }
-
-        return '';
-    }
-
-    function quizPromptEmojiHtml(item = {}, options = {}) {
-        const emoji = firstEmoji(item.emoji || options.mediaEmoji || '💡✨');
-        const mediaLabel = item.question || options.title || 'Practice prompt';
-
-        return `
-                    <div class="pq-quiz-prompt-emoji mb-3 flex justify-start sm:mb-4 lg:mb-5" aria-label="${escapeHtml(mediaLabel)}">
-                        <div class="inline-flex min-h-[3.55rem] max-w-full items-center justify-center rounded-[1rem] border border-[#eceafa] bg-gradient-to-br from-[#f7f6ff] via-white to-[#eef3ff] px-4 py-3 shadow-[0_10px_24px_rgba(91,80,220,.10)] sm:min-h-[4rem] sm:px-5 lg:min-h-[4.35rem] lg:px-6">
-                            <span class="text-[clamp(2.2rem,8vw,3.6rem)] leading-none drop-shadow-[0_8px_18px_rgba(91,80,220,.14)]" aria-hidden="true">${escapeHtml(emoji)}</span>
-                        </div>
-                    </div>
-                `;
-    }
-
-    function quizAudioPlayerHtml(item = {}) {
-        if (!fieldHasValue(item.audio)) return '';
-
-        return `
-                <div class="mx-auto mb-4 w-full max-w-[56rem] rounded-[1.05rem] border border-[#eceafa] bg-white/88 px-3 py-3 shadow-[0_10px_24px_rgba(38,35,92,.07)] sm:mb-5 sm:px-4 md:px-5 md:py-4 lg:max-w-[52rem]" data-quiz-audio-player data-quiz-audio-scope="${escapeHtml(item.scope || 'question')}" data-audio-src="${escapeHtml(item.audio)}">
-                    <div class="flex items-center gap-3">
-                        <button type="button" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#e3e0fb] bg-[#fbfbff] text-[#554bd2] shadow-[0_8px_18px_rgba(91,80,220,.10)]" data-quiz-audio-back aria-label="Go back 10 seconds">
-                            <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
-                        </button>
-
-                        <button type="button" class="${ui.audioButton} h-[3.15rem] w-[3.15rem]" data-quiz-audio-toggle aria-label="Play question audio">
-                            <svg class="pq-audio-icon h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <path d="M4.75 9.35v5.3c0 .52.42.95.95.95h3.05l4.58 3.58c.62.49 1.54.04 1.54-.75V5.57c0-.79-.92-1.24-1.54-.75L8.75 8.4H5.7a.95.95 0 0 0-.95.95Z" fill="currentColor"/>
-                                <path d="M17.25 8.4a4.85 4.85 0 0 1 0 7.2M19.55 6.2a8.05 8.05 0 0 1 0 11.6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
-                            </svg>
-                            <span class="pq-audio-wave items-center gap-[2px]" aria-hidden="true">
-                                <span class="block h-4 w-[3px] rounded-full bg-current"></span>
-                                <span class="block h-5 w-[3px] rounded-full bg-current"></span>
-                                <span class="block h-3.5 w-[3px] rounded-full bg-current"></span>
-                            </span>
-                        </button>
-
-                        <button type="button" class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#e3e0fb] bg-[#fbfbff] text-[#554bd2] shadow-[0_8px_18px_rgba(91,80,220,.10)]" data-quiz-audio-forward aria-label="Go forward 10 seconds">
-                            <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
-                        </button>
-
-                        <div class="min-w-0 flex-1">
-                            <div class="relative h-2 cursor-pointer overflow-hidden rounded-full bg-[#eceafd]" data-quiz-audio-track aria-label="Audio progress">
-                                <div class="h-full w-0 rounded-full bg-gradient-to-r from-[#7c7ff6] to-[#ff8a7a] transition-[width] duration-100" data-quiz-audio-fill></div>
-                            </div>
-                            <div class="mt-1 flex justify-between text-[.68rem] font-black tabular-nums text-[#70748a]">
-                                <span data-quiz-audio-current>00:00</span>
-                                <span data-quiz-audio-total>00:00</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-    }
-
-    function renderQuizBlock(items, options = {}) {
-        const questions = items
-            .map(normalizeQuizQuestion)
-            .filter((item) => item.type === 'input' || item.options.length > 1);
-
-        if (!questions.length) return '';
-
-        const showTitle = Boolean(options.showTitle);
-        const title = fieldHasValue(options.title) ? options.title : '';
-        const sharedAudio = options.sharedAudio || '';
-        const hasImageMedia = questions.some((item) => fieldHasValue(item.image)) || fieldHasValue(options.mediaImage);
-        const isVideoMode = Boolean(options.videoMode);
-        const sectionWidth = isVideoMode
-            ? 'max-w-[42rem] min-[1280px]:max-w-[18rem] min-[1536px]:max-w-[24rem] short:!max-w-[18rem]'
-            : (hasImageMedia ? 'max-w-[76rem]' : 'max-w-[60rem]');
-
-        return `
-                <section class="pq-quiz-block mx-auto w-full ${sectionWidth} text-left" data-quiz-block>
-                    ${showTitle ? `<h1 class="${ui.title} mb-4 text-[clamp(1.65rem,5.5vw,2.45rem)] lg:mb-6 lg:text-[2.65rem]">${escapeDisplay(title)}</h1>` : ''}
-                    ${questions.map((item, questionIndex) => {
-            const imageSrc = item.image || options.mediaImage || '';
-            const hasQuestionAudio = fieldHasValue(item.audio);
-            const splitMedia = options.showMedia && fieldHasValue(imageSrc) && !fieldHasValue(item.audio);
-            const hasSharedAudio = fieldHasValue(sharedAudio);
-            const shouldShowPromptEmoji = !isVideoMode && options.showMedia && !fieldHasValue(imageSrc) && !hasQuestionAudio && !hasSharedAudio;
-            const mediaHtml = hasQuestionAudio
-                ? quizAudioPlayerHtml(item)
-                : shouldShowPromptEmoji
-                    ? ''
-                    : quizMediaHtml(item, {...options, splitMedia});
-            const promptEmojiHtml = shouldShowPromptEmoji ? quizPromptEmojiHtml(item, options) : '';
-            const sharedAudioHtml = !hasQuestionAudio && hasSharedAudio
-                ? quizAudioPlayerHtml({audio: sharedAudio, scope: 'page'})
-                : '';
-            const contentClass = splitMedia ? 'min-w-0 lg:self-center' : '';
-            const layoutClass = splitMedia
-                ? 'mx-auto max-w-[58rem] lg:grid lg:grid-cols-[minmax(22rem,1fr)_minmax(18rem,.8fr)] lg:items-center lg:gap-6 min-[1536px]:max-w-[64rem] min-[1536px]:grid-cols-[minmax(26rem,1fr)_minmax(20rem,.78fr)] min-[1536px]:gap-8'
-                : '';
-            const questionClass = isVideoMode
-                ? 'pq-quiz-question ' + ui.title + ' mb-3 text-[clamp(1.08rem,4.7vw,1.28rem)] leading-[1.08] tracking-[-.035em] min-[1280px]:text-[clamp(1.2rem,1.55vw,1.65rem)] min-[1536px]:text-[1.8rem] short:!mb-2 short:!text-[clamp(1rem,1.55vw,1.22rem)]'
-                : splitMedia
-                    ? 'pq-quiz-question ' + ui.title + ' mb-4 text-[clamp(1.55rem,4.8vw,2.15rem)] leading-[1.05] sm:mb-5 lg:mb-4 lg:text-[2.2rem]'
-                    : 'pq-quiz-question ' + ui.title + ' mb-4 text-[clamp(1.45rem,5.8vw,2.05rem)] sm:mb-5 lg:text-[2.15rem]';
-            const optionGridClass = isVideoMode
-                ? 'grid grid-cols-1 gap-[.48rem]'
-                : splitMedia
-                    ? 'grid grid-cols-1 gap-3 lg:gap-3.5'
-                    : 'grid grid-cols-1 gap-2.5 sm:gap-3 lg:gap-4';
-            const optionClass = isVideoMode ? ui.videoOption : ui.option;
-
-            return `
-                        <article
-                            class="pq-quiz-item ${questionIndex === 0 ? 'is-current' : ''}"
-                            data-quiz-item
-                            data-quiz-index="${questionIndex}"
-                            data-quiz-type="${escapeHtml(item.type)}"
-                            data-correct-answer="${escapeHtml(item.correctAnswer)}"
-                            data-accepted-answers="${escapeHtml(JSON.stringify(item.acceptedAnswers))}"
-                        >
-                            <div class="${layoutClass}">
-                                ${splitMedia ? `
-                                    <div class="min-w-0">
-                                        <h2 class="${questionClass}">${escapeDisplay(item.question)}</h2>
-                                        ${sharedAudioHtml}
-                                        ${mediaHtml}
-                                    </div>
-                                ` : ''}
-                                <div class="${contentClass}">
-                                    ${promptEmojiHtml}
-                                    ${splitMedia ? '' : `<h2 class="${questionClass}">${escapeDisplay(item.question)}</h2>`}
-                                    ${!splitMedia ? sharedAudioHtml : ''}
-                                    ${!splitMedia ? mediaHtml : ''}
-                                    ${item.type === 'input' ? `
-                                        <div class="grid gap-3">
-                                            <input
-                                                type="text"
-                                                class="min-h-[3rem] w-full rounded-[.95rem] border-2 border-[#eceafa] bg-white px-4 text-[1rem] font-black text-[#242538] shadow-[0_4px_0_rgba(102,93,232,.06)] outline-none placeholder:text-[#b8b8c9] focus:border-[#766cff] focus:ring-4 focus:ring-[#766cff]/10 lg:min-h-[3.35rem]"
-                                                data-quiz-input
-                                                placeholder="Type your answer..."
-                                                autocomplete="off"
-                                            >
-                                            <button type="button" class="pq-action-button relative flex min-h-[2.95rem] items-center justify-center gap-2 overflow-hidden rounded-[1rem] border border-transparent bg-gradient-to-br from-[#546be6] via-[#6258e4] to-[#6b4ed5] px-4 text-[.9rem] font-extrabold text-white shadow-[0_12px_28px_rgba(91,80,220,.24)] hover:from-[#4f63dc] hover:via-[#5b51d8] hover:to-[#6046c8] lg:min-h-[3.25rem]" data-quiz-submit>
-                                                Check
-                                                <i class="fa-solid fa-check" aria-hidden="true"></i>
-                                            </button>
-                                            <p class="hidden text-sm font-black" data-quiz-feedback></p>
-                                        </div>
-                                    ` : `
-                                        <div class="${optionGridClass}" role="group" aria-label="${escapeHtml(item.question)}">
-                                            ${item.options.map((option, optionIndex) => {
-                return `<button type="button" class="${optionClass}" data-quiz-option data-option-index="${optionIndex}">${escapeDisplay(option)}</button>`;
-            }).join('')}
-                                        </div>
-                                    `}
-                                </div>
-                            </div>
-                        </article>
-                    `;
-        }).join('')}
-                    <div class="hidden rounded-[1.25rem] border border-[#eceafa] bg-gradient-to-br from-white via-[#fbfbff] to-[#f3f1ff] px-5 py-8 text-center shadow-[0_14px_32px_rgba(91,80,220,.10)] sm:px-7 lg:px-10 lg:py-12" data-quiz-complete>
-                        <div class="text-[clamp(3rem,16vw,5.5rem)] leading-none" aria-hidden="true">🎉</div>
-                        <h2 class="${ui.title} mt-3 text-[clamp(1.6rem,6vw,2.35rem)]">Nice work!</h2>
-                        <p class="mx-auto mt-2 max-w-md text-[clamp(.95rem,3.8vw,1.1rem)] font-extrabold leading-snug text-[#70748a]">You finished this practice</p>
-                    </div>
-                </section>
-            `;
-    }
-
-    function renderQuizPage(page) {
-        const title = fieldHasValue(page.title) ? page.title : '';
-        const mediaImage = page.image || page.media_image || page.mediaImage || page.thumbnail || '';
-        const mediaEmoji = page.emoji || page.emojis || '';
-
-        return `
-            <article class="mx-auto flex min-h-full w-full max-w-[72rem] flex-col justify-center px-1 py-2 text-left sm:px-3 sm:py-5 lg:px-5 lg:py-6 laptop:justify-start laptop:py-3 short:justify-start short:py-2">
-                ${renderQuizBlock(quizQuestionsFrom(page), {
-            showTitle: fieldHasValue(title),
-            title,
-            showMedia: true,
-            mediaImage,
-            mediaEmoji,
-            sharedAudio: page.audio || page.sound || page.media_audio || page.mediaAudio || '',
-        })}
-            </article>
-        `;
-    }
-
-    function transcriptHtml(script = []) {
-        if (!Array.isArray(script) || !script.length) return '';
-
-        return `
-                <div class="pq-transcript-shell overflow-hidden rounded-b-[1.05rem] border border-t-0 border-[#e4e1fb] bg-[#f7f6ff]" data-transcript-shell>
-                    <button type="button" class="flex min-h-[2.35rem] w-full items-center justify-between gap-3 px-3 py-1.5 text-left text-[.82rem] font-black text-[#7168ee]" data-transcript-toggle>
-                        <span class="inline-flex items-center gap-2">
-                            <i class="fa-regular fa-closed-captioning text-[.86rem]" aria-hidden="true"></i>
-                            <span data-transcript-label>Show transcript</span>
-                        </span>
-                        <i class="fa-solid fa-chevron-down" data-transcript-icon aria-hidden="true"></i>
-                    </button>
-                    <div class="pq-transcript-panel hidden max-h-[6.06rem] overflow-y-auto overflow-x-hidden bg-white/80 short:!max-h-[5.85rem]" data-transcript-panel>
-                        ${script.map((line) => {
-            const text = line.text || line.caption || '';
-            const start = Number(line.start ?? 0);
-            const end = Number(line.end ?? 0);
-            return `
-                                <button type="button" class="pq-transcript-row grid min-h-[2.02rem] w-full grid-cols-[2.4rem_minmax(0,1fr)_auto] items-center gap-[.38rem] border-t border-[#eeeafa] px-[.68rem] py-[.34rem] text-left short:!min-h-[1.95rem] short:!py-[.28rem]" data-transcript-row data-transcript-start="${escapeHtml(start)}" data-transcript-end="${escapeHtml(end)}">
-                                    <span class="pq-transcript-time text-[.7rem] font-black text-[#766cff]">${formatTime(start)}</span>
-                                    <p class="pq-transcript-text line-clamp-1 text-[.76rem] font-bold leading-[1.16] text-[#777b90]">${escapeDisplay(text)}</p>
-                                    <span class="pq-transcript-chevron text-[#b7b3ce]" aria-hidden="true">›</span>
-                                </button>
-                            `;
-        }).join('')}
-                    </div>
-                </div>
-            `;
-    }
-
-    function transcriptLinesFrom(page = {}) {
-        if (Array.isArray(page.script) && page.script.length) return page.script;
-        if (Array.isArray(page.subtitles) && page.subtitles.length) return page.subtitles;
-        if (Array.isArray(page.transcript) && page.transcript.length) return page.transcript;
-        return [];
-    }
-
-    function renderShortVideoPage(page) {
-        const video = page.video;
-        const title = fieldHasValue(page.title) ? page.title : (fieldHasValue(page.page_title) ? page.page_title : 'Short video');
-        const thumbnail = page.thumbnail || page.poster || '';
-        const captionLines = transcriptLinesFrom(page);
-        const captionPayload = escapeHtml(JSON.stringify(captionLines));
-        const showCc = flagIsEnabled(page.showCC ?? page.showCc ?? page.cc);
-        const videoId = `passingQuestionVideo-${++videoInstanceId}`;
-
-        return `
-                <article class="mx-auto grid h-full min-h-0 w-full place-items-center overflow-hidden px-0 py-1" data-short-video-page data-video-show-cc="${showCc ? 'true' : 'false'}">
-                    <h1 class="sr-only">${escapeDisplay(title)}</h1>
-
-                    <div class="pq-short-video-stage grid h-full min-h-0 w-full place-items-center overflow-hidden">
-                        <div class="pq-video-wrap pq-short-video-wrap pq-short-video-shell relative isolate aspect-[9/16] h-[min(100%,calc(100dvh-12.5rem),50rem)] max-h-full max-w-[min(100%,28rem)] laptop:!h-[min(100%,calc(100dvh-13rem),34rem)] laptop:!max-w-[min(100%,21rem)] short:!h-[min(100%,calc(100dvh-13.25rem),31rem)] short:!max-w-[min(100%,19rem)] overflow-hidden rounded-[1.75rem] bg-[#090910] shadow-[0_24px_60px_rgba(20,18,48,.22)] ring-1 ring-black/5 max-[767px]:h-[min(100%,calc(100dvh-10.75rem),38rem)] max-[767px]:max-w-[min(100%,22rem)]" data-video-captions="${captionPayload}">
-                            <video
-                                id="${videoId}"
-                                class="video-js vjs-default-skin h-full w-full bg-black object-contain"
-                                controls
-                                playsinline
-                                webkit-playsinline
-                                preload="auto"
-                                disablePictureInPicture
-                                controlsList="nodownload noremoteplayback noplaybackrate"
-                                ${fieldHasValue(thumbnail) ? `poster="${escapeHtml(thumbnail)}"` : ''}
-                                data-video-src="${escapeHtml(video)}"
-                            >
-                                <source src="${escapeHtml(video)}" type="${mediaType(video)}">
-                            </video>
-                            <div class="pq-video-caption-overlay pointer-events-none absolute left-1/2 bottom-[clamp(2.25rem,8%,4.75rem)] z-[80] flex w-[min(88%,22rem)] -translate-x-1/2 justify-center text-center" data-video-caption-overlay aria-live="polite" aria-hidden="true">
-                                <span class="pq-video-caption-text inline-block max-w-full rounded-[.62rem] border border-white/10 bg-slate-950/85 px-[.58rem] py-[.34rem] text-[clamp(.72rem,3.1vw,.9rem)] font-extrabold leading-[1.25] text-white opacity-0 shadow-[0_10px_28px_rgba(0,0,0,.3)] backdrop-blur-md transition duration-300 [transform:translateY(10px)_scale(.96)]" data-video-caption-text></span>
-                            </div>
-
-                            ${fieldHasValue(thumbnail) ? `
-                                <button type="button" class="pq-short-video-overlay absolute inset-0 z-[4] flex cursor-pointer flex-col items-center justify-center gap-[.78rem] border-0 bg-[rgba(8,8,18,.22)] text-white transition-opacity duration-200" data-short-video-overlay aria-label="Tap to play short video">
-                                    <img class="absolute inset-0 -z-[2] h-full w-full scale-[1.045] object-cover blur-[1.6px] brightness-[.7]" src="${escapeHtml(thumbnail)}" alt="" loading="lazy" decoding="async" aria-hidden="true">
-                                    <span class="absolute inset-0 -z-[1] bg-[linear-gradient(180deg,rgba(5,5,14,.18),rgba(5,5,14,.34))]" aria-hidden="true"></span>
-                                    <span class="pq-short-play-circle grid h-[5.05rem] w-[5.05rem] place-items-center rounded-full border-2 border-white/60 bg-white/15 shadow-[0_18px_46px_rgba(0,0,0,.26)] backdrop-blur">
-                                        <i class="fa-solid fa-play ml-1 text-3xl text-white"></i>
-                                    </span>
-                                    <span class="text-base font-black text-white drop-shadow-[0_2px_10px_rgba(0,0,0,.45)]">Tap to Play</span>
-                                </button>
-                            ` : ''}
-
-                            <p class="hidden bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800" data-video-status></p>
-                        </div>
-                    </div>
-                </article>
-            `;
-    }
-
-    function renderVideoPage(page) {
-        const video = page.video;
-        const title = fieldHasValue(page.title) ? page.title : (fieldHasValue(page.page_title) ? page.page_title : '');
-        const description = textHtml(page.paragraph || page.description || page.subtitle || '');
-        const captionLines = transcriptLinesFrom(page);
-        const captionPayload = escapeHtml(JSON.stringify(captionLines));
-        const headingHtml = (fieldHasValue(title) || description)
-            ? `<div class="mb-3 sm:mb-4 lg:mb-5">
-                    ${fieldHasValue(title) ? `<h1 class="${ui.title} text-[clamp(1.55rem,5.6vw,2.2rem)] lg:text-[2.55rem]">${escapeDisplay(title)}</h1>` : ''}
-                    ${description ? `<div class="${ui.copy} mt-2 text-[clamp(.92rem,3.7vw,1.05rem)] lg:text-lg">${description}</div>` : ''}
-                </div>`
-            : '';
-        const quizHtml = renderQuizBlock(quizQuestionsFrom(page), {showTitle: false, videoMode: true});
-        const hasQuizArea = fieldHasValue(quizHtml);
-        const articleWidth = hasQuizArea
-            ? 'max-w-[100rem] short:!max-w-[min(100%,90rem)]'
-            : 'max-w-[76rem] min-[1536px]:max-w-[82rem] short:!max-w-[min(100%,68rem)]';
-        const contentLayout = hasQuizArea
-            ? 'pq-video-inner-layout flex min-h-0 flex-col gap-5 sm:gap-5 min-[1280px]:grid min-[1280px]:grid-cols-[minmax(0,1fr)_minmax(12rem,15.5rem)] min-[1280px]:items-start min-[1280px]:gap-4 min-[1536px]:grid-cols-[minmax(0,1fr)_minmax(18rem,24rem)] min-[1536px]:gap-6 2xl:grid-cols-[minmax(0,1fr)_minmax(20rem,25rem)] short:!gap-4'
-            : 'pq-video-inner-layout flex flex-col';
-        const videoPageState = hasQuizArea ? 'pq-video-has-quiz' : 'pq-video-no-quiz';
-        const showCc = flagIsEnabled(page.showCC ?? page.showCc ?? page.cc);
-        const videoId = `passingQuestionVideo-${++videoInstanceId}`;
-
-        return `
-                <article class="pq-mobile-video-card pq-video-page-layout ${videoPageState} mx-auto flex h-full min-h-0 w-full ${articleWidth} flex-col px-1 text-left sm:px-3 lg:px-5" data-video-page data-video-show-cc="${showCc ? 'true' : 'false'}">
-                    ${headingHtml}
-                    <div class="${contentLayout}">
-                        <div class="pq-video-main-column w-full min-h-0 shrink-0 sm:mx-auto sm:max-w-[86rem] min-[1280px]:mx-0 min-[1280px]:max-w-none">
-                            <div class="pq-video-wrap relative aspect-video w-full max-h-[calc(100dvh-13rem)] overflow-hidden rounded-t-[1.05rem] bg-[#090910] shadow-[0_14px_30px_rgba(20,18,48,.16)] ring-1 ring-black/5 max-[520px]:max-h-[min(31dvh,15.8rem)] short:!max-h-[calc(100dvh-13rem)] lg:rounded-t-[1.25rem]" data-video-captions="${captionPayload}">
-                                <video
-                                    id="${videoId}"
-                                    class="video-js vjs-default-skin h-full w-full bg-black object-contain"
-                                    controls
-                                    playsinline
-                                    webkit-playsinline
-                                    preload="auto"
-                                    disablePictureInPicture
-                                    controlsList="nodownload noremoteplayback noplaybackrate"
-                                    ${fieldHasValue(page.thumbnail) ? `poster="${escapeHtml(page.thumbnail)}"` : ''}
-                                    data-video-src="${escapeHtml(video)}"
-                                >
-                                    <source src="${escapeHtml(video)}" type="${mediaType(video)}">
-                                </video>
-                                <div class="pq-video-caption-overlay pointer-events-none absolute left-1/2 bottom-[clamp(.8rem,4%,1.75rem)] z-[80] flex w-[min(90%,54rem)] -translate-x-1/2 justify-center text-center" data-video-caption-overlay aria-live="polite" aria-hidden="true">
-                                    <span class="pq-video-caption-text inline-block max-w-full rounded-[.68rem] border border-white/10 bg-slate-950/85 px-[.62rem] py-[.42rem] text-[clamp(.74rem,3vw,.94rem)] font-extrabold leading-[1.25] text-white opacity-0 shadow-[0_10px_28px_rgba(0,0,0,.3)] backdrop-blur-md transition duration-300 [transform:translateY(10px)_scale(.96)] lg:rounded-[.78rem] lg:px-[.78rem] lg:py-[.48rem] lg:text-[clamp(.82rem,1.05vw,1.04rem)]" data-video-caption-text></span>
-                                </div>
-                                <p class="hidden bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800" data-video-status></p>
-                            </div>
-                            ${transcriptHtml(captionLines)}
-                        </div>
-
-                        ${hasQuizArea ? `
-                            <div class="pq-video-side-column w-full min-h-0 shrink-0 sm:mx-auto sm:max-w-[72rem] min-[1280px]:mx-0 min-[1280px]:max-w-[15.5rem] min-[1536px]:max-w-[24rem] 2xl:max-w-[25rem] short:!max-w-[18.5rem]">
-                                ${quizHtml}
-                            </div>
-                        ` : ''}
-                    </div>
-                </article>
-            `;
-    }
-
     function renderTitlePage(page) {
-        const title = fieldHasValue(page.title) ? page.title : (fieldHasValue(page.question) ? page.question : '');
+        const title = fieldHasValue(page.title)
+            ? page.title
+            : fieldHasValue(page.question)
+                ? page.question
+                : fieldHasValue(page.sectionTitle)
+                    ? page.sectionTitle
+                    : '';
         const paragraph = textHtml(page.paragraph || page.description || '');
+        const levelMatch = String(title).trim().match(/^A1\s+(Beginner|Intermediate|Advanced)$/i);
+
+        if (levelMatch) {
+            const levelName = levelMatch[1];
+            const levelCopy = {
+                Beginner: 'Start with everyday words, simple listening, and the phrases you will use right away.',
+                Intermediate: 'You finished the beginner stage. Now practise longer phrases, real conversations, and stronger listening.',
+                Advanced: 'You are ready for richer vocabulary, faster listening, and more confident speaking practice.',
+            };
+            const levelTone = {
+                Beginner: {
+                    eyebrow: 'from-[#6f73ea] to-[#554bd2]',
+                    glow: 'bg-[#766cff]/14',
+                    accent: 'text-[#554bd2]',
+                },
+                Intermediate: {
+                    eyebrow: 'from-[#5d7cf6] to-[#665de8]',
+                    glow: 'bg-[#6f73ea]/14',
+                    accent: 'text-[#554bd2]',
+                },
+                Advanced: {
+                    eyebrow: 'from-[#665de8] to-[#ff8a4f]',
+                    glow: 'bg-[#ff8a4f]/16',
+                    accent: 'text-[#d9602f]',
+                },
+            }[levelName] || {
+                eyebrow: 'from-[#6f73ea] to-[#554bd2]',
+                glow: 'bg-[#766cff]/14',
+                accent: 'text-[#554bd2]',
+            };
+            const copy = paragraph || `<p>${escapeHtml(levelCopy[levelName] || 'Get ready for the next stage of practice.')}</p>`;
+
+            return `
+                <article class="mx-auto flex min-h-full w-full max-w-[78rem] flex-col justify-center px-2 py-4 text-center sm:px-4 lg:px-8">
+                    <div class="relative mx-auto w-full overflow-hidden py-8 sm:py-10 lg:py-14">
+                        <div class="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full ${levelTone.glow} blur-3xl"></div>
+                        <div class="relative mx-auto mb-5 grid h-20 w-20 place-items-center rounded-[1.35rem] bg-gradient-to-br ${levelTone.eyebrow} text-white shadow-[0_18px_42px_rgba(91,80,220,.22)] sm:h-24 sm:w-24 sm:rounded-[1.65rem]">
+                            <span class="text-[1.75rem] font-bold leading-none sm:text-[2.15rem]">A1</span>
+                        </div>
+                        <p class="relative mx-auto mb-3 w-fit rounded-full border border-[#dfdcff] bg-white/82 px-4 py-2 text-sm font-bold text-[#665de8] shadow-[0_10px_24px_rgba(91,80,220,.08)]">
+                            Level unlocked
+                        </p>
+                        <h1 class="${ui.title} relative mx-auto max-w-[52rem] text-[clamp(2.35rem,9vw,5.2rem)] leading-[.98]">
+                            ${escapeDisplay(title)}
+                        </h1>
+                        <div class="relative mx-auto mt-5 max-w-[44rem] text-[clamp(1rem,3.8vw,1.22rem)] font-semibold leading-[1.58] text-[#70748a]">
+                            ${copy}
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
 
         return `
                 <article class="mx-auto w-full max-w-[60rem] px-1 py-3 text-left sm:px-3 sm:py-5 lg:px-7 lg:py-10">
@@ -2027,9 +1352,11 @@ $appData = [
             `;
     }
 
+    // Selects the right renderer for each page type.
+    // SECTION: Render dispatcher and card layout state management.
     function renderPageContent(page) {
         if (!page) {
-            return `<article class="w-full p-6 text-center"><h1 class="text-2xl font-black text-[#191a2b]">No questions found.</h1></article>`;
+            return `<article class="w-full p-6 text-center"><h1 class="text-2xl font-bold text-[#191a2b]">No questions found.</h1></article>`;
         }
 
         switch (page.type) {
@@ -2045,6 +1372,11 @@ $appData = [
                 return renderVideoPage(page);
             case 'quiz':
                 return renderQuizPage(page);
+            case 'revision':
+            case 'test':
+                return renderAssessmentPage(page);
+            case 'practice':
+                return renderPracticePage(page);
             case 'audio':
                 return renderAudioPage(page);
             default:
@@ -2059,51 +1391,128 @@ $appData = [
         els.card.classList.toggle('is-short-video-card', page?.type === 'short-video');
         els.card.classList.toggle('is-image-conversation-page', page?.type === 'image-conversation');
 
-        const shouldCenterOnDesktop = ['image', 'audio', 'short-video', 'title'].includes(page?.type);
+        const groupItems = Array.isArray(page?.items) ? page.items : [];
+        const isSmallImageGroup = page?.type === 'group'
+            && groupItems.length > 0
+            && groupItems.length <= 6
+            && groupItems.some((item) => hasImage(item));
+        const shouldCenterOnDesktop = ['image', 'audio', 'short-video', 'title', 'quiz', 'practice'].includes(page?.type) || isSmallImageGroup;
         const isVideoPage = page?.type === 'video';
         const isConversationPage = page?.type === 'image-conversation';
+        const isQuizLikePage = ['quiz', 'practice'].includes(page?.type);
+        const centerClass = page?.type === 'image'
+            ? 'justify-start lg:justify-center'
+            : shouldCenterOnDesktop ? 'justify-start md:justify-center' : 'justify-start';
 
         els.content.className = [
-            'h-full min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain',
-            'pt-[clamp(.58rem,1.15dvh,.9rem)] pr-1 pb-3 touch-pan-y',
+            'flex h-full min-h-0 flex-col overflow-y-auto overflow-x-hidden overscroll-contain',
+            'pt-[clamp(.58rem,1.15dvh,.9rem)] pr-1 pb-3 touch-pan-y max-[520px]:!pt-[.55rem] max-[520px]:!pb-[.65rem]',
             'sm:pt-4 sm:pr-2 md:px-1 md:pb-4 lg:px-3 lg:pt-5 xl:px-4',
             'laptop:!pt-3 laptop:!px-2 laptop:!pb-3 short:!py-[.45rem]',
-            shouldCenterOnDesktop ? 'pq-center-content' : '',
+            isQuizLikePage ? 'pq-quiz-content max-[520px]:!pt-5' : '',
+            centerClass,
             isVideoPage ? 'pq-video-content' : '',
             isConversationPage ? 'pq-conversation-content' : '',
         ].filter(Boolean).join(' ');
     }
 
+    function counterDisplayHtml() {
+        const label = pages.length ? `${pageIndex + 1} / ${pages.length}` : '0 / 0';
+        return `
+            <button type="button" class="group inline-flex min-h-full w-full cursor-pointer items-center justify-center gap-1.5 rounded-full px-0 text-inherit outline-none transition hover:text-[#554bd2] focus-visible:ring-4 focus-visible:ring-[#766cff]/15" data-page-counter-button aria-label="Jump to slide. Current slide ${pageIndex + 1} of ${pages.length}" title="Jump to slide">
+                <span>${escapeDisplay(label)}</span>
+                <i class="fa-solid fa-pen-to-square text-[.78rem] opacity-75 transition group-hover:opacity-100 sm:text-[.86rem]" aria-hidden="true"></i>
+            </button>
+        `;
+    }
+
+    function showCounterInput() {
+        if (!els.counter || !pages.length) return;
+
+        els.counter.innerHTML = `
+            <input
+                type="number"
+                min="1"
+                max="${pages.length}"
+                value="${pageIndex + 1}"
+                class="h-[1.7rem] w-[4.5rem] rounded-full border-0 bg-transparent px-1 text-center text-inherit outline-none sm:h-[2rem] sm:w-[5.25rem]"
+                data-page-counter-input
+                aria-label="Slide number"
+            >
+        `;
+
+        const input = els.counter.querySelector('[data-page-counter-input]');
+        input?.focus();
+        input?.select();
+    }
+
+    function restoreCounterDisplay() {
+        if (!els.counter) return;
+        els.counter.innerHTML = counterDisplayHtml();
+    }
+
+    function commitCounterInput(input) {
+        if (!input) {
+            restoreCounterDisplay();
+            return;
+        }
+
+        if (input.dataset.committed === 'true') return;
+        input.dataset.committed = 'true';
+
+        const requested = Number(input.value);
+        if (!Number.isFinite(requested)) {
+            restoreCounterDisplay();
+            return;
+        }
+
+        const nextIndex = Math.max(0, Math.min(pages.length - 1, Math.round(requested) - 1));
+        restoreCounterDisplay();
+        goTo(nextIndex);
+    }
+
     function updateHeader(page) {
         els.sectionName.textContent = displayText(page?.sectionTitle || 'Practice');
-        els.counter.textContent = pages.length ? `${pageIndex + 1} / ${pages.length}` : '0 / 0';
+        restoreCounterDisplay();
         const progress = pages.length ? ((pageIndex + 1) / pages.length) * 100 : 0;
         els.progress.style.width = `${progress}%`;
         if (els.progressTrack) {
+            const progressLocked = typeof isCurrentAssessment === 'function' && isCurrentAssessment(page);
             els.progressTrack.setAttribute('aria-valuemin', '1');
             els.progressTrack.setAttribute('aria-valuemax', String(Math.max(1, pages.length)));
             els.progressTrack.setAttribute('aria-valuenow', String(pages.length ? pageIndex + 1 : 1));
             els.progressTrack.setAttribute('aria-valuetext', pages.length ? `Page ${pageIndex + 1} of ${pages.length}` : 'No pages');
-            els.progressTrack.setAttribute('title', pages.length ? 'Click the progress bar to jump to a page' : 'No pages');
+            els.progressTrack.setAttribute('aria-disabled', progressLocked ? 'true' : 'false');
+            els.progressTrack.setAttribute('title', progressLocked ? 'Progress is locked during this test/revision step' : (pages.length ? 'Click the progress bar to jump to a page' : 'No pages'));
         }
+        updateLevelMarkers();
         els.previous.disabled = pageIndex <= 0;
         els.next.disabled = pageIndex >= pages.length - 1;
     }
 
     function render({animate = false} = {}) {
         const page = currentPage();
+        saveLastSlideIndex();
         cleanupMedia();
+        syncExternalMenuSpace();
         applyPageClass(page);
         updateHeader(page);
+        syncAssessmentMode(page);
         els.content.innerHTML = renderPageContent(page);
+        els.content.scrollTop = 0;
+        els.content.scrollLeft = 0;
 
         bindAudioButtons();
         bindConversationInteractions();
         bindQuizAudioPlayers();
         bindQuizInteractions();
         bindTranscriptInteractions();
+        bindAssessmentInteractions();
+        syncShortVideoSize();
         setupVideoPlayer();
         bindShortVideoOverlay();
+        bindShortVideoCenterToggle();
+        requestPageFrame(syncShortVideoSize);
         autoplayCurrentPageMedia();
 
         if (animate) {
@@ -2124,11 +1533,13 @@ $appData = [
         els.card.classList.add('is-page-transitioning', 'pointer-events-none');
         window.setTimeout(() => {
             pageIndex = nextIndex;
+            saveLastSlideIndex();
             els.card.classList.remove('is-page-transitioning', 'pointer-events-none');
             render({animate: true});
         }, 170);
     }
 
+    // SECTION: Media cleanup for videos, audio, quiz audio, conversation audio, and effects.
     function stopVideoPlayer() {
         const player = videoJsPlayer;
 
@@ -2145,6 +1556,7 @@ $appData = [
                     player.dispose();
                 }
             } catch (error) {
+                reportError(error, 'Video.js player cleanup failed');
             }
 
             videoJsPlayer = null;
@@ -2162,6 +1574,7 @@ $appData = [
                     }
                 });
             } catch (error) {
+                reportError(error, 'Stale Video.js player cleanup failed');
             }
         }
 
@@ -2173,14 +1586,38 @@ $appData = [
                 video.querySelectorAll('source').forEach((source) => source.removeAttribute('src'));
                 video.load();
             } catch (error) {
+                reportError(error, 'Native video cleanup failed');
             }
         });
     }
 
+    function disposeQuizAudioPlayers() {
+        els.content.querySelectorAll('[data-quiz-audio-player]').forEach((player) => {
+            const media = player.pqAudio;
+            if (!media) return;
+
+            try {
+                media.pause();
+                media.removeAttribute('src');
+                media.load();
+            } catch (error) {
+                reportError(error, 'Quiz audio cleanup failed');
+            }
+
+            player.pqAudio = null;
+        });
+    }
+
+    // Stops page-specific media before rendering another page.
     function cleanupMedia() {
+        clearPageLifecycle();
+        window.clearTimeout(revealTimer);
+        els.card?.classList?.remove('is-revealing', 'is-page-transitioning', 'pointer-events-none');
+        stopAssessmentRecording();
         stopConversation(true);
         stopAudio();
         stopQuizAudio(true);
+        disposeQuizAudioPlayers();
         stopPracticeSfx();
         stopVideoPlayer();
     }
@@ -2191,6 +1628,7 @@ $appData = [
                 audio.pause();
                 audio.currentTime = 0;
             } catch (error) {
+                reportError(error, 'Audio cleanup failed');
             }
         }
 
@@ -2261,6 +1699,10 @@ $appData = [
     function startTextReveal(scope, mediaAudio) {
         stopTextReveal(true);
 
+        if (scope?.hasAttribute?.('data-static-audio-text')) {
+            return;
+        }
+
         const targets = rememberTextTargets(scope);
         if (!scope || !targets.length) return;
 
@@ -2318,6 +1760,7 @@ $appData = [
         activeTextReveal.frameId = window.requestAnimationFrame(draw);
     }
 
+    // SECTION: Standard audio playback and text reveal behavior.
     async function playAudioButton(button) {
         if (!button) return;
 
@@ -2349,16 +1792,18 @@ $appData = [
         try {
             await audio.play();
         } catch (error) {
+            reportMediaError(error, 'Audio playback failed');
             stopAudio();
         }
     }
 
     function bindAudioButtons() {
         els.content.querySelectorAll('[data-audio-button]').forEach((button) => {
-            button.addEventListener('click', () => playAudioButton(button));
+            listenPage(button, 'click', () => playAudioButton(button));
         });
     }
 
+    // SECTION: Quiz audio player setup, controls, seek behavior, and autoplay.
     function ensureQuizAudioPlayer(player) {
         if (!player || player.pqAudio) return player?.pqAudio || null;
 
@@ -2422,6 +1867,7 @@ $appData = [
             media.pause();
             if (reset) media.currentTime = 0;
         } catch (error) {
+            reportError(error, 'Quiz audio stop failed');
         }
         syncQuizAudioPlayer(player);
         activeQuizAudio = null;
@@ -2448,6 +1894,7 @@ $appData = [
         try {
             await media.play();
         } catch (error) {
+            reportMediaError(error, 'Quiz audio playback failed');
             syncQuizAudioPlayer(player);
         }
     }
@@ -2467,859 +1914,10 @@ $appData = [
         const player = item?.querySelector?.('[data-quiz-audio-player]');
         if (!player) return;
 
-        window.setTimeout(() => {
+        setPageTimeout(() => {
             if (!item.classList.contains('is-current')) return;
             playQuizAudioPlayer(player, {forcePlay: true});
         }, 140);
-    }
-
-    function bindQuizAudioPlayers() {
-        els.content.querySelectorAll('[data-quiz-audio-player]').forEach((player) => {
-            ensureQuizAudioPlayer(player);
-
-            player.querySelector('[data-quiz-audio-toggle]')?.addEventListener('click', () => playQuizAudioPlayer(player));
-            player.querySelector('[data-quiz-audio-back]')?.addEventListener('click', () => seekQuizAudioPlayer(player, -10));
-            player.querySelector('[data-quiz-audio-forward]')?.addEventListener('click', () => seekQuizAudioPlayer(player, 10));
-            player.querySelector('[data-quiz-audio-track]')?.addEventListener('click', (event) => {
-                const media = ensureQuizAudioPlayer(player);
-                if (!media || !Number.isFinite(media.duration) || media.duration <= 0) return;
-
-                const rect = event.currentTarget.getBoundingClientRect();
-                const x = Math.min(Math.max(0, event.clientX - rect.left), rect.width);
-                const ratio = rect.width > 0 ? x / rect.width : 0;
-                media.currentTime = ratio * media.duration;
-                syncQuizAudioPlayer(player);
-            });
-        });
-    }
-
-    function bindQuizInteractions() {
-        els.content.querySelectorAll('[data-quiz-block]').forEach((block) => {
-            const items = Array.from(block.querySelectorAll('[data-quiz-item]'));
-
-            function showItem(index) {
-                const complete = block.querySelector('[data-quiz-complete]');
-                if (complete) {
-                    complete.classList.add('hidden');
-                    complete.classList.remove('block');
-                }
-
-                stopQuizAudio(true, {scope: 'question'});
-                items.forEach((item, itemIndex) => {
-                    item.classList.toggle('is-current', itemIndex === index);
-                });
-                autoplayQuizItemAudio(items[index]);
-            }
-
-            function showCompletion() {
-                stopQuizAudio(true);
-                playPracticeSfx('success');
-                items.forEach((item) => item.classList.remove('is-current'));
-
-                const complete = block.querySelector('[data-quiz-complete]');
-                if (!complete) return;
-
-                complete.classList.remove('hidden');
-                complete.classList.add('block');
-                complete.scrollIntoView({block: 'nearest', behavior: 'smooth'});
-            }
-
-            function flash(item, className) {
-                const question = item.querySelector('.pq-quiz-question');
-                item.classList.remove('is-correct-flash', 'is-wrong-flash');
-                removeClasses(question, stateClasses.quizQuestionCorrect);
-                removeClasses(question, stateClasses.quizQuestionWrong);
-                void item.offsetWidth;
-                item.classList.add(className);
-                addClasses(question, className === 'is-correct-flash' ? stateClasses.quizQuestionCorrect : stateClasses.quizQuestionWrong);
-                window.setTimeout(() => {
-                    item.classList.remove(className);
-                    removeClasses(question, stateClasses.quizQuestionCorrect);
-                    removeClasses(question, stateClasses.quizQuestionWrong);
-                }, 600);
-            }
-
-            function normalizeAnswer(value) {
-                return String(value ?? '')
-                    .trim()
-                    .toLowerCase()
-                    .replace(/[’‘]/g, "'")
-                    .replace(/[“”]/g, '"')
-                    .replace(/\s+/g, ' ');
-            }
-
-            function completeItem(item, itemIndex) {
-                item.classList.add('is-locked', 'is-complete');
-                playPracticeSfx('correct');
-                flash(item, 'is-correct-flash');
-
-                const nextItem = items[itemIndex + 1];
-                if (nextItem) {
-                    window.setTimeout(() => showItem(itemIndex + 1), 740);
-                    return;
-                }
-
-                window.setTimeout(showCompletion, 740);
-            }
-
-            items.forEach((item, itemIndex) => {
-                const quizType = item.dataset.quizType || 'multiple_choice';
-
-                if (quizType === 'input') {
-                    const input = item.querySelector('[data-quiz-input]');
-                    const submit = item.querySelector('[data-quiz-submit]');
-                    const feedback = item.querySelector('[data-quiz-feedback]');
-                    let acceptedAnswers = [];
-
-                    try {
-                        acceptedAnswers = JSON.parse(item.dataset.acceptedAnswers || '[]');
-                    } catch (error) {
-                        acceptedAnswers = [];
-                    }
-
-                    const checkInput = () => {
-                        if (item.classList.contains('is-locked')) return;
-                        if (!input) return;
-
-                        const value = input.value.trim();
-                        if (!value) {
-                            input.focus();
-                            return;
-                        }
-
-                        const isCorrect = acceptedAnswers.some((answer) => normalizeAnswer(answer) === normalizeAnswer(value));
-
-                        input.classList.remove('border-red-400', 'bg-red-50', 'text-red-700', 'border-green-500', 'bg-green-50', 'text-green-700');
-                        if (feedback) feedback.classList.add('hidden');
-
-                        if (!isCorrect) {
-                            playPracticeSfx('wrong');
-                            input.classList.add('border-red-400', 'bg-red-50', 'text-red-700');
-                            if (feedback) {
-                                feedback.textContent = 'Try again.';
-                                feedback.classList.remove('hidden', 'text-green-700');
-                                feedback.classList.add('text-red-700');
-                            }
-                            flash(item, 'is-wrong-flash');
-                            return;
-                        }
-
-                        input.classList.add('border-green-500', 'bg-green-50', 'text-green-700');
-                        input.disabled = true;
-                        if (submit) submit.disabled = true;
-                        if (feedback) {
-                            feedback.textContent = 'Correct.';
-                            feedback.classList.remove('hidden', 'text-red-700');
-                            feedback.classList.add('text-green-700');
-                        }
-                        completeItem(item, itemIndex);
-                    };
-
-                    if (submit) submit.addEventListener('click', checkInput);
-                    if (input) {
-                        input.addEventListener('keydown', (event) => {
-                            if (event.key === 'Enter') checkInput();
-                        });
-                    }
-
-                    return;
-                }
-
-                const correctAnswer = Number(item.dataset.correctAnswer || 0);
-                const options = Array.from(item.querySelectorAll('[data-quiz-option]'));
-
-                options.forEach((option) => {
-                    option.addEventListener('click', () => {
-                        if (item.classList.contains('is-locked')) return;
-
-                        const selectedIndex = Number(option.dataset.optionIndex || 0);
-                        options.forEach((button) => {
-                            button.classList.remove('is-wrong');
-                            removeClasses(button, stateClasses.quizWrongOption);
-                        });
-
-                        if (selectedIndex !== correctAnswer) {
-                            playPracticeSfx('wrong');
-                            option.classList.add('is-wrong');
-                            addClasses(option, stateClasses.quizWrongOption);
-                            flash(item, 'is-wrong-flash');
-                            window.setTimeout(() => {
-                                option.classList.remove('is-wrong');
-                                removeClasses(option, stateClasses.quizWrongOption);
-                            }, 720);
-                            return;
-                        }
-
-                        option.classList.add('is-correct');
-                        addClasses(option, stateClasses.quizCorrectOption);
-                        options.forEach((button) => {
-                            button.disabled = true;
-                        });
-                        completeItem(item, itemIndex);
-                    });
-                });
-            });
-        });
-    }
-
-    function transcriptRows() {
-        return Array.from(els.content.querySelectorAll('[data-transcript-row][data-transcript-start]'));
-    }
-
-    function updateTranscriptHighlight(time) {
-        const rows = transcriptRows();
-        rows.forEach((row, index) => {
-            const start = Number(row.dataset.transcriptStart || 0);
-            const endRaw = Number(row.dataset.transcriptEnd || 0);
-            const nextStart = Number(rows[index + 1]?.dataset.transcriptStart || Number.POSITIVE_INFINITY);
-            const end = Number.isFinite(endRaw) && endRaw > start ? endRaw : nextStart;
-            const isActive = time >= start && time < end;
-            row.classList.toggle('is-active', isActive);
-            (isActive ? addClasses : removeClasses)(row, stateClasses.transcriptRowActive);
-            row.querySelectorAll('.pq-transcript-time, .pq-transcript-text, .pq-transcript-chevron').forEach((child) => {
-                (isActive ? addClasses : removeClasses)(child, stateClasses.transcriptTextActive);
-            });
-        });
-
-    }
-
-    function videoCaptionLines() {
-        const wrap = els.content.querySelector('[data-video-captions]');
-        if (!wrap) return [];
-
-        try {
-            const parsed = JSON.parse(wrap.getAttribute('data-video-captions') || '[]');
-            return Array.isArray(parsed) ? parsed.filter((line) => fieldHasValue(line.text || line.caption)) : [];
-        } catch (error) {
-            return [];
-        }
-    }
-
-    function videoCaptionOverlay() {
-        const playerOverlay = videoJsPlayer?.el?.()?.querySelector?.('[data-video-caption-overlay]');
-        return playerOverlay || els.content.querySelector('[data-video-caption-overlay]');
-    }
-
-    function ensureVideoCaptionOverlay() {
-        const playerEl = videoJsPlayer?.el?.();
-        if (!playerEl) return videoCaptionOverlay();
-
-        let overlay = playerEl.querySelector('[data-video-caption-overlay]');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.className = 'pq-video-caption-overlay pointer-events-none absolute left-1/2 bottom-[clamp(.8rem,4%,1.75rem)] z-[80] flex w-[min(90%,54rem)] -translate-x-1/2 justify-center text-center';
-            overlay.setAttribute('data-video-caption-overlay', '');
-            overlay.setAttribute('aria-live', 'polite');
-            overlay.setAttribute('aria-hidden', 'true');
-            overlay.innerHTML = '<span class="pq-video-caption-text inline-block max-w-full rounded-[.68rem] border border-white/10 bg-slate-950/85 px-[.62rem] py-[.42rem] text-[clamp(.74rem,3vw,.94rem)] font-extrabold leading-[1.25] text-white opacity-0 shadow-[0_10px_28px_rgba(0,0,0,.3)] backdrop-blur-md transition duration-300 [transform:translateY(10px)_scale(.96)]" data-video-caption-text></span>';
-            playerEl.appendChild(overlay);
-        }
-
-        return overlay;
-    }
-
-    function videoCaptionTextNode(overlay) {
-        return overlay?.querySelector?.('[data-video-caption-text]') || overlay || null;
-    }
-
-    function videoCcButton() {
-        return videoJsPlayer?.el?.()?.querySelector?.('[data-video-cc-button]')
-            || els.content.querySelector('[data-video-cc-button]');
-    }
-
-    function currentVideoPageRoot() {
-        return els.content.querySelector('[data-video-page], [data-short-video-page]');
-    }
-
-    function isVideoCcEnabled() {
-        return currentVideoPageRoot()?.classList.contains('is-cc-enabled') || false;
-    }
-
-    function updateVideoCcButtonState(enabled) {
-        const button = videoCcButton();
-        if (!button) return;
-
-        button.classList.toggle('is-active', enabled);
-        button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
-        button.setAttribute('title', enabled ? 'Hide captions' : 'Show captions');
-        button.setAttribute('aria-label', enabled ? 'Hide captions' : 'Show captions');
-    }
-
-    function setVideoCaptionsEnabled(enabled) {
-        const page = currentVideoPageRoot();
-        const overlay = ensureVideoCaptionOverlay();
-        if (!page || !overlay) return;
-
-        page.classList.toggle('is-cc-enabled', enabled);
-        videoJsPlayer?.el?.()?.classList.toggle?.('is-cc-enabled', enabled);
-        overlay.setAttribute('aria-hidden', enabled ? 'false' : 'true');
-        updateVideoCcButtonState(enabled);
-
-        if (!enabled) {
-            const textNode = videoCaptionTextNode(overlay);
-            if (textNode) textNode.textContent = '';
-            overlay.classList.remove('is-visible');
-            return;
-        }
-
-        const nativeVideo = els.content.querySelector('video[data-video-src]');
-        const currentTime = videoJsPlayer
-            ? Number(videoJsPlayer.currentTime() || 0)
-            : Number(nativeVideo?.currentTime || 0);
-        updateVideoCaptionOverlay(currentTime);
-    }
-
-    function updateVideoCaptionOverlay(time) {
-        const overlay = ensureVideoCaptionOverlay();
-        if (!overlay || !isVideoCcEnabled()) return;
-
-        const rows = videoCaptionLines();
-        const current = rows.find((line, index) => {
-            const start = Number(line.start ?? 0);
-            const endRaw = Number(line.end ?? 0);
-            const nextStart = Number(rows[index + 1]?.start ?? Number.POSITIVE_INFINITY);
-            const end = Number.isFinite(endRaw) && endRaw > start ? endRaw : nextStart;
-            return time >= start && time < end;
-        });
-
-        const textNode = videoCaptionTextNode(overlay);
-        const text = current ? displayText(current.text || current.caption || '') : '';
-        if (textNode) textNode.textContent = text;
-        overlay.classList.toggle('is-visible', fieldHasValue(text));
-    }
-
-    function ensureVideoFullscreenButton(controlBar) {
-        if (!controlBar || !videoJsPlayer) return null;
-
-        let fullscreenButton = controlBar.querySelector('.vjs-fullscreen-control');
-        if (fullscreenButton) return fullscreenButton;
-
-        try {
-            const controlBarComponent = typeof videoJsPlayer.getChild === 'function'
-                ? videoJsPlayer.getChild('controlBar')
-                : null;
-
-            if (controlBarComponent && typeof controlBarComponent.addChild === 'function') {
-                const childCount = typeof controlBarComponent.children === 'function'
-                    ? controlBarComponent.children().length
-                    : undefined;
-
-                controlBarComponent.addChild('FullscreenToggle', {}, childCount);
-                fullscreenButton = controlBar.querySelector('.vjs-fullscreen-control');
-            }
-        } catch (error) {
-        }
-
-        return fullscreenButton;
-    }
-
-    function installVideoCcButton() {
-        if (!videoJsPlayer) return;
-
-        videoJsPlayer.ready(() => {
-            const playerEl = videoJsPlayer.el?.();
-            const controlBar = playerEl?.querySelector?.('.vjs-control-bar');
-            if (!controlBar) return;
-
-            controlBar.querySelector('.vjs-picture-in-picture-control')?.remove();
-
-            const fullscreenButton = ensureVideoFullscreenButton(controlBar);
-            if (!videoCaptionLines().length) return;
-
-            ensureVideoCaptionOverlay();
-            if (controlBar.querySelector('[data-video-cc-button]')) {
-                setVideoCaptionsEnabled(currentVideoPageRoot()?.dataset.videoShowCc === 'true');
-                return;
-            }
-
-            const button = document.createElement('button');
-            button.type = 'button';
-            button.className = 'vjs-control vjs-button pq-vjs-cc-button';
-            button.setAttribute('data-video-cc-button', '');
-            button.setAttribute('aria-pressed', 'false');
-            button.setAttribute('aria-label', 'Show captions');
-            button.setAttribute('title', 'Show captions');
-            button.innerHTML = '<span class="vjs-icon-placeholder" aria-hidden="true">CC</span><span class="vjs-control-text" aria-live="polite">Show captions</span>';
-
-            button.addEventListener('click', (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                setVideoCaptionsEnabled(!isVideoCcEnabled());
-            });
-
-            if (fullscreenButton) controlBar.insertBefore(button, fullscreenButton);
-            else controlBar.appendChild(button);
-
-            setVideoCaptionsEnabled(currentVideoPageRoot()?.dataset.videoShowCc === 'true');
-        });
-    }
-
-    function bindTranscriptInteractions() {
-        const shell = els.content.querySelector('[data-transcript-shell]');
-        const toggle = els.content.querySelector('[data-transcript-toggle]');
-        const label = els.content.querySelector('[data-transcript-label]');
-        const videoPage = els.content.querySelector('[data-video-page]');
-
-        if (!shell || !toggle) return;
-
-        const syncTranscriptState = () => {
-            const isOpen = shell.classList.contains('is-open');
-            const panel = shell.querySelector('[data-transcript-panel]');
-            const icon = shell.querySelector('[data-transcript-icon]');
-
-            if (label) label.textContent = isOpen ? 'Hide transcript' : 'Show transcript';
-            if (panel) panel.classList.toggle('hidden', !isOpen);
-            if (icon) icon.classList.toggle('rotate-180', isOpen);
-
-            if (videoPage) {
-                videoPage.classList.toggle('is-transcript-open', isOpen);
-            }
-
-            if (isOpen) {
-                const activeRow = shell.querySelector('.pq-transcript-row.is-active');
-                activeRow?.scrollIntoView({block: 'nearest'});
-            }
-        };
-
-        toggle.addEventListener('click', () => {
-            shell.classList.toggle('is-open');
-            syncTranscriptState();
-        });
-
-        syncTranscriptState();
-
-        els.content.querySelectorAll('[data-transcript-row]').forEach((row) => {
-            row.addEventListener('click', () => {
-                const start = Number(row.dataset.transcriptStart || 0);
-                if (!Number.isFinite(start)) return;
-
-                if (videoJsPlayer) {
-                    try {
-                        videoJsPlayer.currentTime(start);
-                        videoJsPlayer.play();
-                    } catch (error) {
-                    }
-                    return;
-                }
-
-                const video = els.content.querySelector('video');
-                if (video) {
-                    video.currentTime = start;
-                    video.play().catch(() => {
-                    });
-                }
-            });
-        });
-    }
-
-    function setupVideoPlayer() {
-        const video = els.content.querySelector('video[data-video-src]');
-        if (!video) return;
-
-        const status = els.content.querySelector('[data-video-status]');
-        const src = video.dataset.videoSrc || video.querySelector('source')?.getAttribute('src') || '';
-        const type = mediaType(src);
-        const canUseNativeHls = !!video.canPlayType('application/vnd.apple.mpegurl');
-
-        video.setAttribute('playsinline', '');
-        video.setAttribute('webkit-playsinline', '');
-        video.preload = 'auto';
-
-        if (window.videojs) {
-            try {
-                const stalePlayer = typeof window.videojs.getPlayer === 'function' && video.id
-                    ? window.videojs.getPlayer(video.id)
-                    : null;
-                if (stalePlayer && typeof stalePlayer.dispose === 'function') {
-                    stalePlayer.dispose();
-                }
-
-                videoJsPlayer = window.videojs(video, {
-                    controls: true,
-                    autoplay: false,
-                    bigPlayButton: true,
-                    fluid: false,
-                    responsive: false,
-                    preload: 'auto',
-                    inactivityTimeout: 650,
-                    controlBar: {
-                        pictureInPictureToggle: false,
-                        fullscreenToggle: true,
-                    },
-                    html5: {
-                        vhs: {
-                            overrideNative: !canUseNativeHls,
-                        },
-                        nativeAudioTracks: canUseNativeHls,
-                        nativeVideoTracks: canUseNativeHls,
-                    },
-                });
-
-                videoJsPlayer.ready(() => {
-                    if (fieldHasValue(src) && typeof videoJsPlayer.src === 'function') {
-                        videoJsPlayer.src({src, type});
-                        if (typeof videoJsPlayer.load === 'function') videoJsPlayer.load();
-                    }
-                    installVideoCcButton();
-                });
-
-                videoJsPlayer.on('fullscreenchange', () => {
-                    const currentTime = Number(videoJsPlayer.currentTime() || 0);
-                    updateVideoCaptionOverlay(currentTime);
-                });
-
-                videoJsPlayer.on('loadedmetadata', () => {
-                    const currentTime = Number(videoJsPlayer.currentTime() || 0);
-                    updateTranscriptHighlight(currentTime);
-                    updateVideoCaptionOverlay(currentTime);
-                });
-                videoJsPlayer.on('timeupdate', () => {
-                    const currentTime = Number(videoJsPlayer.currentTime() || 0);
-                    updateTranscriptHighlight(currentTime);
-                    updateVideoCaptionOverlay(currentTime);
-                });
-                videoJsPlayer.on('error', () => {
-                    const error = typeof videoJsPlayer.error === 'function' ? videoJsPlayer.error() : null;
-                    if (status) {
-                        status.classList.remove('hidden');
-                        status.textContent = error?.message || 'Video could not be loaded. Please check the video source.';
-                    }
-                });
-                return;
-            } catch (error) {
-            }
-        }
-
-        if (fieldHasValue(src)) {
-            const source = video.querySelector('source');
-            if (source) {
-                source.setAttribute('src', src);
-                source.setAttribute('type', type);
-            } else {
-                video.src = src;
-            }
-            try {
-                video.load();
-            } catch (error) {
-            }
-        }
-
-        video.addEventListener('timeupdate', () => {
-            const currentTime = Number(video.currentTime || 0);
-            updateTranscriptHighlight(currentTime);
-            updateVideoCaptionOverlay(currentTime);
-        });
-        video.addEventListener('error', () => {
-            if (status) {
-                status.classList.remove('hidden');
-                status.textContent = 'Video could not be loaded. Please check the video source.';
-            }
-        });
-    }
-
-    function bindShortVideoOverlay() {
-        const overlay = els.content.querySelector('[data-short-video-overlay]');
-        const video = els.content.querySelector('video[data-video-src]');
-        if (!overlay || !video) return;
-
-        const hideOverlay = () => overlay.classList.add('is-hidden');
-        const showOverlay = () => overlay.classList.remove('is-hidden');
-
-        overlay.addEventListener('click', () => {
-            hideOverlay();
-
-            if (videoJsPlayer && typeof videoJsPlayer.play === 'function') {
-                attemptPromise(videoJsPlayer.play(), 'short video');
-                return;
-            }
-
-            try {
-                attemptPromise(video.play(), 'short video');
-            } catch (error) {
-                showOverlay();
-            }
-        });
-
-        if (videoJsPlayer) {
-            videoJsPlayer.on('play', hideOverlay);
-            videoJsPlayer.on('playing', hideOverlay);
-            videoJsPlayer.on('ended', showOverlay);
-            videoJsPlayer.on('error', showOverlay);
-            return;
-        }
-
-        video.addEventListener('play', hideOverlay);
-        video.addEventListener('playing', hideOverlay);
-        video.addEventListener('ended', showOverlay);
-        video.addEventListener('error', showOverlay);
-    }
-
-    function conversationLinesFromRoot(root) {
-        if (!root) return [];
-
-        try {
-            const raw = root.getAttribute('data-conversation-lines') || '[]';
-            const parsed = JSON.parse(raw);
-            return Array.isArray(parsed) ? parsed.filter((line) => fieldHasValue(line.text)) : [];
-        } catch (error) {
-            return [];
-        }
-    }
-
-    function resetConversationText(root, keepCompleted = false) {
-        if (!root) return;
-
-        root.querySelectorAll('[data-conversation-line]').forEach((line) => {
-            line.classList.remove('is-active');
-            setConversationLineVisualState(line, false);
-            if (!keepCompleted) {
-                const target = line.querySelector('[data-conversation-text]');
-                if (target) target.innerHTML = '';
-            }
-        });
-
-        root.querySelectorAll('[data-conversation-speaker]').forEach((speaker) => {
-            speaker.classList.remove('is-active');
-            setConversationSpeakerVisualState(speaker, false);
-        });
-        root.querySelectorAll('[data-conversation-toggle]').forEach((button) => {
-            button.classList.remove('is-playing');
-            button.setAttribute('aria-label', 'Play full conversation');
-        });
-    }
-
-    function setConversationActive(root, side, lineEl = null) {
-        if (!root) return;
-
-        root.querySelectorAll('[data-conversation-line]').forEach((line) => {
-            const isActive = line === lineEl;
-            line.classList.toggle('is-active', isActive);
-            setConversationLineVisualState(line, isActive);
-        });
-        root.querySelectorAll('[data-conversation-speaker]').forEach((speaker) => {
-            const isActive = speaker.dataset.conversationSpeaker === side;
-            speaker.classList.toggle('is-active', isActive);
-            setConversationSpeakerVisualState(speaker, isActive);
-        });
-        root.querySelectorAll('[data-conversation-toggle]').forEach((button) => {
-            const isMobileButton = button.hasAttribute('data-conversation-mobile-button');
-            const isActiveBubbleButton = !!lineEl && lineEl.contains(button);
-            const shouldAnimate = isMobileButton ? conversationState.running : isActiveBubbleButton;
-
-            button.classList.toggle('is-playing', shouldAnimate);
-            button.setAttribute('aria-label', conversationState.running ? 'Stop conversation' : 'Play full conversation');
-
-            if (isActiveBubbleButton || isMobileButton) conversationState.activeButton = button;
-        });
-    }
-
-    function stopConversation(soft = false) {
-        conversationState.stopRequested = true;
-        conversationState.running = false;
-
-        if (conversationState.revealTimer) {
-            window.clearInterval(conversationState.revealTimer);
-            conversationState.revealTimer = null;
-        }
-
-        if (conversationState.currentAudio) {
-            try {
-                conversationState.currentAudio.pause();
-                conversationState.currentAudio.currentTime = 0;
-            } catch (error) {
-            }
-            conversationState.currentAudio = null;
-        }
-
-        if (conversationState.activeRoot) {
-            conversationState.activeRoot.classList.add('is-conversation-idle');
-            conversationState.activeRoot.querySelectorAll('[data-conversation-toggle]').forEach((button) => {
-                button.classList.remove('is-playing');
-                button.setAttribute('aria-label', 'Play full conversation');
-            });
-            resetConversationText(conversationState.activeRoot, soft);
-        }
-
-        conversationState.activeRoot = null;
-        conversationState.activeButton = null;
-    }
-
-    function revealConversationLine(lineEl, mediaAudio) {
-        return new Promise((resolve) => {
-            if (!lineEl) {
-                resolve();
-                return;
-            }
-
-            const target = lineEl.querySelector('[data-conversation-text]');
-            const originalText = lineEl.dataset.lineText || '';
-            const originalHtml = escapeHtml(displayText(originalText));
-            const plainText = stripHtml(originalHtml);
-
-            if (!target || !plainText.trim()) {
-                resolve();
-                return;
-            }
-
-            target.innerHTML = '';
-            let index = 0;
-            let finished = false;
-
-            function finish() {
-                if (finished) return;
-                finished = true;
-                if (conversationState.revealTimer) {
-                    window.clearInterval(conversationState.revealTimer);
-                    conversationState.revealTimer = null;
-                }
-                target.innerHTML = originalHtml;
-                resolve();
-            }
-
-            conversationState.revealTimer = window.setInterval(() => {
-                if (conversationState.stopRequested) {
-                    finish();
-                    return;
-                }
-
-                index = Math.min(plainText.length, index + 1);
-                target.innerHTML = buildPartialHtml(originalHtml, index)
-                    + (index < plainText.length ? '<span class="pq-reveal-caret" aria-hidden="true">▍</span>' : '');
-
-                if (index >= plainText.length && (!mediaAudio || !Number.isFinite(mediaAudio.duration) || mediaAudio.duration <= 0)) {
-                    finish();
-                }
-            }, 40);
-
-            if (mediaAudio) {
-                mediaAudio.addEventListener('ended', finish, {once: true});
-                mediaAudio.addEventListener('error', finish, {once: true});
-            }
-        });
-    }
-
-    async function playConversation(root, button) {
-        if (!root || !button || conversationState.running) return;
-
-        stopAudio();
-        stopConversation(false);
-
-        const dialogueLines = conversationLinesFromRoot(root);
-        if (!dialogueLines.length) return;
-
-        conversationState.running = true;
-        conversationState.stopRequested = false;
-        conversationState.activeRoot = root;
-        conversationState.activeButton = button;
-        root.classList.remove('is-conversation-idle');
-        resetConversationText(root, false);
-        root.querySelectorAll('[data-conversation-toggle]').forEach((control) => {
-            control.classList.remove('is-playing');
-            control.setAttribute('aria-label', 'Stop conversation');
-        });
-
-        for (const dialogueLine of dialogueLines) {
-            if (conversationState.stopRequested) break;
-
-            const side = dialogueLine.side || 'left';
-            const lineEl = root.querySelector(`[data-conversation-line][data-side="${side === 'right' ? 'right' : 'left'}"]`);
-            if (!lineEl) continue;
-
-            const speakerLabel = lineEl.querySelector('[data-conversation-speaker-name]');
-            if (speakerLabel) speakerLabel.textContent = displayText(dialogueLine.speaker || speakerLabel.textContent);
-
-            lineEl.dataset.lineText = dialogueLine.text || '';
-            lineEl.dataset.lineSound = dialogueLine.sound || '';
-
-            setConversationActive(root, side, lineEl);
-
-            if (fieldHasValue(dialogueLine.sound)) {
-                const lineAudio = new Audio(dialogueLine.sound);
-                conversationState.currentAudio = lineAudio;
-
-                const revealPromise = revealConversationLine(lineEl, lineAudio);
-
-                try {
-                    await lineAudio.play();
-                } catch (error) {
-                }
-
-                await revealPromise;
-                conversationState.currentAudio = null;
-            } else {
-                await revealConversationLine(lineEl, null);
-            }
-
-            if (conversationState.stopRequested) break;
-            await new Promise((resolve) => window.setTimeout(resolve, 420));
-        }
-
-        if (!conversationState.stopRequested) {
-            conversationState.running = false;
-            root.classList.add('is-conversation-idle');
-            resetConversationText(root, true);
-            conversationState.activeRoot = null;
-            conversationState.activeButton = null;
-        }
-    }
-
-    function bindConversationInteractions() {
-        els.content.querySelectorAll('[data-conversation-page]').forEach((root) => {
-            const buttons = Array.from(root.querySelectorAll('[data-conversation-toggle]'));
-            if (!buttons.length) return;
-
-            buttons.forEach((button) => {
-                button.addEventListener('click', () => {
-                    if (conversationState.running && conversationState.activeRoot === root) {
-                        stopConversation(true);
-                        return;
-                    }
-
-                    playConversation(root, button);
-                });
-            });
-        });
-    }
-
-    function attemptPromise(promise, label = 'media') {
-        if (promise && typeof promise.catch === 'function') {
-            promise.catch((error) => {
-            });
-        }
-    }
-
-    function autoplayCurrentPageMedia() {
-        const pageAtRequest = currentPage();
-
-        window.setTimeout(() => {
-            if (currentPage() !== pageAtRequest) return;
-
-            const conversationButton = els.content.querySelector('[data-conversation-toggle]');
-            if (conversationButton) {
-                conversationButton.click();
-                return;
-            }
-
-            if (videoJsPlayer || els.content.querySelector('video[data-video-src]')) return;
-
-
-            const sharedQuizAudioPlayer = els.content.querySelector('[data-quiz-audio-player][data-quiz-audio-scope="page"]');
-            if (sharedQuizAudioPlayer) {
-                playQuizAudioPlayer(sharedQuizAudioPlayer, {forcePlay: true});
-                return;
-            }
-
-            const currentQuizAudioPlayer = els.content.querySelector('[data-quiz-item].is-current [data-quiz-audio-player]');
-            if (currentQuizAudioPlayer) {
-                playQuizAudioPlayer(currentQuizAudioPlayer, {forcePlay: true});
-                return;
-            }
-
-            const firstAudioButton = els.content.querySelector('[data-audio-button]');
-            if (firstAudioButton) {
-                playAudioButton(firstAudioButton);
-            }
-        }, 260);
     }
 
     function pageIndexFromProgressPosition(clientX) {
@@ -3341,11 +1939,13 @@ $appData = [
         window.clearTimeout(revealTimer);
         els.card.classList.remove('is-page-transitioning', 'pointer-events-none');
         pageIndex = nextIndex;
+        saveLastSlideIndex();
         render({animate});
     }
 
     function jumpToProgressClientX(clientX, options = {}) {
         if (!els.progressTrack || !pages.length) return;
+        if (isCurrentAssessment(currentPage())) return;
         jumpToPageImmediately(pageIndexFromProgressPosition(clientX), options);
     }
 
@@ -3384,6 +1984,7 @@ $appData = [
                 try {
                     els.progressTrack.releasePointerCapture(event.pointerId);
                 } catch (error) {
+                    reportError(error, 'Progress pointer release failed');
                 }
             }
         };
@@ -3394,6 +1995,10 @@ $appData = [
             event.preventDefault();
             event.stopPropagation();
 
+            if (isCurrentAssessment(currentPage())) {
+                return;
+            }
+
             isScrubbing = true;
             els.progressTrack.classList.add('is-scrubbing');
             els.progressTrack.classList.add('cursor-grabbing');
@@ -3402,10 +2007,32 @@ $appData = [
                 try {
                     els.progressTrack.setPointerCapture(event.pointerId);
                 } catch (error) {
+                    reportError(error, 'Progress pointer capture failed');
                 }
             }
 
             requestProgressJump(event.clientX, {animate: false});
+        });
+
+        els.levelMarkers?.addEventListener('pointerdown', (event) => {
+            const marker = event.target.closest('[data-level-marker]');
+            if (!marker) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+        });
+
+        els.levelMarkers?.addEventListener('click', (event) => {
+            const marker = event.target.closest('[data-level-marker]');
+            if (!marker) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (isCurrentAssessment(currentPage())) return;
+
+            const index = Number(marker.dataset.levelIndex);
+            if (Number.isFinite(index)) goTo(index);
         });
 
         els.progressTrack.addEventListener('pointermove', (event) => {
@@ -3422,6 +2049,14 @@ $appData = [
 
         els.progressTrack.addEventListener('keydown', (event) => {
             if (!pages.length) return;
+
+            if (isCurrentAssessment(currentPage())) {
+                if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    navigateAssessmentStep(event.key === 'ArrowLeft' ? -1 : 1);
+                }
+                return;
+            }
 
             if (event.key === 'ArrowLeft') {
                 event.preventDefault();
@@ -3448,14 +2083,64 @@ $appData = [
         });
     }
 
+    // Handles buttons, keyboard, progress bar, and swipe navigation.
     function bindNavigation() {
         bindProgressNavigation();
         els.previous.addEventListener('click', () => goTo(pageIndex - 1));
         els.next.addEventListener('click', () => goTo(pageIndex + 1));
 
+        els.counter?.addEventListener('click', (event) => {
+            if (event.target.closest('[data-page-counter-input]')) return;
+            if (!event.target.closest('[data-page-counter-button]')) return;
+            showCounterInput();
+        });
+
+        els.counter?.addEventListener('keydown', (event) => {
+            const input = event.target.closest('[data-page-counter-input]');
+            if (!input) return;
+
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                event.stopPropagation();
+                commitCounterInput(input);
+            }
+
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                event.stopPropagation();
+                input.dataset.committed = 'true';
+                restoreCounterDisplay();
+            }
+        });
+
+        els.counter?.addEventListener('focusout', (event) => {
+            const input = event.target.closest('[data-page-counter-input]');
+            if (!input) return;
+            commitCounterInput(input);
+        });
+
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowLeft') goTo(pageIndex - 1);
-            if (event.key === 'ArrowRight') goTo(pageIndex + 1);
+            if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || isEditableTarget(event.target)) {
+                return;
+            }
+
+            if (isCurrentAssessment(currentPage())) {
+                if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    navigateAssessmentStep(event.key === 'ArrowLeft' ? -1 : 1);
+                }
+                return;
+            }
+
+            if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                goTo(pageIndex - 1);
+            }
+
+            if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                goTo(pageIndex + 1);
+            }
         });
 
         let startX = 0;
@@ -3463,6 +2148,11 @@ $appData = [
         let tracking = false;
 
         els.card.addEventListener('touchstart', (event) => {
+            if (isEditableTarget(event.target) || event.target.closest?.('button, a, [role="button"], .vjs-control-bar, .vjs-big-play-button, [data-progress-track]')) {
+                tracking = false;
+                return;
+            }
+
             const touch = event.touches[0];
             if (!touch) return;
             startX = touch.clientX;
@@ -3480,13 +2170,34 @@ $appData = [
             const dy = touch.clientY - startY;
             if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.25) return;
 
+            if (isCurrentAssessment(currentPage())) {
+                navigateAssessmentStep(dx < 0 ? 1 : -1);
+                return;
+            }
+
             if (dx < 0) goTo(pageIndex + 1);
             if (dx > 0) goTo(pageIndex - 1);
         }, {passive: true});
     }
 
+    // Starts the slider after dependencies are ready.
+    // SECTION: App bootstrapping for markers, navigation, resize handling, and first render.
+    renderLevelMarkers();
     bindNavigation();
-    render({animate: true});  
+    window.addEventListener('pagehide', cleanupMedia, {passive: true});
+    window.addEventListener('beforeunload', cleanupMedia, {passive: true});
+    window.addEventListener('resize', () => {
+        syncExternalMenuSpace();
+        window.requestAnimationFrame(syncShortVideoSize);
+    }, {passive: true});
+    window.addEventListener('orientationchange', () => {
+        window.setTimeout(() => {
+            syncExternalMenuSpace();
+            syncShortVideoSize();
+        }, 180);
+    }, {passive: true});
+    syncExternalMenuSpace();
+    render({animate: true});
 </script>
 </body>
-</html> 
+</html>

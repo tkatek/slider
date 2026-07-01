@@ -2,7 +2,7 @@
 
 $content = [
     'type'          => 'intro',
-    'unit'          => '',
+    'unit'          => 'Human Values',
     'unit_number'   => '4',
     'lesson'        => '',
     'lesson_number' => '2',

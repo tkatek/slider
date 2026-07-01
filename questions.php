@@ -1,10 +1,12 @@
 <?php
 
+$revisionTests = require __DIR__ . '/revisionTests.php';
+
 return [
     'topics' => [
         [
             'id' => 1,
-            'title' => 'New Language',
+            'title' => 'New Language', 
             'groups' => [
                 [
                     'title' => 'Formal Greetings',
@@ -2495,6 +2497,83 @@ return [
             ],
         ],
         [
+            'id' => 31001,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unscramble_letters',
+                        'instruction' => 'Put the letters in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'rug',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'table',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'sofa',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'lamp',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'chair',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'fireplace',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'curtains',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'cushion',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'plant',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'bathtub',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        [
             'id' => 21,
             'title' => 'Listening',
             'questions' => [
@@ -2780,6 +2859,106 @@ return [
                             'image' => materialAsset('slider/A1/Beginner/chapter-6/img/slide6/comb-hair.webp'),
                             'audio' => materialAsset('slider/A1/Beginner/chapter-6/audios/slide-6/comb-hair.mp3'),
                             'video' => null,
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        [
+            'id' => 31002,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unjumble_sentence',
+                        'instruction' => 'Put the words in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I get up at 6:30 a.m.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I have breakfast at 6:45 a.m.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I have a shower at 7:00 a.m.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I get dressed at 7:15 a.m.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I take the bus at 7:30 a.m.',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        [
+            'id' => 31003,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unscramble_letters',
+                        'instruction' => 'Put the letters in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'watch',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'eat',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'breakfast',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'wake',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'up',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'brush',
+                            ],
                         ],
                     ],
                 ],
@@ -5201,6 +5380,53 @@ return [
             ],
         ],
         [
+            'id' => 31000,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unjumble_sentence',
+                        'instruction' => 'Put the words in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I like to sleep in my bedroom',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I cook in the kitchen',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I watch TV in the living room',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I eat in the dining room',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I brush my teeth in the bathroom',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        [
             'id' => 49,
             'title' => 'New Language',
             'questions' => [
@@ -5738,6 +5964,7 @@ return [
                 ],
             ],
         ],
+        ...$revisionTests['a1_beginner'],
         [
             'id' => 1000,
             'title' => 'A1 Intermediate',
@@ -6764,7 +6991,7 @@ return [
                             'video' => null,
                         ],
                         [
-                            'title' => 'Eighth',
+                            'title' => 'Eighth', 
                             'emoji' => '8th',
                             'paragraph' => '',
                             'image' => null,
@@ -9186,6 +9413,94 @@ return [
             'id' => 1030,
         ],
         [
+            'id' => 32001,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unjumble_sentence',
+                        'instruction' => 'Put the words in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Do I take this with water?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Do I take this with food?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'How many times do i need to take this?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I need something for a sore throat.',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        [
+            'id' => 32003,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unscramble_letters',
+                        'instruction' => 'Put the letters in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'stomach',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'ache',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'sick',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'recommend',
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'medicine',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        [
             'title' => 'Listening',
             'questions' => [
                 [
@@ -9750,6 +10065,59 @@ return [
             'id' => 1036,
         ],
         [
+            'id' => 32002,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unjumble_sentence',
+                        'instruction' => 'Put the words in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'There is a fire.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'There is a fight.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'He has a heart attack.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'The house is on fire.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Someone stole my wallet.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'There is a car accident.',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        [
             'title' => 'Practice',
             'questions' => [
                 [
@@ -10197,6 +10565,53 @@ return [
                 ],
             ],
             'id' => 1041,
+        ],
+        [
+            'id' => 32004,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unjumble_sentence',
+                        'instruction' => 'Put the words in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I am going to travel to Italy in the summer.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'We are going to play soccer this weekend.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Are you going to travel to Spain?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'They are not going to fly to New York.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Is she going to visit her grandparents?',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         [
             'title' => 'Vocabulary',
@@ -11116,6 +11531,53 @@ return [
             'id' => 1050,
         ],
         [
+            'id' => 32005,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unjumble_sentence',
+                        'instruction' => 'Put the words in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'You shouldn’t carry a lot of cash.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'You should pack a jacket.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'You should bring your laptop with you.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'You shouldn’t forget your phone charger.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'You shouldn’t forget your passport.',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        [
             'title' => 'Listening',
             'questions' => [
                 [
@@ -11842,6 +12304,71 @@ return [
             'id' => 1060,
         ],
         [
+            'id' => 32000,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unjumble_sentence',
+                        'instruction' => 'Put the words in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I would like to check in.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'May I see your ticket and passport?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Here you are.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'How many bags do you have for check in?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',  
+                                'answer' => 'I just have one bag for check in.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Would you like a window seat or an aisle seat?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I would like a window seat.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Here’s your boarding pass.',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        [
             'title' => 'Vocabulary',
             'groups' => [
                 [
@@ -12445,6 +12972,7 @@ return [
             ],
             'id' => 1066,
         ],
+        ...$revisionTests['a1_intermediate'],
         [
             'id' => 2000,
             'title' => 'A1 Advanced',
@@ -12927,6 +13455,65 @@ return [
                 ],
             ],
             'id' => 2006,
+        ],
+        [
+            'id' => 33000,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unjumble_sentence',
+                        'instruction' => 'Put the words in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I\'d like to book a room, please.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Do you have a reservation?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Can I check in please?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Here is your key card',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Could you sign here please?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'How much is the bill?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Is there a gym at the hotel?',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         [
             'title' => 'Listening',
@@ -13915,6 +14502,83 @@ return [
             'id' => 2016,
         ],
         [
+            'id' => 33001,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unjumble_sentence',
+                        'instruction' => 'Put the words in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I have breakfast at 7:00.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'What do you eat for lunch?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'They don\'t eat fast food.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'I don\'t like fish.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Where do they work?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'They don\'t eat cereal for breakfast.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Do you have dinner at home?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'We drive to work everyday.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'Why do you watch tv?',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'How do they go to work?',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        [
             'title' => 'Practice',
             'questions' => [
                 [
@@ -13932,7 +14596,7 @@ return [
                                 'are',
                             ],
                             'correct_answer' => 2,
-                            'emoji' => '🙋‍🎓',
+                            'emoji' => '🙋‍',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -13944,7 +14608,7 @@ return [
                                 'am not',
                             ],
                             'correct_answer' => 1,
-                            'emoji' => '👫🗺️',
+                            'emoji' => '👫',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -13956,7 +14620,7 @@ return [
                                 'aren\'t',
                             ],
                             'correct_answer' => 0,
-                            'emoji' => '👩‍⚕️🩺',
+                            'emoji' => '👩‍⚕️',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -13968,7 +14632,7 @@ return [
                                 'Am',
                             ],
                             'correct_answer' => 2,
-                            'emoji' => '🎤🎶',
+                            'emoji' => '🎤',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -13980,7 +14644,7 @@ return [
                                 'is',
                             ],
                             'correct_answer' => 3,
-                            'emoji' => '👩🎭',
+                            'emoji' => '👩',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -13992,7 +14656,7 @@ return [
                                 'isn\'t',
                             ],
                             'correct_answer' => 3,
-                            'emoji' => '👮‍♀️🎂',
+                            'emoji' => '👮‍♀️',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -14004,7 +14668,7 @@ return [
                                 'is',
                             ],
                             'correct_answer' => 0,
-                            'emoji' => '🙋‍♂️🚫',
+                            'emoji' => '🙋‍♂️',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -14016,7 +14680,7 @@ return [
                                 'Be',
                             ],
                             'correct_answer' => 1,
-                            'emoji' => '👩‍🏫🌎',
+                            'emoji' => '👩‍🏫',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -14028,7 +14692,7 @@ return [
                                 'is',
                             ],
                             'correct_answer' => 3,
-                            'emoji' => '👨📍',
+                            'emoji' => '👨',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -14040,7 +14704,7 @@ return [
                                 'aren\'t',
                             ],
                             'correct_answer' => 3,
-                            'emoji' => '👬🏠',
+                            'emoji' => '👬',
                         ],
                     ],
                 ],
@@ -14065,7 +14729,7 @@ return [
                                 'Is this the right train?',
                             ],
                             'correct_answer' => 1,
-                            'emoji' => '🚕💵',
+                            'emoji' => '🚕',
                         ],
                     ],
                 ],
@@ -14958,7 +15622,7 @@ return [
                                 'You can… if you\'d like.',
                             ],
                             'correct_answer' => 1,
-                            'emoji' => '👀👉',
+                            'emoji' => '👀',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -14970,7 +15634,7 @@ return [
                                 'Expressing excitement',
                             ],
                             'correct_answer' => 0,
-                            'emoji' => '💡🗣️',
+                            'emoji' => '💡',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -14982,7 +15646,7 @@ return [
                                 'Look, there\'s…',
                             ],
                             'correct_answer' => 0,
-                            'emoji' => '🙏❓',
+                            'emoji' => '🙏',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -14994,7 +15658,7 @@ return [
                                 'Agreeing & closing',
                             ],
                             'correct_answer' => 0,
-                            'emoji' => '🎁🤝',
+                            'emoji' => '🎁',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -15006,7 +15670,7 @@ return [
                                 'Yes, that\'s correct.',
                             ],
                             'correct_answer' => 0,
-                            'emoji' => '🤩✨',
+                            'emoji' => '🤩',
                         ],
                         [
                             'type' => 'multiple_choice',
@@ -15018,7 +15682,7 @@ return [
                                 'Polite request',
                             ],
                             'correct_answer' => 0,
-                            'emoji' => '👍🚆',
+                            'emoji' => '👍',
                         ],
                     ],
                 ],
@@ -15919,6 +16583,114 @@ return [
             'id' => 2040,
         ],
         [
+            'id' => 33002,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unscramble_letters',
+                        'instruction' => 'Put the letters in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'park',
+                                'image' => materialAsset('slider/A1/Advanced/chapter-8/img/slide16/3.webp'),
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'police station',
+                                'image' => materialAsset('slider/A1/Advanced/chapter-8/img/slide5/police.webp'),
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'school',
+                                'image' => materialAsset('slider/A1/Advanced/chapter-9/img/slide7/school.webp'),
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'cafe',
+                                'image' => materialAsset('slider/A1/Advanced/chapter-9/img/slide7/cafe.webp'),
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'supermarket',
+                                'image' => materialAsset('slider/A1/Advanced/chapter-9/img/slide7/supermarket.webp'),
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'market',
+                                'image' => materialAsset('slider/A1/Advanced/chapter-8/img/slide5/market.webp'),
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'post office',
+                                'image' => materialAsset('slider/A1/Advanced/chapter-8/img/slide5/post-office.webp'),
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'mosque',
+                                'image' => materialAsset('slider/A1/Advanced/chapter-8/img/slide5/mosque.webp'),
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'library',
+                                'image' => materialAsset('slider/A1/Advanced/chapter-9/img/slide7/library.webp'),
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'health centre',
+                                'image' => materialAsset('slider/A1/Advanced/chapter-8/img/slide5/health-center.webp'),
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'takeaway',
+                                'image' => materialAsset('slider/A1/Advanced/chapter-8/img/slide5/take-out.webp'),
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'shops',
+                                'image' => materialAsset('slider/A1/Advanced/chapter-8/img/slide5/shops.webp'),
+                            ],
+                            [
+                                'type' => 'unscramble_letters',
+                                'instruction' => 'Put the letters in order.',
+                                'helper' => '',
+                                'answer' => 'community centre',
+                                'image' => materialAsset('slider/A1/Advanced/chapter-8/img/slide5/community-center.webp'),
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        [
             'title' => 'Listening',
             'questions' => [
                 [
@@ -16506,6 +17278,53 @@ return [
                 ],
             ],
             'id' => 2045,
+        ],
+        [
+            'id' => 33003,
+            'title' => 'Practice',
+            'questions' => [
+                [
+                    'title' => '',
+                    'type' => 'practice',
+                    'activity' => [
+                        'type' => 'unjumble_sentence',
+                        'instruction' => 'Put the words in order.',
+                        'helper' => '',
+                        'items' => [
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'A restaurant is a place where we can eat out.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'A parking lot is a large area where cars are parked.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'A factory is a place where things are made.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'A fire station is where firefighters work to keep people safe.',
+                            ],
+                            [
+                                'type' => 'unjumble_sentence',
+                                'instruction' => 'Put the words in order.',
+                                'helper' => '',
+                                'answer' => 'A gym is a place where people work out and exercise.',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         [
             'title' => 'Listening',
@@ -19231,6 +20050,7 @@ return [
             ],
             'id' => 2072,
         ],
+        ...$revisionTests['a1_advanced'],
     ],
     'first_time_questions' => [],
 ];
