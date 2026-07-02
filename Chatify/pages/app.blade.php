@@ -1,3 +1,44 @@
+@php
+    use Illuminate\Support\Str;
+
+    $rawChatLocale = strtolower((string) (
+        session('locale')
+        ?? session('lang')
+        ?? (auth()->check() ? (auth()->user()->locale ?? auth()->user()->language ?? auth()->user()->lang ?? null) : null)
+        ?? app()->getLocale()
+        ?? 'en'
+    ));
+
+    $chatLocaleMap = [
+        'english' => 'en',
+        'eng' => 'en',
+        'en' => 'en',
+        'en_us' => 'en',
+        'en-us' => 'en',
+        'arabic' => 'ar',
+        'العربية' => 'ar',
+        'ar' => 'ar',
+        'french' => 'fr',
+        'francais' => 'fr',
+        'français' => 'fr',
+        'fr' => 'fr',
+    ];
+
+    $chatLocale = $chatLocaleMap[$rawChatLocale] ?? Str::before(str_replace('_', '-', $rawChatLocale), '-');
+    if (!empty($chatLocale)) {
+        app()->setLocale($chatLocale);
+    }
+
+    $t = function (string $key, string $fallback) {
+        $value = __($key);
+        return $value === $key ? $fallback : $value;
+    };
+
+    $hasInitialConversation = filled((string) ($id ?? ''));
+    $isGroupConversation = Str::of((string) ($id ?? ''))->contains('-');
+    $authAvatar = auth()->user()->getFirstMediaUrl('avatars','thumb');
+    $conversationAvatarStyle = (!$hasInitialConversation || $isGroupConversation) ? 'background-image: none;' : "background-image: url('{$authAvatar}');";
+@endphp
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 <head>
@@ -51,6 +92,11 @@
             min-height: 100%;
             overflow: hidden;
             overflow-x: clip;
+            overscroll-behavior: none;
+        }
+
+        body {
+            touch-action: manipulation;
         }
 
         *,
@@ -60,6 +106,9 @@
         }
 
         :root {
+            --bec-chat-app-height: 100dvh;
+            --bec-chat-visible-height: 100dvh;
+            --bec-chat-viewport-top: 0px;
             --bec-chat-bottom-nav: 72px;
             --bec-chat-sidebar: 340px;
             color-scheme: light;
@@ -335,7 +384,123 @@
             box-shadow: none !important;
         }
 
+        .bec-chat-page {
+            overscroll-behavior: none;
+        }
+
+        .bec-chat-page .messenger,
+        .bec-chat-page .messenger-listView,
+        .bec-chat-page .messenger-messagingView,
+        .bec-chat-page .messenger-infoView {
+            min-height: 0;
+            max-height: 100%;
+        }
+
+        .bec-chat-page .messenger-messagingView {
+            grid-template-rows: auto minmax(0, 1fr) auto;
+            overflow: hidden;
+        }
+
+        .bec-chat-page .messages-container {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            overflow-anchor: none;
+            overflow-x: hidden;
+        }
+
+        .bec-chat-page .messenger-admins {
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            padding-bottom: .35rem;
+        }
+
+        .bec-chat-page .messenger-admins > * {
+            flex: 0 0 auto;
+        }
+
+        .bec-chat-page .messenger-list-item .contact-item-time {
+            max-width: 5.75rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: right;
+        }
+
+        .bec-chat-page .messenger.no-active-conversation .m-header-messaging,
+        .bec-chat-page .messenger.no-active-conversation .messenger-sendCard,
+        .bec-chat-page .messenger.no-active-conversation .m-header-right,
+        .bec-chat-page .messenger.no-active-conversation .typing-indicator,
+        .bec-chat-page .messenger.no-active-conversation .conversation-day-divider {
+            display: none !important;
+        }
+
+        .bec-chat-page .messenger.no-active-conversation .messages-container {
+            display: grid;
+            align-items: center;
+            justify-items: center;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        .bec-chat-page .messenger.no-active-conversation .messages-inner,
+        .bec-chat-page .messenger.no-active-conversation .messages {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .bec-chat-page .messenger.no-active-conversation .messages {
+            display: grid;
+            min-height: min(28rem, calc(var(--bec-chat-app-height) - 8rem));
+            place-items: center;
+            padding: 1rem;
+        }
+
+        .bec-chat-page .messenger.no-active-conversation .message-hint {
+            max-width: min(23rem, 92vw);
+        }
+
+        .bec-chat-page .messenger.no-active-conversation .messenger-list-item.active > tbody > tr,
+        .bec-chat-page .messenger.no-active-conversation .messenger-list-item.m-list-active > tbody > tr,
+        .bec-chat-page .messenger.no-active-conversation .messenger-list-item tr.active {
+            border-color: rgb(226 232 240) !important;
+            background: #fff !important;
+        }
+
+        html.dark .bec-chat-page .messenger.no-active-conversation .messenger-list-item.active > tbody > tr,
+        html.dark .bec-chat-page .messenger.no-active-conversation .messenger-list-item.m-list-active > tbody > tr,
+        html.dark .bec-chat-page .messenger.no-active-conversation .messenger-list-item tr.active {
+            border-color: rgba(255, 255, 255, .15) !important;
+            background: rgb(15 23 42) !important;
+        }
+
+        .bec-chat-page .messenger-sendCard[aria-disabled="true"] {
+            pointer-events: none;
+            opacity: .62;
+        }
+
+        .bec-chat-page .composer-input textarea,
+        .bec-chat-page .composer-input input,
+        .bec-chat-page .messenger-search {
+            font-size: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .bec-chat-page .composer-input textarea,
+            .bec-chat-page .composer-input input,
+            .bec-chat-page .messenger-search {
+                font-size: .95rem;
+            }
+        }
+
         @media (max-width: 767px) {
+            html.bec-chat-conversation-open,
+            html.bec-chat-conversation-open body {
+                height: 100%;
+                overflow: hidden !important;
+                overscroll-behavior: none;
+            }
+
             .bec-chat-page .messenger {
                 display: block;
             }
@@ -349,17 +514,54 @@
 
             .bec-chat-page .messenger-messagingView {
                 position: fixed;
-                inset: 0;
+                left: 0;
+                right: 0;
+                top: var(--bec-chat-viewport-top);
+                bottom: auto;
                 z-index: 40;
                 display: grid !important;
                 width: 100%;
                 max-width: 100%;
-                height: 100%;
-                max-height: none;
+                height: var(--bec-chat-visible-height);
+                max-height: var(--bec-chat-visible-height);
+                min-height: 0;
+                grid-template-rows: auto minmax(0, 1fr) auto;
+                overflow: hidden !important;
+                overscroll-behavior: none;
                 visibility: hidden;
                 transform: translateX(100%);
                 transition: transform .18s ease, visibility .18s ease;
                 will-change: transform;
+            }
+
+            html.bec-chat-keyboard-open .bec-chat-page .messenger-messagingView {
+                transition: none;
+            }
+
+            .bec-chat-page .messenger-sendCard {
+                min-height: 0;
+                border-top-color: rgba(226, 232, 240, .72);
+                padding-top: .65rem;
+                padding-bottom: max(.95rem, env(safe-area-inset-bottom, 0px));
+            }
+
+            html.bec-chat-keyboard-open .bec-chat-page .messenger-sendCard {
+                padding-top: .6rem;
+                padding-bottom: 1rem;
+            }
+
+            .bec-chat-page .m-header-messaging {
+                min-height: 0;
+                flex-shrink: 0;
+            }
+
+            .bec-chat-page .messages-container {
+                min-height: 0;
+                height: auto;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                overscroll-behavior: contain;
+                touch-action: pan-y;
             }
 
             .bec-chat-page .messenger.conversation-open .messenger-listView,
@@ -384,61 +586,55 @@
     @include("slider.menu", ["active" => "speaking"])
 </div>
 
-@php
-    $isGroupConversation = \Illuminate\Support\Str::of((string) $id)->contains('-');
-    $authAvatar = auth()->user()->getFirstMediaUrl('avatars','thumb');
-    $conversationAvatarStyle = $isGroupConversation ? 'background-image: none;' : "background-image: url('{$authAvatar}');";
-@endphp
-
-<main class="bec-chat-page fixed inset-x-0 top-0 bottom-[calc(var(--bec-chat-bottom-nav)+env(safe-area-inset-bottom,0px))] z-[1] min-h-0 overflow-hidden p-0 xl:left-[var(--bec-chat-sidebar)] xl:bottom-0" aria-label="Boston English Center messenger">
-    <section class="messenger {{ !!$id ? 'conversation-open' : '' }} relative h-full min-h-0 w-full overflow-hidden md:flex md:gap-0" dir="ltr">
-        <aside class="messenger-listView {{ !!$id ? 'conversation-active' : '' }} absolute inset-0 z-20 flex h-full min-w-0 flex-col overflow-hidden bg-[#FAFAFF] px-4 py-4 sm:px-6 md:relative md:inset-auto md:z-auto md:w-[280px] md:shrink-0 md:border-r md:border-slate-900/5 md:px-4 md:py-3 lg:w-[320px] xl:w-[360px] dark:border-white/[.07] dark:bg-[#080D19]">
+<main class="bec-chat-page fixed inset-x-0 top-0 bottom-[calc(var(--bec-chat-bottom-nav)+env(safe-area-inset-bottom,0px))] z-[1] min-h-0 overflow-hidden p-0 xl:left-[var(--bec-chat-sidebar)] xl:bottom-0" aria-label="{{ $t('chatify.BostonMessenger', 'Boston English Center messenger') }}">
+    <section class="messenger {{ !!$id ? 'conversation-open has-active-conversation' : 'no-active-conversation' }} relative h-full min-h-0 w-full overflow-hidden md:flex md:gap-0" dir="ltr" data-has-active-conversation="{{ !!$id ? '1' : '0' }}">
+        <aside class="messenger-listView {{ !!$id ? 'conversation-active' : '' }} absolute inset-0 z-20 flex h-full min-w-0 flex-col overflow-hidden bg-[#FAFAFF] px-4 py-4 sm:px-6 md:relative md:inset-auto md:z-auto md:w-[300px] md:shrink-0 md:border-r md:border-slate-900/5 md:px-4 md:py-3 lg:w-[340px] xl:w-[380px] dark:border-white/[.07] dark:bg-[#080D19]">
             <input type="text" class="messenger-search hidden" aria-hidden="true" tabindex="-1">
 
             <div class="m-body contacts-container min-h-0 flex-1 overflow-hidden">
-                <div class="show messenger-tab users-tab bec-chat-scroll flex h-full min-h-0 flex-col overflow-y-auto" data-view="users" role="list" aria-label="Chats">
+                <div class="show messenger-tab users-tab bec-chat-scroll flex h-full min-h-0 flex-col overflow-y-auto" data-view="users" role="list" aria-label="{{ $t('chatify.Chats', 'Chats') }}">
                     <div class="admins-section shrink-0">
-                        <p class="messenger-title px-1 pb-2 pt-1 text-xs font-semibold text-slate-500 dark:text-slate-400"><span>All contacts</span></p>
+                        <p class="messenger-title px-1 pb-2 pt-1 text-xs font-semibold text-slate-500 dark:text-slate-400"><span>{{ $t('chatify.AllContacts', 'All contacts') }}</span></p>
                         <div class="messenger-admins bec-chat-scroll mb-4 flex flex-wrap gap-2 overflow-hidden px-0 pb-1"></div>
                     </div>
 
-                    <p class="messenger-title px-1 pb-2 pt-1 text-xs font-semibold text-slate-500 dark:text-slate-400"><span>{{ __('chatify.AllMessages') }}</span></p>
+                    <p class="messenger-title px-1 pb-2 pt-1 text-xs font-semibold text-slate-500 dark:text-slate-400"><span>{{ $t('chatify.AllMessages', 'All messages') }}</span></p>
                     <div class="listOfContacts mx-0 space-y-3 overflow-hidden px-0 pb-0 pt-1"></div>
                 </div>
 
                 <div class="messenger-tab search-tab bec-chat-scroll h-full min-h-0 overflow-y-auto" data-view="search">
-                    <p class="messenger-title px-1 pb-2 pt-1 text-xs font-semibold text-slate-500 dark:text-slate-400"><span>{{ __('chatify.Search') }}</span></p>
+                    <p class="messenger-title px-1 pb-2 pt-1 text-xs font-semibold text-slate-500 dark:text-slate-400"><span>{{ $t('chatify.Search', 'Search') }}</span></p>
                     <div class="search-records mx-0 space-y-3 px-0 pb-0 pt-1">
-                        <p class="message-hint center-el relative inset-auto mx-auto transform-none rounded-[1.5rem] bg-white px-5 py-8 text-center text-sm font-medium text-slate-500 shadow-[0_14px_40px_rgba(15,23,42,0.04)] transition-colors duration-300 dark:bg-slate-900 dark:text-slate-400 dark:shadow-[0_14px_40px_rgba(0,0,0,0.24)]"><span>{{ __('chatify.Type to search..') }}</span></p>
+                        <p class="message-hint center-el relative inset-auto mx-auto transform-none rounded-[1.5rem] bg-white px-5 py-8 text-center text-sm font-medium text-slate-500 shadow-[0_14px_40px_rgba(15,23,42,0.04)] transition-colors duration-300 dark:bg-slate-900 dark:text-slate-400 dark:shadow-[0_14px_40px_rgba(0,0,0,0.24)]"><span>{{ $t('chatify.TypeToSearch', 'Type to search...') }}</span></p>
                     </div>
                 </div>
             </div>
-        </aside>
+        </aside> 
 
-        <section class="messenger-messagingView relative z-[1] grid h-full min-h-0 max-h-full w-full grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-[#FAFAFF] md:min-w-0 md:flex-1 dark:bg-[#070B16]" role="region" aria-label="Conversation">
+        <section class="messenger-messagingView relative z-[1] grid h-full min-h-0 max-h-full w-full grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-[#FAFAFF] md:min-w-0 md:flex-1 dark:bg-[#070B16]" role="region" aria-label="{{ $t('chatify.Conversation', 'Conversation') }}">
             <div class="m-header m-header-messaging shrink-0 border-b border-slate-900/5 bg-[#FAFAFF]/95 px-3 pb-2 pt-3 backdrop-blur transition-colors duration-300 sm:px-4 md:px-6 md:py-3 xl:px-7 dark:border-white/10 dark:bg-[#070B16]/95">
                 <nav class="flex items-center gap-2 sm:gap-3">
-                    <a href="#" class="show-listView flex h-9 w-7 shrink-0 items-center justify-center text-[#5B3FEA] transition active:scale-95 md:hidden dark:text-violet-300" aria-label="Back to chats">
+                    <a href="#" class="show-listView flex h-9 w-7 shrink-0 items-center justify-center text-[#5B3FEA] transition active:scale-95 md:hidden dark:text-violet-300" aria-label="{{ $t('chatify.BackToChats', 'Back to chats') }}">
                         <svg viewBox="0 0 24 24" fill="none" class="h-7 w-7"><path d="M15 5 8 12l7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
 
-                    <a href="#" class="show-infoSide flex min-w-0 flex-1 items-center gap-3 text-left no-underline" aria-label="Open conversation details">
+                    <a href="#" class="show-infoSide conversation-profile-trigger flex min-w-0 flex-1 items-center gap-3 text-left no-underline" aria-label="{{ $t('chatify.OpenConversationDetails', 'Open conversation details') }}">
                         <div class="avatar av-s header-avatar {{ $isGroupConversation ? 'is-group-avatar' : '' }} relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F2EEFF] bg-cover bg-center text-[#5B3FEA] ring-2 ring-white xl:h-12 xl:w-12 dark:bg-violet-500/15 dark:text-violet-300 dark:ring-slate-900" style="{{ $conversationAvatarStyle }}">
                             <i class="group-avatar-icon fa-solid fa-user-group {{ $isGroupConversation ? 'inline-block' : 'hidden' }} text-lg"></i>
-                            <span class="conversation-presence-dot hidden absolute bottom-[1px] right-[-1px] h-3.5 w-3.5 rounded-full border-[3px] border-white bg-slate-300 dark:border-slate-900 dark:bg-slate-500" aria-label="Offline"></span>
+                            <span class="conversation-presence-dot hidden absolute bottom-[1px] right-[-1px] h-3.5 w-3.5 rounded-full border-[3px] border-white bg-slate-300 dark:border-slate-900 dark:bg-slate-500" aria-label="{{ $t('chatify.Offline', 'Offline') }}"></span>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <span class="user-name block truncate text-lg font-semibold leading-tight tracking-[-0.01em] text-slate-950 sm:text-[22px] md:text-lg xl:text-xl dark:text-white">{{ auth()->user()->name }}</span>
+                            <span class="user-name block truncate text-lg font-semibold leading-tight tracking-[-0.01em] text-slate-950 sm:text-[22px] md:text-lg xl:text-xl dark:text-white">{{ !!$id ? auth()->user()->name : 'Select a conversation' }}</span>
                             <span class="internet-connection mt-1 flex min-w-0 items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
-                                <span class="ic-connected">{{ __('chatify.Connected') }}</span>
-                                <span class="ic-connecting">{{ __('chatify.Connecting...') }}</span>
-                                <span class="ic-noInternet">{{ __('chatify.No internet access') }}</span>
+                                <span class="ic-connected">{{ $t('chatify.Connected', 'Connected') }}</span>
+                                <span class="ic-connecting">{{ $t('chatify.Connecting...', 'Connecting...') }}</span>
+                                <span class="ic-noInternet">{{ $t('chatify.No internet access', 'No internet access') }}</span>
                             </span>
                         </div>
                     </a>
 
                     <div class="m-header-right ml-auto flex shrink-0 items-center text-[#5B3FEA] dark:text-violet-300">
-                        <a href="#" class="show-infoSide flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-[#F2EEFF] active:scale-95 dark:hover:bg-white/10" aria-label="Conversation details">
+                        <a href="#" class="show-infoSide flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-[#F2EEFF] active:scale-95 dark:hover:bg-white/10" aria-label="{{ $t('chatify.ConversationDetails', 'Conversation details') }}">
                             <svg viewBox="0 0 24 24" fill="none" class="h-7 w-7 md:h-6 md:w-6 xl:h-7 xl:w-7"><path d="M12 6.5h.01M12 12h.01M12 17.5h.01" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
                         </a>
                     </div>
@@ -447,12 +643,15 @@
 
             <div class="m-body messages-container bec-chat-scroll min-h-0 flex-1 overflow-y-auto px-4 py-3 sm:px-5 md:px-7 md:py-4 xl:px-8" aria-live="polite" aria-relevant="additions text">
                 <div class="messages-inner mx-auto w-full max-w-[1120px] px-1 py-1 md:px-2 xl:max-w-[1180px]">
-                    <div class="mb-4 text-center">
+                    <div class="conversation-day-divider mb-4 text-center">
                         <span class="text-sm font-semibold text-slate-700 xl:text-base dark:text-slate-300">Today</span>
                     </div>
 
-                    <div class="messages mx-auto w-full max-w-[1120px] space-y-4 px-1 pb-2 xl:max-w-[1180px]" role="log" aria-label="Messages">
-                        <p class="message-hint center-el relative inset-auto mx-auto transform-none rounded-[1.5rem] bg-white px-5 py-8 text-center text-sm font-medium text-slate-500 shadow-[0_14px_40px_rgba(15,23,42,0.04)] transition-colors duration-300 dark:bg-slate-900 dark:text-slate-400 dark:shadow-[0_14px_40px_rgba(0,0,0,0.24)]"><span>{{ __('chatify.Please select a chat to start messaging') }}</span></p>
+                    <div class="messages mx-auto w-full max-w-[1120px] space-y-4 px-1 pb-2 xl:max-w-[1180px]" role="log" aria-label="{{ $t('chatify.Messages', 'Messages') }}">
+                        <p class="message-hint center-el relative inset-auto mx-auto transform-none rounded-[1.5rem] bg-white px-5 py-8 text-center text-sm font-medium text-slate-500 shadow-[0_14px_40px_rgba(15,23,42,0.04)] transition-colors duration-300 dark:bg-slate-900 dark:text-slate-400 dark:shadow-[0_14px_40px_rgba(0,0,0,0.24)]" data-empty-state="1">
+                            <span class="empty-conversation-title block text-base font-extrabold text-slate-950 dark:text-white">Select a conversation</span>
+                            <span class="empty-conversation-description mt-1 block text-sm font-semibold text-slate-500 dark:text-slate-400">Choose a student, teacher, or group to start messaging.</span>
+                        </p>
                     </div>
 
                     <div class="typing-indicator d-none mt-3 w-full" role="status" aria-live="polite">
@@ -469,11 +668,11 @@
                 </div>
             </div>
 
-            <footer class="messenger-sendCard shrink-0 border-t border-slate-900/5 bg-[#FAFAFF]/95 px-4 py-3 backdrop-blur transition-colors duration-300 dark:border-white/[.06] dark:bg-[#070B16]/95">
-                <form id="message-form" method="POST" action="{{ route('send.message') }}" enctype="multipart/form-data" aria-label="Send a message" class="relative mx-auto flex w-full max-w-full items-center gap-3 border-0 bg-transparent shadow-none outline-none">
+            <footer class="messenger-sendCard shrink-0 border-t border-slate-900/5 bg-[#FAFAFF]/95 px-4 py-3 backdrop-blur transition-colors duration-300 dark:border-white/[.06] dark:bg-[#070B16]/95" aria-disabled="{{ !!$id ? 'false' : 'true' }}">
+                <form id="message-form" method="POST" action="{{ route('send.message') }}" enctype="multipart/form-data" aria-label="{{ $t('chatify.SendMessage', 'Send a message') }}" class="relative mx-auto flex w-full max-w-full items-center gap-3 border-0 bg-transparent shadow-none outline-none">
                     @csrf
 
-                    <label class="attachment-button inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-gradient-to-br from-[#6D4CFF] to-[#4F35D8] text-white active:scale-95" aria-label="Add attachment" tabindex="0">
+                    <label class="attachment-button inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-gradient-to-br from-[#6D4CFF] to-[#4F35D8] text-white active:scale-95" aria-label="{{ $t('chatify.AddAttachment', 'Add attachment') }}" tabindex="0">
                         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="h-[1.2rem] w-[1.2rem]">
                             <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path>
                         </svg>
@@ -481,15 +680,15 @@
                     </label>
 
                     <div class="composer-input flex h-12 min-w-0 flex-1 items-center gap-3 overflow-hidden rounded-full border border-slate-900/5 bg-white px-5 shadow-none transition-colors duration-300 dark:border-white/[.08] dark:bg-[#101827] dark:shadow-none">
-                        <textarea readonly="readonly" name="message" rows="1" class="m-send app-scroll block min-w-0 flex-1 resize-none border-0 bg-transparent px-0 py-0 text-[.95rem] font-medium leading-6 text-slate-900 shadow-none outline-none placeholder:text-slate-400 dark:text-slate-100 dark:placeholder:text-slate-500" placeholder="Type a message..." aria-label="Message text"></textarea>
+                        <textarea readonly="readonly" name="message" rows="1" class="m-send app-scroll block min-w-0 flex-1 resize-none border-0 bg-transparent px-0 py-0 text-[16px] font-medium leading-6 text-slate-900 shadow-none outline-none placeholder:text-slate-400 md:text-[.95rem] dark:text-slate-100 dark:placeholder:text-slate-500" placeholder="Type a message..." aria-label="{{ $t('chatify.MessageText', 'Message text') }}"></textarea>
 
-                        <button type="submit" disabled="disabled" class="send-button d-none h-7 w-7 shrink-0 items-center justify-center border-0 bg-transparent p-0 text-[#5B3FEA] outline-none transition active:scale-95 dark:text-violet-300" aria-label="Send message">
+                        <button type="submit" disabled="disabled" class="send-button d-none h-7 w-7 shrink-0 items-center justify-center border-0 bg-transparent p-0 text-[#5B3FEA] outline-none transition active:scale-95 dark:text-violet-300" aria-label="{{ $t('chatify.SendMessage', 'Send message') }}">
                             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="h-[1.65rem] w-[1.65rem]">
                                 <path d="M5 12 3.5 5.5 21 12 3.5 18.5 5 12Zm0 0h8" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
 
-                        <span id="startRecordingBtn" class="inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-[#5B3FEA] outline-none transition active:scale-95 dark:text-violet-300" aria-label="Record voice message">
+                        <span id="startRecordingBtn" class="inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-[#5B3FEA] outline-none transition active:scale-95 dark:text-violet-300" aria-label="{{ $t('chatify.RecordVoiceMessage', 'Record voice message') }}">
                             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="h-[1.65rem] w-[1.65rem]">
                                 <path d="M12 14.5a3.3 3.3 0 0 0 3.3-3.3V6.3a3.3 3.3 0 0 0-6.6 0v4.9a3.3 3.3 0 0 0 3.3 3.3Z" stroke="currentColor" stroke-width="2.1"></path>
                                 <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M8.5 21h7" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"></path>
@@ -524,39 +723,39 @@
             </footer>
         </section>
 
-        <aside class="messenger-infoView bec-chat-scroll fixed inset-[.6rem] bottom-[calc(var(--bec-chat-bottom-nav)+env(safe-area-inset-bottom,0px)+.6rem)] z-[60] h-auto w-auto shrink-0 overflow-y-auto rounded-[1.6rem] border border-white/80 bg-[#FAFAFF] p-4 shadow-[0_24px_70px_rgba(79,53,216,0.12)] transition-colors duration-300 md:relative md:inset-auto md:z-[1] md:h-full md:w-[320px] md:flex-[0_0_320px] md:rounded-none md:border-y-0 md:border-r-0 md:shadow-none dark:border-white/[.07] dark:bg-[#080D19] dark:shadow-none" aria-label="Conversation details">
+        <aside class="messenger-infoView bec-chat-scroll fixed inset-[.6rem] bottom-[calc(var(--bec-chat-bottom-nav)+env(safe-area-inset-bottom,0px)+.6rem)] z-[60] h-auto w-auto shrink-0 overflow-y-auto rounded-[1.6rem] border border-white/80 bg-[#FAFAFF] p-4 shadow-[0_24px_70px_rgba(79,53,216,0.12)] transition-colors duration-300 md:relative md:inset-auto md:z-[1] md:h-full md:w-[320px] md:flex-[0_0_320px] md:rounded-none md:border-y-0 md:border-r-0 md:shadow-none dark:border-white/[.07] dark:bg-[#080D19] dark:shadow-none" aria-label="{{ $t('chatify.ConversationDetails', 'Conversation details') }}">
             <nav class="mb-4 flex items-center justify-between gap-3">
-                <p class="text-base font-bold tracking-[-.02em] text-slate-950 dark:text-white">{{ __('chatify.UserDetails') }}</p>
-                <a href="#" class="messenger-infoView-close flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-500 shadow-[0_8px_28px_rgba(15,23,42,0.035)] transition hover:bg-[#F2EEFF] hover:text-[#5B3FEA] dark:bg-slate-900 dark:text-slate-400 dark:shadow-[0_8px_28px_rgba(0,0,0,0.24)] dark:hover:bg-white/10 dark:hover:text-violet-300" aria-label="Close details"><i class="fas fa-times"></i></a>
+                <p class="text-base font-bold tracking-[-.02em] text-slate-950 dark:text-white">{{ $t('chatify.UserDetails', 'User details') }}</p>
+                <a href="#" class="messenger-infoView-close flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-500 shadow-[0_8px_28px_rgba(15,23,42,0.035)] transition hover:bg-[#F2EEFF] hover:text-[#5B3FEA] dark:bg-slate-900 dark:text-slate-400 dark:shadow-[0_8px_28px_rgba(0,0,0,0.24)] dark:hover:bg-white/10 dark:hover:text-violet-300" aria-label="{{ $t('chatify.CloseDetails', 'Close details') }}"><i class="fas fa-times"></i></a>
             </nav>
             <div class="mb-4 overflow-hidden rounded-[1.6rem] border border-white/80 bg-white p-5 text-center shadow-[0_18px_48px_rgba(91,63,234,0.08)] transition-colors duration-300 dark:border-white/10 dark:bg-slate-900 dark:shadow-[0_18px_48px_rgba(0,0,0,0.24)]">
                 <div class="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#F2EEFF] to-white shadow-[0_18px_34px_rgba(91,63,234,0.12)] ring-4 ring-white dark:from-violet-500/15 dark:to-slate-900 dark:ring-slate-950">
                     <div class="avatar av-l info-avatar chatify-d-flex {{ $isGroupConversation ? 'is-group-avatar' : '' }} relative h-20 w-20 items-center justify-center rounded-full bg-[#F2EEFF] bg-cover bg-center text-[#5B3FEA] dark:bg-violet-500/15 dark:text-violet-300" style="{{ $conversationAvatarStyle }}">
                         <i class="group-avatar-icon fa-solid fa-user-group {{ $isGroupConversation ? 'inline-block' : 'hidden' }} text-2xl"></i>
-                        <span class="conversation-presence-dot hidden absolute bottom-[2px] right-[-2px] h-4 w-4 rounded-full border-[3px] border-white bg-slate-300 dark:border-slate-900 dark:bg-slate-500" aria-label="Offline"></span>
+                        <span class="conversation-presence-dot hidden absolute bottom-[2px] right-[-2px] h-4 w-4 rounded-full border-[3px] border-white bg-slate-300 dark:border-slate-900 dark:bg-slate-500" aria-label="{{ $t('chatify.Offline', 'Offline') }}"></span>
                     </div>
                 </div>
-                <p class="info-name truncate text-xl font-extrabold tracking-[-.03em] text-slate-950 dark:text-white">{{ auth()->user()->name }}</p>
-                <p class="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">Conversation profile</p>
+                <p class="info-name truncate text-xl font-extrabold tracking-[-.03em] text-slate-950 dark:text-white">{{ !!$id ? auth()->user()->name : 'Select a conversation' }}</p>
+                <p class="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">{{ $t('chatify.ConversationProfile', 'Conversation profile') }}</p>
             </div>
 
             <p class="collapsed messenger-infoView-collapse cursor-pointer d-none mb-3 rounded-[1.25rem] border border-[#DED8FF] bg-[#F8F6FF] px-4 py-3 text-sm font-bold text-[#5B3FEA] dark:border-violet-300/15 dark:bg-violet-500/10 dark:text-violet-300">
                 <span class="flex items-center justify-between gap-3">
-                    {{ __('chatify.ManageGroup') }}
+                    {{ $t('chatify.ManageGroup', 'Manage group') }}
                     <iconify-icon class="arrow_right" icon="ic:baseline-plus"></iconify-icon>
                 </span>
             </p>
 
             <div class="messenger-infoView-btns mb-4 space-y-2">
-                <a href="#" class="danger delete-conversation d-none flex w-full items-center justify-center rounded-2xl bg-red-500/10 px-4 py-3 text-sm font-extrabold text-red-600 no-underline">{{ __('chatify.DeleteConversation') }}</a>
-                <a href="#" class="danger block-user d-none flex w-full items-center justify-center rounded-2xl bg-red-500/10 px-4 py-3 text-sm font-extrabold text-red-600 no-underline">{{ __('chatify.BlockUser') }}</a>
-                <a href="#" class="danger block-users-from-group d-none flex w-full items-center justify-center rounded-2xl bg-red-500/10 px-4 py-3 text-sm font-extrabold text-red-600 no-underline">{{ __('chatify.BlockUsers') }}</a>
+                <a href="#" class="danger delete-conversation d-none flex w-full items-center justify-center rounded-2xl bg-red-500/10 px-4 py-3 text-sm font-extrabold text-red-600 no-underline">{{ $t('chatify.DeleteConversation', 'Delete conversation') }}</a>
+                <a href="#" class="danger block-user d-none flex w-full items-center justify-center rounded-2xl bg-red-500/10 px-4 py-3 text-sm font-extrabold text-red-600 no-underline">{{ $t('chatify.BlockUser', 'Block user') }}</a>
+                <a href="#" class="danger block-users-from-group d-none flex w-full items-center justify-center rounded-2xl bg-red-500/10 px-4 py-3 text-sm font-extrabold text-red-600 no-underline">{{ $t('chatify.BlockUsers', 'Block users') }}</a>
             </div>
 
-            <div class="messenger-infoView-shared rounded-[1.6rem] border border-white/80 bg-white p-4 shadow-[0_18px_48px_rgba(15,23,42,0.045)] transition-colors duration-300 dark:border-white/10 dark:bg-slate-900 dark:shadow-[0_18px_48px_rgba(0,0,0,0.24)]" aria-label="Shared photos">
+            <div class="messenger-infoView-shared rounded-[1.6rem] border border-white/80 bg-white p-4 shadow-[0_18px_48px_rgba(15,23,42,0.045)] transition-colors duration-300 dark:border-white/10 dark:bg-slate-900 dark:shadow-[0_18px_48px_rgba(0,0,0,0.24)]" aria-label="{{ $t('chatify.SharedPhotos', 'Shared photos') }}">
                 <p class="mb-4">
-                    <span class="block text-base font-extrabold tracking-[-.02em] text-slate-950 dark:text-white">{{ __('chatify.SharedPhotos') }}</span>
-                    <span class="mt-1 block text-xs font-bold text-slate-400 dark:text-slate-500">Images from this conversation</span>
+                    <span class="block text-base font-extrabold tracking-[-.02em] text-slate-950 dark:text-white">{{ $t('chatify.SharedPhotos', 'Shared photos') }}</span>
+                    <span class="mt-1 block text-xs font-bold text-slate-400 dark:text-slate-500">{{ $t('chatify.ImagesFromConversation', 'Images from this conversation') }}</span>
                 </p>
                 <div class="shared-photos-list grid min-h-[6rem] grid-cols-3 gap-2 rounded-[1.2rem] bg-[#FAFAFF] p-2 dark:border dark:border-white/[.04] dark:bg-[#080D19]"></div>
             </div>
@@ -573,11 +772,11 @@
 <div class="app-modal fixed inset-0 z-[9998] items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm" data-name="delete" style="display: none;">
     <div class="app-modal-container w-full max-w-[28rem]">
         <div class="app-modal-card rounded-[1.75rem] border border-slate-900/5 bg-white p-6 text-center shadow-[0_24px_70px_rgba(15,23,42,.16)] dark:border-white/10 dark:bg-slate-900 dark:text-slate-100 dark:shadow-[0_24px_70px_rgba(0,0,0,.35)]" data-name="delete" data-modal="0">
-            <div class="app-modal-header text-xl font-bold tracking-[-.02em] text-slate-950 dark:text-slate-50">{{__('chatify.Are you sure you want to delete this?')}}</div>
-            <div class="app-modal-body mt-2 text-sm font-medium text-slate-500 dark:text-slate-400">{{__('chatify.You can not undo this action')}}</div>
+            <div class="app-modal-header text-xl font-bold tracking-[-.02em] text-slate-950 dark:text-slate-50">{{ $t('chatify.Are you sure you want to delete this?', 'Are you sure you want to delete this?') }}</div>
+            <div class="app-modal-body mt-2 text-sm font-medium text-slate-500 dark:text-slate-400">{{ $t('chatify.You can not undo this action', 'You can not undo this action') }}</div>
             <div class="app-modal-footer mt-6 flex justify-center gap-3">
-                <a href="javascript:void(0)" class="app-btn cancel inline-flex h-11 min-w-28 items-center justify-center rounded-2xl border border-slate-900/10 bg-white px-5 text-sm font-bold text-slate-700 no-underline transition hover:bg-slate-50 dark:border-white/10 dark:bg-slate-900 dark:text-slate-200">{{__('chatify.Cancel')}}</a>
-                <a href="javascript:void(0)" class="app-btn delete inline-flex h-11 min-w-28 items-center justify-center rounded-2xl bg-red-500 px-5 text-sm font-bold text-white no-underline shadow-[0_12px_24px_rgba(239,68,68,.22)] transition hover:bg-red-600">{{__('chatify.Delete')}}</a>
+                <a href="javascript:void(0)" class="app-btn cancel inline-flex h-11 min-w-28 items-center justify-center rounded-2xl border border-slate-900/10 bg-white px-5 text-sm font-bold text-slate-700 no-underline transition hover:bg-slate-50 dark:border-white/10 dark:bg-slate-900 dark:text-slate-200">{{ $t('chatify.Cancel', 'Cancel') }}</a>
+                <a href="javascript:void(0)" class="app-btn delete inline-flex h-11 min-w-28 items-center justify-center rounded-2xl bg-red-500 px-5 text-sm font-bold text-white no-underline shadow-[0_12px_24px_rgba(239,68,68,.22)] transition hover:bg-red-600">{{ $t('chatify.Delete', 'Delete') }}</a>
             </div>
         </div>
     </div>
@@ -590,7 +789,7 @@
         </button>
         <div class="app-modal-card rounded-[1.75rem] border border-slate-900/5 bg-white p-6 shadow-[0_24px_70px_rgba(15,23,42,.16)] dark:border-white/10 dark:bg-slate-900 dark:text-slate-100 dark:shadow-[0_24px_70px_rgba(0,0,0,.35)]" data-name="block" data-modal="0">
             <div class="app-modal-header block_header mb-4 text-lg font-bold tracking-[-.02em] text-slate-950 dark:text-slate-50">
-                {{__('chatify.Please check users you want to block')}}
+                {{ $t('chatify.Please check users you want to block', 'Please check users you want to block') }}
             </div>
             <div class="app-modal-body">
                 <form>
@@ -609,7 +808,7 @@
             <div class="app-modal-header text-xl font-bold tracking-[-.02em] text-slate-950 dark:text-slate-50"></div>
             <div class="app-modal-body mt-2 text-sm font-medium text-slate-500 dark:text-slate-400"></div>
             <div class="app-modal-footer mt-6 flex justify-center">
-                <a href="javascript:void(0)" class="app-btn cancel inline-flex h-11 min-w-28 items-center justify-center rounded-2xl bg-gradient-to-br from-[#6D4CFF] to-[#4F35D8] px-5 text-sm font-bold text-white no-underline shadow-[0_12px_24px_rgba(91,63,234,.24)]">{{__('chatify.Cancel')}}</a>
+                <a href="javascript:void(0)" class="app-btn cancel inline-flex h-11 min-w-28 items-center justify-center rounded-2xl bg-gradient-to-br from-[#6D4CFF] to-[#4F35D8] px-5 text-sm font-bold text-white no-underline shadow-[0_12px_24px_rgba(91,63,234,.24)]">{{ $t('chatify.Cancel', 'Cancel') }}</a>
             </div>
         </div>
     </div>
@@ -641,8 +840,126 @@
         const infoView = document.querySelector('.messenger-infoView');
         const backdrop = document.querySelector('.bec-chat-backdrop');
         const messagesContainer = document.querySelector('.messages-container');
+        const messageInput = document.querySelector('.m-send');
+        const sendCard = document.querySelector('.messenger-sendCard');
+        const messageForm = document.querySelector('#message-form');
         const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
         const isMobile = () => window.matchMedia('(max-width: 767px)').matches;
+        const metaConversation = document.querySelector('meta[name="id"]');
+        const chatLabels = {
+            online: @json($t('chatify.Online', 'Online')),
+            offline: @json($t('chatify.Offline', 'Offline')),
+            playAudio: @json($t('chatify.PlayAudio', 'Play audio')),
+            pauseAudio: @json($t('chatify.PauseAudio', 'Pause audio')),
+        };
+        let userOpenedConversation = false;
+        let hasActiveConversation = false;
+        let lastTouchY = 0;
+
+        function scrollMessagesToBottom(force = false) {
+            if (!messagesContainer) return;
+            const behavior = force ? 'auto' : 'smooth';
+            try {
+                messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior });
+            } catch (error) {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+
+        function setAppHeight() {
+            const viewport = window.visualViewport;
+            const height = viewport ? viewport.height : window.innerHeight;
+            const offsetTop = viewport ? viewport.offsetTop : 0;
+            const safeHeight = Math.max(320, Math.round(height || window.innerHeight || 0));
+            const safeTop = Math.max(0, Math.round(offsetTop || 0));
+
+            document.documentElement.style.setProperty('--bec-chat-app-height', `${safeHeight}px`);
+            document.documentElement.style.setProperty('--bec-chat-visible-height', `${safeHeight}px`);
+            document.documentElement.style.setProperty('--bec-chat-viewport-top', `${safeTop}px`);
+
+            const keyboardOpen = Boolean(
+                isMobile() &&
+                viewport &&
+                window.innerHeight - viewport.height > 120
+            );
+
+            document.documentElement.classList.toggle('bec-chat-keyboard-open', keyboardOpen);
+        }
+
+        function lockDocumentScroll() {
+            if (!isMobile()) return;
+            if (window.scrollY !== 0) window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        }
+
+        function isConversationScrollLocked() {
+            return Boolean(isMobile() && root?.classList.contains('conversation-open'));
+        }
+
+        function canScrollMessages(deltaY) {
+            if (!messagesContainer) return false;
+
+            const hasScrollableMessages = messagesContainer.scrollHeight > messagesContainer.clientHeight;
+            if (!hasScrollableMessages) return false;
+
+            const atTop = messagesContainer.scrollTop <= 0;
+            const atBottom = Math.ceil(messagesContainer.scrollTop + messagesContainer.clientHeight) >= messagesContainer.scrollHeight;
+
+            if (deltaY < 0 && atTop) return false;
+            if (deltaY > 0 && atBottom) return false;
+
+            return true;
+        }
+
+        function setComposerEnabled(enabled) {
+            sendCard?.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+            messageForm?.querySelectorAll('textarea, input[type="file"], button').forEach((control) => {
+                if (control.matches('textarea')) {
+                    control.readOnly = !enabled;
+                    control.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+                    if (!enabled) control.value = '';
+                    return;
+                }
+
+                control.disabled = !enabled;
+            });
+        }
+
+        function hasLoadedMessageCards() {
+            return Boolean(document.querySelector('.messages .message-card'));
+        }
+
+        function hasEmptyConversationHint() {
+            return Boolean(document.querySelector('.messages > .message-hint[data-empty-state]')) && !hasLoadedMessageCards();
+        }
+
+        function resolveActiveConversationState() {
+            const routeConversationId = (metaConversation?.content || '').trim();
+
+            if (hasEmptyConversationHint() && !userOpenedConversation) {
+                return false;
+            }
+
+            return userOpenedConversation
+                || hasLoadedMessageCards()
+                || (Boolean(routeConversationId) && !hasEmptyConversationHint());
+        }
+
+        function setActiveConversationState(enabled, options = {}) {
+            hasActiveConversation = Boolean(enabled);
+            root?.classList.toggle('has-active-conversation', hasActiveConversation);
+            root?.classList.toggle('no-active-conversation', !hasActiveConversation);
+            root?.setAttribute('data-has-active-conversation', hasActiveConversation ? '1' : '0');
+            setComposerEnabled(hasActiveConversation);
+
+            if (!hasActiveConversation && options.clearActive !== false) {
+                document.querySelectorAll('.messenger-list-item.active, .messenger-list-item.m-list-active, .messenger-list-item tr.active, .messenger-list-item tr.m-list-active').forEach((item) => {
+                    item.classList.remove('active', 'm-list-active');
+                });
+                closeInfoView();
+            }
+        }
 
         function syncSystemTheme() {
             document.documentElement.classList.toggle('dark', systemThemeQuery.matches);
@@ -663,6 +980,7 @@
         }
 
         function openInfoView() {
+            if (!hasActiveConversation) return;
             infoView?.classList.remove('hidden');
             infoView?.classList.add('show');
             root?.classList.add('show-infoSide');
@@ -681,21 +999,25 @@
         }
 
         function showConversationPane() {
+            setActiveConversationState(true, { clearActive: false });
             if (!isMobile()) return;
+            setAppHeight();
             root?.classList.add('conversation-open');
             listView?.classList.add('conversation-active');
             document.documentElement.classList.add('bec-chat-conversation-open');
             listView?.style.removeProperty('display');
             messagingView?.style.removeProperty('display');
+            lockDocumentScroll();
         }
 
         function syncConversationAvatarFallback() {
+            if (!hasActiveConversation) return;
             const activeNode = document.querySelector('.messenger-list-item.active, .messenger-list-item.m-list-active, .messenger-list-item tr.active');
             const activeItem = activeNode?.matches('.messenger-list-item') ? activeNode : activeNode?.closest('.messenger-list-item');
             const contactId = activeItem?.dataset.contact || document.querySelector('meta[name="id"]')?.content || '';
             const isGroup = contactId.includes('-');
             const presenceState = activeItem?.dataset.presence || '';
-            const presenceLabel = activeItem?.dataset.presenceLabel || (presenceState === 'online' ? 'Online' : 'Offline');
+            const presenceLabel = activeItem?.dataset.presenceLabel || (presenceState === 'online' ? chatLabels.online : chatLabels.offline);
             const activeAvatar = activeItem?.querySelector('.avatar');
             const activeAvatarImage = activeAvatar?.style?.backgroundImage || '';
 
@@ -770,7 +1092,7 @@
                 }
 
                 function setPlaying(isPlaying) {
-                    button.setAttribute('aria-label', isPlaying ? 'Pause audio' : 'Play audio');
+                    button.setAttribute('aria-label', isPlaying ? chatLabels.pauseAudio : chatLabels.playAudio);
                     icon?.classList.toggle('fa-play', !isPlaying);
                     icon?.classList.toggle('fa-pause', isPlaying);
                 }
@@ -824,7 +1146,10 @@
                 messagesContainer.setAttribute('aria-relevant', 'additions text');
             }
 
-            if (isMobile() && listView?.classList.contains('conversation-active')) {
+            const resolvedConversationState = resolveActiveConversationState();
+            setActiveConversationState(resolvedConversationState, { clearActive: !resolvedConversationState });
+
+            if (isMobile() && hasActiveConversation && listView?.classList.contains('conversation-active')) {
                 root?.classList.add('conversation-open');
                 document.documentElement.classList.add('bec-chat-conversation-open');
             } else {
@@ -852,13 +1177,22 @@
 
             const detailsTrigger = event.target.closest('a.show-infoSide');
             if (detailsTrigger) {
+                if (!hasActiveConversation) {
+                    event.preventDefault();
+                    return;
+                }
                 window.setTimeout(openInfoView, 0);
                 return;
             }
 
-            const listItem = event.target.closest('.messenger-list-item');
-            if (listItem && listView && isMobile()) {
-                window.setTimeout(showConversationPane, 0);
+            const chatTrigger = event.target.closest('.messenger-list-item, .admin-list-item, .messenger-admins [data-id]');
+            if (chatTrigger && listView) {
+                userOpenedConversation = true;
+                setActiveConversationState(true, { clearActive: false });
+                window.setTimeout(() => {
+                    if (isMobile()) showConversationPane();
+                    scrollMessagesToBottom(true);
+                }, 0);
             }
         });
 
@@ -866,6 +1200,59 @@
             if (event.key === 'Escape') closeInfoView();
         });
 
+        messageForm?.addEventListener('submit', function (event) {
+            if (!hasActiveConversation) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        }, true);
+
+        messageInput?.addEventListener('focus', function () {
+            document.documentElement.classList.add('bec-chat-input-focused');
+            setAppHeight();
+            window.requestAnimationFrame(lockDocumentScroll);
+        });
+
+        messageInput?.addEventListener('blur', function () {
+            window.setTimeout(() => {
+                document.documentElement.classList.remove('bec-chat-input-focused');
+                setAppHeight();
+            }, 120);
+        });
+
+        document.addEventListener('touchstart', function (event) {
+            if (!isConversationScrollLocked()) return;
+            lastTouchY = event.touches?.[0]?.clientY || 0;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', function (event) {
+            if (!isConversationScrollLocked()) return;
+
+            const target = event.target;
+            const insideMessages = Boolean(target?.closest?.('.messages-container'));
+            const currentY = event.touches?.[0]?.clientY || lastTouchY;
+            const deltaY = lastTouchY - currentY;
+            lastTouchY = currentY;
+
+            if (!insideMessages || !canScrollMessages(deltaY)) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        window.addEventListener('resize', setAppHeight, { passive: true });
+        window.addEventListener('orientationchange', function () {
+            window.setTimeout(setAppHeight, 160);
+            window.setTimeout(() => scrollMessagesToBottom(true), 260);
+        }, { passive: true });
+
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', setAppHeight, { passive: true });
+            window.visualViewport.addEventListener('scroll', setAppHeight, { passive: true });
+        }
+
+        setAppHeight();
+        const initialConversationState = resolveActiveConversationState();
+        setActiveConversationState(initialConversationState, { clearActive: !initialConversationState });
         adaptDynamicNodes();
 
         if (root) {
