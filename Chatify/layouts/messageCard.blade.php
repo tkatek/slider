@@ -52,9 +52,6 @@ $timeAndSeen = "<span data-time='".e($created_at)."' class='message-time float-n
     </span>";
 $role_id = $role_id ?? auth()->user()->role_id;
 $canDelete = ($isSender && (!$seen || in_array($role_id, [1, 2]))) || (!$isSender && in_array($role_id, [1, 2]));
-$bubbleClass = $isSender
-    ? 'rounded-[1.45rem] rounded-br-lg bg-gradient-to-br from-[#6D4CFF] to-[#4F35D8] text-left text-white'
-    : 'rounded-[1.45rem] rounded-bl-lg border border-slate-900/5 bg-white text-left text-slate-950 dark:border-white/10 dark:bg-slate-900 dark:text-slate-100';
 $deleteAction = $canDelete
     ? '<div class="actions pointer-events-none hidden h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-red-500 opacity-0 ring-1 ring-slate-900/5 transition hover:bg-red-50 group-hover:flex group-hover:pointer-events-auto group-hover:opacity-100 group-focus:flex group-focus:pointer-events-auto group-focus:opacity-100 group-focus-within:flex group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-active:flex group-active:pointer-events-auto group-active:opacity-100 dark:bg-slate-900 dark:text-red-400 dark:ring-white/10 dark:hover:bg-red-500/10">
             <button type="button" class="delete-btn flex h-full w-full shrink-0 items-center justify-center rounded-full outline-none" data-id="'.e($id).'" aria-label="'.e($deleteMessageLabel).'">
@@ -66,6 +63,23 @@ $attachmentName = $attachment ? ($attachment->name ?? $attachment->file_name ?? 
 $attachmentFileName = $attachment ? ($attachment->file_name ?? $attachmentName) : '';
 $attachmentExtension = $attachment ? (string) \Illuminate\Support\Str::of($attachmentFileName)->afterLast('.') : '';
 $attachmentExtensionClass = \Illuminate\Support\Str::slug($attachmentExtension ?: 'file');
+$attachmentMimeType = $attachment ? (string) ($attachment->mime_type ?? '') : '';
+$imageExtensions = collect(config('chatify.attachments.allowed_images', []))
+    ->map(fn ($extension) => strtolower(ltrim((string) $extension, '.')))
+    ->filter()
+    ->all();
+$isImageAttachment = $attachment && (
+    \Illuminate\Support\Str::of($attachmentMimeType)->contains('image/')
+    || in_array(strtolower($attachmentExtension), $imageExtensions, true)
+);
+$messageText = trim((string) $message);
+$isImageOnlyMessage = $isImageAttachment && $messageText === '' && !$audio;
+$bubbleClass = $isImageOnlyMessage
+    ? 'bg-transparent text-left text-slate-950 dark:text-slate-100'
+    : ($isSender
+        ? 'rounded-[1.45rem] rounded-br-lg bg-gradient-to-br from-[#6D4CFF] to-[#4F35D8] text-left text-white'
+        : 'rounded-[1.45rem] rounded-bl-lg border border-slate-900/5 bg-white text-left text-slate-950 dark:border-white/10 dark:bg-slate-900 dark:text-slate-100');
+$bubblePaddingClass = $isImageOnlyMessage ? 'p-0' : 'px-4 py-3';
 $audioPanelClass = $isSender
     ? 'bg-white/15 text-white ring-white/20'
     : 'bg-slate-100 text-slate-900 ring-slate-900/5 dark:bg-white/10 dark:text-slate-100 dark:ring-white/10';
@@ -103,7 +117,7 @@ $audioTrackClass = $isSender
                                 {!! $deleteAction !!}
                             @endif
 
-                            <div dir="auto" class="message_content {{ $bubbleClass }} min-w-0 max-w-full px-4 py-3 text-sm font-normal leading-[1.5] [overflow-wrap:anywhere] break-words [&_a]:text-inherit [&_a]:underline [&_a]:underline-offset-[3px] sm:text-[15px] md:text-sm xl:text-[15px]">
+                            <div dir="auto" class="message_content {{ $bubbleClass }} {{ $bubblePaddingClass }} min-w-0 max-w-full text-sm font-normal leading-[1.5] [overflow-wrap:anywhere] break-words [&_a]:text-inherit [&_a]:underline [&_a]:underline-offset-[3px] sm:text-[15px] md:text-sm xl:text-[15px]">
                                 {!! nl2br(e($message)) !!}
 
                                 @if($audio)
@@ -131,10 +145,10 @@ $audioTrackClass = $isSender
                                 @endif
 
                                 @if($attachment)
-                                    @if(\Illuminate\Support\Str::of($attachment->mime_type)->contains('image/'))
-                                        <div class="image-wrapper mt-2" style="text-align: {{ $isSender ? 'end' : 'start' }}">
-                                            <a href="{{ $attachment->getFullUrl() }}" class="image-file chat-image inline-block w-[min(17rem,72vw)] max-w-full overflow-hidden rounded-[1.1rem] ring-1 ring-white/15" data-src="{{ $attachment->getFullUrl() }}" aria-label="{{ $attachmentName }}">
-                                                <img src="{{ $attachment->getFullUrl() }}" alt="{{ $attachmentName }}" loading="lazy" class="block aspect-[4/3] h-auto w-full object-cover">
+                                    @if($isImageAttachment)
+                                        <div class="image-wrapper {{ $messageText === '' ? '' : 'mt-2' }}" style="text-align: {{ $isSender ? 'end' : 'start' }}">
+                                            <a href="{{ $attachment->getFullUrl() }}" class="image-file chat-image inline-flex w-[min(18rem,74vw)] max-w-full items-center justify-center overflow-hidden rounded-[1.15rem] bg-white p-1 ring-1 ring-slate-900/5 dark:bg-slate-900 dark:ring-white/10" data-src="{{ $attachment->getFullUrl() }}" aria-label="{{ $attachmentName }}">
+                                                <img src="{{ $attachment->getFullUrl() }}" alt="{{ $attachmentName }}" loading="lazy" class="block max-h-[22rem] max-w-full object-contain">
                                             </a>
                                         </div>
                                     @else

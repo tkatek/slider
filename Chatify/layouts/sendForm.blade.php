@@ -18,7 +18,7 @@
         'ar' => 'ar',
         'french' => 'fr',
         'francais' => 'fr',
-        'français' => 'fr',
+        'français' => 'fr', 
         'fr' => 'fr',
     ];
 

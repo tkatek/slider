@@ -109,6 +109,7 @@
             --bec-chat-app-height: 100dvh;
             --bec-chat-visible-height: 100dvh;
             --bec-chat-viewport-top: 0px;
+            --bec-chat-keyboard-gutter: 0px;
             --bec-chat-bottom-nav: 72px;
             --bec-chat-sidebar: 340px;
             color-scheme: light;
@@ -136,6 +137,10 @@
 
         html.bec-chat-conversation-open .bec-chat-shell-menu {
             display: none !important;
+        }
+
+        html.bec-chat-keyboard-open {
+            --bec-chat-keyboard-gutter: 12px;
         }
 
         .bec-chat-shell-menu,
@@ -207,9 +212,10 @@
         }
 
         .bec-chat-page .m-send {
-            height: 1.5rem;
-            max-height: 1.5rem;
-            overflow: hidden;
+            min-height: 1.625rem;
+            max-height: 7.5rem;
+            overflow-y: auto;
+            overflow-x: hidden;
             line-height: 1.5rem;
             scrollbar-width: none;
         }
@@ -540,14 +546,25 @@
 
             .bec-chat-page .messenger-sendCard {
                 min-height: 0;
-                border-top-color: rgba(226, 232, 240, .72);
-                padding-top: .65rem;
-                padding-bottom: max(.95rem, env(safe-area-inset-bottom, 0px));
+                border-top-color: transparent;
+                background: #FAFAFF;
+                backdrop-filter: none;
+                overflow: visible;
+                padding-top: .45rem;
+                padding-bottom: calc(max(.55rem, env(safe-area-inset-bottom, 0px)) + var(--bec-chat-keyboard-gutter));
             }
 
             html.bec-chat-keyboard-open .bec-chat-page .messenger-sendCard {
-                padding-top: .6rem;
-                padding-bottom: 1rem;
+                padding-top: .45rem;
+                padding-bottom: calc(.55rem + var(--bec-chat-keyboard-gutter));
+            }
+
+            html.dark .bec-chat-page .messenger-sendCard {
+                background: #070B16;
+            }
+
+            .bec-chat-page #message-form {
+                margin-bottom: 0;
             }
 
             .bec-chat-page .m-header-messaging {
@@ -561,6 +578,7 @@
                 overflow-y: auto !important;
                 overflow-x: hidden !important;
                 overscroll-behavior: contain;
+                padding-bottom: 1rem;
                 touch-action: pan-y;
             }
 
@@ -669,7 +687,7 @@
             </div>
 
             <footer class="messenger-sendCard shrink-0 border-t border-slate-900/5 bg-[#FAFAFF]/95 px-4 py-3 backdrop-blur transition-colors duration-300 dark:border-white/[.06] dark:bg-[#070B16]/95" aria-disabled="{{ !!$id ? 'false' : 'true' }}">
-                <form id="message-form" method="POST" action="{{ route('send.message') }}" enctype="multipart/form-data" aria-label="{{ $t('chatify.SendMessage', 'Send a message') }}" class="relative mx-auto flex w-full max-w-full items-center gap-3 border-0 bg-transparent shadow-none outline-none">
+                <form id="message-form" method="POST" action="{{ route('send.message') }}" enctype="multipart/form-data" aria-label="{{ $t('chatify.SendMessage', 'Send a message') }}" class="relative mx-auto flex w-full max-w-full items-center gap-3 overflow-visible border-0 bg-transparent shadow-none outline-none">
                     @csrf
 
                     <label class="attachment-button inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-gradient-to-br from-[#6D4CFF] to-[#4F35D8] text-white active:scale-95" aria-label="{{ $t('chatify.AddAttachment', 'Add attachment') }}" tabindex="0">
@@ -679,8 +697,8 @@
                         <input disabled="disabled" type="file" class="upload-attachment hidden" name="file" accept=".{{ implode(', .', config('chatify.attachments.allowed_images')) }}, .{{ implode(', .', config('chatify.attachments.allowed_files')) }}" />
                     </label>
 
-                    <div class="composer-input flex h-12 min-w-0 flex-1 items-center gap-3 overflow-hidden rounded-full border border-slate-900/5 bg-white px-5 shadow-none transition-colors duration-300 dark:border-white/[.08] dark:bg-[#101827] dark:shadow-none">
-                        <textarea readonly="readonly" name="message" rows="1" class="m-send app-scroll block min-w-0 flex-1 resize-none border-0 bg-transparent px-0 py-0 text-[16px] font-medium leading-6 text-slate-900 shadow-none outline-none placeholder:text-slate-400 md:text-[.95rem] dark:text-slate-100 dark:placeholder:text-slate-500" placeholder="Type a message..." aria-label="{{ $t('chatify.MessageText', 'Message text') }}"></textarea>
+                    <div class="composer-input flex min-h-12 min-w-0 flex-1 items-center gap-3 overflow-hidden rounded-[1.5rem] border border-slate-900/5 bg-white px-5 py-3 shadow-none transition-colors duration-300 dark:border-white/[.08] dark:bg-[#101827] dark:shadow-none">
+                        <textarea readonly="readonly" name="message" rows="1" class="m-send app-scroll block min-w-0 flex-1 resize-none border-0 bg-transparent px-0 py-[1px] text-[16px] font-medium leading-6 text-slate-900 shadow-none outline-none placeholder:text-slate-400 md:text-[.95rem] dark:text-slate-100 dark:placeholder:text-slate-500" placeholder="Type a message..." aria-label="{{ $t('chatify.MessageText', 'Message text') }}"></textarea>
 
                         <button type="submit" disabled="disabled" class="send-button d-none h-7 w-7 shrink-0 items-center justify-center border-0 bg-transparent p-0 text-[#5B3FEA] outline-none transition active:scale-95 dark:text-violet-300" aria-label="{{ $t('chatify.SendMessage', 'Send message') }}">
                             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="h-[1.65rem] w-[1.65rem]">
@@ -843,6 +861,9 @@
         const messageInput = document.querySelector('.m-send');
         const sendCard = document.querySelector('.messenger-sendCard');
         const messageForm = document.querySelector('#message-form');
+        const attachmentInput = document.querySelector('.upload-attachment');
+        const sendButton = document.querySelector('.send-button');
+        const recordButton = document.querySelector('#startRecordingBtn');
         const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
         const isMobile = () => window.matchMedia('(max-width: 767px)').matches;
         const metaConversation = document.querySelector('meta[name="id"]');
@@ -912,6 +933,47 @@
             return true;
         }
 
+        function syncComposerHeight() {
+            if (!messageInput) return;
+
+            messageInput.style.height = 'auto';
+            const minHeight = 26;
+            const maxHeight = 120;
+            const nextHeight = Math.min(maxHeight, Math.max(minHeight, messageInput.scrollHeight + 2));
+
+            messageInput.style.height = `${nextHeight}px`;
+            messageInput.style.overflowY = messageInput.scrollHeight > maxHeight ? 'auto' : 'hidden';
+        }
+
+        function syncComposerDraftState() {
+            if (!messageInput) return;
+
+            if (!hasActiveConversation) {
+                sendButton?.classList.add('d-none');
+                sendButton?.classList.remove('inline-flex');
+                if (sendButton) sendButton.disabled = true;
+                recordButton?.classList.remove('d-none');
+                recordButton?.classList.add('inline-flex');
+                return;
+            }
+
+            const hasText = messageInput.value.trim().length > 0;
+            const hasAttachment = Boolean(attachmentInput?.files?.length);
+            const canSendDraft = hasText || hasAttachment;
+
+            sendButton?.classList.toggle('d-none', !canSendDraft);
+            sendButton?.classList.toggle('inline-flex', canSendDraft);
+            if (sendButton) sendButton.disabled = !canSendDraft;
+
+            recordButton?.classList.toggle('d-none', canSendDraft);
+            recordButton?.classList.toggle('inline-flex', !canSendDraft);
+        }
+
+        function syncComposer() {
+            syncComposerHeight();
+            syncComposerDraftState();
+        }
+
         function setComposerEnabled(enabled) {
             sendCard?.setAttribute('aria-disabled', enabled ? 'false' : 'true');
             messageForm?.querySelectorAll('textarea, input[type="file"], button').forEach((control) => {
@@ -924,6 +986,8 @@
 
                 control.disabled = !enabled;
             });
+
+            syncComposer();
         }
 
         function hasLoadedMessageCards() {
@@ -1158,6 +1222,7 @@
 
             syncConversationAvatarFallback();
             syncRecorderLayout();
+            syncComposer();
             initChatAudioPlayers();
         }
 
@@ -1204,12 +1269,16 @@
             if (!hasActiveConversation) {
                 event.preventDefault();
                 event.stopPropagation();
+                return;
             }
+
+            window.setTimeout(syncComposer, 0);
         }, true);
 
         messageInput?.addEventListener('focus', function () {
             document.documentElement.classList.add('bec-chat-input-focused');
             setAppHeight();
+            syncComposer();
             window.requestAnimationFrame(lockDocumentScroll);
         });
 
@@ -1219,6 +1288,10 @@
                 setAppHeight();
             }, 120);
         });
+
+        messageInput?.addEventListener('input', syncComposer);
+        messageInput?.addEventListener('change', syncComposer);
+        attachmentInput?.addEventListener('change', syncComposer);
 
         document.addEventListener('touchstart', function (event) {
             if (!isConversationScrollLocked()) return;

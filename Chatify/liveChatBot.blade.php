@@ -18,12 +18,12 @@
 @section('script')
     <script type="module">
         import {callSummerNote} from "/template/summernote/summernote-student.js";
-        import {isNumber} from "/template/libs/forms/isNumber.js"; 
+        import {isNumber} from "/template/libs/forms/isNumber.js";
         $(function (){
             $(".number").keypress(function (event) {
                 return isNumber(event, this);
             });
-            const csrfToken = document.head.querySelector('meta[name="csrf-token"], meta[name="csrf_token"]')?.content || '';
+            const csrfToken = document.head.querySelector('meta[name="csrf-token"], meta[name="csrf_token"]')?.content || ''; 
 
             $('#delete_response').on('click',function (){
                 const url = $(this).data('route');
