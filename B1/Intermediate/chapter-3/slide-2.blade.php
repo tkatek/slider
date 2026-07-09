@@ -33,7 +33,7 @@
 
         'options' => [
             [
-                'text'  => 'She must be...',
+                'text'  => 'He/She must be...',
                 'class' => 'bg-amber-50 border-amber-200 text-slate-900 dark:bg-amber-500/10 dark:border-amber-400/40 dark:text-amber-100',
             ],
             [

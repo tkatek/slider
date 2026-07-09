@@ -2,77 +2,52 @@
 
 $content = [
     'title'    => 'Practice 8',
-    'subtitle' => '',
+    'subtitle' => 'Fill in the Blanks',
 
-    'instruction'      => 'Fill in the Blanks',
-    'instruction_note' => '',
-
-    'grid_class' => 'grid-cols-1 ',
-
-    'lines' => [
+    'items' => [
         [
-            'speaker' => '1',
-            'parts' => [
-                ['text' => 'Jessica and Mark were taking a '],
-                [
-                    'blank' => true,
-                    'answer' => 'walk',
-                    'answers' => ['walk'],
-                ],
-                ['text' => ' in New York City.'],
-            ],
+            'emoji'   => '🚶',
+            'prefix'  => 'Jessica and Mark were taking a',
+            'hint'    => '',
+            'suffix'  => 'in New York City.',
+            'answer'  => 'walk',
+            'answers' => ['walk'],
         ],
         [
-            'speaker' => '2',
-            'parts' => [
-                ['text' => 'A dangerous '],
-                [
-                    'blank' => true,
-                    'answer' => 'truck',
-                    'answers' => ['truck'],
-                ],
-                ['text' => ' lost control and headed toward the sidewalk.'],
-            ],
+            'emoji'   => '🚚',
+            'prefix'  => 'A dangerous',
+            'hint'    => '',
+            'suffix'  => 'lost control and headed toward the sidewalk.',
+            'answer'  => 'truck',
+            'answers' => ['truck'],
         ],
         [
-            'speaker' => '3',
-            'parts' => [
-                ['text' => 'A '],
-                [
-                    'blank' => true,
-                    'answer' => 'shopkeeper',
-                    'answers' => ['shopkeeper'],
-                ],
-                ['text' => ' warned the crowd about the danger.'],
-            ],
+            'emoji'   => '🏪',
+            'prefix'  => 'A',
+            'hint'    => '',
+            'suffix'  => 'warned the crowd about the danger.',
+            'answer'  => 'shopkeeper',
+            'answers' => ['shopkeeper'],
         ],
         [
-            'speaker' => '4',
-            'parts' => [
-                ['text' => 'Firefighters and '],
-                [
-                    'blank' => true,
-                    'answer' => 'paramedics',
-                    'answers' => ['paramedics'],
-                ],
-                ['text' => ' arrived to help people.'],
-            ],
+            'emoji'   => '🚑',
+            'prefix'  => 'Firefighters and',
+            'hint'    => '',
+            'suffix'  => 'arrived to help people.',
+            'answer'  => 'paramedics',
+            'answers' => ['paramedics'],
         ],
         [
-            'speaker' => '5',
-            'parts' => [
-                ['text' => 'The story teaches us that courage, kindness, and '],
-                [
-                    'blank' => true,
-                    'answer' => 'teamwork',
-                    'answers' => ['teamwork'],
-                ],
-                ['text' => ' can save lives.'],
-            ],
+            'emoji'   => '🤝',
+            'prefix'  => 'The story teaches us that courage, kindness, and',
+            'hint'    => '',
+            'suffix'  => 'can save lives.',
+            'answer'  => 'teamwork',
+            'answers' => ['teamwork'],
         ],
     ],
 ];
 
 ?>
 
-@include('slider.game.listening-missing-word', ['content' => $content])
+@include('slider.game.text-response', ['content' => $content])

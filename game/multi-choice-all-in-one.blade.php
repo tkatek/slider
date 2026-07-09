@@ -3,6 +3,7 @@
 @php
     $content = is_array($content ?? null) ? $content : [];
     $gameType = $content['type'] ?? 'emoji';
+    $hasQuestionMediaPanel = !in_array($gameType, ['questions_only', 'audio', 'text'], true);
     $initialAudio = $content['audio'] ?? ($content['questions'][0]['audio'] ?? null);
     $optionType = $content['option_type'] ?? 'text';
     $characters = $content['characters'] ?? [];
@@ -62,7 +63,7 @@
     $imagePanelColClass = $content['image_panel_col_class']
         ?? ($gameType === 'image' ? 'sm:col-span-7' : ($gameType === 'emoji' ? '' : ($gameType === 'reading' ? 'sm:col-span-6' : 'sm:col-span-5')));
     $answerPanelColClass = $content['answer_panel_col_class']
-        ?? ($gameType === 'image' ? 'sm:col-span-5' : ($gameType === 'emoji' ? '' : ($gameType === 'reading' ? 'sm:col-span-6' : (($gameType != 'questions_only' && $gameType !== 'audio') ? 'sm:col-span-7' : 'col-span-12'))));
+        ?? ($gameType === 'image' ? 'sm:col-span-5' : ($gameType === 'emoji' ? '' : ($gameType === 'reading' ? 'sm:col-span-6' : ($hasQuestionMediaPanel ? 'sm:col-span-7' : 'col-span-12'))));
     $imagePanelInnerClass = $content['image_panel_inner_class'] ?? 'h-full p-3 sm:p-4 lg:p-5';
     $answerPanelInnerClass = $content['answer_panel_inner_class'] ?? 'h-full p-4 sm:p-5 lg:p-6 text-left';
     $questionPromptLabel = $content['question_prompt_label'] ?? 'Choose the correct answer:';
@@ -90,7 +91,7 @@
     $optionsGridClass = $content['options_grid_class'] ?? ($optionType === 'image'
         ? 'mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4 sm:gap-3'
         : 'mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3');
-    $gameCardWidth = $content['game_card_width'] ?? ($gameType === 'emoji' || $gameType === 'audio' || $gameType === 'questions_only' ? 'max-w-5xl' : 'max-w-[1320px]');
+    $gameCardWidth = $content['game_card_width'] ?? ($gameType === 'emoji' || $gameType === 'audio' || $gameType === 'questions_only' || $gameType === 'text' ? 'max-w-5xl' : 'max-w-[1320px]');
     $imageOptionTileClass = trim((string) ($content['image_option_tile_class'] ?? ''));
     $showImageOptionLabel = array_key_exists('show_image_option_label', $content)
         ? (bool) $content['show_image_option_label']
@@ -211,7 +212,7 @@
 
                     <section id="gameCard" class="relative w-full {{ $gameCardWidth }} flex-none select-none p-1.5 sm:p-2.5 lg:p-3">
                         <div id="questionPanel" class="grid min-h-0 grid-cols-1 {{ $gameType === 'emoji' ? 'sm:grid-cols-[minmax(0,30%)_minmax(0,70%)]' : 'sm:grid-cols-12' }} items-stretch overflow-hidden rounded-[1.6rem] border border-slate-200/70 bg-white/75 shadow-[0_18px_55px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60">
-                            @if($gameType!="questions_only" && $gameType !== 'audio')
+                            @if($hasQuestionMediaPanel)
                                 <div class="{{ $imagePanelColClass }}">
                                     @if($gameType === 'character_audios')
                                         <div class="h-full p-4 sm:p-5">
@@ -308,7 +309,7 @@
                                 </div>
                             @endif
 
-                            <div class="{{ $answerPanelColClass }} {{ ($gameType !== 'questions_only' && $gameType !== 'audio') ? 'border-t border-slate-200/70 dark:border-slate-800 sm:border-t-0 sm:border-l' : '' }}">
+                            <div class="{{ $answerPanelColClass }} {{ $hasQuestionMediaPanel ? 'border-t border-slate-200/70 dark:border-slate-800 sm:border-t-0 sm:border-l' : '' }}">
                                 <div class="{{ $answerPanelInnerClass }}">
                                     <div class="flex items-center justify-between gap-2 sm:gap-3">
                                         <div class="flex min-w-0 flex-col gap-1 text-left sm:flex-row sm:items-center sm:gap-2">
@@ -1032,7 +1033,7 @@
                 button.type = 'button';
                 button.dataset.value = String(option.value);
                 button.setAttribute('aria-label', String(option.label || option.value || 'Answer option'));
-                button.className = "min-h-[48px] rounded-2xl border border-slate-200/70 bg-white/80 px-4 py-3 text-left text-sm font-black leading-[1.35] text-slate-900 shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:border-[color:var(--mca-accent-border)] hover:shadow-md active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--mca-accent-ring)] dark:border-slate-700/60 dark:bg-slate-900/45 dark:text-slate-100 dark:hover:border-[color:var(--mca-accent-border-dark)] dark:focus-visible:ring-[color:var(--mca-accent-ring-dark)] sm:text-base";
+                button.className = "min-h-[48px] rounded-2xl border border-slate-200/70 bg-white/80 px-4 py-3 text-left text-sm font-bold leading-[1.35] text-slate-700 shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:border-[color:var(--mca-accent-border)] hover:text-slate-900 hover:shadow-md active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--mca-accent-ring)] dark:border-slate-700/60 dark:bg-slate-900/45 dark:text-slate-200 dark:hover:border-[color:var(--mca-accent-border-dark)] dark:hover:text-slate-50 dark:focus-visible:ring-[color:var(--mca-accent-ring-dark)] sm:text-base";
                 button.textContent = option.label;
                 button.onclick = () => answerChoice(option.value, button);
                 return button;
@@ -1103,7 +1104,7 @@
                     return;
                 }
 
-                button.classList.add('!border-emerald-400/80', '!bg-emerald-50', '!text-emerald-900', 'ring-2', 'ring-emerald-300/60', 'dark:!bg-emerald-950/30', 'dark:!text-emerald-100', 'dark:ring-emerald-300/30');
+                button.classList.add('!border-emerald-400/80', '!bg-emerald-50', '!text-emerald-900', 'font-extrabold', 'ring-2', 'ring-emerald-300/60', 'dark:!bg-emerald-950/30', 'dark:!text-emerald-100', 'dark:ring-emerald-300/30');
             }
 
             function markWrong(button) {
@@ -1112,7 +1113,7 @@
                     return;
                 }
 
-                button.classList.add('!border-rose-400/80', '!bg-rose-50', '!text-rose-900', 'opacity-75', 'ring-2', 'ring-rose-300/60', 'dark:!bg-rose-950/30', 'dark:!text-rose-100', 'dark:ring-rose-300/30');
+                button.classList.add('!border-rose-400/80', '!bg-rose-50', '!text-rose-900', 'font-extrabold', 'opacity-75', 'ring-2', 'ring-rose-300/60', 'dark:!bg-rose-950/30', 'dark:!text-rose-100', 'dark:ring-rose-300/30');
             }
 
             function markSelected(button) {
@@ -1121,7 +1122,7 @@
                     return;
                 }
 
-                button.classList.add('!border-[color:var(--mca-accent-border)]', '!bg-[var(--mca-accent-bg)]', '!text-[color:var(--mca-accent-text)]', 'ring-2', 'ring-[color:var(--mca-accent-ring)]', 'dark:!border-[color:var(--mca-accent-border-dark)]', 'dark:!bg-[var(--mca-accent-bg-dark)]', 'dark:!text-[color:var(--mca-accent-text-dark)]', 'dark:ring-[color:var(--mca-accent-ring-dark)]');
+                button.classList.add('!border-[color:var(--mca-accent-border)]', '!bg-[var(--mca-accent-bg)]', '!text-[color:var(--mca-accent-text)]', 'font-extrabold', 'ring-2', 'ring-[color:var(--mca-accent-ring)]', 'dark:!border-[color:var(--mca-accent-border-dark)]', 'dark:!bg-[var(--mca-accent-bg-dark)]', 'dark:!text-[color:var(--mca-accent-text-dark)]', 'dark:ring-[color:var(--mca-accent-ring-dark)]');
             }
 
             function renderQuestion() {

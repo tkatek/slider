@@ -41,12 +41,13 @@
                         </div>
 
                         <div>
-                            <p class="text-xs font-black uppercase tracking-[0.18em] text-blue-600 dark:text-blue-300">
-                                Present Simple
-                            </p>
+
                             <h2 class="text-2xl font-black text-slate-950 dark:text-white">
-                                Facts and General Truths
+                                Present Simple
                             </h2>
+                            <p class="text-xs font-black uppercase tracking-[0.18em] text-blue-600 dark:text-blue-300">
+                                Facts and General Truths
+                            </p>
                         </div>
                     </div>
 
@@ -92,12 +93,13 @@
                         </div>
 
                         <div>
-                            <p class="text-xs font-black uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-300">
-                                Passive Voice
-                            </p>
+
                             <h2 class="text-2xl font-black text-slate-950 dark:text-white">
-                                Focus on the Action
+                                Passive Voice
                             </h2>
+                            <p class="text-xs font-black uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-300">
+                                Focus on the Action
+                            </p>
                         </div>
                     </div>
 

@@ -30,16 +30,16 @@
             max-width: min(100%, 46rem);
             border: 1px solid {{ $calloutBorderColor }};
             background:
-                linear-gradient(135deg, {{ $calloutBgStart }}, {{ $calloutBgEnd }}),
-                rgba(255, 255, 255, 0.88);
+                    linear-gradient(135deg, {{ $calloutBgStart }}, {{ $calloutBgEnd }}),
+                    rgba(255, 255, 255, 0.88);
             box-shadow: 0 18px 40px -28px {{ $calloutShadowColor }};
         }
 
         .dark .live-subtitle-callout {
             border-color: {{ $calloutDarkBorderColor }};
             background:
-                linear-gradient(135deg, {{ $calloutDarkBgStart }}, {{ $calloutDarkBgEnd }}),
-                rgba(15, 23, 42, 0.82);
+                    linear-gradient(135deg, {{ $calloutDarkBgStart }}, {{ $calloutDarkBgEnd }}),
+                    rgba(15, 23, 42, 0.82);
             box-shadow: 0 18px 42px -30px {{ $calloutDarkShadowColor }};
         }
 
@@ -57,7 +57,6 @@
             margin-top: .55rem;
         }
 
-        /* Hide scrollbar for cleaner look but allow scrolling */
         textarea::-webkit-scrollbar {
             width: 0px;
             background: transparent;
@@ -78,9 +77,9 @@
             <div class="w-full px-4 sm:px-6 lg:px-8">
                 <div class="mx-auto mt-1 w-full text-center">
                     <div class="live-subtitle-callout rounded-[24px] p-4 text-left sm:p-5">
-                    <div class="live-subtitle-callout-text text-sm font-bold leading-[1.5] sm:text-[0.95rem]">
-                        {!! $chatCallout !!}
-                    </div>
+                        <div class="live-subtitle-callout-text text-sm font-bold leading-[1.5] sm:text-[0.95rem]">
+                            {!! $chatCallout !!}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -97,7 +96,7 @@
     @if($modelAnswer !== '')
         <div
                 id="modelAnswerModal"
-                class="fixed inset-0 z-[2100] hidden items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm"
+                class="fixed inset-0 z-[2100] hidden items-center justify-center bg-slate-950/45 p-3 backdrop-blur-sm sm:p-4"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="modelAnswerTitle"
@@ -109,15 +108,20 @@
                     data-close-model-answer
             ></button>
 
-            <section class="relative w-full max-w-xl overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-5 shadow-2xl shadow-slate-950/20 dark:border-slate-700 dark:bg-slate-900 sm:p-6">
-                <div class="flex items-start justify-between gap-4">
-                    <h2 id="modelAnswerTitle" class="text-2xl font-black leading-tight text-slate-950 dark:text-white">
+            <section
+                    class="relative flex max-h-[calc(100dvh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-4 shadow-2xl shadow-slate-950/20 dark:border-slate-700 dark:bg-slate-900 sm:max-w-3xl sm:p-5"
+            >
+                <div class="flex shrink-0 items-center justify-between gap-4 border-b border-slate-200 pb-4 dark:border-slate-700">
+                    <h2
+                            id="modelAnswerTitle"
+                            class="text-xl font-black leading-tight text-slate-950 dark:text-white sm:text-2xl"
+                    >
                         Model answer
                     </h2>
 
                     <button
                             type="button"
-                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xl font-black text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
+                            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xl font-black leading-none text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 sm:h-10 sm:w-10"
                             aria-label="Close model answer"
                             data-close-model-answer
                     >
@@ -125,8 +129,10 @@
                     </button>
                 </div>
 
-                <div class="mt-5 rounded-2xl border border-orange-200 bg-orange-50/70 p-4 dark:border-orange-500/25 dark:bg-orange-500/10">
-                    <p class="whitespace-pre-wrap text-base font-bold leading-relaxed text-slate-800 dark:text-slate-100 sm:text-lg">{{ $modelAnswer }}</p>
+                <div class="mt-4 min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-2xl border border-orange-200 bg-orange-50/70 p-4 pr-3 dark:border-orange-500/25 dark:bg-orange-500/10 sm:p-5">
+                    <p class="whitespace-pre-wrap break-words text-sm font-bold leading-relaxed text-slate-800 dark:text-slate-100 sm:text-base">
+                        {{ $modelAnswer }}
+                    </p>
                 </div>
             </section>
         </div>
@@ -154,6 +160,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             initPusher();
             renderInitialGrid();
+
             document.querySelectorAll('[data-close-model-answer]').forEach((button) => {
                 button.addEventListener('click', closeModelAnswer);
             });
@@ -164,7 +171,6 @@
                 }
             });
 
-            // GSAP Entrance
             gsap.to("#mainTitle", {
                 y: 0,
                 opacity: 1,
@@ -232,10 +238,12 @@
                 <div class="flex flex-col">
                     <div class="flex items-center gap-4 mb-4">
                         <img src="${myAvatar}" class="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover">
+
                         <div>
                             <h3 class="font-bold text-slate-900 dark:text-slate-100 leading-none">You</h3>
                             <span class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">${isTeacher ? 'Teacher' : 'Student'}</span>
                         </div>
+
                         ${modelAnswerText ? `
                             <button type="button"
                                 onclick="openModelAnswer()"
@@ -324,6 +332,7 @@
             card.innerHTML = `
                 <div class="flex items-center gap-4 mb-4">
                     <img src="${data.avatar}" class="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover">
+
                     <div>
                         <h3 class="font-bold text-slate-900 dark:text-slate-100 leading-none">${isMe ? 'You' : escapeHtml(data.name)}</h3>
                         <span class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-wider">${timeString}</span>
@@ -341,6 +350,7 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-11.7 a8.38 8.38 0 0 1 3.8.9L21 3z"></path>
                         </svg>
+
                         <span id="comment-count-${data.cardId}">0</span>
                     </div>
                 </div>
@@ -358,7 +368,6 @@
                 </div>
             `;
 
-            // Insert your own cards right after the input card, others at the end
             isMe ? container.insertBefore(card, container.children[1]) : container.appendChild(card);
         }
 
@@ -446,7 +455,7 @@
             });
         }
 
-        function handleIncomingReply(data) { 
+        function handleIncomingReply(data) {
             appendReplyToDOM(data.targetCardId, data);
         }
 

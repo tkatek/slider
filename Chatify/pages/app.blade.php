@@ -39,7 +39,7 @@
     $authAvatar = auth()->user()->getFirstMediaUrl('avatars','thumb');
     $conversationAvatarStyle = (!$hasInitialConversation || $isGroupConversation) ? 'background-image: none;' : "background-image: url('{$authAvatar}');";
 @endphp
-<!doctype html>
+        <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 <head>
     <title>{{ config('chatify.name') }}</title>
@@ -307,8 +307,8 @@
             place-items: center;
             border-radius: 999px;
             background:
-                linear-gradient(135deg, rgba(109, 76, 255, .95), rgba(79, 53, 216, .95)),
-                radial-gradient(circle at 36% 36%, rgba(255, 255, 255, .9), transparent 42%);
+                    linear-gradient(135deg, rgba(109, 76, 255, .95), rgba(79, 53, 216, .95)),
+                    radial-gradient(circle at 36% 36%, rgba(255, 255, 255, .9), transparent 42%);
             color: #fff;
             font-family: "Font Awesome 6 Free";
             font-size: 1.05rem;
@@ -321,6 +321,89 @@
             border-color: rgba(255, 255, 255, .08);
             background: rgba(15, 23, 42, .86);
             color: #cbd5e1;
+        }
+
+        /*
+         * Hide the empty conversation card on all screen sizes.
+         * This prevents the center-to-left jump during navigation/state changes.
+         */
+        .bec-chat-page .messages > .message-hint[data-empty-state="1"] {
+            display: none !important;
+        }
+
+        /* Prevent old Chatify .center-el positioning from fighting with the new grid centering. */
+        .bec-chat-page .messages > .message-hint[data-empty-state="1"] {
+            position: relative !important;
+            inset: auto !important;
+            top: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+            left: auto !important;
+            transform: none !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+
+        .bec-chat-page .chat-bg {
+            background-color: #FAFAFF;
+            background-image: url("https://i.ibb.co/T5YCq6V/bg.webp");
+            background-repeat: repeat;
+            background-size: 512px 512px;
+            background-position: top left;
+        }
+
+        html.dark .bec-chat-page .chat-bg {
+            background-color: #070B16;
+            background-image: url("https://i.ibb.co/XfCL5F5t/bg-dark.webp");
+            background-repeat: repeat;
+            background-size: 512px 512px;
+            background-position: top left;
+        }
+
+
+        /* Keep the language-learning pattern visible when no chat is selected. */
+        .bec-chat-page .messenger.no-active-conversation .messenger-messagingView,
+        .bec-chat-page .messenger[data-has-active-conversation="0"] .messenger-messagingView,
+        .bec-chat-page .messenger:not(.has-active-conversation) .messenger-messagingView {
+            background-color: #FAFAFF !important;
+            background-image: url("https://i.ibb.co/T5YCq6V/bg.webp") !important;
+            background-repeat: repeat !important;
+            background-size: 512px 512px !important;
+            background-position: top left !important;
+        }
+
+        html.dark .bec-chat-page .messenger.no-active-conversation .messenger-messagingView,
+        html.dark .bec-chat-page .messenger[data-has-active-conversation="0"] .messenger-messagingView,
+        html.dark .bec-chat-page .messenger:not(.has-active-conversation) .messenger-messagingView {
+            background-color: #070B16 !important;
+            background-image: url("https://i.ibb.co/XfCL5F5t/bg-dark.webp") !important;
+        }
+
+        .bec-chat-page .messenger.no-active-conversation .messages-container,
+        .bec-chat-page .messenger[data-has-active-conversation="0"] .messages-container,
+        .bec-chat-page .messenger:not(.has-active-conversation) .messages-container {
+            background: transparent !important;
+        }
+
+        .bec-chat-page .messenger-listView,
+        .bec-chat-page .messenger-tab,
+        .bec-chat-page .users-tab,
+        .bec-chat-page .search-tab {
+            background:
+                    radial-gradient(circle at 100% 0%, rgba(91, 63, 234, .09), transparent 240px),
+                    radial-gradient(circle at 0% 18%, rgba(109, 76, 255, .05), transparent 180px),
+                    #FAFAFF;
+        }
+
+        html.dark .bec-chat-page .messenger-listView,
+        html.dark .bec-chat-page .messenger-tab,
+        html.dark .bec-chat-page .users-tab,
+        html.dark .bec-chat-page .search-tab {
+            background:
+                    radial-gradient(circle at 100% 0%, rgba(91, 63, 234, .14), transparent 260px),
+                    radial-gradient(circle at 0% 18%, rgba(109, 76, 255, .08), transparent 200px),
+                    #070B16;
         }
 
         .app-scroll,
@@ -342,6 +425,26 @@
         .listOfContacts::-webkit-scrollbar,
         .search-records::-webkit-scrollbar {
             display: none;
+        }
+
+        /* Contact list cards need inner spacing so rounded corners and soft shadows do not get clipped. */
+        .bec-chat-page .listOfContacts {
+            padding: .5rem .5rem 1rem !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+        }
+
+        .bec-chat-page .listOfContacts .messenger-list-item {
+            margin: 0 !important;
+        }
+
+        .bec-chat-page .listOfContacts .messenger-list-item > tbody > tr {
+            box-shadow: 0 8px 18px rgba(15, 23, 42, .035) !important;
+        }
+
+        .bec-chat-page .listOfContacts .messenger-list-item.active > tbody > tr,
+        .bec-chat-page .listOfContacts .messenger-list-item.m-list-active > tbody > tr {
+            box-shadow: 0 10px 22px rgba(91, 63, 234, .07) !important;
         }
 
         .bec-chat-page .messenger-tab:not(.show) { display: none !important; }
@@ -439,6 +542,46 @@
         .bec-chat-page .messenger.no-active-conversation .typing-indicator,
         .bec-chat-page .messenger.no-active-conversation .conversation-day-divider {
             display: none !important;
+        }
+
+        .bec-chat-page .messenger[data-has-active-conversation="0"] .m-header-messaging,
+        .bec-chat-page .messenger[data-has-active-conversation="0"] .messenger-sendCard,
+        .bec-chat-page .messenger[data-has-active-conversation="0"] .m-header-right,
+        .bec-chat-page .messenger[data-has-active-conversation="0"] .typing-indicator,
+        .bec-chat-page .messenger[data-has-active-conversation="0"] .conversation-day-divider,
+        .bec-chat-page .messenger:not(.has-active-conversation) .m-header-messaging,
+        .bec-chat-page .messenger:not(.has-active-conversation) .messenger-sendCard,
+        .bec-chat-page .messenger:not(.has-active-conversation) .m-header-right,
+        .bec-chat-page .messenger:not(.has-active-conversation) .typing-indicator,
+        .bec-chat-page .messenger:not(.has-active-conversation) .conversation-day-divider {
+            display: none !important;
+        }
+
+        .bec-chat-page .messenger.no-active-conversation .messages-inner,
+        .bec-chat-page .messenger[data-has-active-conversation="0"] .messages-inner,
+        .bec-chat-page .messenger:not(.has-active-conversation) .messages-inner {
+            display: none !important;
+        }
+
+        .bec-chat-page .messenger.no-active-conversation .messages-container,
+        .bec-chat-page .messenger[data-has-active-conversation="0"] .messages-container,
+        .bec-chat-page .messenger:not(.has-active-conversation) .messages-container {
+            display: block !important;
+            height: 100% !important;
+            min-height: 100% !important;
+            padding: 0 !important;
+        }
+
+        .bec-chat-page .messenger.no-active-conversation .messenger-messagingView,
+        .bec-chat-page .messenger[data-has-active-conversation="0"] .messenger-messagingView,
+        .bec-chat-page .messenger:not(.has-active-conversation) .messenger-messagingView {
+            background-color: #FAFAFF !important;
+        }
+
+        html.dark .bec-chat-page .messenger.no-active-conversation .messenger-messagingView,
+        html.dark .bec-chat-page .messenger[data-has-active-conversation="0"] .messenger-messagingView,
+        html.dark .bec-chat-page .messenger:not(.has-active-conversation) .messenger-messagingView {
+            background-color: #070B16 !important;
         }
 
         .bec-chat-page .messenger.no-active-conversation .messages-container {
@@ -594,6 +737,67 @@
                 transform: translateX(0);
             }
 
+            .bec-chat-page .messenger.no-active-conversation .messenger-messagingView,
+            .bec-chat-page .messenger[data-has-active-conversation="0"] .messenger-messagingView,
+            .bec-chat-page .messenger:not(.has-active-conversation) .messenger-messagingView {
+                display: grid !important;
+                visibility: visible !important;
+                transform: none !important;
+                transition: none !important;
+                pointer-events: none !important;
+                z-index: 0;
+            }
+
+            .bec-chat-page .messenger.no-active-conversation .messenger-listView,
+            .bec-chat-page .messenger[data-has-active-conversation="0"] .messenger-listView,
+            .bec-chat-page .messenger:not(.has-active-conversation) .messenger-listView {
+                z-index: 20;
+            }
+
+            .bec-chat-page .messenger.no-active-conversation .messenger-listView {
+                display: flex !important;
+                visibility: visible !important;
+                transform: none !important;
+            }
+
+            /*
+             * Mobile fix:
+             * The empty conversation card is useful on desktop, but on mobile it lives inside
+             * the sliding conversation panel. Hiding it on mobile prevents the center-to-left
+             * jump during navigation and Chatify state changes.
+             */
+            .bec-chat-page .messages > .message-hint[data-empty-state="1"] {
+                display: none !important;
+            }
+
+        }
+
+
+        /* Simple WhatsApp-like attachment preview popup.
+           The default inline Chatify file preview is hidden so the bottom composer stays clean. */
+        .bec-chat-page .attachment-preview,
+        .bec-chat-page .upload-attachment-preview,
+        .bec-chat-page .selected-attachment,
+        .bec-chat-page .selected-file-preview,
+        .bec-chat-page .attachment-upload-preview {
+            display: none !important;
+        }
+
+        .bec-attachment-popup {
+            display: none;
+        }
+
+        .bec-attachment-popup.is-open {
+            display: flex;
+        }
+
+        html.bec-attachment-popup-open,
+        html.bec-attachment-popup-open body {
+            overflow: hidden !important;
+        }
+
+        .bec-attachment-popup-preview img {
+            max-height: min(55vh, 28rem);
         }
 
     </style>
@@ -617,7 +821,7 @@
                     </div>
 
                     <p class="messenger-title px-1 pb-2 pt-1 text-xs font-semibold text-slate-500 dark:text-slate-400"><span>{{ $t('chatify.AllMessages', 'All messages') }}</span></p>
-                    <div class="listOfContacts mx-0 space-y-3 overflow-hidden px-0 pb-0 pt-1"></div>
+                    <div class="listOfContacts mx-0 space-y-2.5 overflow-y-auto overflow-x-hidden px-2 pb-4 pt-2"></div>
                 </div>
 
                 <div class="messenger-tab search-tab bec-chat-scroll h-full min-h-0 overflow-y-auto" data-view="search">
@@ -627,7 +831,7 @@
                     </div>
                 </div>
             </div>
-        </aside> 
+        </aside>
 
         <section class="messenger-messagingView relative z-[1] grid h-full min-h-0 max-h-full w-full grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-[#FAFAFF] md:min-w-0 md:flex-1 dark:bg-[#070B16]" role="region" aria-label="{{ $t('chatify.Conversation', 'Conversation') }}">
             <div class="m-header m-header-messaging shrink-0 border-b border-slate-900/5 bg-[#FAFAFF]/95 px-3 pb-2 pt-3 backdrop-blur transition-colors duration-300 sm:px-4 md:px-6 md:py-3 xl:px-7 dark:border-white/10 dark:bg-[#070B16]/95">
@@ -659,14 +863,14 @@
                 </nav>
             </div>
 
-            <div class="m-body messages-container bec-chat-scroll min-h-0 flex-1 overflow-y-auto px-4 py-3 sm:px-5 md:px-7 md:py-4 xl:px-8" aria-live="polite" aria-relevant="additions text">
+            <div class="m-body messages-container chat-bg bec-chat-scroll min-h-0 flex-1 overflow-y-auto px-4 py-3 sm:px-5 md:px-7 md:py-4 xl:px-8" aria-live="polite" aria-relevant="additions text">
                 <div class="messages-inner mx-auto w-full max-w-[1120px] px-1 py-1 md:px-2 xl:max-w-[1180px]">
                     <div class="conversation-day-divider mb-4 text-center">
                         <span class="text-sm font-semibold text-slate-700 xl:text-base dark:text-slate-300">Today</span>
                     </div>
 
                     <div class="messages mx-auto w-full max-w-[1120px] space-y-4 px-1 pb-2 xl:max-w-[1180px]" role="log" aria-label="{{ $t('chatify.Messages', 'Messages') }}">
-                        <p class="message-hint center-el relative inset-auto mx-auto transform-none rounded-[1.5rem] bg-white px-5 py-8 text-center text-sm font-medium text-slate-500 shadow-[0_14px_40px_rgba(15,23,42,0.04)] transition-colors duration-300 dark:bg-slate-900 dark:text-slate-400 dark:shadow-[0_14px_40px_rgba(0,0,0,0.24)]" data-empty-state="1">
+                        <p class="message-hint relative inset-auto mx-auto transform-none rounded-[1.5rem] bg-white px-5 py-8 text-center text-sm font-medium text-slate-500 shadow-[0_14px_40px_rgba(15,23,42,0.04)] transition-colors duration-300 dark:bg-slate-900 dark:text-slate-400 dark:shadow-[0_14px_40px_rgba(0,0,0,0.24)]" data-empty-state="1">
                             <span class="empty-conversation-title block text-base font-extrabold text-slate-950 dark:text-white">Select a conversation</span>
                             <span class="empty-conversation-description mt-1 block text-sm font-semibold text-slate-500 dark:text-slate-400">Choose a student, teacher, or group to start messaging.</span>
                         </p>
@@ -787,6 +991,42 @@
     <img class="imageModal-content max-h-[88dvh] max-w-[92vw] rounded-[1.35rem] object-contain shadow-[0_24px_70px_rgba(0,0,0,.35)]" id="imageModalBoxSrc">
 </div>
 
+
+<div id="becAttachmentPopup" class="bec-attachment-popup fixed inset-0 z-[9997] items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm" aria-hidden="true">
+    <div class="w-full max-w-[31rem] rounded-[1.75rem] border border-white/70 bg-white p-4 shadow-[0_24px_70px_rgba(15,23,42,.22)] dark:border-white/10 dark:bg-slate-900 dark:shadow-[0_24px_70px_rgba(0,0,0,.38)]">
+        <div class="mb-3 flex items-center justify-between gap-3">
+            <p class="m-0 text-base font-extrabold tracking-[-.02em] text-slate-950 dark:text-white">{{ $t('chatify.AttachmentPreview', 'Attachment preview') }}</p>
+            <button type="button" class="bec-attachment-popup-close inline-flex h-9 w-9 items-center justify-center rounded-full border-0 bg-slate-100 p-0 text-slate-500 transition hover:bg-slate-200 hover:text-slate-800 dark:bg-white/10 dark:text-slate-300 dark:hover:bg-white/15" aria-label="{{ $t('chatify.Cancel', 'Cancel') }}">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="bec-attachment-popup-preview overflow-hidden rounded-[1.25rem] border border-slate-900/5 bg-[#FAFAFF] dark:border-white/10 dark:bg-slate-950/60">
+            <img class="bec-attachment-popup-image hidden h-auto w-full object-contain" alt="{{ $t('chatify.AttachmentPreview', 'Attachment preview') }}">
+
+            <div class="bec-attachment-popup-file flex items-center gap-3 p-4">
+                <span class="bec-attachment-popup-icon inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#F1EEFF] text-[#5B3FEA] dark:bg-violet-500/15 dark:text-violet-300">
+                    <i class="fas fa-file text-xl"></i>
+                </span>
+                <span class="min-w-0 flex-1">
+                    <span class="bec-attachment-popup-name block truncate text-sm font-extrabold text-slate-950 dark:text-white"></span>
+                    <span class="bec-attachment-popup-meta mt-0.5 block truncate text-xs font-bold text-slate-500 dark:text-slate-400"></span>
+                </span>
+            </div>
+        </div>
+
+        <textarea class="bec-attachment-popup-caption mt-4 block max-h-28 min-h-[3rem] w-full resize-none rounded-2xl border border-slate-900/5 bg-[#FAFAFF] px-4 py-3 text-[16px] font-medium leading-6 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#BEB4FF] focus:bg-white dark:border-white/10 dark:bg-slate-950/60 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-violet-400/40" rows="2" placeholder="{{ $t('chatify.TypeAMessage', 'Type a message...') }}"></textarea>
+
+        <div class="mt-4 flex items-center justify-end gap-2">
+            <button type="button" class="bec-attachment-popup-cancel inline-flex h-11 items-center justify-center rounded-2xl border-0 bg-transparent px-4 text-sm font-extrabold text-slate-500 transition hover:bg-slate-100 hover:text-slate-800 dark:text-slate-300 dark:hover:bg-white/10">{{ $t('chatify.Cancel', 'Cancel') }}</button>
+            <button type="button" class="bec-attachment-popup-send inline-flex h-11 items-center justify-center gap-2 rounded-2xl border-0 bg-[#5B3FEA] px-5 text-sm font-extrabold text-white shadow-[0_12px_24px_rgba(91,63,234,.24)] transition hover:bg-[#4F35D8] active:scale-95">
+                <span>{{ $t('chatify.Send', 'Send') }}</span>
+                <i class="fas fa-paper-plane text-xs"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
 <div class="app-modal fixed inset-0 z-[9998] items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm" data-name="delete" style="display: none;">
     <div class="app-modal-container w-full max-w-[28rem]">
         <div class="app-modal-card rounded-[1.75rem] border border-slate-900/5 bg-white p-6 text-center shadow-[0_24px_70px_rgba(15,23,42,.16)] dark:border-white/10 dark:bg-slate-900 dark:text-slate-100 dark:shadow-[0_24px_70px_rgba(0,0,0,.35)]" data-name="delete" data-modal="0">
@@ -875,7 +1115,17 @@
         };
         let userOpenedConversation = false;
         let hasActiveConversation = false;
+
+        function normalizeConversationId(value) {
+            const id = String(value || '').trim();
+            if (!id) return '';
+            if (['0', 'null', 'undefined', 'false', 'select a conversation'].includes(id.toLowerCase())) return '';
+            return id;
+        }
+
+        let selectedConversationId = normalizeConversationId(metaConversation?.content);
         let lastTouchY = 0;
+        let adaptFrame = 0;
 
         function scrollMessagesToBottom(force = false) {
             if (!messagesContainer) return;
@@ -990,24 +1240,20 @@
             syncComposer();
         }
 
-        function hasLoadedMessageCards() {
-            return Boolean(document.querySelector('.messages .message-card'));
+        function getRouteConversationId() {
+            return normalizeConversationId(metaConversation?.content);
         }
 
-        function hasEmptyConversationHint() {
-            return Boolean(document.querySelector('.messages > .message-hint[data-empty-state]')) && !hasLoadedMessageCards();
+        function getClickedConversationId(trigger) {
+            if (!trigger) return '';
+
+            const item = trigger.closest?.('.messenger-list-item') || trigger.closest?.('[data-contact]');
+            const dataId = trigger.dataset?.id || trigger.closest?.('[data-id]')?.dataset?.id || '';
+            return (item?.dataset?.contact || dataId || '').trim();
         }
 
         function resolveActiveConversationState() {
-            const routeConversationId = (metaConversation?.content || '').trim();
-
-            if (hasEmptyConversationHint() && !userOpenedConversation) {
-                return false;
-            }
-
-            return userOpenedConversation
-                || hasLoadedMessageCards()
-                || (Boolean(routeConversationId) && !hasEmptyConversationHint());
+            return userOpenedConversation || Boolean(getRouteConversationId());
         }
 
         function setActiveConversationState(enabled, options = {}) {
@@ -1016,6 +1262,14 @@
             root?.classList.toggle('no-active-conversation', !hasActiveConversation);
             root?.setAttribute('data-has-active-conversation', hasActiveConversation ? '1' : '0');
             setComposerEnabled(hasActiveConversation);
+
+            if (!hasActiveConversation) {
+                root?.classList.remove('conversation-open');
+                listView?.classList.remove('conversation-active');
+                document.documentElement.classList.remove('bec-chat-conversation-open');
+                messagingView?.style.removeProperty('display');
+                listView?.style.removeProperty('display');
+            }
 
             if (!hasActiveConversation && options.clearActive !== false) {
                 document.querySelectorAll('.messenger-list-item.active, .messenger-list-item.m-list-active, .messenger-list-item tr.active, .messenger-list-item tr.m-list-active').forEach((item) => {
@@ -1054,6 +1308,9 @@
         }
 
         function showConversationList() {
+            userOpenedConversation = false;
+            selectedConversationId = getRouteConversationId();
+            setActiveConversationState(Boolean(selectedConversationId), { clearActive: !selectedConversationId });
             root?.classList.remove('conversation-open');
             listView?.classList.remove('conversation-active');
             document.documentElement.classList.remove('bec-chat-conversation-open');
@@ -1210,13 +1467,17 @@
                 messagesContainer.setAttribute('aria-relevant', 'additions text');
             }
 
-            const resolvedConversationState = resolveActiveConversationState();
-            setActiveConversationState(resolvedConversationState, { clearActive: !resolvedConversationState });
+            const actualActiveState = resolveActiveConversationState();
+            if (actualActiveState !== hasActiveConversation) {
+                setActiveConversationState(actualActiveState, { clearActive: !actualActiveState });
+            }
 
             if (isMobile() && hasActiveConversation && listView?.classList.contains('conversation-active')) {
                 root?.classList.add('conversation-open');
                 document.documentElement.classList.add('bec-chat-conversation-open');
-            } else {
+            } else if (!hasActiveConversation) {
+                root?.classList.remove('conversation-open');
+                listView?.classList.remove('conversation-active');
                 document.documentElement.classList.remove('bec-chat-conversation-open');
             }
 
@@ -1252,6 +1513,7 @@
 
             const chatTrigger = event.target.closest('.messenger-list-item, .admin-list-item, .messenger-admins [data-id]');
             if (chatTrigger && listView) {
+                selectedConversationId = getClickedConversationId(chatTrigger) || selectedConversationId || getRouteConversationId();
                 userOpenedConversation = true;
                 setActiveConversationState(true, { clearActive: false });
                 window.setTimeout(() => {
@@ -1330,17 +1592,232 @@
 
         if (root) {
             const observer = new MutationObserver(() => {
-                window.requestAnimationFrame(adaptDynamicNodes);
+                if (adaptFrame) return;
+                adaptFrame = window.requestAnimationFrame(() => {
+                    adaptFrame = 0;
+                    adaptDynamicNodes();
+                });
             });
 
             observer.observe(root, {
                 childList: true,
                 subtree: true,
-                attributes: true,
-                attributeFilter: ['class', 'style'],
             });
         }
     });
 </script>
+
+<script>
+    (function () {
+        if (window.becAttachmentPopupReady) return;
+        window.becAttachmentPopupReady = true;
+
+        function whenReady(callback) {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', callback, { once: true });
+            } else {
+                callback();
+            }
+        }
+
+        whenReady(function () {
+            const modal = document.getElementById('becAttachmentPopup');
+            if (!modal) return;
+
+            const imagePreview = modal.querySelector('.bec-attachment-popup-image');
+            const fileCard = modal.querySelector('.bec-attachment-popup-file');
+            const icon = modal.querySelector('.bec-attachment-popup-icon i');
+            const fileName = modal.querySelector('.bec-attachment-popup-name');
+            const fileMeta = modal.querySelector('.bec-attachment-popup-meta');
+            const caption = modal.querySelector('.bec-attachment-popup-caption');
+            const cancelButtons = modal.querySelectorAll('.bec-attachment-popup-close, .bec-attachment-popup-cancel');
+            const sendButton = modal.querySelector('.bec-attachment-popup-send');
+
+            let activeInput = null;
+            let previewUrl = '';
+
+            const labels = {
+                image: @json($t('chatify.Image', 'Image')),
+                video: @json($t('chatify.Video', 'Video')),
+                audio: @json($t('chatify.Audio', 'Audio')),
+                pdf: @json($t('chatify.PDF', 'PDF')),
+                document: @json($t('chatify.Document', 'Document')),
+                spreadsheet: @json($t('chatify.Spreadsheet', 'Spreadsheet')),
+                file: @json($t('chatify.File', 'File')),
+            };
+
+            function formatSize(bytes) {
+                if (!Number.isFinite(bytes) || bytes <= 0) return '';
+                if (bytes < 1024) return `${bytes} B`;
+                if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(bytes < 1024 * 10 ? 1 : 0)} KB`;
+                return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+            }
+
+            function fileExtension(file) {
+                const name = file?.name || '';
+                const ext = name.includes('.') ? name.split('.').pop().toUpperCase() : '';
+                return ext || (file?.type ? file.type.split('/').pop().toUpperCase() : labels.file);
+            }
+
+            function fileKind(file) {
+                const type = file?.type || '';
+                const ext = (file?.name || '').split('.').pop().toLowerCase();
+
+                if (type.startsWith('image/')) return 'image';
+                if (type.startsWith('video/')) return 'video';
+                if (type.startsWith('audio/')) return 'audio';
+                if (type === 'application/pdf' || ext === 'pdf') return 'pdf';
+                if (['doc', 'docx', 'txt', 'rtf'].includes(ext)) return 'document';
+                if (['xls', 'xlsx', 'csv'].includes(ext)) return 'spreadsheet';
+                return 'file';
+            }
+
+            function setIcon(kind) {
+                if (!icon) return;
+                const icons = {
+                    image: 'fas fa-image text-xl',
+                    video: 'fas fa-video text-xl',
+                    audio: 'fas fa-music text-xl',
+                    pdf: 'fas fa-file-pdf text-xl',
+                    document: 'fas fa-file-lines text-xl',
+                    spreadsheet: 'fas fa-file-excel text-xl',
+                    file: 'fas fa-file text-xl',
+                };
+                icon.className = icons[kind] || icons.file;
+            }
+
+            function closePopup(clearFile) {
+                modal.classList.remove('is-open');
+                modal.setAttribute('aria-hidden', 'true');
+                document.documentElement.classList.remove('bec-attachment-popup-open');
+
+                if (previewUrl) {
+                    URL.revokeObjectURL(previewUrl);
+                    previewUrl = '';
+                }
+
+                if (imagePreview) {
+                    imagePreview.removeAttribute('src');
+                    imagePreview.classList.add('hidden');
+                }
+
+                fileCard?.classList.remove('hidden');
+
+                if (clearFile && activeInput) {
+                    activeInput.value = '';
+                    activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    activeInput.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+
+                if (clearFile && caption) caption.value = '';
+                if (clearFile) activeInput = null;
+            }
+
+            function openPopup(input) {
+                const file = input?.files?.[0];
+                if (!file) return;
+
+                activeInput = input;
+                const form = input.closest('form') || document.querySelector('#message-form');
+                const mainInput = form?.querySelector('.m-send') || document.querySelector('.m-send');
+                const kind = fileKind(file);
+                const extension = fileExtension(file);
+                const size = formatSize(file.size);
+
+                if (fileName) fileName.textContent = file.name;
+                if (fileMeta) fileMeta.textContent = [labels[kind] || labels.file, extension, size].filter(Boolean).join(' · ');
+                if (caption && mainInput) caption.value = mainInput.value || '';
+
+                setIcon(kind);
+
+                if (previewUrl) {
+                    URL.revokeObjectURL(previewUrl);
+                    previewUrl = '';
+                }
+
+                if (kind === 'image' && imagePreview) {
+                    previewUrl = URL.createObjectURL(file);
+                    imagePreview.src = previewUrl;
+                    imagePreview.classList.remove('hidden');
+                    fileCard?.classList.add('hidden');
+                } else {
+                    if (imagePreview) {
+                        imagePreview.removeAttribute('src');
+                        imagePreview.classList.add('hidden');
+                    }
+                    fileCard?.classList.remove('hidden');
+                }
+
+                modal.classList.add('is-open');
+                modal.setAttribute('aria-hidden', 'false');
+                document.documentElement.classList.add('bec-attachment-popup-open');
+                setTimeout(() => caption?.focus(), 60);
+            }
+
+            // Delegated listener: works even when Chatify enables/replaces the file input later.
+            document.addEventListener('change', function (event) {
+                const input = event.target?.closest?.('.upload-attachment');
+                if (!input || !input.files || !input.files.length) return;
+                openPopup(input);
+            }, true);
+
+            cancelButtons.forEach((button) => {
+                button.addEventListener('click', function () {
+                    closePopup(true);
+                });
+            });
+
+            modal.addEventListener('click', function (event) {
+                if (event.target === modal) closePopup(true);
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+                    closePopup(true);
+                }
+            });
+
+            caption?.addEventListener('input', function () {
+                const form = activeInput?.closest('form') || document.querySelector('#message-form');
+                const mainInput = form?.querySelector('.m-send') || document.querySelector('.m-send');
+                if (!mainInput) return;
+                mainInput.value = caption.value;
+                mainInput.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+
+            sendButton?.addEventListener('click', function () {
+                const form = activeInput?.closest('form') || document.querySelector('#message-form');
+                const mainInput = form?.querySelector('.m-send') || document.querySelector('.m-send');
+                const realSendButton = form?.querySelector('.send-button') || document.querySelector('.send-button');
+
+                if (mainInput && caption) {
+                    mainInput.value = caption.value;
+                    mainInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    mainInput.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+
+                closePopup(false);
+
+                if (realSendButton) {
+                    realSendButton.disabled = false;
+                    realSendButton.removeAttribute('disabled');
+                    realSendButton.classList.remove('d-none');
+                    realSendButton.classList.add('d-flex', 'inline-flex');
+                    setTimeout(() => realSendButton.click(), 0);
+                    return;
+                }
+
+                if (form) {
+                    if (typeof form.requestSubmit === 'function') {
+                        form.requestSubmit();
+                    } else {
+                        form.submit();
+                    }
+                }
+            });
+        });
+    })();
+</script>
+
 </body>
 </html>

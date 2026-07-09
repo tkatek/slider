@@ -2,77 +2,47 @@
 
 $content = [
     'title'    => 'Practice 2',
-    'subtitle' => '',
+    'subtitle' => 'Complete the sentence',
 
-    'instruction'      => 'Complete the sentence',
-    'instruction_note' => '',
-
-    'grid_class' => 'grid-cols-1 sm:grid-cols-1',
-
-    'lines' => [
+    'items' => [
         [
-            'speaker' => '1',
-            'parts' => [
-                ['text' => 'Emily was too '],
-                [
-                    'blank' => true,
-                    'answer' => 'shy',
-                    'answers' => ['shy'],
-                ],
-                ['text' => ' to stand up to the bullies at first.'],
-            ],
+            'emoji'  => '🙈',
+            'prefix' => 'Emily was too',
+            'hint'   => '',
+            'suffix' => 'to stand up to the bullies at first.',
+            'answer' => 'shy',
         ],
         [
-            'speaker' => '2',
-            'parts' => [
-                ['text' => 'Heroes often show great '],
-                [
-                    'blank' => true,
-                    'answer' => 'bravery',
-                    'answers' => ['bravery'],
-                ],
-                ['text' => '.'],
-            ],
+            'emoji'  => '🦸',
+            'prefix' => 'Heroes often show great',
+            'hint'   => '',
+            'suffix' => '.',
+            'answer' => 'bravery',
         ],
         [
-            'speaker' => '3',
-            'parts' => [
-                ['text' => 'Emily decided not to '],
-                [
-                    'blank' => true,
-                    'answer' => 'hesitate',
-                    'answers' => ['hesitate'],
-                ],
-                ['text' => ' and took action.'],
-            ],
+            'emoji'  => '⚡',
+            'prefix' => 'Emily decided not to',
+            'hint'   => '',
+            'suffix' => 'and took action.',
+            'answer' => 'hesitate',
         ],
         [
-            'speaker' => '4',
-            'parts' => [
-                ['text' => 'Her story went '],
-                [
-                    'blank' => true,
-                    'answer' => 'viral',
-                    'answers' => ['viral'],
-                ],
-                ['text' => ' on social media.'],
-            ],
+            'emoji'  => '📱',
+            'prefix' => 'Her story went',
+            'hint'   => '',
+            'suffix' => 'on social media.',
+            'answer' => 'viral',
         ],
         [
-            'speaker' => '5',
-            'parts' => [
-                ['text' => 'Everyone has the '],
-                [
-                    'blank' => true,
-                    'answer' => 'potential',
-                    'answers' => ['potential'],
-                ],
-                ['text' => ' to be a hero.'],
-            ],
+            'emoji'  => '🌟',
+            'prefix' => 'Everyone has the',
+            'hint'   => '',
+            'suffix' => 'to be a hero.',
+            'answer' => 'potential',
         ],
     ],
 ];
 
 ?>
 
-@include('slider.game.listening-missing-word', ['content' => $content])
+@include('slider.game.text-response', ['content' => $content])

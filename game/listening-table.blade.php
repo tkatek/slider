@@ -128,7 +128,7 @@
                         @endif
                     </div>
 
-                    <div class="grid w-full grid-cols-3 gap-1.5 sm:gap-2 lg:w-auto lg:flex lg:flex-wrap lg:items-center lg:justify-end">
+                    <div class="grid w-full grid-cols-2 gap-1.5 sm:gap-2 lg:w-auto lg:flex lg:flex-wrap lg:items-center lg:justify-end">
                         <button
                                 id="checkAnswersBtn"
                                 type="button"
@@ -140,17 +140,10 @@
                         <button
                                 id="revealAnswersBtn"
                                 type="button"
+                                data-mode="reveal"
                                 class="min-w-0 rounded-xl border border-slate-200 bg-white px-2 py-2 text-[10px] font-black leading-tight text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:focus:ring-slate-700 sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-xs"
                         >
-                            Reveal answers
-                        </button>
-
-                        <button
-                                id="retakeBtn"
-                                type="button"
-                                class="min-w-0 rounded-xl border border-slate-200 bg-white px-2 py-2 text-[10px] font-black leading-tight text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:focus:ring-slate-700 sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-xs"
-                        >
-                            Retake
+                            Reveal
                         </button>
                     </div>
                 </div>
@@ -461,7 +454,6 @@
             const rows = Array.from(document.querySelectorAll('[data-choice-row]'));
             const checkBtn = document.getElementById('checkAnswersBtn');
             const revealBtn = document.getElementById('revealAnswersBtn');
-            const retakeBtn = document.getElementById('retakeBtn');
             const sounds = @json($sounds);
             const sfx = {
                 tap: new Audio(sounds.tap || '/slider/sounds/tap.wav'),
@@ -614,7 +606,14 @@
                 playSfx(correctCount === currentInputs.length && currentInputs.length > 0 ? 'success' : 'wrong');
             });
 
-            revealBtn?.addEventListener('click', () => {
+            function setRevealButtonMode(mode = 'reveal') {
+                if (!revealBtn) return;
+
+                revealBtn.dataset.mode = mode;
+                revealBtn.textContent = mode === 'retake' ? 'Retake' : 'Reveal';
+            }
+
+            function revealAnswers() {
                 if (MODE === 'choice_table') {
                     visibleRows().forEach(row => {
                         const correctSet = correctValues(row);
@@ -627,6 +626,7 @@
                     });
 
                     playSfx('success');
+                    setRevealButtonMode('retake');
                     return;
                 }
 
@@ -641,9 +641,10 @@
                 });
 
                 playSfx('success');
-            });
+                setRevealButtonMode('retake');
+            }
 
-            retakeBtn?.addEventListener('click', () => {
+            function resetActivity() {
                 if (MODE === 'choice_table') {
                     visibleRows().forEach(row => {
                         row.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
@@ -653,6 +654,7 @@
                         clearChoiceRow(row);
                     });
 
+                    setRevealButtonMode('reveal');
                     return;
                 }
 
@@ -663,6 +665,17 @@
                     delete input.dataset.state;
                     input.removeAttribute('aria-invalid');
                 });
+
+                setRevealButtonMode('reveal');
+            }
+
+            revealBtn?.addEventListener('click', () => {
+                if (revealBtn.dataset.mode === 'retake') {
+                    resetActivity();
+                    return;
+                }
+
+                revealAnswers();
             });
 
             function stopSlideMedia() {
@@ -679,7 +692,7 @@
 
             window.resetSlide = () => {
                 stopSlideMedia();
-                retakeBtn?.click();
+                resetActivity();
             };
         });
     </script>

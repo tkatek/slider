@@ -1,7 +1,7 @@
 @php
     $content = [
 
-        'title'      => 'Practice 8',
+        'title'      => 'Reading Comprehension',
         'subtitle'   => 'Fill in the blanks using the words in the box.',
 
         'sentences' => [

@@ -1,0 +1,108 @@
+@php
+    $content = [
+        'title'      => 'New Vocabulary',
+        'subtitle'   => '',
+        'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-6',
+
+        'items' => [
+            [
+                'text'     => 'precious',
+                'subtitle' => 'Very valuable and important to protect.',
+                'example'  => '',
+                'emoji'    => '',
+                'sound'    => materialAsset('slider/B1/Advanced/chapter-5/audios/slide6/precious.mp3'),
+                'image'    => materialAsset('slider/B1/Advanced/chapter-5/img/slide6/precious.webp'),
+            ],
+            [
+                'text'     => 'climate change',
+                'subtitle' => "Long-term changes in the Earth's weather patterns.",
+                'example'  => '',
+                'emoji'    => '',
+                'sound'    => materialAsset('slider/B1/Advanced/chapter-5/audios/slide6/climate-change.mp3'),
+                'image'    => materialAsset('slider/B1/Advanced/chapter-5/img/slide6/climate-change.webp'),
+            ],
+            [
+                'text'     => 'environmental threats',
+                'subtitle' => 'Problems or dangers that harm the environment.',
+                'example'  => '',
+                'emoji'    => '',
+                'sound'    => materialAsset('slider/B1/Advanced/chapter-5/audios/slide6/environmental-threats.mp3'),
+                'image'    => materialAsset('slider/B1/Advanced/chapter-5/img/slide6/environmental-threats.webp'),
+            ],
+            [
+                'text'     => 'visible',
+                'subtitle' => 'Able to be seen or noticed clearly.',
+                'example'  => '',
+                'emoji'    => '',
+                'sound'    => materialAsset('slider/B1/Advanced/chapter-5/audios/slide6/visible.mp3'),
+                'image'    => materialAsset('slider/B1/Advanced/chapter-5/img/slide6/visible.webp'),
+            ],
+            [
+                'text'     => 'air pollution',
+                'subtitle' => 'Harmful substances in the air that damage health and the environment.',
+                'example'  => '',
+                'emoji'    => '',
+                'sound'    => materialAsset('slider/B1/Advanced/chapter-5/audios/slide6/air-pollution.mp3'),
+                'image'    => materialAsset('slider/B1/Advanced/chapter-5/img/slide6/air-pollution.webp'),
+            ],
+            [
+                'text'     => 'plastic waste',
+                'subtitle' => 'Plastic materials that are thrown away and pollute the environment.',
+                'example'  => '',
+                'emoji'    => '',
+                'sound'    => materialAsset('slider/B1/Advanced/chapter-5/audios/slide6/plastic-waste.mp3'),
+                'image'    => materialAsset('slider/B1/Advanced/chapter-5/img/slide6/plastic-waste.webp'),
+            ],
+            [
+                'text'     => 'energy consumption',
+                'subtitle' => 'The amount of energy used by people or machines.',
+                'example'  => '',
+                'emoji'    => '',
+                'sound'    => materialAsset('slider/B1/Advanced/chapter-5/audios/slide6/energy-consumption.mp3'),
+                'image'    => materialAsset('slider/B1/Advanced/chapter-5/img/slide6/energy-consumption.webp'),
+            ],
+            [
+                'text'     => 'carbon footprint',
+                'subtitle' => 'The total amount of greenhouse gases caused by our actions.',
+                'example'  => '',
+                'emoji'    => '',
+                'sound'    => materialAsset('slider/B1/Advanced/chapter-5/audios/slide6/carbon-footprint.mp3'),
+                'image'    => materialAsset('slider/B1/Advanced/chapter-5/img/slide6/carbon-footprint.webp'),
+            ],
+            [
+                'text'     => 'effective',
+                'subtitle' => 'Successful in achieving the desired result.',
+                'example'  => '',
+                'emoji'    => '',
+                'sound'    => materialAsset('slider/B1/Advanced/chapter-5/audios/slide6/effective.mp3'),
+                'image'    => materialAsset('slider/B1/Advanced/chapter-5/img/slide6/effective.webp'),
+            ],
+            [
+                'text'     => 'keep (the air) clean',
+                'subtitle' => 'To make sure the air is free from pollution and harmful gases.',
+                'example'  => '',
+                'emoji'    => '',
+                'sound'    => materialAsset('slider/B1/Advanced/chapter-5/audios/slide6/keep-the-air-clean.mp3'),
+                'image'    => materialAsset('slider/B1/Advanced/chapter-5/img/slide6/keep-the-air-clean.webp'),
+            ],
+            [
+                'text'     => 'renewable energy',
+                'subtitle' => 'Energy from natural sources that can be replaced and used again.',
+                'example'  => '',
+                'emoji'    => '',
+                'sound'    => materialAsset('slider/B1/Advanced/chapter-5/audios/slide6/renewable-energy.mp3'),
+                'image'    => materialAsset('slider/B1/Advanced/chapter-5/img/slide6/renewable-energy.webp'),
+            ],
+            [
+                'text'     => 'reliance',
+                'subtitle' => 'The state of needing or depending on something.',
+                'example'  => '',
+                'emoji'    => '',
+                'sound'    => materialAsset('slider/B1/Advanced/chapter-5/audios/slide6/reliance.mp3'),
+                'image'    => materialAsset('slider/B1/Advanced/chapter-5/img/slide6/reliance.webp'),
+            ],
+        ],
+    ];
+@endphp
+
+@include('slider.vocab.image-card', ['content' => $content])

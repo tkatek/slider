@@ -25,7 +25,9 @@
     $nextFallback = trim((string) ($content['next_fallback'] ?? 'slide-2.blade.php'));
     $firstFallback = trim((string) ($content['first_fallback'] ?? 'slide-1.blade.php'));
 
-    $imageSizeClass = trim((string) ($content['image_size'] ?? 'max-w-[260px] sm:max-w-[320px] md:max-w-[350px] lg:max-w-[400px] xl:max-w-[430px]'));
+    // Platform-safe image sizing: slightly smaller so it does not dominate inside the editor/player.
+    $imageSizeClass = trim((string) ($content['image_size'] ?? 'max-w-[240px] sm:max-w-[300px] md:max-w-[330px] lg:max-w-[365px] xl:max-w-[385px]'));
+
     $imageClass = trim((string) ($content['image_class'] ?? 'relative z-10 block h-full w-full select-none object-cover'));
     $imageStyle = trim((string) ($content['image_style'] ?? ''));
     $imageAspectRatio = trim((string) ($content['image_aspect_ratio'] ?? '1 / 1'));
@@ -33,8 +35,12 @@
     $outerShape = 'rounded-[2rem] rounded-tr-[5rem] rounded-bl-[4rem]';
     $innerShape = 'rounded-[1.55rem] rounded-tr-[4rem] rounded-bl-[3.2rem]';
 
-    $lessonClass = trim((string) ($content['lesson_class'] ?? 'text-[1.9rem] sm:text-[2.35rem] md:text-[2.8rem] lg:text-[3.25rem] xl:text-[3.75rem]'));
+    // Responsive title sizing for short and long lesson titles.
+    $lessonClass = trim((string) ($content['lesson_class'] ?? 'text-[clamp(2.15rem,4.1vw,4.15rem)]'));
+    $outroTitleClass = trim((string) ($content['outro_title_class'] ?? 'text-[clamp(2.55rem,5vw,5.25rem)]'));
+
     $lessonAllowHtml = !empty($content['lesson_allow_html']);
+
     $preserveRepeatedSpaces = static function (string $value): string {
         return preg_replace_callback('/ {2,}/', static function (array $matches): string {
             return str_repeat('&nbsp;', strlen($matches[0]));
@@ -58,12 +64,12 @@
                 <div class="pointer-events-none absolute left-0 top-1/2 hidden h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-200/30 blur-3xl dark:bg-emerald-500/10 lg:block"></div>
                 <div class="pointer-events-none absolute bottom-4 right-12 hidden h-64 w-64 rounded-full bg-green-200/25 blur-3xl dark:bg-green-500/10 lg:block"></div>
 
-                <div class="relative z-10 mx-auto grid min-h-[min(620px,calc(100dvh-2rem))] w-full max-w-6xl grid-cols-1 items-center gap-7 px-5 py-6 sm:gap-8 sm:px-8 sm:py-8 md:grid-cols-[minmax(0,0.9fr)_minmax(280px,0.85fr)] md:gap-8 md:px-8 md:py-7 lg:grid-cols-[minmax(0,0.9fr)_minmax(330px,0.9fr)] lg:gap-10 lg:px-10 lg:py-8 xl:gap-12 xl:px-12">
+                <div class="relative z-10 mx-auto grid min-h-[min(560px,calc(100dvh-2rem))] w-full max-w-[1040px] grid-cols-1 items-center gap-7 px-5 py-6 sm:gap-8 sm:px-8 sm:py-8 md:grid-cols-[minmax(0,0.95fr)_minmax(280px,0.82fr)] md:gap-7 md:px-8 md:py-7 lg:grid-cols-[minmax(0,0.98fr)_minmax(310px,0.82fr)] lg:gap-8 lg:px-10 lg:py-8 xl:gap-10 xl:px-10">
 
-                    <div class="order-1 flex w-full flex-col items-center text-center md:-translate-y-3 md:items-start md:text-left lg:-translate-y-4 {{ $hasImage ? '' : 'md:col-span-2 md:mx-auto md:max-w-4xl md:items-center md:text-center' }}">
-                        <div id="titleBlock" class="relative w-full max-w-3xl">
+                    <div class="order-1 flex w-full flex-col items-center text-center md:-translate-y-2 md:items-start md:text-left lg:-translate-y-3 {{ $hasImage ? '' : 'md:col-span-2 md:mx-auto md:max-w-4xl md:items-center md:text-center' }}">
+                        <div id="titleBlock" class="relative w-full max-w-[700px]">
                             @if(!$isOutro)
-                                <div class="space-y-5 sm:space-y-6 lg:space-y-7">
+                                <div class="space-y-5 sm:space-y-6 lg:space-y-6">
                                     @if($unit !== '' || $unitNumber !== '' || $badge !== '')
                                         <div class="flex flex-wrap items-center justify-center gap-2.5 md:justify-start {{ $hasImage ? '' : 'md:justify-center' }}">
                                             @if($unitNumber !== '')
@@ -99,7 +105,10 @@
                                             @endif
 
                                             @if($lesson !== '')
-                                                <h1 class="{{ $lessonClass }} font-black leading-[1.02] tracking-[-0.045em]">
+                                                <h1
+                                                        class="{{ $lessonClass }} max-w-[650px] break-words font-black leading-[0.98] tracking-[-0.045em] sm:leading-[0.96]"
+                                                        style="text-wrap: balance;"
+                                                >
                                                     <span class="bg-gradient-to-br from-[#064E3B] via-[#047857] to-[#10B981] bg-clip-text text-transparent dark:from-emerald-50 dark:via-emerald-200 dark:to-green-300">
                                                         @if($lessonAllowHtml)
                                                             {!! $lesson !!}
@@ -128,7 +137,10 @@
                                         </div>
                                     @endif
 
-                                    <h1 class="text-4xl font-black leading-[.95] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
+                                    <h1
+                                            class="{{ $outroTitleClass }} max-w-[700px] font-black leading-[0.95] tracking-[-0.045em]"
+                                            style="text-wrap: balance;"
+                                    >
                                         <span class="bg-gradient-to-br from-[#064E3B] via-[#047857] to-[#10B981] bg-clip-text text-transparent dark:from-emerald-50 dark:via-emerald-200 dark:to-green-300">
                                             {{ $title }}
                                         </span>
@@ -144,7 +156,7 @@
                         </div>
 
                         @if($buttonText !== '')
-                            <div class="mt-8 flex w-full justify-center md:mt-10 md:justify-start {{ $hasImage ? '' : 'md:justify-center' }}">
+                            <div class="mt-5 flex w-full justify-center md:mt-7 md:justify-start {{ $hasImage ? '' : 'md:justify-center' }}">
                                 <button
                                         id="introOutroBtn"
                                         type="button"
@@ -165,9 +177,9 @@
 
                     @if($hasImage)
                         <div class="order-2 flex w-full items-center justify-center md:-translate-y-2">
-                            <div class="relative mx-auto flex w-full max-w-[350px] items-center justify-center sm:max-w-[420px] md:max-w-[390px] lg:max-w-[450px]">
+                            <div class="relative mx-auto flex w-full max-w-[330px] items-center justify-center sm:max-w-[390px] md:max-w-[370px] lg:max-w-[410px]">
                                 <div class="relative z-10 w-full {{ $imageSizeClass }}" @if($imageStyle !== '') style="{{ $imageStyle }}" @endif>
-                                    <div class="pointer-events-none absolute -inset-4 {{ $outerShape }} bg-emerald-200/25 blur-2xl dark:bg-emerald-500/10"></div>
+                                    <div class="pointer-events-none absolute -inset-4 {{ $outerShape }} bg-emerald-200/20 blur-2xl dark:bg-emerald-500/10"></div>
                                     <div class="pointer-events-none absolute -inset-2 {{ $outerShape }} border border-emerald-300/45 dark:border-emerald-300/15"></div>
 
                                     <div class="relative overflow-hidden {{ $outerShape }} border border-white/80 bg-white/80 p-3 shadow-[0_30px_75px_-45px_rgba(6,78,59,0.55)] ring-1 ring-emerald-100/90 backdrop-blur-xl dark:border-emerald-300/10 dark:bg-slate-950/35 dark:ring-emerald-300/10">

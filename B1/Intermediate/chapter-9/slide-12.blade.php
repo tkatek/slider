@@ -33,7 +33,7 @@ $content = [
         [
             'prompt'  => 'People .......... work hard often achieve their dreams.',
             'correct' => 'who',
-            'options' => ['who', 'which', 'that'],
+            'options' => ['who', 'which', 'where'],
         ],
     ],
 ];

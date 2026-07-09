@@ -2,78 +2,52 @@
 
 $content = [
     'title'    => 'Practice 6',
-    'subtitle' => '',
+    'subtitle' => 'Complete the sentences with who, that, which, where, or when.',
 
-    'instruction'      => 'Complete the sentences with who, that, which, where, or when.',
-    'instruction_note' => '',
-
-    'grid_class' => 'grid-cols-1 ',
-    'card_class' => '[&_.lp-input]:!w-36 [&_.lp-input]:!min-w-0',
-
-    'lines' => [
+    'items' => [
         [
-            'speaker' => 'a',
-            'parts' => [
-                ['text' => 'The mentor '],
-                [
-                    'blank' => true,
-                    'answer' => 'who',
-                    'answers' => ['who', 'that'],
-                ],
-                ['text' => ' helped me believe in myself changed my life.'],
-            ],
+            'emoji'   => '🧑‍🏫',
+            'prefix'  => 'The mentor',
+            'hint'    => '',
+            'suffix'  => 'helped me believe in myself changed my life.',
+            'answer'  => 'who',
+            'answers' => ['who', 'that'],
         ],
         [
-            'speaker' => 'b',
-            'parts' => [
-                ['text' => 'The workshop '],
-                [
-                    'blank' => true,
-                    'answer' => 'which',
-                    'answers' => ['which', 'that'],
-                ],
-                ['text' => ' I attended last weekend was very useful.'],
-            ],
+            'emoji'   => '📝',
+            'prefix'  => 'The workshop',
+            'hint'    => '',
+            'suffix'  => 'I attended last weekend was very useful.',
+            'answer'  => 'which',
+            'answers' => ['which', 'that'],
         ],
         [
-            'speaker' => 'c',
-            'parts' => [
-                ['text' => 'This is the painting '],
-                [
-                    'blank' => true,
-                    'answer' => 'which',
-                    'answers' => ['which', 'that'],
-                ],
-                ['text' => ' my grandmother made.'],
-            ],
+            'emoji'   => '🎨',
+            'prefix'  => 'This is the painting',
+            'hint'    => '',
+            'suffix'  => 'my grandmother made.',
+            'answer'  => 'which',
+            'answers' => ['which', 'that'],
         ],
         [
-            'speaker' => 'd',
-            'parts' => [
-                ['text' => 'The people '],
-                [
-                    'blank' => true,
-                    'answer' => 'who',
-                    'answers' => ['who', 'that'],
-                ],
-                ['text' => ' surround us can inspire us every day.'],
-            ],
+            'emoji'   => '👥',
+            'prefix'  => 'The people',
+            'hint'    => '',
+            'suffix'  => 'surround us can inspire us every day.',
+            'answer'  => 'who',
+            'answers' => ['who', 'that'],
         ],
         [
-            'speaker' => 'e',
-            'parts' => [
-                ['text' => 'I was twelve years old '],
-                [
-                    'blank' => true,
-                    'answer' => 'when',
-                    'answers' => ['when'],
-                ],
-                ['text' => ' I decided to follow my passion.'],
-            ],
+            'emoji'   => '⭐',
+            'prefix'  => 'I was twelve years old',
+            'hint'    => '',
+            'suffix'  => 'I decided to follow my passion.',
+            'answer'  => 'when',
+            'answers' => ['when'],
         ],
     ],
 ];
 
 ?>
 
-@include('slider.game.listening-missing-word', ['content' => $content])
+@include('slider.game.text-response', ['content' => $content])

@@ -29,14 +29,7 @@
                     <aside class="fixed inset-x-0 bottom-0 z-40 px-3 pb-2 sm:px-5 sm:pb-3 md:sticky md:inset-auto md:top-4 md:z-20 md:self-start md:px-0 md:pb-0">
                         <section class="mx-auto w-full max-w-[22rem] rounded-t-[1.35rem] border border-slate-200/80 bg-white/96 p-2 shadow-[0_-16px_42px_rgba(15,23,42,0.14)] ring-1 ring-white/80 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/94 dark:ring-white/10 sm:max-w-[28rem] sm:rounded-[1.5rem] sm:p-2.5 md:max-w-none md:rounded-[1.6rem] md:p-3 md:shadow-[0_18px_48px_rgba(15,23,42,0.10)] lg:p-3.5">
                             <div class="mb-1.5 flex items-center justify-between gap-2 px-0.5 sm:mb-2 md:flex-col md:items-stretch md:px-0">
-                                <div class="min-w-0 text-left md:text-center">
-                                    <p class="text-[9px] font-black uppercase tracking-[0.16em] text-indigo-600 dark:text-indigo-300 sm:text-[10px]">
-                                        Pictures
-                                    </p>
-                                    <p class="truncate text-[9px] font-bold text-slate-500 dark:text-slate-400 sm:text-[10px] md:mt-0.5">
-                                        Square images
-                                    </p>
-                                </div>
+
 
                                 <button
                                         id="resetInlineBtn"

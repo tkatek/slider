@@ -1,1 +1,108 @@
-<?php
+@php
+    $content = [
+        'title'      => 'New Vocabulary',
+        'subtitle'   => '',
+        'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-6',
+
+        'items' => [
+            [
+                'text'     => 'Empathy',
+                'subtitle' => "The ability to understand and share another person's feelings.",
+                'example'  => '',
+                'emoji'    => '🫂',
+                'sound'    => materialAsset('slider/B1/Intermediate/chapter-11/audios/slide8/empathy.mp3'),
+                'image'    => materialAsset('slider/B1/Intermediate/chapter-11/img/slide8/empathy.webp'),
+            ],
+            [
+                'text'     => 'Circumstances',
+                'subtitle' => 'Conditions or situation someone is in.',
+                'example'  => '',
+                'emoji'    => '🌧️',
+                'sound'    => materialAsset('slider/B1/Intermediate/chapter-11/audios/slide8/circumstances.mp3'),
+                'image'    => materialAsset('slider/B1/Intermediate/chapter-11/img/slide8/circumstances.webp'),
+            ],
+            [
+                'text'     => 'Lens',
+                'subtitle' => 'Way of seeing or understanding something.',
+                'example'  => '',
+                'emoji'    => '🔍',
+                'sound'    => materialAsset('slider/B1/Intermediate/chapter-11/audios/slide8/lens.mp3'),
+                'image'    => materialAsset('slider/B1/Intermediate/chapter-11/img/slide8/lens.webp'),
+            ],
+            [
+                'text'     => 'Outcasted / Outcast',
+                'subtitle' => 'Excluded or rejected from a group.',
+                'example'  => '',
+                'emoji'    => '🚶‍♀️',
+                'sound'    => materialAsset('slider/B1/Intermediate/chapter-11/audios/slide8/outcasted.mp3'),
+                'image'    => materialAsset('slider/B1/Intermediate/chapter-11/img/slide8/outcast.webp'),
+            ],
+            [
+                'text'     => 'Worthless',
+                'subtitle' => 'Feeling of having no value.',
+                'example'  => '',
+                'emoji'    => '😔',
+                'sound'    => materialAsset('slider/B1/Intermediate/chapter-11/audios/slide8/worthless.mp3'),
+                'image'    => materialAsset('slider/B1/Intermediate/chapter-11/img/slide8/worthless.webp'),
+            ],
+            [
+                'text'     => 'Tolerance',
+                'subtitle' => 'Accepting differences in others.',
+                'example'  => '',
+                'emoji'    => '🤝',
+                'sound'    => materialAsset('slider/B1/Intermediate/chapter-11/audios/slide8/tolerance.mp3'),
+                'image'    => materialAsset('slider/B1/Intermediate/chapter-11/img/slide8/tolerance.webp'),
+            ],
+            [
+                'text'     => 'Compassion',
+                'subtitle' => "Strong feeling of care for others' suffering.",
+                'example'  => '',
+                'emoji'    => '❤️',
+                'sound'    => materialAsset('slider/B1/Intermediate/chapter-11/audios/slide8/compassion.mp3'),
+                'image'    => materialAsset('slider/B1/Intermediate/chapter-11/img/slide8/compassion.webp'),
+            ],
+            [
+                'text'     => 'Comfort Zone',
+                'subtitle' => 'Situation where someone feels safe and familiar.',
+                'example'  => '',
+                'emoji'    => '🛋️',
+                'sound'    => materialAsset('slider/B1/Intermediate/chapter-11/audios/slide8/comfort-zone.mp3'),
+                'image'    => materialAsset('slider/B1/Intermediate/chapter-11/img/slide8/comfort-zone.webp'),
+            ],
+            [
+                'text'     => 'Ignite',
+                'subtitle' => 'To start or trigger something often strongly.',
+                'example'  => '',
+                'emoji'    => '🔥',
+                'sound'    => materialAsset('slider/B1/Intermediate/chapter-11/audios/slide8/ignite.mp3'),
+                'image'    => materialAsset('slider/B1/Intermediate/chapter-11/img/slide8/ignite.webp'),
+            ],
+            [
+                'text'     => 'Chain Reaction',
+                'subtitle' => 'A series of connected events.',
+                'example'  => '',
+                'emoji'    => '⛓️',
+                'sound'    => materialAsset('slider/B1/Intermediate/chapter-11/audios/slide8/chain-reaction.mp3'),
+                'image'    => materialAsset('slider/B1/Intermediate/chapter-11/img/slide8/chain-reaction.webp'),
+            ],
+            [
+                'text'     => 'Judging',
+                'subtitle' => 'Forming opinions about someone unfairly.',
+                'example'  => '',
+                'emoji'    => '👉',
+                'sound'    => materialAsset('slider/B1/Intermediate/chapter-11/audios/slide8/judging.mp3'),
+                'image'    => materialAsset('slider/B1/Intermediate/chapter-11/img/slide8/judging.webp'),
+            ],
+            [
+                'text'     => 'Respect',
+                'subtitle' => "Showing consideration for others' feelings.",
+                'example'  => '',
+                'emoji'    => '🤝',
+                'sound'    => materialAsset('slider/B1/Intermediate/chapter-11/audios/slide8/respect.mp3'),
+                'image'    => materialAsset('slider/B1/Intermediate/chapter-11/img/slide8/respect.webp'),
+            ],
+        ],
+    ];
+@endphp
+
+@include('slider.vocab.image-card', ['content' => $content])

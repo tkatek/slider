@@ -1,7 +1,7 @@
 @php
     $content = [
         'title'      => 'New Language',
-        'subtitle'   => '',
+        'subtitle'   => 'Expressions & Language',
 
         'grid_class' => 'grid-cols-2 sm:grid-cols-4 xl:grid-cols-5',
 

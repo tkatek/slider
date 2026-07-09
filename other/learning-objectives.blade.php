@@ -13,13 +13,13 @@
         $type = 'type1';
     }
 
-    $objectives = is_array($content['objectives'] ?? null) 
+    $objectives = is_array($content['objectives'] ?? null)
         ? array_values($content['objectives'])
         : [];
 
     $themeName = (string)($theme['name'] ?? 'default');
     $primaryGradient = trim((string)($theme['primary_color'] ?? 'bg-gradient-to-br from-indigo-600 via-blue-600 to-violet-600'));
-    $buttonGradient = trim((string)($theme['button_primary_color'] ?? $primaryGradient)); 
+    $buttonGradient = trim((string)($theme['button_primary_color'] ?? $primaryGradient));
 
     if ($themeName === 'orange') {
         $softAccentClass = 'bg-orange-50 text-orange-700 ring-orange-200 dark:bg-orange-400/10 dark:text-orange-200 dark:ring-orange-300/20';

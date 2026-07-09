@@ -56,7 +56,7 @@ $deleteAction = $canDelete
     ? '<div class="actions pointer-events-none hidden h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-red-500 opacity-0 ring-1 ring-slate-900/5 transition hover:bg-red-50 group-hover:flex group-hover:pointer-events-auto group-hover:opacity-100 group-focus:flex group-focus:pointer-events-auto group-focus:opacity-100 group-focus-within:flex group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-active:flex group-active:pointer-events-auto group-active:opacity-100 dark:bg-slate-900 dark:text-red-400 dark:ring-white/10 dark:hover:bg-red-500/10">
             <button type="button" class="delete-btn flex h-full w-full shrink-0 items-center justify-center rounded-full outline-none" data-id="'.e($id).'" aria-label="'.e($deleteMessageLabel).'">
                 <i class="fas fa-trash pointer-events-none text-sm"></i>
-            </button> 
+            </button>
         </div>'
     : '';
 $attachmentName = $attachment ? ($attachment->name ?? $attachment->file_name ?? $attachmentLabel) : $attachmentLabel;

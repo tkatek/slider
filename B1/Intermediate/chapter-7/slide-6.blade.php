@@ -4,7 +4,7 @@
     $content = [
         'page_title' => 'Practice 2',
         'title'      => 'What type of sibling are you?',
-        'subtitle'   => 'For each question, choose A, B, C, or D that best describes you.',
+        'subtitle'   => 'For each question, choose A, B, C, or D that best describes you',
 
         'questions' => [
             [

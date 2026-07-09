@@ -2,41 +2,18 @@
 
 $content = [
     'title'    => 'Quick wrap-up!',
-    'subtitle' => '',
+    'subtitle' => 'Complete the sentences with a suitable modal of deduction',
 
-    'instruction'      => 'Complete the sentences with a suitable modal of deduction:',
-    'instruction_note' => '',
-
-    'grid_class' => 'grid-cols-1',
-
-    'card_class' => '[&_.lp-input]:!w-full [&_.lp-input]:!min-w-0 [&_.lp-input]:!max-w-full',
-
-    'lines' => [
+    'items' => [
         [
-            'speaker' => '1',
-            'parts' => [
-                [
-                    'text' => "Who do you think ________ win the next World Cup?",
-                ],
-            ],
-        ],
-        [
-            'speaker' => '2',
-            'parts' => [
-                [
-                    'blank' => true,
-                    'answer' => "Who do you think will win the next World Cup?",
-                    'placeholder' => "Who do you think...",
-                    'answers' => [
-                        "Who do you think will win the next World Cup?",
-                        "Who do you think will win the next World Cup",
-                    ],
-                ],
-            ],
+            'emoji'  => '🏆',
+            'prefix' => 'Who do you think',
+            'suffix' => 'win the next World Cup?',
+            'answer' => 'will',
         ],
     ],
 ];
 
 ?>
 
-@include('slider.game.listening-missing-word', ['content' => $content])
+@include('slider.game.text-response', ['content' => $content])

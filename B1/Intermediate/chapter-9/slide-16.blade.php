@@ -2,78 +2,52 @@
 
 $content = [
     'title'    => 'Practice 8',
-    'subtitle' => '',
+    'subtitle' => 'Complete each sentence using the correct relative pronoun',
 
-    'instruction'      => 'Complete each sentence using the correct relative pronoun',
-    'instruction_note' => '',
-
-    'grid_class' => 'grid-cols-1',
-    'card_class' => '[&_.lp-input]:!w-40 [&_.lp-input]:!min-w-0',
-
-    'lines' => [
+    'items' => [
         [
-            'speaker' => '1',
-            'parts' => [
-                ['text' => 'The people '],
-                [
-                    'blank' => true,
-                    'answer' => 'who',
-                    'answers' => ['who', 'that'],
-                ],
-                ['text' => ' inspired me were my parents.'],
-            ],
+            'emoji'   => '👥',
+            'prefix'  => 'The people',
+            'hint'    => '',
+            'suffix'  => 'inspired me were my parents.',
+            'answer'  => 'who',
+            'answers' => ['who', 'that'],
         ],
         [
-            'speaker' => '2',
-            'parts' => [
-                ['text' => 'I read a book '],
-                [
-                    'blank' => true,
-                    'answer' => 'which',
-                    'answers' => ['which', 'that'],
-                ],
-                ['text' => ' changed my way of thinking.'],
-            ],
+            'emoji'   => '📖',
+            'prefix'  => 'I read a book',
+            'hint'    => '',
+            'suffix'  => 'changed my way of thinking.',
+            'answer'  => 'which',
+            'answers' => ['which', 'that'],
         ],
         [
-            'speaker' => '3',
-            'parts' => [
-                ['text' => 'Parents are people '],
-                [
-                    'blank' => true,
-                    'answer' => 'who',
-                    'answers' => ['who', 'that'],
-                ],
-                ['text' => ' support and guide us.'],
-            ],
+            'emoji'   => '👨‍👩‍👧',
+            'prefix'  => 'Parents are people',
+            'hint'    => '',
+            'suffix'  => 'support and guide us.',
+            'answer'  => 'who',
+            'answers' => ['who', 'that'],
         ],
         [
-            'speaker' => '4',
-            'parts' => [
-                ['text' => 'I enjoy places '],
-                [
-                    'blank' => true,
-                    'answer' => 'where',
-                    'answers' => ['where'],
-                ],
-                ['text' => ' I can learn about different cultures.'],
-            ],
+            'emoji'   => '🌍',
+            'prefix'  => 'I enjoy places',
+            'hint'    => '',
+            'suffix'  => 'I can learn about different cultures.',
+            'answer'  => 'where',
+            'answers' => ['where'],
         ],
         [
-            'speaker' => '5',
-            'parts' => [
-                ['text' => 'There was a time '],
-                [
-                    'blank' => true,
-                    'answer' => 'when',
-                    'answers' => ['when'],
-                ],
-                ['text' => ' I wanted to become an architect.'],
-            ],
+            'emoji'   => '⏳',
+            'prefix'  => 'There was a time',
+            'hint'    => '',
+            'suffix'  => 'I wanted to become an architect.',
+            'answer'  => 'when',
+            'answers' => ['when'],
         ],
     ],
 ];
 
 ?>
 
-@include('slider.game.listening-missing-word', ['content' => $content])
+@include('slider.game.text-response', ['content' => $content])

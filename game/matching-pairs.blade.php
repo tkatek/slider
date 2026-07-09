@@ -4,12 +4,14 @@
     @php
         $pairs = collect($content['pairs'] ?? [])->values();
         $pairById = $pairs->keyBy('id');
+
+        // Keeps older listening slides compatible with the existing audio player.
         $playerAudio = !empty($content['audio']) ? $content['audio'] : null;
         $scriptLines = is_array($content['script'] ?? null)
             ? array_values(array_filter(array_map(static fn ($line) => trim((string) $line), $content['script']), static fn ($line) => $line !== ''))
             : [];
         $hasScript = $scriptLines !== [];
-        $showCheckButton = filter_var($content['show_check_button'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
         $matchSounds = array_replace([
             'tap' => materialAsset('slider/sounds/tap.wav'),
             'correct' => materialAsset('slider/sounds/correct.wav'),
@@ -25,7 +27,7 @@
         })->values();
 
         $rightItems = collect($content['right_order'] ?? [])->map(function ($id) use ($pairById) {
-            $pair = $pairById->get($id);
+            $pair = $pairById->get($id); 
 
             return $pair
                 ? ['id' => $pair['id'], 'content' => $pair['right'] ?? []]
@@ -51,45 +53,88 @@
         }
 
         $activityTitle = $content['activity_title'] ?? $content['directions'] ?? 'Match the items.';
-        $leftLabel = $content['left_label'] ?? 'A. Items';
-        $rightLabel = $content['right_label'] ?? 'B. Matches';
-        $hintText = $content['hint_text'] ?? 'Tap a card on the left, then tap its match on the right.';
+        $leftLabel = $content['left_label'] ?? 'Items';
+        $rightLabel = $content['right_label'] ?? 'Matches';
 
-        $isOrangeTheme = ($theme['name'] ?? null) === 'orange';
-        $isGreenTheme = ($theme['name'] ?? null) === 'green';
-        $primaryButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500'));
-        $matchPrimary = $isOrangeTheme ? '#f97316' : ($isGreenTheme ? '#16a34a' : '#6366f1');
-        $matchSecondary = $isOrangeTheme ? '#fb923c' : ($isGreenTheme ? '#10b981' : '#38bdf8');
-        $matchPrimaryRgb = $isOrangeTheme ? '249, 115, 22' : ($isGreenTheme ? '22, 163, 74' : '99, 102, 241');
-        $matchSecondaryRgb = $isOrangeTheme ? '251, 146, 60' : ($isGreenTheme ? '16, 185, 129' : '56, 189, 248');
-        $matchGlowOne = $isOrangeTheme ? 'rgba(254, 215, 170, .38)' : ($isGreenTheme ? 'rgba(187,247,208,.38)' : 'rgba(191,219,254,.42)');
-        $matchGlowTwo = $isOrangeTheme ? 'rgba(253, 186, 116, .30)' : ($isGreenTheme ? 'rgba(167,243,208,.30)' : 'rgba(199,210,254,.34)');
-        $matchDarkGlowOne = $isOrangeTheme ? 'rgba(249, 115, 22, .20)' : ($isGreenTheme ? 'rgba(34,197,94,.20)' : 'rgba(59,130,246,.20)');
-        $matchDarkGlowTwo = $isOrangeTheme ? 'rgba(251, 146, 60, .16)' : ($isGreenTheme ? 'rgba(16,185,129,.16)' : 'rgba(129,140,248,.16)');
-        $matchAccentGradient = $isOrangeTheme
-            ? 'linear-gradient(135deg, #fb923c 0%, #f97316 54%, #ea580c 100%)'
-            : ($isGreenTheme
-                ? 'linear-gradient(135deg, #10b981 0%, #16a34a 54%, #15803d 100%)'
-                : 'linear-gradient(135deg, #38bdf8 0%, #6366f1 54%, #8b5cf6 100%)');
-        $dotGradients = $isOrangeTheme ? [
-            ['gradient' => 'linear-gradient(135deg, #fb923c, #f97316)', 'solid' => '#f97316'],
-            ['gradient' => 'linear-gradient(135deg, #fbbf24, #f59e0b)', 'solid' => '#f59e0b'],
-            ['gradient' => 'linear-gradient(135deg, #f97316, #dc2626)', 'solid' => '#ea580c'],
-            ['gradient' => 'linear-gradient(135deg, #14b8a6, #0f766e)', 'solid' => '#0d9488'],
-            ['gradient' => 'linear-gradient(135deg, #a855f7, #7c3aed)', 'solid' => '#8b5cf6'],
-            ['gradient' => 'linear-gradient(135deg, #ef4444, #e11d48)', 'solid' => '#ef4444'],
-        ] : [
-            ['gradient' => 'linear-gradient(135deg, #38bdf8, #2563eb)', 'solid' => '#2563eb'],
-            ['gradient' => 'linear-gradient(135deg, #6366f1, #8b5cf6)', 'solid' => '#6366f1'],
-            ['gradient' => 'linear-gradient(135deg, #a855f7, #d946ef)', 'solid' => '#a855f7'],
-            ['gradient' => 'linear-gradient(135deg, #14b8a6, #22c55e)', 'solid' => '#14b8a6'],
-            ['gradient' => 'linear-gradient(135deg, #f59e0b, #f97316)', 'solid' => '#f97316'],
-            ['gradient' => 'linear-gradient(135deg, #ec4899, #e11d48)', 'solid' => '#ec4899'],
-        ];
+        $itemTextLength = static function ($item) {
+            $raw = $item['content']['text'] ?? $item['content']['word'] ?? $item['content']['html'] ?? '';
+            $text = trim(preg_replace('/\s+/u', ' ', strip_tags((string) $raw)));
 
-        $pictureFrameClass = 'match-picture';
+            return function_exists('mb_strlen') ? mb_strlen($text) : strlen($text);
+        };
+
+        $leftMaxLength = (int) ($leftItems->map($itemTextLength)->max() ?? 0);
+        $rightMaxLength = (int) ($rightItems->map($itemTextLength)->max() ?? 0);
+        $maxTextLength = max($leftMaxLength, $rightMaxLength);
+        $pairCount = $pairs->count();
+        $isDense = $pairCount >= 8;
+        $isVeryDense = $pairCount >= 10;
+
+        // Adaptive width: short games no longer look tiny, long-sentence games still get enough room.
+        $idealBoardWidthRem = match (true) {
+            $pairCount <= 3 && $maxTextLength <= 16 => '46rem',
+            $pairCount <= 5 && $maxTextLength <= 28 => '52rem',
+            $maxTextLength <= 34 => '58rem',
+            $maxTextLength <= 56 => '66rem',
+            default => '72rem',
+        };
+
+        // XL screens have much more room, so expand the game without affecting md/sm/mobile layouts.
+        $xlBoardWidthRem = match (true) {
+            $pairCount <= 3 && $maxTextLength <= 16 => '58rem',
+            $pairCount <= 5 && $maxTextLength <= 28 => '64rem',
+            $maxTextLength <= 34 => '72rem',
+            $maxTextLength <= 56 => '80rem',
+            default => '86rem',
+        };
+
+        $leftColumnFr = '1fr';
+        $rightColumnFr = '1fr';
+        $lengthDifference = $leftMaxLength - $rightMaxLength;
+
+        if ($lengthDifference >= 34) {
+            $leftColumnFr = '1.55fr';
+            $rightColumnFr = '.9fr';
+        } elseif ($lengthDifference >= 16) {
+            $leftColumnFr = '1.3fr';
+            $rightColumnFr = '1fr';
+        } elseif ($lengthDifference <= -34) {
+            $leftColumnFr = '.9fr';
+            $rightColumnFr = '1.55fr';
+        } elseif ($lengthDifference <= -16) {
+            $leftColumnFr = '1fr';
+            $rightColumnFr = '1.3fr';
+        }
+
+        $mobileLeftFr = $leftColumnFr;
+        $mobileRightFr = $rightColumnFr;
+
+        // Keep mobile readable but prevent one side from becoming too narrow.
+        if ($lengthDifference >= 22) {
+            $mobileLeftFr = '1.28fr';
+            $mobileRightFr = '.9fr';
+        } elseif ($lengthDifference <= -22) {
+            $mobileLeftFr = '.9fr';
+            $mobileRightFr = '1.28fr';
+        }
+
+        $boardRowGap = $isVeryDense ? '.32rem' : ($isDense ? '.42rem' : '.55rem');
+
+        $cardSizeClass = $isVeryDense
+            ? 'min-h-[34px] px-2 py-1 sm:min-h-[38px] sm:px-2.5 sm:py-1.5 xl:min-h-[40px] xl:px-3 xl:py-1.5'
+            : ($isDense
+                ? 'min-h-[38px] px-2.5 py-1.5 sm:min-h-[42px] sm:px-3 sm:py-1.5 xl:min-h-[46px] xl:px-4 xl:py-2'
+                : 'min-h-[44px] px-2.5 py-2 sm:min-h-[48px] sm:px-3.5 sm:py-2 xl:min-h-[52px] xl:px-4 xl:py-2.5');
+
+        $wordSizeClass = $isVeryDense
+            ? 'text-[0.62rem] sm:text-[0.72rem] md:text-[0.78rem] xl:text-[0.84rem]'
+            : ($isDense
+                ? 'text-[0.66rem] sm:text-[0.76rem] md:text-[0.82rem] xl:text-[0.92rem]'
+                : 'text-[0.72rem] sm:text-[0.82rem] md:text-[0.9rem] xl:text-[0.98rem]');
+
+        $pictureFrameClass = 'grid aspect-[5/4] w-full max-w-[4rem] place-items-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-inner';
         $imageClass = 'pointer-events-none h-full w-full object-contain';
-        $wordClass = 'match-word';
+        $wordClass = 'match-word block w-full min-w-0 break-words text-left font-bold leading-snug text-slate-800 dark:text-slate-100 ' . $wordSizeClass;
 
         $renderMatchItem = function ($item) use ($pictureFrameClass, $imageClass, $wordClass) {
             $type = $item['type'] ?? 'word';
@@ -101,298 +146,180 @@
                 return '<span class="' . $pictureFrameClass . '"><img src="' . e($src) . '" alt="' . e($alt) . '" class="' . $imageClass . '" draggable="false"></span>';
             }
 
-            return '<span class="' . $wordClass . '">' . ($item['text'] ?? $item['word'] ?? '') . '</span>';
+            if (!empty($item['html'])) {
+                return '<span class="' . $wordClass . '">' . $item['html'] . '</span>';
+            }
+
+            $text = $item['text'] ?? $item['word'] ?? '';
+
+            return '<span class="' . $wordClass . '">' . nl2br(e($text)) . '</span>';
         };
 
-        $matchButtonBaseClass = 'match-action-btn';
-        $matchButtonPrimaryClass = $matchButtonBaseClass . ' match-action-primary ' . $primaryButtonClass;
-        $matchButtonSoftClass = $matchButtonBaseClass . ' match-action-soft';
-        $matchButtonNeutralClass = $matchButtonBaseClass . ' match-action-dark';
+        $themeName = $theme['name'] ?? 'default';
+        $themePrimaryButtonColor = trim((string) ($theme['button_primary_color'] ?? ''));
 
-        $matchCardBaseClass = 'match-card';
-        $matchConnectorBaseClass = 'match-connector';
-        $matchConnectorStartClass = $matchConnectorBaseClass . ' match-connector-start';
-        $matchConnectorTargetClass = $matchConnectorBaseClass . ' match-connector-target';
+        if ($themePrimaryButtonColor === '') {
+            $themePrimaryButtonColor = match ($themeName) {
+                'orange' => 'bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 focus-visible:ring-orange-200',
+                'green' => 'bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 focus-visible:ring-emerald-200',
+                'purple' => 'bg-gradient-to-br from-violet-500 to-violet-600 hover:from-violet-600 hover:to-violet-700 focus-visible:ring-violet-200',
+                'blue' => 'bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 focus-visible:ring-blue-200',
+                default => 'bg-gradient-to-br from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 focus-visible:ring-indigo-200',
+            };
+        }
 
-        $rowToneClasses = [
-            'bg-white dark:bg-slate-900',
-        ];
-        $matchColumnLabelClass = 'sticky top-0 z-[7] flex min-h-[2.45rem] items-center justify-center rounded-t-2xl rounded-b-none border border-slate-200 border-b-4 border-b-[var(--match-primary)] bg-gradient-to-b from-slate-100 via-white to-stone-50 px-4 py-2 text-center text-[0.8rem] font-black uppercase leading-tight tracking-[0.14em] text-slate-700 shadow-sm shadow-slate-200/60 backdrop-blur dark:border-slate-700 dark:border-b-[var(--match-primary)] dark:from-slate-800 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100 dark:shadow-none sm:min-h-[2.65rem] sm:text-sm lg:min-h-[2.85rem] lg:text-base';
+        $matchButtonClass = 'inline-flex h-6 items-center justify-center rounded-full border border-slate-200 bg-white px-2.5 text-[0.62rem] font-black text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-950 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 sm:h-7 sm:px-3 sm:text-[0.7rem] md:h-8 md:px-3.5 md:text-xs xl:px-4';
+        $modalSecondaryButtonClass = 'inline-flex min-h-10 items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-black text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 sm:min-h-11 sm:px-6 sm:text-base';
+        $modalPrimaryButtonClass = 'inline-flex min-h-10 items-center justify-center rounded-full px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-4 sm:min-h-11 sm:px-6 sm:text-base ' . $themePrimaryButtonColor;
 
+        $matchCardBaseClass = 'match-card relative z-10 flex h-full w-full cursor-pointer select-none items-center justify-start rounded-xl border border-slate-200 bg-white/95 text-left shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 ' . $cardSizeClass;
+        $matchConnectorStartClass = 'match-connector match-connector-start absolute right-[-10px] top-1/2 z-20 grid h-7 w-7 -translate-y-1/2 cursor-grab touch-none place-items-center rounded-full active:cursor-grabbing sm:right-[-14px] sm:h-8 sm:w-8';
+        $matchConnectorTargetClass = 'match-connector match-connector-target absolute left-[-10px] top-1/2 z-20 grid h-7 w-7 -translate-y-1/2 cursor-pointer touch-none place-items-center rounded-full sm:left-[-14px] sm:h-8 sm:w-8';
+        $themeColumnLabelColors = match ($themeName) {
+            'orange' => 'border-orange-200 bg-orange-50/90 text-orange-700 dark:border-orange-800/70 dark:bg-orange-950/30 dark:text-orange-200',
+            'green' => 'border-emerald-200 bg-emerald-50/90 text-emerald-700 dark:border-emerald-800/70 dark:bg-emerald-950/30 dark:text-emerald-200',
+            'purple' => 'border-violet-200 bg-violet-50/90 text-violet-700 dark:border-violet-800/70 dark:bg-violet-950/30 dark:text-violet-200',
+            'blue' => 'border-blue-200 bg-blue-50/90 text-blue-700 dark:border-blue-800/70 dark:bg-blue-950/30 dark:text-blue-200',
+            default => 'border-indigo-200 bg-indigo-50/90 text-indigo-700 dark:border-indigo-800/70 dark:bg-indigo-950/30 dark:text-indigo-200',
+        };
+
+        $matchColumnLabelClass = 'flex min-h-[1.7rem] items-center justify-center rounded-lg border px-2 py-1 text-center text-[0.58rem] font-black uppercase tracking-[0.18em] shadow-sm sm:min-h-[1.9rem] sm:text-[0.65rem] ' . $themeColumnLabelColors;
     @endphp
 
     <style>
-        #matchingPairsShell {
-            --match-primary: {{ $matchPrimary }};
-            --match-secondary: {{ $matchSecondary }};
-            --match-primary-rgb: {{ $matchPrimaryRgb }};
-            --match-secondary-rgb: {{ $matchSecondaryRgb }};
-            --match-accent-gradient: {{ $matchAccentGradient }};
-            --match-glow-one: {{ $matchGlowOne }};
-            --match-glow-two: {{ $matchGlowTwo }};
-            --match-dark-glow-one: {{ $matchDarkGlowOne }};
-            --match-dark-glow-two: {{ $matchDarkGlowTwo }};
-            --match-ink: #0f172a;
-            --match-panel: rgba(255, 255, 255, .9);
-            --match-card: rgba(255, 255, 255, .86);
+        .match-panel {
+            width: min(100%, var(--ideal-board-width));
         }
 
-        .matching-panel {
-            border-radius: 1.35rem;
-            border: 1px solid rgba(203, 213, 225, .9);
-            background:
-                    radial-gradient(900px 420px at 7% 0%, var(--match-glow-one), transparent 58%),
-                    radial-gradient(820px 420px at 98% 0%, var(--match-glow-two), transparent 56%),
-                    linear-gradient(180deg, rgba(248, 250, 252, .94), rgba(255, 255, 255, .9));
-            box-shadow: 0 22px 50px -34px rgba(15, 23, 42, .48);
-            backdrop-filter: blur(16px);
-        }
-
-        .dark .matching-panel {
-            border-color: rgba(71, 85, 105, .72);
-            background:
-                    radial-gradient(900px 420px at 7% 0%, var(--match-dark-glow-one), transparent 58%),
-                    radial-gradient(820px 420px at 98% 0%, var(--match-dark-glow-two), transparent 56%),
-                    linear-gradient(180deg, rgba(30, 41, 59, .86), rgba(15, 23, 42, .88)),
-                    rgba(15, 23, 42, .86);
-        }
-
-        .matching-board {
-            display: grid;
-            grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
-            align-items: stretch;
-            column-gap: clamp(2rem, 6vw, 7.5rem);
-            row-gap: clamp(.34rem, .8vh, .65rem);
-        }
-
-
-        .match-card {
-            position: relative;
-            z-index: 10;
-            display: flex;
+        .match-board-grid {
+            --match-center-gap: clamp(2.75rem, 5vw, 5.75rem);
             width: 100%;
-            min-height: clamp(2.45rem, 7.2vh, 4.15rem);
-            cursor: pointer;
-            user-select: none;
-            align-items: center;
-            justify-content: center;
-            border-radius: 1rem;
-            border: 2px solid rgba(203, 213, 225, .88);
-            padding: .35rem .52rem;
-            text-align: center;
-            box-shadow: 0 10px 24px -20px rgba(15, 23, 42, .52);
-            background:
-                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(248, 250, 252, .86)),
-                    var(--match-card);
-            transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+            grid-template-columns: minmax(0, var(--left-col-fr)) var(--match-center-gap) minmax(0, var(--right-col-fr));
+            column-gap: 0;
+            row-gap: {{ $boardRowGap }};
         }
 
-        .match-card[data-row-tone="0"] {
-            background:
-                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .08), rgba(255, 255, 255, .05)),
-                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(248, 250, 252, .88));
+        .match-board-grid > [data-col="left"],
+        .match-board-grid > [data-side="left"] {
+            grid-column: 1;
         }
 
-        .match-card[data-row-tone="1"] {
-            background:
-                    linear-gradient(135deg, rgba(var(--match-secondary-rgb), .08), rgba(255, 255, 255, .05)),
-                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(248, 250, 252, .88));
+        .match-board-grid > [data-col="right"],
+        .match-board-grid > [data-side="right"] {
+            grid-column: 3;
         }
 
-        .match-card[data-row-tone="2"] {
-            background:
-                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .06), rgba(var(--match-secondary-rgb), .06)),
-                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(248, 250, 252, .88));
+        @media (max-width: 640px) {
+            .match-board-grid {
+                --match-center-gap: clamp(1.55rem, 6vw, 2.1rem);
+                grid-template-columns: minmax(0, var(--left-mobile-fr)) var(--match-center-gap) minmax(0, var(--right-mobile-fr));
+            }
         }
 
-        .match-card[data-row-tone="3"] {
-            background:
-                    linear-gradient(135deg, rgba(148, 163, 184, .11), rgba(var(--match-secondary-rgb), .05)),
-                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(248, 250, 252, .88));
+        @media (min-width: 641px) and (max-width: 900px) {
+            .match-board-grid {
+                --match-center-gap: clamp(2.15rem, 4.6vw, 3.5rem);
+                grid-template-columns: minmax(0, var(--left-mobile-fr)) var(--match-center-gap) minmax(0, var(--right-mobile-fr));
+            }
         }
 
-        .match-card:hover {
-            transform: translateY(-1px);
-            border-color: rgba(var(--match-primary-rgb), .42);
-            box-shadow: 0 16px 32px -22px rgba(var(--match-primary-rgb), .35), 0 12px 24px -22px rgba(15, 23, 42, .34);
+        @media (min-width: 1280px) {
+            .match-panel {
+                width: min(100%, var(--xl-board-width));
+            }
+
+            .match-board-grid {
+                --match-center-gap: clamp(4rem, 5vw, 7rem);
+            }
         }
 
-        .match-card:focus-visible {
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(var(--match-primary-rgb), .18), 0 14px 28px -22px rgba(15, 23, 42, .42);
+        .match-card.is-selected {
+            border-color: rgb(52 211 153);
+            background: rgb(236 253 245);
+            box-shadow: 0 0 0 3px rgb(209 250 229), 0 12px 24px -20px rgba(15, 23, 42, .35);
+        }
+
+        .match-card.is-target {
+            border-color: rgb(103 232 249);
+            background: rgba(236, 254, 255, .72);
+        }
+
+        .match-card.is-correct {
+            border-color: rgb(16 185 129);
+            background: rgb(236 253 245);
+        }
+
+        .match-card.is-wrong {
+            border-color: rgb(244 63 94);
+            background: rgb(255 241 242);
+            animation: matchShake .32s ease;
+        }
+
+        .dark .match-card.is-selected {
+            border-color: rgb(52 211 153);
+            background: rgba(6, 78, 59, .42);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, .18), 0 12px 24px -20px rgba(0, 0, 0, .65);
+        }
+
+        .dark .match-card.is-target {
+            border-color: rgb(34 211 238);
+            background: rgba(8, 47, 73, .42);
+        }
+
+        .dark .match-card.is-correct {
+            border-color: rgb(52 211 153);
+            background: rgba(6, 78, 59, .50);
+            box-shadow: inset 0 0 0 1px rgba(167, 243, 208, .14);
+        }
+
+        .dark .match-card.is-wrong {
+            border-color: rgb(248 113 113);
+            background: rgba(127, 29, 29, .42);
+        }
+
+        .dark .match-card.is-selected .match-word,
+        .dark .match-card.is-target .match-word,
+        .dark .match-card.is-correct .match-word,
+        .dark .match-card.is-wrong .match-word {
+            color: rgb(248 250 252);
         }
 
         .match-card:disabled {
             cursor: default;
-            opacity: .98;
+            opacity: 1;
             transform: none;
-        }
-
-        .match-card.is-selected {
-            transform: translateY(-2px);
-            border-color: rgba(var(--match-primary-rgb), .72);
-            background:
-                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .15), rgba(var(--match-secondary-rgb), .11)),
-                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(248, 250, 252, .9));
-            box-shadow: 0 0 0 4px rgba(var(--match-primary-rgb), .14), 0 16px 34px rgba(15, 23, 42, .12);
-        }
-
-        .match-card.is-target {
-            border-color: rgba(var(--match-secondary-rgb), .5);
-            box-shadow: 0 0 0 4px rgba(var(--match-secondary-rgb), .12), 0 12px 24px -20px rgba(15, 23, 42, .35);
-        }
-
-        .match-card.is-correct {
-            border-color: rgba(16, 185, 129, .68);
-            background:
-                    linear-gradient(135deg, rgba(16, 185, 129, .18), rgba(20, 184, 166, .12)),
-                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(240, 253, 250, .92));
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, .15), 0 16px 30px -20px rgba(16, 185, 129, .5);
-        }
-
-        .match-card.is-wrong {
-            border-color: rgba(244, 63, 94, .78);
-            background:
-                    linear-gradient(135deg, rgba(244, 63, 94, .15), rgba(251, 113, 133, .1)),
-                    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(255, 241, 242, .92));
-            box-shadow: 0 0 0 4px rgba(244, 63, 94, .16), 0 14px 28px -20px rgba(244, 63, 94, .45);
-            animation: matchPulse .45s ease;
-        }
-
-        .dark .match-card {
-            border-color: rgba(51, 65, 85, .96);
-            background:
-                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .12), rgba(var(--match-secondary-rgb), .07)),
-                    linear-gradient(135deg, rgba(30, 41, 59, .92), rgba(15, 23, 42, .9));
-            box-shadow: 0 14px 28px -22px rgba(2, 6, 23, .82);
-        }
-
-        .dark .match-card.is-selected {
-            border-color: rgba(var(--match-primary-rgb), .88);
-            background:
-                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .26), rgba(var(--match-secondary-rgb), .16)),
-                    linear-gradient(135deg, rgba(30, 41, 59, .92), rgba(15, 23, 42, .9));
-            box-shadow: 0 0 0 4px rgba(var(--match-primary-rgb), .16), 0 16px 34px rgba(2, 6, 23, .34);
-        }
-
-        .dark .match-card.is-target {
-            border-color: rgba(var(--match-secondary-rgb), .72);
-            box-shadow: 0 0 0 4px rgba(var(--match-secondary-rgb), .13), 0 12px 24px -20px rgba(2, 6, 23, .55);
-        }
-
-        .dark .match-card.is-correct {
-            border-color: rgba(110, 231, 183, .8);
-            background:
-                    linear-gradient(135deg, rgba(16, 185, 129, .28), rgba(20, 184, 166, .16)),
-                    linear-gradient(135deg, rgba(15, 23, 42, .96), rgba(6, 78, 59, .38));
-        }
-
-        .dark .match-card.is-wrong {
-            border-color: rgba(251, 113, 133, .82);
-            background:
-                    linear-gradient(135deg, rgba(244, 63, 94, .26), rgba(251, 113, 133, .14)),
-                    linear-gradient(135deg, rgba(15, 23, 42, .96), rgba(76, 5, 25, .36));
-        }
-
-        @keyframes matchPulse {
-            0%, 100% { transform: translateY(0); }
-            45% { transform: translateY(-1px) scale(1.01); }
-        }
-
-        .match-card > span:not(.match-connector) {
-            width: 100%;
-            min-width: 0;
-            padding-inline: clamp(.4rem, 1.8vw, 1.45rem);
-        }
-
-        .match-word {
-            display: block;
-            max-width: 100%;
-            color: #0f172a;
-            font-size: clamp(.62rem, 1.18vw, .84rem);
-            font-weight: 700;
-            line-height: 1.22;
-            overflow-wrap: anywhere;
-            text-wrap: balance;
-        }
-
-        .match-word * {
-            font-size: inherit;
-            font-weight: inherit;
-            line-height: inherit;
-        }
-
-        .dark .match-word {
-            color: #f8fafc;
-        }
-
-        .match-picture {
-            display: grid;
-            aspect-ratio: 5 / 4;
-            width: min(100%, 4.4rem);
-            place-items: center;
-            overflow: hidden;
-            border-radius: .9rem;
-            border: 1px solid rgba(203, 213, 225, .9);
-            background: #fff;
-            box-shadow: inset 0 1px 5px rgba(15, 23, 42, .08);
-        }
-
-        .match-connector {
-            position: absolute;
-            top: 50%;
-            z-index: 20;
-            display: grid;
-            width: 2rem;
-            height: 2rem;
-            translate: 0 -50%;
-            touch-action: none;
-            place-items: center;
-            border-radius: 999px;
-            background: transparent;
-            transition: transform .16s ease;
         }
 
         .match-connector::after {
             content: "";
             display: block;
-            width: .72rem;
-            height: .72rem;
+            width: .58rem;
+            height: .58rem;
             border-radius: 999px;
             border: 2px solid #fff;
-            background: linear-gradient(135deg, var(--match-primary), var(--match-secondary));
-            box-shadow: 0 4px 12px rgba(var(--match-primary-rgb), .26);
-            outline: 2px solid rgba(var(--match-primary-rgb), .18);
+            background: #94a3b8;
+            box-shadow: 0 5px 14px rgba(15, 23, 42, .18);
+            outline: 2px solid rgba(148, 163, 184, .25);
+            transition: transform .16s ease, background-color .16s ease, outline-color .16s ease;
         }
 
-        @foreach($dotGradients as $toneIndex => $dotTone)
-                .match-connector[data-dot-tone="{{ $toneIndex }}"]::after {
-            background: {{ $dotTone['gradient'] }};
-            box-shadow: 0 4px 12px color-mix(in srgb, {{ $dotTone['solid'] }} 34%, transparent);
-            outline-color: color-mix(in srgb, {{ $dotTone['solid'] }} 24%, transparent);
+        @media (min-width: 640px) {
+            .match-connector::after {
+                width: .68rem;
+                height: .68rem;
+            }
         }
 
-        .match-line[data-dot-tone="{{ $toneIndex }}"],
-        .match-active-line[data-dot-tone="{{ $toneIndex }}"] {
-            stroke: {{ $dotTone['solid'] }};
-        }
-
-        .match-connector[data-dot-tone="{{ $toneIndex }}"].is-hot::after {
-            background: {{ $dotTone['gradient'] }};
-            box-shadow:
-                    0 0 0 5px color-mix(in srgb, {{ $dotTone['solid'] }} 18%, transparent),
-                    0 8px 18px color-mix(in srgb, {{ $dotTone['solid'] }} 34%, transparent);
-        }
-        @endforeach
-
-            .match-connector:hover {
-            transform: scale(1.12);
-        }
-
+        .match-card:hover .match-connector::after,
         .match-connector.is-hot::after {
-            background: linear-gradient(135deg, var(--match-secondary), var(--match-primary));
-            box-shadow: 0 0 0 5px rgba(var(--match-primary-rgb), .16), 0 8px 18px rgba(var(--match-primary-rgb), .28);
-            outline-color: rgba(var(--match-secondary-rgb), .28);
+            transform: scale(1.08);
+            background: #10b981;
+            outline-color: rgba(16, 185, 129, .22);
+        }
+
+        .match-card.is-correct .match-connector::after {
+            background: #10b981;
+            outline-color: rgba(16, 185, 129, .24);
         }
 
         .match-line,
@@ -402,220 +329,87 @@
         }
 
         .match-line {
-            stroke: var(--match-primary);
-            stroke-width: 4.5;
-            opacity: .88;
+            stroke: #10b981;
+            stroke-width: 3.25;
+            opacity: .9;
         }
 
         .match-active-line {
-            stroke: var(--match-secondary);
-            stroke-width: 4.5;
-            opacity: .92;
-        }
-
-        .dark .match-line,
-        .dark .match-active-line {
+            stroke: #06b6d4;
+            stroke-width: 3.25;
             opacity: .95;
         }
 
-        .match-connector-start {
-            right: -1rem;
-            cursor: grab;
-        }
-
-        .match-connector-start:active {
-            cursor: grabbing;
-        }
-
-        .match-connector-target {
-            left: -1rem;
-            cursor: pointer;
-        }
-
-        .match-action-btn {
-            display: inline-flex;
-            min-height: 2rem;
-            align-items: center;
-            justify-content: center;
-            border-radius: .85rem;
-            padding: .36rem .72rem;
-            font-size: .72rem;
-            font-weight: 950;
-            line-height: 1;
-            transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease;
-        }
-
-        .match-action-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .match-action-primary {
-            border: 1px solid rgba(15, 23, 42, .12);
-            color: #fff;
-            box-shadow: 0 13px 26px -17px rgba(var(--match-primary-rgb), .68);
-        }
-
-        .match-action-soft {
-            border: 1px solid rgba(203, 213, 225, .9);
-            background:
-                    linear-gradient(135deg, rgba(var(--match-primary-rgb), .07), rgba(var(--match-secondary-rgb), .06)),
-                    #fff;
-            color: #334155;
-        }
-
-        .match-action-dark {
-            border: 1px solid rgba(15, 23, 42, .12);
-            background: linear-gradient(135deg, #0f172a, #334155);
-            color: #fff;
-        }
-
-        .dark .match-action-soft {
-            border-color: rgba(71, 85, 105, .9);
-            background: rgba(15, 23, 42, .78);
-            color: #e2e8f0;
-        }
-
-        .dark .match-action-dark {
-            border-color: rgba(255, 255, 255, .12);
-            background: #fff;
-            color: #0f172a;
-        }
-
-        @media (max-width: 640px) {
-            .matching-panel {
-                border-radius: 1rem;
-            }
-
-            .matching-board {
-                column-gap: 2rem;
-                row-gap: .32rem;
-            }
-
-
-            .match-card {
-                min-height: clamp(2.18rem, 6.6vh, 3rem);
-                border-radius: .82rem;
-                padding: .26rem .36rem;
-            }
-
-            .match-word {
-                font-size: clamp(.58rem, 3.05vw, .74rem);
-                font-weight: 700;
-                line-height: 1.18;
-            }
-
-            .match-card > span:not(.match-connector) {
-                padding-inline: .28rem;
-            }
-
-            .match-connector {
-                width: 1.75rem;
-                height: 1.75rem;
-            }
-
-            .match-connector::after {
-                width: .56rem;
-                height: .56rem;
-            }
-
-            .match-connector-start {
-                right: -.9rem;
-            }
-
-            .match-connector-target {
-                left: -.9rem;
-            }
-
-            .match-action-btn {
-                flex: 1 1 auto;
-                min-height: 1.85rem;
-                border-radius: .72rem;
-                padding-inline: .55rem;
-                font-size: .66rem;
-            }
+        @keyframes matchShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
         }
     </style>
 
-    <main id="matchingPairsShell" class="flex min-h-[100dvh] w-full flex-col justify-center overflow-x-hidden">
+    <main id="matchingPairsShell" class="flex min-h-[100dvh] w-full flex-col justify-center overflow-x-hidden px-2 py-1.5 sm:px-4 sm:py-2">
         @include('slider.components.title-subtitle')
 
-        <section class="mx-auto w-full max-w-6xl px-1.5 py-1 sm:px-5 sm:py-3 lg:px-6">
+        <section class="mx-auto w-full max-w-6xl xl:max-w-[90rem]">
             @if($playerAudio)
-                <div class="mx-auto mb-2 max-w-3xl sm:mb-4">
+                <div class="mx-auto mb-2 w-full max-w-3xl sm:mb-2.5">
                     @include('slider.components.audio-player')
                 </div>
             @endif
 
-            <div class="matching-panel p-2 sm:p-3 lg:p-4">
-                <div class="mb-2 flex flex-col gap-2 sm:mb-3 lg:flex-row lg:items-center lg:justify-between">
-                    <div class="min-w-0">
-                        <h2 class="text-balance text-sm font-black leading-tight tracking-[-0.03em] text-slate-950 dark:text-white sm:text-lg lg:text-xl">
-                            {{ $activityTitle }}
-                        </h2>
-                        <p class="mt-1 hidden text-xs font-bold leading-tight text-slate-500 dark:text-slate-300 sm:block">
-                            {{ $hintText }}
-                        </p>
-                    </div>
+            <div
+                    class="match-panel mx-auto rounded-2xl border border-slate-200/80 bg-white/90 p-2.5 shadow-sm shadow-slate-200/60 dark:border-slate-800 dark:bg-slate-950/40 dark:shadow-none sm:p-3"
+                    style="--ideal-board-width: {{ $idealBoardWidthRem }}; --xl-board-width: {{ $xlBoardWidthRem }}; --left-col-fr: {{ $leftColumnFr }}; --right-col-fr: {{ $rightColumnFr }}; --left-mobile-fr: {{ $mobileLeftFr }}; --right-mobile-fr: {{ $mobileRightFr }};"
+            >
+                <div class="mb-2 flex items-start justify-between gap-2 sm:mb-2.5">
+                    <h2 class="min-w-0 flex-1 text-[0.7rem] font-black leading-tight text-slate-950 dark:text-white sm:text-xs md:text-sm lg:text-base">
+                        {{ $activityTitle }}
+                    </h2>
 
-                    <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 max-sm:w-full">
-                        <div class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[0.68rem] font-black text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 sm:px-3 sm:text-xs">
-                            <span>Score</span>
-                            <span><span id="score">0</span>/<span>{{ $pairs->count() }}</span></span>
-                        </div>
-                        <div class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[0.68rem] font-black text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 sm:px-3 sm:text-xs">
+                    <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
+                        <div class="inline-flex h-6 items-center gap-1 rounded-full border border-rose-200 bg-rose-50/80 px-2 text-[0.6rem] font-black text-rose-700 shadow-sm dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-200 sm:h-7 sm:px-2.5 sm:text-[0.68rem] md:text-xs xl:px-3">
                             <span>Mistakes</span>
-                            <span id="mistakes">0</span>
+                            <span id="mistakes" class="rounded-full bg-white/80 px-1.5 py-0.5 text-[0.58rem] leading-none text-rose-700 ring-1 ring-rose-200 dark:bg-rose-900/40 dark:text-rose-100 dark:ring-rose-800/70 sm:text-[0.65rem]">0</span>
                         </div>
 
-                        <div class="flex flex-1 flex-wrap items-center justify-end gap-1.5 sm:gap-2 max-sm:w-full">
-                            @if($showCheckButton)
-                                <button id="checkMatchAnswers" type="button" class="{{ $matchButtonNeutralClass }}">
-                                    Check
-                                </button>
-                            @endif
-                            <button id="revealMatchAnswers" type="button" class="{{ $matchButtonPrimaryClass }}">
-                                Reveal
-                            </button>
-                            <button id="retakeMatchGame" type="button" class="{{ $matchButtonSoftClass }}">
-                                Retake
-                            </button>
-                        </div>
+                        <button id="revealMatchAnswers" type="button" class="{{ $matchButtonClass }}">
+                            Reveal
+                        </button>
                     </div>
                 </div>
 
-                <div id="matchBoard" class="matching-board relative mx-auto w-full touch-none">
+                <div
+                        id="matchBoard"
+                        class="match-board-grid relative mx-auto grid touch-pan-y items-stretch"
+                >
                     <svg id="lineLayer" class="pointer-events-none absolute inset-0 z-[5] h-full w-full overflow-visible" aria-hidden="true"></svg>
 
-                    <div class="{{ $matchColumnLabelClass }}">{{ $leftLabel }}</div>
-                    <div class="{{ $matchColumnLabelClass }}">{{ $rightLabel }}</div>
+                    <div data-col="left" class="{{ $matchColumnLabelClass }}">{{ $leftLabel }}</div>
+                    <div data-col="right" class="{{ $matchColumnLabelClass }}">{{ $rightLabel }}</div>
 
                     @foreach($leftItems as $index => $item)
                         <button
                                 type="button"
-                                class="{{ $matchCardBaseClass }} {{ $rowToneClasses[$index % count($rowToneClasses)] }}"
+                                class="{{ $matchCardBaseClass }}"
                                 data-side="left"
                                 data-id="{{ $item['id'] }}"
-                                data-row-tone="{{ $index % 4 }}"
-                                data-dot-tone="{{ $index % count($dotGradients) }}"
                                 aria-label="Select {{ strip_tags($item['content']['text'] ?? $item['content']['word'] ?? 'left item') }}"
                         >
-                            <span>
+                            <span class="min-w-0 flex-1 pr-1 sm:pr-1.5">
                                 {!! $renderMatchItem($item['content']) !!}
                             </span>
-                            <span class="{{ $matchConnectorStartClass }}" data-connector="start" data-dot-tone="{{ $index % count($dotGradients) }}" aria-hidden="true"></span>
+                            <span class="{{ $matchConnectorStartClass }}" data-connector="start" aria-hidden="true"></span>
                         </button>
 
                         <button
                                 type="button"
-                                class="{{ $matchCardBaseClass }} {{ $rowToneClasses[$index % count($rowToneClasses)] }}"
+                                class="{{ $matchCardBaseClass }}"
                                 data-side="right"
                                 data-id="{{ $rightItems[$index]['id'] }}"
-                                data-row-tone="{{ $index % 4 }}"
-                                data-dot-tone="{{ $index % count($dotGradients) }}"
                                 aria-label="Choose {{ strip_tags($rightItems[$index]['content']['text'] ?? $rightItems[$index]['content']['word'] ?? 'right item') }}"
                         >
-                            <span class="{{ $matchConnectorTargetClass }}" data-connector="target" data-dot-tone="{{ $index % count($dotGradients) }}" aria-hidden="true"></span>
-                            <span>
+                            <span class="{{ $matchConnectorTargetClass }}" data-connector="target" aria-hidden="true"></span>
+                            <span class="min-w-0 flex-1 pl-1 sm:pl-1.5">
                                 {!! $renderMatchItem($rightItems[$index]['content']) !!}
                             </span>
                         </button>
@@ -636,12 +430,12 @@
                 [
                     'label' => 'Retake',
                     'id' => 'restartBtnModal',
-                    'class' => $matchButtonSoftClass . ' w-full',
+                    'class' => $modalSecondaryButtonClass . ' w-full',
                 ],
                 [
                     'label' => 'Continue',
                     'id' => 'continueBtnModal',
-                    'class' => $matchButtonPrimaryClass . ' w-full',
+                    'class' => $modalPrimaryButtonClass . ' w-full',
                 ],
             ],
         ])
@@ -653,12 +447,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             const board = document.getElementById('matchBoard');
             const lineLayer = document.getElementById('lineLayer');
-            const checkBtn = document.getElementById('checkMatchAnswers');
             const revealBtn = document.getElementById('revealMatchAnswers');
-            const retakeBtn = document.getElementById('retakeMatchGame');
             const cards = Array.from(document.querySelectorAll('.match-card'));
             const totalPairs = Number(@json($pairs->count()));
             const sounds = @json($matchSounds);
+
             const sfx = {
                 tap: new Audio(sounds.tap || '/slider/sounds/tap.wav'),
                 correct: new Audio(sounds.correct || '/slider/sounds/correct.wav'),
@@ -667,27 +460,13 @@
             };
 
             const svgNamespace = 'http://www.w3.org/2000/svg';
-            const lineClass = 'match-line';
-            const activeLineClass = 'match-active-line';
-
             const stateClasses = {
-                selected: [
-                    'is-selected',
-                ],
-                target: [
-                    'is-target',
-                ],
-                correct: [
-                    'is-correct',
-                ],
-                wrong: [
-                    'is-wrong',
-                ],
-                connectorHot: [
-                    'is-hot',
-                ],
+                selected: ['is-selected'],
+                target: ['is-target'],
+                correct: ['is-correct'],
+                wrong: ['is-wrong'],
+                connectorHot: ['is-hot'],
             };
-
             const cardStateClasses = [
                 ...stateClasses.selected,
                 ...stateClasses.target,
@@ -702,6 +481,7 @@
             let completed = new Set();
             let mistakes = 0;
             let lines = [];
+            let revealIsRetake = false;
 
             function addClasses(element, classes) {
                 if (!element || classes.length === 0) return;
@@ -711,28 +491,6 @@
             function removeClasses(element, classes) {
                 if (!element || classes.length === 0) return;
                 element.classList.remove(...classes);
-            }
-
-            function resetCardState(card) {
-                removeClasses(card, cardStateClasses);
-            }
-
-            function resetConnectorStates() {
-                document
-                    .querySelectorAll('[data-connector]')
-                    .forEach(connector => removeClasses(connector, stateClasses.connectorHot));
-            }
-
-            function setConnectorState(card, selector, enabled = true) {
-                const connector = card?.querySelector?.(selector);
-
-                if (!connector) return;
-
-                if (enabled) {
-                    addClasses(connector, stateClasses.connectorHot);
-                } else {
-                    removeClasses(connector, stateClasses.connectorHot);
-                }
             }
 
             function playSfx(type) {
@@ -745,11 +503,13 @@
             }
 
             function updateStats() {
-                const scoreEl = document.getElementById('score');
                 const mistakesEl = document.getElementById('mistakes');
-
-                if (scoreEl) scoreEl.textContent = completed.size;
                 if (mistakesEl) mistakesEl.textContent = mistakes;
+            }
+
+            function setRevealButtonToRetake(enabled) {
+                revealIsRetake = enabled;
+                if (revealBtn) revealBtn.textContent = enabled ? 'Retake' : 'Reveal';
             }
 
             function getWinModal() {
@@ -782,7 +542,6 @@
 
             function syncLineLayer() {
                 const boardRect = board.getBoundingClientRect();
-
                 lineLayer.setAttribute('viewBox', `0 0 ${boardRect.width} ${boardRect.height}`);
                 lineLayer.setAttribute('width', boardRect.width);
                 lineLayer.setAttribute('height', boardRect.height);
@@ -790,7 +549,6 @@
 
             function boardPoint(x, y) {
                 const boardRect = board.getBoundingClientRect();
-
                 return {
                     x: x - boardRect.left,
                     y: y - boardRect.top,
@@ -819,9 +577,8 @@
                 syncLineLayer();
 
                 const line = document.createElementNS(svgNamespace, 'line');
-                line.setAttribute('class', lineClass);
+                line.setAttribute('class', 'match-line');
                 line.dataset.id = leftCard.dataset.id;
-                line.dataset.dotTone = leftCard.dataset.dotTone || '0';
 
                 positionLine(
                     line,
@@ -838,12 +595,22 @@
                 lines = [];
             }
 
+            function redrawLines() {
+                syncLineLayer();
+                removeLines();
+
+                completed.forEach(id => {
+                    const left = document.querySelector(`.match-card[data-side="left"][data-id="${CSS.escape(id)}"]`);
+                    const right = document.querySelector(`.match-card[data-side="right"][data-id="${CSS.escape(id)}"]`);
+                    if (left && right) drawLine(left, right);
+                });
+            }
+
             function createActiveLine(leftCard, event) {
                 syncLineLayer();
 
                 activeLine = document.createElementNS(svgNamespace, 'line');
-                activeLine.setAttribute('class', activeLineClass);
-                activeLine.dataset.dotTone = leftCard.dataset.dotTone || '0';
+                activeLine.setAttribute('class', 'match-active-line');
                 lineLayer.appendChild(activeLine);
 
                 positionLine(
@@ -851,6 +618,20 @@
                     connectorPoint(leftCard, '[data-connector="start"]'),
                     boardPoint(event.clientX, event.clientY)
                 );
+            }
+
+            function resetConnectorStates() {
+                document
+                    .querySelectorAll('[data-connector]')
+                    .forEach(connector => removeClasses(connector, stateClasses.connectorHot));
+            }
+
+            function setConnectorState(card, selector, enabled = true) {
+                const connector = card?.querySelector?.(selector);
+                if (!connector) return;
+
+                if (enabled) addClasses(connector, stateClasses.connectorHot);
+                else removeClasses(connector, stateClasses.connectorHot);
             }
 
             function clearSelection() {
@@ -863,22 +644,33 @@
                 selectedLeft = null;
             }
 
+            function selectLeftCard(leftCard, play = true) {
+                if (!leftCard || leftCard.disabled) return;
+
+                clearSelection();
+                selectedLeft = leftCard;
+
+                addClasses(leftCard, stateClasses.selected);
+                setConnectorState(leftCard, '[data-connector="start"]', true);
+
+                cards
+                    .filter(card => card.dataset.side === 'right' && !card.disabled)
+                    .forEach(card => {
+                        addClasses(card, stateClasses.target);
+                        setConnectorState(card, '[data-connector="target"]', true);
+                    });
+
+                if (play) playSfx('tap');
+            }
+
             function getRightCardAt(clientX, clientY) {
                 const element = document.elementFromPoint(clientX, clientY);
                 return element?.closest?.('.match-card[data-side="right"]') || null;
             }
 
             function finishCorrect(leftCard, rightCard) {
-                removeClasses(leftCard, [
-                    ...stateClasses.selected,
-                    ...stateClasses.target,
-                    ...stateClasses.wrong,
-                ]);
-                removeClasses(rightCard, [
-                    ...stateClasses.selected,
-                    ...stateClasses.target,
-                    ...stateClasses.wrong,
-                ]);
+                removeClasses(leftCard, [...stateClasses.selected, ...stateClasses.target, ...stateClasses.wrong]);
+                removeClasses(rightCard, [...stateClasses.selected, ...stateClasses.target, ...stateClasses.wrong]);
 
                 addClasses(leftCard, stateClasses.correct);
                 addClasses(rightCard, stateClasses.correct);
@@ -891,6 +683,7 @@
                 updateStats();
 
                 if (completed.size === totalPairs) {
+                    setRevealButtonToRetake(true);
                     playSfx('success');
                     setTimeout(showWinModal, 250);
                 } else {
@@ -899,6 +692,8 @@
             }
 
             function finishWrong(leftCard, rightCard) {
+                if (!rightCard || rightCard.disabled) return;
+
                 mistakes++;
                 updateStats();
                 playSfx('wrong');
@@ -909,17 +704,7 @@
                 setTimeout(() => {
                     removeClasses(leftCard, stateClasses.wrong);
                     removeClasses(rightCard, stateClasses.wrong);
-                }, 450);
-            }
-
-            function flashUnmatchedCards() {
-                const unmatchedCards = cards.filter(card => !card.disabled);
-
-                unmatchedCards.forEach(card => addClasses(card, stateClasses.wrong));
-
-                setTimeout(() => {
-                    unmatchedCards.forEach(card => removeClasses(card, stateClasses.wrong));
-                }, 520);
+                }, 430);
             }
 
             function resetGame() {
@@ -933,13 +718,14 @@
 
                 cards.forEach(card => {
                     card.disabled = false;
-                    resetCardState(card);
+                    removeClasses(card, cardStateClasses);
                 });
 
                 resetConnectorStates();
                 removeLines();
                 hideWinModal();
                 updateStats();
+                setRevealButtonToRetake(false);
             }
 
             function revealAnswers() {
@@ -948,7 +734,6 @@
                 document.querySelectorAll('.match-card[data-side="left"]').forEach(leftCard => {
                     const id = leftCard.dataset.id;
                     const rightCard = document.querySelector(`.match-card[data-side="right"][data-id="${CSS.escape(id)}"]`);
-
                     if (!rightCard) return;
 
                     addClasses(leftCard, stateClasses.correct);
@@ -961,33 +746,42 @@
                 });
 
                 updateStats();
+                setRevealButtonToRetake(true);
                 playSfx('success');
             }
 
             function endConnection(event) {
                 if (!activeLeft || !activeLine || event.pointerId !== activePointerId) return;
 
+                const leftCard = activeLeft;
                 const rightCard = getRightCardAt(event.clientX, event.clientY);
+                const pointerId = activePointerId;
 
                 activeLine.remove();
                 activeLine = null;
 
-                if (rightCard && !rightCard.disabled && rightCard.dataset.id === activeLeft.dataset.id) {
-                    finishCorrect(activeLeft, rightCard);
+                if (rightCard && !rightCard.disabled) {
+                    if (rightCard.dataset.id === leftCard.dataset.id) {
+                        finishCorrect(leftCard, rightCard);
+                        clearSelection();
+                    } else {
+                        finishWrong(leftCard, rightCard);
+                        selectLeftCard(leftCard, false);
+                    }
                 } else {
-                    finishWrong(activeLeft, rightCard);
+                    selectLeftCard(leftCard, false);
                 }
 
-                activeLeft.releasePointerCapture?.(activePointerId);
+                try {
+                    leftCard.releasePointerCapture?.(pointerId);
+                } catch (error) {}
+
                 activeLeft = null;
                 activePointerId = null;
-                clearSelection();
             }
 
             document.querySelectorAll('[data-connector="start"]').forEach(connector => {
-                connector.addEventListener('click', event => {
-                    event.stopPropagation();
-                });
+                connector.addEventListener('click', event => event.stopPropagation());
 
                 connector.addEventListener('pointerdown', event => {
                     const leftCard = connector.closest('.match-card[data-side="left"]');
@@ -996,22 +790,11 @@
                     event.preventDefault();
                     event.stopPropagation();
 
-                    clearSelection();
-                    selectedLeft = leftCard;
+                    selectLeftCard(leftCard, false);
                     activeLeft = leftCard;
                     activePointerId = event.pointerId;
 
-                    addClasses(leftCard, stateClasses.selected);
-                    setConnectorState(leftCard, '[data-connector="start"]', true);
                     playSfx('tap');
-
-                    cards
-                        .filter(item => item.dataset.side === 'right' && !item.disabled)
-                        .forEach(item => {
-                            addClasses(item, stateClasses.target);
-                            setConnectorState(item, '[data-connector="target"]', true);
-                        });
-
                     leftCard.setPointerCapture?.(event.pointerId);
                     createActiveLine(leftCard, event);
                 });
@@ -1021,7 +804,6 @@
                 if (!activeLeft || !activeLine || event.pointerId !== activePointerId) return;
 
                 syncLineLayer();
-
                 positionLine(
                     activeLine,
                     connectorPoint(activeLeft, '[data-connector="start"]'),
@@ -1045,18 +827,7 @@
                     if (card.disabled) return;
 
                     if (card.dataset.side === 'left') {
-                        clearSelection();
-                        selectedLeft = card;
-                        addClasses(card, stateClasses.selected);
-                        setConnectorState(card, '[data-connector="start"]', true);
-                        playSfx('tap');
-
-                        cards
-                            .filter(item => item.dataset.side === 'right' && !item.disabled)
-                            .forEach(item => {
-                                addClasses(item, stateClasses.target);
-                                setConnectorState(item, '[data-connector="target"]', true);
-                            });
+                        selectLeftCard(card);
                         return;
                     }
 
@@ -1064,64 +835,42 @@
 
                     if (card.dataset.id === selectedLeft.dataset.id) {
                         finishCorrect(selectedLeft, card);
+                        clearSelection();
                     } else {
-                        finishWrong(selectedLeft, card);
+                        const leftCard = selectedLeft;
+                        finishWrong(leftCard, card);
+                        selectLeftCard(leftCard, false);
                     }
-
-                    clearSelection();
                 });
             });
 
-            checkBtn?.addEventListener('click', () => {
-                clearSelection();
-
-                if (completed.size === totalPairs) {
-                    showWinModal();
+            revealBtn?.addEventListener('click', () => {
+                if (revealIsRetake) {
+                    resetGame();
                     return;
                 }
 
-                flashUnmatchedCards();
+                revealAnswers();
             });
 
-            revealBtn?.addEventListener('click', revealAnswers);
-            retakeBtn?.addEventListener('click', resetGame);
-
-            document.getElementById('restartBtnModal')?.addEventListener('click', () => {
-                retakeBtn?.click();
-            });
-
-            document.getElementById('continueBtnModal')?.addEventListener('click', () => {
-                hideWinModal();
-            });
+            document.getElementById('restartBtnModal')?.addEventListener('click', resetGame);
+            document.getElementById('continueBtnModal')?.addEventListener('click', hideWinModal);
 
             function stopSlideMedia() {
                 window.stopAudioPlayer?.();
             }
 
-            window.addEventListener('resize', () => {
-                syncLineLayer();
-                removeLines();
-
-                completed.forEach(id => {
-                    const left = document.querySelector(`.match-card[data-side="left"][data-id="${CSS.escape(id)}"]`);
-                    const right = document.querySelector(`.match-card[data-side="right"][data-id="${CSS.escape(id)}"]`);
-
-                    if (left && right) drawLine(left, right);
-                });
-            });
+            window.addEventListener('resize', redrawLines);
+            window.addEventListener('load', redrawLines);
+            document.fonts?.ready?.then(redrawLines);
 
             window.resetSlide = () => {
                 stopSlideMedia();
-                retakeBtn?.click();
+                resetGame();
             };
 
-            window.stopSlideAudio = () => {
-                stopSlideMedia();
-            };
-
-            window.destroySlide = () => {
-                stopSlideMedia();
-            };
+            window.stopSlideAudio = stopSlideMedia;
+            window.destroySlide = stopSlideMedia;
 
             syncLineLayer();
             updateStats();

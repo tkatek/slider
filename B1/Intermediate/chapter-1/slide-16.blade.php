@@ -3,9 +3,9 @@
 $content = [
 
     'type'       => 'image',
-    'page_title' => 'Practice 6',
-    'title'      => 'Practice 6',
-    'subtitle'   => 'Choose the correct answer.',
+
+    'title'      => 'Practice 7',
+    'subtitle'   => 'Choose the correct answer',
 
     'enable_image_zoom' => false,
     'game_card_width' => 'max-w-5xl',
