@@ -2,7 +2,7 @@
 
 $content = [
     'type'       => 'image',
-    'title'      => 'Practice 4',
+    'title'      => 'Warm up: Practice 1',
     'subtitle'   => 'Choose the correct answer',
 
     'enable_image_zoom' => false,

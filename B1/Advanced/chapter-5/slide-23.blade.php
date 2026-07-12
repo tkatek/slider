@@ -1,7 +1,7 @@
 <?php
-$customTitle = "Writing: My Green Promise";
+$customTitle = "Writing";
 
-$customSubtitle = "Think about your daily habits. Write a 100–120-word paragraph about three changes you will make to help protect the environment.";
+$customSubtitle = "My Green Promise";
 
 $customModelAnswer = "My Green Promise
 
@@ -12,15 +12,16 @@ $customCalloutText = "
 
     <div class='rounded-xl border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/40'>
         <p class='text-sm font-bold leading-relaxed text-slate-900 dark:text-slate-100'>
-            In your paragraph, you should:
+            Think about your daily habits.
         </p>
 
-        <ul class='mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-slate-700 dark:text-slate-200'>
-            <li>Think about your daily habits.</li>
-            <li>Write 100–120 words.</li>
-            <li>Write about three changes you will make to help protect the environment.</li>
-            <li>Explain how these changes will make a difference.</li>
-        </ul>
+        <p class='mt-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200'>
+            Write 100–120 words about three changes you will make to help protect the environment.
+        </p>
+
+        <p class='mt-3 text-sm leading-relaxed text-slate-700 dark:text-slate-200'>
+            Explain how these changes will make a difference.
+        </p>
     </div>
 
     <div class='rounded-xl border border-slate-200 bg-white/70 p-4 dark:border-slate-700 dark:bg-slate-900/40'>
@@ -29,11 +30,11 @@ $customCalloutText = "
         </p>
 
         <ul class='list-none space-y-2 text-sm leading-relaxed text-slate-700 dark:text-slate-200'>
-            <li>✔ From today, I will...</li>
-            <li>✔ I want to reduce...</li>
-            <li>✔ I will try to...</li>
-            <li>✔ This will help...</li>
-            <li>✔ I hope other people will...</li>
+            <li>From today, I will...</li>
+            <li>I want to reduce...</li>
+            <li>I will try to...</li>
+            <li>This will help...</li>
+            <li>I hope other people will...</li>
         </ul>
     </div>
 

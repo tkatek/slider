@@ -2,9 +2,8 @@
 
 @php
     $content = [
-
-        'title'      => 'Grammar Focus',
-        'subtitle'   => '',
+        'title'    => 'Grammar Focus',
+        'subtitle' => 'PART 1: PRESENT SIMPLE - General Truths & Tendencies',
     ];
 
     $truths = [
@@ -45,82 +44,80 @@
 @endphp
 
 @section('content')
-    <main class="flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-x-hidden px-3 py-3 sm:px-4">
+    <main class="flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-x-hidden px-4 py-4 text-slate-950 dark:text-slate-50 sm:px-6 lg:px-8">
         <div class="w-full">
             @include('slider.components.title-subtitle')
         </div>
 
-        <section class="mx-auto mt-3 grid w-full max-w-7xl gap-4 md:grid-cols-[minmax(0,0.95fr)_minmax(280px,1.05fr)]">
+        <section class="mx-auto mt-4 w-full max-w-[1180px]">
+            <div class="grid w-full grid-cols-1 gap-4 lg:grid-cols-2">
 
-            {{-- LEFT SIDE --}}
-            <div class="overflow-hidden rounded-2xl border border-emerald-200 bg-white shadow-lg shadow-emerald-900/10 dark:border-emerald-900/60 dark:bg-slate-900">
-                <div class="bg-gradient-to-r from-emerald-800 via-green-700 to-teal-700 px-4 py-2 text-center">
-                    <h2 class="text-sm font-black uppercase leading-tight text-white sm:text-base">
-                        Part 1: Present Simple - General Truths & Tendencies
-                    </h2>
-                </div>
+                {{-- LEFT PANEL --}}
+                <article class="rounded-2xl border-2 border-green-200 bg-white p-4 shadow-sm dark:border-green-800 dark:bg-slate-900 sm:p-5">
+                    <div class="mx-auto max-w-md text-center">
+                        <p class="text-base font-black leading-snug text-slate-950 dark:text-white sm:text-lg lg:text-xl">
+                            We use
+                            <span class="text-green-700 dark:text-green-300">Present Simple</span>
+                            to talk about general truths and typical behaviors.
+                        </p>
+                    </div>
 
-                <div class="grid gap-3 p-3 sm:p-4">
-                    <article class="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3 dark:border-emerald-800/60 dark:bg-emerald-950/20">
-                        <div class="flex items-start gap-3">
-                            <div class="hidden text-4xl sm:block">👦</div>
-
-                            <div class="min-w-0 flex-1 rounded-xl bg-white p-3 shadow-sm dark:bg-slate-900">
-                                <p class="text-sm font-black leading-snug text-slate-900 dark:text-slate-50 sm:text-base">
-                                    We use Present Simple to talk about general truths and typical behaviors.
-                                </p>
-
-                                <ul class="mt-3 space-y-1.5 text-xs font-bold leading-snug text-slate-700 dark:text-slate-200 sm:text-sm">
-                                    @foreach($truths as $truth)
-                                        <li class="flex gap-2">
-                                            <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-700 dark:bg-emerald-300"></span>
-                                            <span>{{ $truth }}</span>
-                                        </li>
-                                    @endforeach
-                                </ul>
+                    <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-[4.5rem_1fr_4.5rem] sm:items-end">
+                        <div class="hidden h-full items-end justify-center sm:flex">
+                            <div class="flex h-16 w-16 items-center justify-center rounded-full bg-green-50 text-4xl shadow-inner dark:bg-green-950/40">
+                                👦
                             </div>
-
-                            <div class="hidden text-4xl sm:block">👧</div>
                         </div>
-                    </article>
-                </div>
-            </div>
 
-            {{-- RIGHT SIDE --}}
-            <article class="overflow-hidden rounded-2xl border border-emerald-200 bg-white shadow-lg shadow-emerald-900/10 dark:border-emerald-900/60 dark:bg-slate-900">
-                <div class="bg-gradient-to-r from-emerald-800 via-green-700 to-teal-700 px-4 py-2 text-center">
-                    <h3 class="text-sm font-black uppercase text-white sm:text-base">
+                        <div class="rounded-2xl border-2 border-green-100 bg-green-50/70 p-4 dark:border-green-800 dark:bg-green-950/30">
+                            <ul class="space-y-2 text-sm font-bold leading-snug text-slate-800 dark:text-slate-100 sm:text-base">
+                                @foreach($truths as $truth)
+                                    <li class="flex gap-2">
+                                        <span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-green-500"></span>
+                                        <span>{{ $truth }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+
+                        <div class="hidden h-full items-end justify-center sm:flex">
+                            <div class="flex h-16 w-16 items-center justify-center rounded-full bg-green-50 text-4xl shadow-inner dark:bg-green-950/40">
+                                👧
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                {{-- RIGHT PANEL --}}
+                <article class="rounded-2xl border-2 border-green-200 bg-white p-4 shadow-sm dark:border-green-800 dark:bg-slate-900 sm:p-5">
+                    <h2 class="text-center text-lg font-black text-slate-950 dark:text-white sm:text-xl lg:text-2xl">
                         Present Simple: Form
-                    </h3>
-                </div>
+                    </h2>
 
-                <div class="p-3 sm:p-4">
-                    <article class="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3 dark:border-emerald-800/60 dark:bg-emerald-950/20">
-                        <div class="overflow-hidden rounded-xl border border-emerald-200 bg-white dark:border-emerald-900/60 dark:bg-slate-900">
-                            @foreach($forms as $form)
-                                <div class="grid grid-cols-1 border-b border-emerald-100 last:border-b-0 dark:border-emerald-900/60 sm:grid-cols-[8rem_1fr]">
-                                    <div class="bg-emerald-50 px-3 py-3 text-xs font-black text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 sm:flex sm:items-center sm:text-sm">
-                                        {{ $form['label'] }}
-                                    </div>
-
-                                    <div class="space-y-2 px-3 py-3 text-xs font-bold leading-snug text-slate-800 dark:text-slate-100 sm:text-sm">
-                                        @foreach($form['items'] as $item)
-                                            <p>{{ $item }}</p>
-                                        @endforeach
-                                    </div>
+                    <div class="mt-4 overflow-hidden rounded-xl border-2 border-green-200 bg-white dark:border-green-800 dark:bg-slate-900">
+                        @foreach($forms as $form)
+                            <div class="grid grid-cols-1 border-b-2 border-green-200 last:border-b-0 dark:border-green-800 sm:grid-cols-[9rem_1fr]">
+                                <div class="flex items-center justify-center bg-green-50 px-4 py-3 text-sm font-black text-green-800 dark:bg-green-950/40 dark:text-green-200 sm:text-base">
+                                    {{ $form['label'] }}
                                 </div>
-                            @endforeach
-                        </div>
 
-                        <div class="mt-3 rounded-xl border border-green-200 bg-green-50 px-3 py-3 text-center dark:border-green-800 dark:bg-green-950/30">
-                            <p class="text-xs font-extrabold leading-snug text-emerald-900 dark:text-emerald-100 sm:text-sm">
-                                Use Present Simple for things that are usually true, not just now.
-                            </p>
-                        </div>
-                    </article>
-                </div>
-            </article>
+                                <div class="space-y-2 border-t-2 border-green-100 px-4 py-3 text-sm font-bold leading-snug text-slate-800 dark:border-green-800 dark:text-slate-100 sm:border-l-2 sm:border-t-0 sm:text-base">
+                                    @foreach($form['items'] as $item)
+                                        <p>{{ $item }}</p>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
 
+                    <div class="mt-5 rounded-xl border-2 border-green-200 bg-green-50 px-4 py-4 text-center dark:border-green-800 dark:bg-green-950/40">
+                        <p class="text-sm font-extrabold leading-snug text-green-950 dark:text-green-100 sm:text-base lg:text-lg">
+                            Use Present Simple for things that are usually true, not just now.
+                        </p>
+                    </div>
+                </article>
+
+            </div>
         </section>
     </main>
 @endsection

@@ -9,25 +9,20 @@ $content = [
     'instruction' => 'People are talking about issues',
     'instruction_note' => 'Which issue do they think is most important right now? Listen and circle the correct answer',
 
-    'audio' => materialAsset('slider/B1/Advanced/chapter-4/audios/slide9.mp3'),
+    'audio' => materialAsset('slider/B1/Advanced/chapter-4/audios/slide14.mp3'),
 
     'transcript' => [
-        '1',
+
         'Well, the government has done quite a bit to reduce water pollution. It’s certainly better than it used to be. Now we have to do something about air pollution, which is still pretty bad.',
 
-        '2',
         'Crime is a growing problem in the country right now. Sometimes it’s because people are unemployed. I think what we really have to do is reduce unemployment. That should help the crime problem.',
 
-        '3',
         'The subway and bus services have definitely got to improve. But the government should really focus on improving conditions for people in the cities. So many people need better places to live and the problem is getting worse.',
 
-        '4',
         'One of the biggest issues we’re facing right now is unemployment. If people can’t work, they can’t spend any money, and then the whole economy continues to suffer. The government really needs to help create more jobs.',
 
-        '5',
         'Parking downtown is so expensive, and there’s so much traffic on the streets in the morning with so many people trying to get to work. We need a new subway system to make it easier for people to get to work so we don’t have to drive our cars all the time.',
 
-        '6',
         'There has been an increase in life span throughout the world. People live longer now because of the availability of medicine and clean water. We need to make sure this continues.',
     ],
 

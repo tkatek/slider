@@ -1,12 +1,14 @@
 <?php
 $content = [
-    'video'     => materialAsset('slider/A2/'),
+    'video'     => materialAsset('slider/A2/Advanced/chapter-7/video/goal-setting-encrypted/goal-setting.m3u8'),
     'thumbnail' => materialAsset('slider/A2/Advanced/chapter-7/img/slide8.webp'),
     'isQuiz'    => 1,
 
     'questions' => [
         [
-            'time' => 13000,
+            // After the productivity explanation ends at 9 seconds.
+            // Silent gap: 9–10 seconds.
+            'time' => 9200,
             'type' => 'multiple_choice',
             'question' => 'What can goal setting increase?',
             'options' => [
@@ -19,7 +21,9 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 24000,
+            // After the "Specific" explanation ends at 25 seconds.
+            // Silent gap: 25–26 seconds.
+            'time' => 25200,
             'type' => 'multiple_choice',
             'question' => 'What does “specific” mean in goal setting?',
             'options' => [
@@ -32,7 +36,9 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 36000,
+            // After the "Attainable" explanation ends at 40 seconds.
+            // Silent gap: 40–41 seconds.
+            'time' => 40200,
             'type' => 'multiple_choice',
             'question' => 'What should attainable goals do?',
             'options' => [
@@ -45,7 +51,9 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 52000,
+            // After the complete time-based explanation ends at 62 seconds.
+            // Silent gap: 62–62.5 seconds.
+            'time' => 62100,
             'type' => 'multiple_choice',
             'question' => 'Why is a deadline important?',
             'options' => [
@@ -58,7 +66,8 @@ $content = [
             'points' => 10,
         ],
         [
-            'time' => 59000,
+            // After the final subtitle ends at 70 seconds.
+            'time' => 70200,
             'type' => 'multiple_choice',
             'question' => 'What should you do after achieving a goal?',
             'options' => [
@@ -73,17 +82,17 @@ $content = [
     ],
 
     'subtitles' => [
-        ['start' => 3,  'end' => 5,  'text' => 'Goal setting is a powerful tool in increasing productivity.'],
-        ['start' => 5,  'end' => 9,  'text' => 'In fact, setting goals can increase your productivity by 11 to 25%.'],
-        ['start' => 13, 'end' => 18, 'text' => 'But actually setting and working towards goals can be challenging. So let’s get smart about goals.'],
-        ['start' => 18, 'end' => 24, 'text' => 'S: Specific. Ask yourself what you want to accomplish and most importantly why.'],
-        ['start' => 24, 'end' => 30, 'text' => 'M: Measurable. Are you able to tell when you’ve reached your goal?'],
-        ['start' => 30, 'end' => 36, 'text' => 'A: Attainable. Goals should stretch you so you feel excited but within your current ability.'],
-        ['start' => 36, 'end' => 44, 'text' => 'R: Relevant. Set goals that are going to positively impact your life.'],
-        ['start' => 44, 'end' => 47, 'text' => 'Does this goal fit in with your other life’s goals and dreams?'],
-        ['start' => 47, 'end' => 52, 'text' => 'T: Time-based. A goal with a time deadline will create a sense of urgency.'],
-        ['start' => 52, 'end' => 55, 'text' => 'And give you the energy you need to complete it.'],
-        ['start' => 55, 'end' => 59, 'text' => 'Finally, once you achieve your goal, it’s time to celebrate and set the next goal.'],
+        ['start' => 0,  'end' => 4,  'text' => 'Goal setting is a powerful tool in increasing productivity.'],
+        ['start' => 4,  'end' => 9,  'text' => 'In fact, setting goals can increase your productivity by 11 to 25%.'],
+        ['start' => 10, 'end' => 16, 'text' => 'But actually setting and working towards goals can be challenging. So let’s get smart about goals.'],
+        ['start' => 17.5, 'end' => 25, 'text' => 'S: Specific. Ask yourself what you want to accomplish and most importantly why.'],
+        ['start' => 26, 'end' => 32, 'text' => 'M: Measurable. Are you able to tell when you’ve reached your goal?'],
+        ['start' => 32.5, 'end' => 40, 'text' => 'A: Attainable. Goals should stretch you so you feel excited but within your current ability.'],
+        ['start' => 41, 'end' => 47.5, 'text' => 'R: Relevant. Set goals that are going to positively impact your life.'],
+        ['start' => 47.5, 'end' => 51, 'text' => 'Does this goal fit in with your other life’s goals and dreams?'],
+        ['start' => 52.5, 'end' => 59.5, 'text' => 'T: Time-based. A goal with a time deadline will create a sense of urgency.'],
+        ['start' => 59.5, 'end' => 62, 'text' => 'And give you the energy you need to complete it.'],
+        ['start' => 62.5, 'end' => 70, 'text' => 'Finally, once you achieve your goal, it’s time to celebrate and set the next goal.'],
     ],
 ];
 ?>

@@ -7,7 +7,7 @@
          'title_class' => 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl',
         'subtitle'   => 'Task 1: Listen to the conversation. Write the missing words',
 
-        'audio' => materialAsset('slider/B1/Advanced/chapter-4/audios/slide10.mp3'),
+        'audio' => materialAsset('slider/B1/Advanced/chapter-4/audios/slide15.mp3'),
 
         'task_2_title' => 'Task 2',
         'task_2_instruction' => 'Practice the conversation with a partner. Be sure to stress the correct syllable.',
