@@ -53,8 +53,14 @@
         }
 
         $activityTitle = $content['activity_title'] ?? $content['directions'] ?? 'Match the items.';
+        $instruction = trim((string) ($content['instruction'] ?? ''));
         $leftLabel = $content['left_label'] ?? 'Items';
         $rightLabel = $content['right_label'] ?? 'Matches';
+        $passageTitle = trim((string) ($content['passage_title'] ?? 'Reading passage'));
+        $passage = is_array($content['passage'] ?? null)
+            ? array_values(array_filter(array_map(static fn ($paragraph) => trim((string) $paragraph), $content['passage']), static fn ($paragraph) => $paragraph !== ''))
+            : [];
+        $passageWidth = strtolower(trim((string) ($content['passage_width'] ?? 'xl:grid-cols-[minmax(19rem,0.85fr)_minmax(0,1.65fr)]')));
 
         $itemTextLength = static function ($item) {
             $raw = $item['content']['text'] ?? $item['content']['word'] ?? $item['content']['html'] ?? '';
@@ -136,14 +142,23 @@
         $imageClass = 'pointer-events-none h-full w-full object-contain';
         $wordClass = 'match-word block w-full min-w-0 break-words text-left font-bold leading-[1.35] text-slate-800 dark:text-slate-100 ' . $wordSizeClass;
 
-        $renderMatchItem = function ($item) use ($pictureFrameClass, $imageClass, $wordClass) {
+        $showImageLabels = (bool) ($content['show_image_labels'] ?? false);
+
+        $renderMatchItem = function ($item) use ($pictureFrameClass, $imageClass, $wordClass, $showImageLabels) {
             $type = $item['type'] ?? 'word';
 
             if ($type === 'image') {
                 $src = $item['src'] ?? $item['image'] ?? '';
                 $alt = $item['alt'] ?? '';
 
-                return '<span class="' . $pictureFrameClass . '"><img src="' . e($src) . '" alt="' . e($alt) . '" class="' . $imageClass . '" draggable="false"></span>';
+                $picture = '<span class="shrink-0 ' . $pictureFrameClass . '"><img src="' . e($src) . '" alt="' . e($alt) . '" class="' . $imageClass . '" draggable="false"></span>';
+                $label = trim((string) ($item['text'] ?? $item['word'] ?? ''));
+
+                if ($showImageLabels && $label !== '') {
+                    return '<span class="flex min-w-0 items-center gap-3">' . $picture . '<span class="' . $wordClass . '">' . e($label) . '</span></span>';
+                }
+
+                return $picture;
             }
 
             if (!empty($item['html'])) {
@@ -232,7 +247,7 @@
             };
         }
 
-        $matchButtonClass = 'inline-flex h-8 items-center justify-center rounded-lg border bg-white px-3 text-[0.68rem] font-extrabold shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-slate-900 sm:h-9 sm:px-3.5 sm:text-xs ' . match ($themeName) {
+        $matchButtonClass = 'inline-flex h-8 items-center justify-center whitespace-nowrap rounded-lg border bg-white px-3 text-[0.68rem] font-extrabold shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-slate-900 sm:h-9 sm:px-3.5 sm:text-xs ' . match ($themeName) {
             'orange' => 'border-orange-200 text-orange-700 hover:bg-orange-50 focus-visible:ring-orange-100 dark:border-orange-800/70 dark:text-orange-200 dark:hover:bg-orange-950/30 dark:focus-visible:ring-orange-500/20',
             'green' => 'border-emerald-200 text-emerald-700 hover:bg-emerald-50 focus-visible:ring-emerald-100 dark:border-emerald-800/70 dark:text-emerald-200 dark:hover:bg-emerald-950/30 dark:focus-visible:ring-emerald-500/20',
             'purple' => 'border-violet-200 text-violet-700 hover:bg-violet-50 focus-visible:ring-violet-100 dark:border-violet-800/70 dark:text-violet-200 dark:hover:bg-violet-950/30 dark:focus-visible:ring-violet-500/20',
@@ -242,7 +257,7 @@
         $modalSecondaryButtonClass = 'inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-extrabold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 sm:min-h-12 sm:px-6 sm:text-base';
         $modalPrimaryButtonClass = 'inline-flex min-h-11 items-center justify-center rounded-xl px-5 py-2.5 text-sm font-extrabold text-white shadow-lg transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-4 sm:min-h-12 sm:px-6 sm:text-base ' . $themePrimaryButtonColor;
 
-        $matchCardBaseClass = 'match-card relative z-10 flex h-full w-full cursor-pointer select-none items-center justify-start rounded-xl border border-slate-200 bg-white text-left shadow-[0_2px_7px_rgba(15,23,42,0.06)] transition duration-200 hover:-translate-y-0.5 hover:border-[var(--match-accent)] hover:shadow-[0_8px_18px_rgba(15,23,42,0.09)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--match-accent-ring)] disabled:cursor-default dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-[var(--match-accent-dark)] dark:focus-visible:ring-[var(--match-accent-ring-dark)] ' . $cardSizeClass;
+        $matchCardBaseClass = 'match-card relative z-10 flex h-full w-full cursor-pointer select-none items-center justify-start rounded-xl border border-slate-200 bg-[#fbfefc] text-left shadow-[0_2px_7px_rgba(15,23,42,0.06)] transition duration-200 hover:-translate-y-0.5 hover:border-[var(--match-accent-ring)] hover:bg-[var(--match-accent-soft)] hover:shadow-[0_8px_18px_rgba(15,23,42,0.09)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--match-accent-ring)] disabled:cursor-default dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-[var(--match-accent-ring-dark)] dark:hover:bg-[var(--match-accent-soft-dark)] dark:focus-visible:ring-[var(--match-accent-ring-dark)] ' . $cardSizeClass;
         $matchConnectorStartClass = 'match-connector match-connector-start absolute right-[-12px] top-1/2 z-20 grid h-8 w-8 -translate-y-1/2 cursor-grab touch-none place-items-center rounded-full active:cursor-grabbing sm:right-[-14px] sm:h-9 sm:w-9';
         $matchConnectorTargetClass = 'match-connector match-connector-target absolute left-[-12px] top-1/2 z-20 grid h-8 w-8 -translate-y-1/2 cursor-pointer touch-none place-items-center rounded-full sm:left-[-14px] sm:h-9 sm:w-9';
         $themeColumnLabelColors = match ($themeName) {
@@ -259,6 +274,11 @@
     <style>
         .match-panel {
             width: min(100%, var(--ideal-board-width));
+        }
+
+        .match-reading-card {
+            scrollbar-color: var(--match-accent-ring) transparent;
+            scrollbar-width: thin;
         }
 
         .match-board-grid {
@@ -306,12 +326,13 @@
         .match-card.is-selected {
             border-color: var(--match-accent);
             background: var(--match-accent-soft);
-            box-shadow: 0 0 0 4px var(--match-accent-ring), 0 16px 30px -22px rgba(15, 23, 42, .45);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, .10), 0 6px 15px rgba(5, 150, 105, .10);
         }
 
         .match-card.is-target {
             border-color: var(--match-accent-ring);
-            box-shadow: inset 0 0 0 1px var(--match-accent-ring);
+            background: #fbfefc;
+            box-shadow: 0 3px 10px rgba(15, 23, 42, .045);
         }
 
         .match-card.is-correct {
@@ -333,12 +354,13 @@
         .dark .match-card.is-selected {
             border-color: var(--match-accent-dark);
             background: var(--match-accent-soft-dark);
-            box-shadow: 0 0 0 4px var(--match-accent-ring-dark), 0 16px 30px -22px rgba(0, 0, 0, .75);
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, .08), 0 6px 15px rgba(2, 6, 23, .32);
         }
 
         .dark .match-card.is-target {
-            border-color: var(--match-accent-dark);
-            box-shadow: inset 0 0 0 1px var(--match-accent-ring-dark);
+            border-color: var(--match-accent-ring-dark);
+            background: #0f172a;
+            box-shadow: 0 3px 10px rgba(2, 6, 23, .22);
         }
 
         .dark .match-card.is-correct {
@@ -367,8 +389,8 @@
         .match-connector::after {
             content: "";
             display: block;
-            width: .62rem;
-            height: .62rem;
+            width: .76rem;
+            height: .76rem;
             border-radius: 999px;
             border: 2px solid #fff;
             background: #94a3b8;
@@ -379,8 +401,8 @@
 
         @media (min-width: 640px) {
             .match-connector::after {
-                width: .72rem;
-                height: .72rem;
+                width: .88rem;
+                height: .88rem;
             }
         }
 
@@ -448,7 +470,7 @@
         }
     </style>
 
-    <main id="matchingPairsShell" class="flex min-h-[100dvh] w-full flex-col justify-center overflow-x-hidden px-3 py-3 sm:px-5 sm:py-4 lg:px-6 lg:py-5" style="{{ $matchThemeStyle }}">
+    <main id="matchingPairsShell" class="flex min-h-[100dvh] w-full flex-col justify-start overflow-x-hidden px-3 pb-3 pt-7 sm:justify-center sm:px-5 sm:py-4 lg:px-6 lg:py-5" style="{{ $matchThemeStyle }}">
         @include('slider.components.title-subtitle')
 
         <section class="mx-auto w-full max-w-[90rem] pb-2">
@@ -458,40 +480,57 @@
                 </div>
             @endif
 
-            <div
-                    class="match-panel mx-auto rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_8px_24px_rgba(15,23,42,0.07)] dark:border-slate-800 dark:bg-slate-950/70 dark:shadow-none sm:p-3.5 lg:p-4"
-                    style="--ideal-board-width: {{ $idealBoardWidthRem }}; --xl-board-width: {{ $xlBoardWidthRem }}; --left-col-fr: {{ $leftColumnFr }}; --right-col-fr: {{ $rightColumnFr }}; --left-mobile-fr: {{ $mobileLeftFr }}; --right-mobile-fr: {{ $mobileRightFr }};"
-            >
-                <div>
-                    <div class="flex items-center justify-between gap-3">
-                        <h2 class="min-w-0 flex-1 text-sm font-black leading-tight text-slate-950 dark:text-white sm:text-base lg:text-lg">
-                            {{ $activityTitle }}
-                        </h2>
+            <div class="{{ $passage !== [] ? 'grid items-start gap-3 ' . $passageWidth : '' }}">
+                @if($passage !== [])
+                    <article class="match-reading-card relative  min-h-[18rem] overflow-y-auto rounded-[1.2rem] border border-slate-200/60 bg-white/70 px-4 py-4 text-left shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur dark:border-slate-700/55 dark:bg-slate-950/35 sm:px-5 sm:py-5">
+                        <div class="pointer-events-none absolute inset-y-4 left-0 w-1 rounded-full bg-gradient-to-b from-[var(--match-accent)] via-[var(--match-active)] to-[var(--match-accent)] dark:from-[var(--match-accent-dark)] dark:via-[var(--match-active-dark)] dark:to-[var(--match-accent-dark)]"></div>
+                        <div class="relative z-[1] pl-1.5">
+                            <p class="inline-flex rounded-full border border-[var(--match-accent-ring)] bg-[var(--match-accent-soft)] px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.16em] text-[var(--match-accent)] dark:border-[var(--match-accent-ring-dark)] dark:bg-[var(--match-accent-soft-dark)] dark:text-[var(--match-accent-dark)] sm:text-xs">
+                                Reading passage
+                            </p>
+                            <h2 class="mt-3 text-lg font-black leading-tight tracking-[-0.02em] text-slate-950 dark:text-white sm:text-xl">
+                                {{ $passageTitle }}
+                            </h2>
+                            <div class="mt-3 grid gap-2.5">
+                        @foreach($passage as $paragraph)
+                                    <p class="m-0 text-sm font-semibold leading-[1.6] tracking-[-0.01em] text-slate-600 dark:text-slate-300 sm:text-[15px] lg:text-base">
+                                        {{ $paragraph }}
+                                    </p>
+                        @endforeach
+                            </div>
+                        </div>
+                    </article>
+                @endif
 
-                        <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
-                            <div class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-2.5 text-[0.66rem] font-extrabold text-rose-800 shadow-sm dark:border-rose-900/70 dark:bg-rose-950/35 dark:text-rose-200 sm:h-9 sm:px-3 sm:text-xs">
-                                <span>Mistakes</span>
-                                <span id="mistakes" class="grid min-w-5 place-items-center rounded-md bg-white px-1.5 py-0.5 text-rose-700 ring-1 ring-rose-200 dark:bg-rose-900/50 dark:text-rose-100 dark:ring-rose-800">0</span>
+                <div
+                        class="match-panel {{ $passage === [] ? 'mx-auto' : '' }} rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_8px_24px_rgba(15,23,42,0.07)] dark:border-slate-800 dark:bg-slate-950/70 dark:shadow-none sm:p-3.5 lg:p-4"
+                        style="{{ $passage !== [] ? 'width: 100%;' : '' }} --ideal-board-width: {{ $idealBoardWidthRem }}; --xl-board-width: {{ $xlBoardWidthRem }}; --left-col-fr: {{ $leftColumnFr }}; --right-col-fr: {{ $rightColumnFr }}; --left-mobile-fr: {{ $mobileLeftFr }}; --right-mobile-fr: {{ $mobileRightFr }};"
+                >
+                    <div>
+                        <div class="flex flex-col items-stretch gap-2.5 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+                            <div class="min-w-0 flex-1">
+                                <h2 class="text-sm font-black leading-tight text-slate-950 dark:text-white sm:text-base lg:text-lg">
+                                    {{ $activityTitle }}
+                                </h2>
+                                @if($instruction !== '')
+                                    <p class="mt-1 text-[0.68rem] font-bold leading-snug text-slate-500 dark:text-slate-400 sm:text-xs">
+                                        {{ $instruction }}
+                                    </p>
+                                @endif
                             </div>
 
-                            <button id="revealMatchAnswers" type="button" class="{{ $matchButtonClass }}" aria-label="Reveal all correct matches" {{ $pairCount === 0 ? 'disabled' : '' }}>
-                                Reveal
-                            </button>
+                            <div class="flex w-full shrink-0 items-center justify-between gap-2 sm:w-auto sm:justify-end">
+                                <div class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-2.5 text-[0.66rem] font-extrabold text-rose-800 shadow-sm dark:border-rose-900/70 dark:bg-rose-950/35 dark:text-rose-200 sm:h-9 sm:px-3 sm:text-xs">
+                                    <span>Mistakes</span>
+                                    <span id="mistakes" class="grid min-w-5 place-items-center rounded-md bg-white px-1.5 py-0.5 text-rose-700 ring-1 ring-rose-200 dark:bg-rose-900/50 dark:text-rose-100 dark:ring-rose-800">0</span>
+                                </div>
+
+                                <button id="revealMatchAnswers" type="button" class="{{ $matchButtonClass }}" aria-label="Reveal all correct matches" {{ $pairCount === 0 ? 'disabled' : '' }}>
+                                    Reveal answers
+                                </button>
+                            </div>
                         </div>
                     </div>
-
-                    <div
-                            id="matchProgress"
-                            class="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-slate-100 ring-1 ring-inset ring-slate-200 dark:bg-slate-800 dark:ring-slate-700 sm:mt-3"
-                            role="progressbar"
-                            aria-label="Matching progress"
-                            aria-valuemin="0"
-                            aria-valuemax="{{ $pairCount }}"
-                            aria-valuenow="0"
-                    >
-                        <div id="matchProgressBar" class="h-full w-0 rounded-full bg-[var(--match-accent)] transition-[width] duration-300 dark:bg-[var(--match-accent-dark)]"></div>
-                    </div>
-                </div>
 
                 <div
                         id="matchBoard"
@@ -514,7 +553,7 @@
                             <span class="min-w-0 flex-1 pr-1.5 sm:pr-2">
                                 {!! $renderMatchItem($item['content']) !!}
                             </span>
-                            <span data-card-status class="pointer-events-none hidden h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-500 text-xs font-black text-white shadow-sm sm:h-6 sm:w-6" aria-hidden="true">✓</span>
+                            <span data-card-status class="pointer-events-none mr-1 hidden h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-500 text-xs font-black text-white shadow-sm sm:mr-0 sm:h-6 sm:w-6" aria-hidden="true">✓</span>
                             <span class="{{ $matchConnectorStartClass }}" data-connector="start" aria-hidden="true"></span>
                         </button>
 
@@ -539,7 +578,8 @@
                     @endforelse
                 </div>
 
-                <p id="matchFeedback" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+                    <p id="matchFeedback" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+                </div>
             </div>
         </section>
 
@@ -651,22 +691,16 @@
             }
 
             function updateStats() {
-                const completedCount = completed.size;
                 const mistakesEl = document.getElementById('mistakes');
-                const progressEl = document.getElementById('matchProgress');
-                const progressBar = document.getElementById('matchProgressBar');
-                const percentage = totalPairs > 0 ? (completedCount / totalPairs) * 100 : 0;
 
                 if (mistakesEl) mistakesEl.textContent = mistakes;
-                if (progressEl) progressEl.setAttribute('aria-valuenow', String(completedCount));
-                if (progressBar) progressBar.style.width = `${percentage}%`;
             }
 
             function setRevealButtonToRetake(enabled) {
                 revealIsRetake = enabled;
                 if (!revealBtn) return;
 
-                revealBtn.textContent = enabled ? 'Retake' : 'Reveal';
+                revealBtn.textContent = enabled ? 'Retake' : 'Reveal answers';
                 revealBtn.setAttribute(
                     'aria-label',
                     enabled ? 'Restart the matching activity' : 'Reveal all correct matches'
@@ -1030,7 +1064,7 @@
                     }
 
                     if (!selectedLeft || card.dataset.side !== 'right') {
-                        announce('Select an item on the left first.');
+                    announce('Select a statement on the left first.');
                         return;
                     }
 
@@ -1088,7 +1122,7 @@
                 stopSlideMedia();
             };
 
-            syncLineLayer();
+            syncLineLayer(); 
             updateStats();
         });
     </script>

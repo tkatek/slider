@@ -81,6 +81,19 @@
             --ambient-three: rgba(132, 204, 22, 0.12);
         }
 
+        .slide-layout.slide-theme-rose {
+            --ambient-one: rgba(190, 24, 93, 0.13);
+            --ambient-two: rgba(225, 29, 72, 0.10);
+            --ambient-three: rgba(219, 39, 119, 0.09);
+            --top-bar-gradient: linear-gradient(to right, #701a3d, #9d174d, #be185d);
+        }
+
+        .dark .slide-layout.slide-theme-rose {
+            --ambient-one: rgba(190, 24, 93, 0.22);
+            --ambient-two: rgba(225, 29, 72, 0.17);
+            --ambient-three: rgba(219, 39, 119, 0.14);
+        }
+
         .slide-ambient-one {
             background: var(--ambient-one);
         }

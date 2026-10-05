@@ -1,6 +1,7 @@
 @php
     $audioPlayerUid = $audioPlayerUid ?? ('audio_player_' . substr(md5(($playerAudio ?? '') . uniqid('', true)), 0, 10));
     $audioPlayerFloating = $audioPlayerFloating ?? true;
+    $audioPlayerDuration = max(0, (float) ($audioPlayerDuration ?? 0));
     $audioPlayerScriptAllowHtml = !empty($audioPlayerScriptAllowHtml);
 @endphp
 
@@ -18,7 +19,7 @@
         outline: none;
     }
 
-    .audio-player-wave-bar {
+    .audio-player-wave-bar { 
         display: none;
         width: 3px;
         height: 10px;
@@ -46,6 +47,56 @@
         width: 100%;
         border-radius: 999px;
         overflow: hidden;
+    }
+
+    .audio-player-track--marked {
+        overflow: visible;
+    }
+
+    .audio-player-marker {
+        position: absolute;
+        top: 50%;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+    }
+
+    .audio-player-marker[hidden] {
+        display: none;
+    }
+
+    .audio-player-marker::before {
+        content: '';
+        width: 10px;
+        height: 10px;
+        box-sizing: border-box;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 0 1px #059669;
+    }
+
+    .audio-player-marker:hover::before {
+        background: #059669;
+    }
+
+    .audio-player-marker:focus-visible {
+        outline: 2px solid #059669;
+        outline-offset: 1px;
+    }
+
+    .dark .audio-player-marker::before {
+        border-color: #1e293b;
+        background: #34d399;
     }
 
     .audio-player-fill {
@@ -243,7 +294,7 @@
 </style>
 
 @if(!empty($playerAudio))
-    <div data-audio-player="{{ $audioPlayerUid }}" class="rounded-2xl border border-slate-200 bg-slate-50/90 px-3 py-2 shadow-sm dark:border-slate-700 dark:bg-slate-800/40 sm:px-4 sm:py-3">
+    <div data-audio-player="{{ $audioPlayerUid }}" data-audio-player-duration="{{ $audioPlayerDuration }}" class="rounded-2xl border border-slate-200 bg-slate-50/90 px-3 py-2 shadow-sm dark:border-slate-700 dark:bg-slate-800/40 sm:px-4 sm:py-3">
         <div class="flex items-center gap-2.5 sm:gap-3">
             <button
                     data-audio-player-toggle
@@ -264,12 +315,35 @@
                 <div class="flex items-center gap-2 sm:gap-2.5">
                     <div class="flex min-w-0 flex-1 flex-col gap-1 sm:gap-1.5">
                         <div
-                                class="audio-player-track cursor-pointer bg-slate-200 dark:bg-slate-700/70"
+                                class="audio-player-track {{ !empty($audioPlayerMarkers) ? 'audio-player-track--marked' : '' }} cursor-pointer bg-slate-200 dark:bg-slate-700/70"
                                 data-audio-player-track
                                 aria-label="Audio progress"
                         >
                             <div class="audio-player-fill bg-slate-700 dark:bg-slate-200" data-audio-player-fill></div>
                             <div class="audio-player-knob border-2 border-slate-700 bg-white shadow-md dark:border-slate-200 dark:bg-slate-900" data-audio-player-knob></div>
+                            @foreach(($audioPlayerMarkers ?? []) as $marker)
+                                @php
+                                    $markerTime = (float) $marker['time'];
+                                    $markerPosition = $audioPlayerDuration > 0 && $markerTime > 0 && $markerTime < $audioPlayerDuration
+                                        ? ($markerTime / $audioPlayerDuration * 100)
+                                        : null;
+                                    $markerTimestamp = floor($markerTime / 60) . ':' . str_pad((string) floor(fmod($markerTime, 60)), 2, '0', STR_PAD_LEFT);
+                                    $markerTitle = $marker['label'] . ' — ' . $markerTimestamp;
+                                @endphp
+                                <button
+                                        type="button"
+                                        class="audio-player-marker"
+                                        data-audio-player-marker="{{ $marker['time'] }}"
+                                        data-audio-player-marker-label="{{ $marker['label'] }}"
+                                        aria-label="Jump to {{ $marker['label'] }} at {{ $markerTimestamp }}"
+                                        title="{{ $markerTitle }}"
+                                        @if($markerPosition !== null)
+                                            style="left: {{ $markerPosition }}%"
+                                        @else
+                                            hidden
+                                        @endif
+                                ></button>
+                            @endforeach
                         </div>
 
                         <div class="flex justify-between text-[10px] font-extrabold text-slate-700 dark:text-slate-300 sm:text-[11px]">
@@ -372,7 +446,13 @@
                 <div class="max-h-[70vh] overflow-y-auto p-3 sm:p-4">
                     <div class="space-y-2">
                         @foreach($scriptLines as $i => $line)
-                            <div class="rounded-2xl border border-slate-200/60 bg-white/70 p-2.5 dark:border-slate-700/30 dark:bg-slate-900/20">
+                            <div
+                                class="rounded-2xl border border-slate-200/60 bg-white/70 p-2.5 dark:border-slate-700/30 dark:bg-slate-900/20"
+                                @if(isset($audioPlayerScriptDialogueIndexes[$i]))
+                                    data-script-dialogue="{{ $audioPlayerScriptDialogueIndexes[$i] }}"
+                                    @if($audioPlayerScriptDialogueIndexes[$i] !== 0) hidden @endif
+                                @endif
+                            >
                                 <div class="flex items-start gap-2.5">
                                     <div class="flex h-7 w-7 items-center justify-center rounded-2xl border border-slate-200/70 bg-white/70 text-xs font-black text-slate-700 dark:border-slate-700/35 dark:bg-slate-900/20 dark:text-slate-200">
                                         {{ $i + 1 }}
@@ -433,6 +513,7 @@
             var progressTrack;
             var progressFill;
             var progressKnob;
+            var progressMarkers;
             var currentTimeEl;
             var totalTimeEl;
             var showScriptBtn;
@@ -458,6 +539,7 @@
             progressTrack = root.querySelector('[data-audio-player-track]');
             progressFill = root.querySelector('[data-audio-player-fill]');
             progressKnob = root.querySelector('[data-audio-player-knob]');
+            progressMarkers = root.querySelectorAll('[data-audio-player-marker]');
             currentTimeEl = root.querySelector('[data-audio-player-current]');
             totalTimeEl = root.querySelector('[data-audio-player-total]');
             showScriptBtn = root.querySelector('[data-audio-player-script-open]');
@@ -470,6 +552,31 @@
             scriptBackdrop = modal ? modal.querySelector('[data-audio-player-backdrop]') : null;
             closeScriptBtn = modal ? modal.querySelector('[data-audio-player-script-close]') : null;
 
+            function getAudioDuration() {
+                var measuredDuration = playerAudio ? playerAudio.duration : 0;
+                var configuredDuration = Number(root.getAttribute('data-audio-player-duration'));
+
+                if (isFinite(measuredDuration) && measuredDuration > 0) return measuredDuration;
+                return isFinite(configuredDuration) && configuredDuration > 0 ? configuredDuration : 0;
+            }
+
+            function syncProgressMarkers() {
+                var duration = getAudioDuration();
+
+                progressMarkers.forEach(function (marker) {
+                    var time = Number(marker.getAttribute('data-audio-player-marker'));
+                    var label = marker.getAttribute('data-audio-player-marker-label') || 'Dialogue';
+                    var valid = duration > 0 && isFinite(time) && time > 0 && time < duration;
+
+                    marker.hidden = !valid;
+                    if (!valid) return;
+
+                    marker.style.left = (time / duration * 100) + '%';
+                    marker.title = label + ' — ' + formatTime(time);
+                    marker.setAttribute('aria-label', 'Jump to ' + label + ' at ' + formatTime(time));
+                });
+            }
+
             function syncPlayerUI() {
                 var duration;
                 var current;
@@ -477,7 +584,7 @@
 
                 if (!playerAudio) return;
 
-                duration = isFinite(playerAudio.duration) ? playerAudio.duration : 0;
+                duration = getAudioDuration();
                 current = isFinite(playerAudio.currentTime) ? playerAudio.currentTime : 0;
                 pct = duration > 0 ? (current / duration) * 100 : 0;
 
@@ -485,6 +592,7 @@
                 if (totalTimeEl) totalTimeEl.textContent = duration ? formatTime(duration) : '0:00';
                 if (progressFill) progressFill.style.width = pct + '%';
                 if (progressKnob) progressKnob.style.left = pct + '%';
+                syncProgressMarkers();
                 if (playButton) playButton.classList.toggle('is-playing', !playerAudio.paused);
                 if (floatingToggle) floatingToggle.classList.toggle('is-playing', !playerAudio.paused);
                 if (floatingPlayIcon) floatingPlayIcon.classList.toggle('hidden', !playerAudio.paused);
@@ -507,7 +615,7 @@
 
                 if (!playerAudio) return;
 
-                duration = isFinite(playerAudio.duration) ? playerAudio.duration : 0;
+                duration = getAudioDuration();
                 nextTime = Math.max(0, playerAudio.currentTime + delta);
 
                 if (duration > 0) nextTime = Math.min(duration, nextTime);
@@ -576,14 +684,27 @@
                 });
             }
 
+            progressMarkers.forEach(function (marker) {
+                marker.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    var time = Number(marker.getAttribute('data-audio-player-marker'));
+                    if (!playerAudio || !isFinite(time)) return;
+                    if (time <= 0 || time >= getAudioDuration()) return;
+
+                    playerAudio.currentTime = time;
+                    syncPlayerUI();
+                });
+            });
+
             if (progressTrack && playerAudio) {
                 progressTrack.addEventListener('click', function (event) {
                     var rect = event.currentTarget.getBoundingClientRect();
                     var x = Math.min(Math.max(0, event.clientX - rect.left), rect.width);
                     var ratio = rect.width > 0 ? x / rect.width : 0;
 
-                    if (isFinite(playerAudio.duration) && playerAudio.duration > 0) {
-                        playerAudio.currentTime = ratio * playerAudio.duration;
+                    var duration = getAudioDuration();
+                    if (duration > 0) {
+                        playerAudio.currentTime = ratio * duration;
                         syncPlayerUI();
                     }
                 });
@@ -617,6 +738,7 @@
             if (playerAudio) {
                 playerAudio.preload = 'metadata';
                 playerAudio.addEventListener('loadedmetadata', syncPlayerUI);
+                playerAudio.addEventListener('durationchange', syncPlayerUI);
                 playerAudio.addEventListener('timeupdate', syncPlayerUI);
                 playerAudio.addEventListener('ended', syncPlayerUI);
                 playerAudio.addEventListener('play', function () {

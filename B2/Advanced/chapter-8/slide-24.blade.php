@@ -1,0 +1,24 @@
+{{-- Canva source page 24: https://canva.link/y4h0j64e7zqgakl --}}
+@php
+    $content = [
+        'title' => 'An Invention That Changed Lives',
+        'subtitle' => 'Writing Task — 180–220 words',
+        'callout_position' => 'beside',
+        'callout_text' => '<div class="space-y-4 text-base leading-relaxed"><p>Choose one life-saving invention from the lesson: <strong>a defibrillator, vaccine, seat belt, artificial organ, insulin therapy or telemedicine.</strong></p><p>Write a descriptive essay of <strong>180–220 words</strong> describing the invention and explaining why it has had such an important impact on people’s lives.</p><details class="border-t border-indigo-200 pt-4"><summary class="cursor-pointer text-lg font-bold">Paragraph 1 — Introduction</summary><div class="mt-3"><ul><li>Introduce the invention and briefly describe when or why it became important.</li></ul></div></details><details class="border-t border-indigo-200 pt-4"><summary class="cursor-pointer text-lg font-bold">Paragraph 2 — Description</summary><div class="mt-3"><ul><li>Describe what it looks like or how it works.</li><li>Explain where and when it is used.</li><li>Explain what people use it to / in order to / so as to do.</li></ul></div></details><details class="border-t border-indigo-200 pt-4"><summary class="cursor-pointer text-lg font-bold">Paragraph 3 — Impact</summary><div class="mt-3"><ul><li>Explain how the invention has changed people’s lives.</li><li>Include specific examples of the problems it helps to solve.</li></ul></div></details><details class="border-t border-indigo-200 pt-4"><summary class="cursor-pointer text-lg font-bold">Paragraph 4 — Personal evaluation</summary><div class="mt-3"><ul><li>Explain why you think this invention is important.</li><li>Describe what the world might be like without it.</li></ul></div></details><details class="border-t border-indigo-200 pt-4"><summary class="cursor-pointer text-lg font-bold">Useful language</summary><div class="mt-3 space-y-4"><div><h3 class="font-bold">Introducing the invention</h3><ul><li>One of the most significant life-saving inventions is…</li><li>Few inventions have had such a profound impact as…</li><li>Developed to address the problem of…</li><li>This invention has transformed the way…</li></ul></div><div><h3 class="font-bold">Describing</h3><ul><li>It is designed to…</li><li>It is commonly used in…</li><li>It consists of…</li><li>Its main function is to…</li><li>It can be used to…</li><li>It is used in order to…</li><li>It was developed so as to…</li></ul></div><div><h3 class="font-bold">Describing impact</h3><ul><li>It has enabled people to…</li><li>It has helped to reduce…</li><li>It has significantly improved…</li><li>As a result, …</li><li>This has had a profound effect on…</li></ul></div><div><h3 class="font-bold">Evaluation</h3><ul><li>In my view, …</li><li>What makes this invention particularly valuable is…</li><li>Without this invention, …</li><li>Had this invention never been developed, …</li><li>It is difficult to imagine modern healthcare without…</li></ul></div></div></details></div>',
+        'placeholder' => 'Write your descriptive essay here…',
+        'model_answer' => 'Few medical inventions have had such a profound impact on human life as the defibrillator. Although it may look like a simple electronic device, it has become an essential tool in emergency medicine and can mean the difference between life and death.
+
+A defibrillator is a portable machine with a screen, cables and two pads that are placed on a patient\'s chest. It is designed to deliver a controlled electrical shock to the heart when someone suffers cardiac arrest. The device is used in order to restore a normal heartbeat as quickly as possible. In emergency situations, it can be operated by trained medical professionals so as to give the patient the best possible chance of survival.
+
+The defibrillator has significantly changed emergency healthcare. It has enabled doctors and emergency responders to treat cardiac arrest immediately rather than waiting for the patient to reach hospital. As a result, many lives have been saved and survival rates have improved.
+
+In my view, the defibrillator is one of the most valuable life-saving inventions ever developed. Without it, many people experiencing sudden cardiac arrest would have far fewer chances of survival. Its ability to provide immediate treatment makes it an essential invention that continues to save lives today.',
+        'page_title' => 'An Invention That Changed Lives',
+    ];
+@endphp
+
+@extends('slider.chat.live')
+@section('style')
+@parent
+<style>.live-writing-row #myAnswer { min-height:420px; font-size:1rem; line-height:1.75; } #modelAnswerModal p { white-space:pre-line; }</style>
+@endsection

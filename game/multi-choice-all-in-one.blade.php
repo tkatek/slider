@@ -8,7 +8,7 @@
     $optionType = $content['option_type'] ?? 'text';
     $characters = $content['characters'] ?? [];
     $readingTitle = trim((string) ($content['reading_title'] ?? $content['reading_heading'] ?? ''));
-    $readingAlign = trim((string) ($content['reading_align'] ?? ($gameType === 'reading' ? 'left' : '')));
+    $readingAlign = trim((string) ($content['reading_align'] ?? 'justify'));
     $readingPlain = array_key_exists('reading_plain', $content)
         ? !empty($content['reading_plain'])
         : $gameType === 'reading';
@@ -19,15 +19,12 @@
         ? !empty($content['reading_allow_html'])
         : false;
     $readingTextSize = trim((string) ($content['reading_text_size'] ?? ''));
-    $showReadingBadge = array_key_exists('show_reading_badge', $content)
-        ? !empty($content['show_reading_badge'])
-        : true;
     $themeName = strtolower((string) ($theme['name'] ?? 'default'));
     $isOrangeTheme = $themeName === 'orange';
     $isGreenTheme = $themeName === 'green';
-    $primaryButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500 hover:from-indigo-500 hover:to-blue-400'));
+    $primaryButtonClass = trim((string) ($theme['button_primary_color'] ?? 'bg-gradient-to-tr from-blue-500 via-indigo-600 to-violet-600 hover:from-blue-600 hover:via-indigo-500 hover:to-violet-500'));
     if ($primaryButtonClass === '') {
-        $primaryButtonClass = 'bg-gradient-to-br from-indigo-600 to-blue-500 hover:from-indigo-500 hover:to-blue-400';
+        $primaryButtonClass = 'bg-gradient-to-tr from-blue-500 via-indigo-600 to-violet-600 hover:from-blue-600 hover:via-indigo-500 hover:to-violet-500';
     }
     if ($isGreenTheme) {
         $primaryButtonClass = 'bg-gradient-to-br from-emerald-700 via-emerald-600 to-green-500 dark:from-emerald-300 dark:via-emerald-400 dark:to-green-400 dark:text-emerald-950';
@@ -70,20 +67,14 @@
     if ($isOrangeTheme) {
         $readingAccentClass = 'bg-gradient-to-b from-orange-400 via-orange-500 to-orange-600';
         $readingCardGlowClass = 'bg-[radial-gradient(120%_120%_at_0%_0%,rgba(254,215,170,.30)_0%,transparent_46%),radial-gradient(120%_120%_at_100%_0%,rgba(253,186,116,.18)_0%,transparent_44%)] dark:bg-[radial-gradient(120%_120%_at_0%_0%,rgba(249,115,22,.14)_0%,transparent_46%),radial-gradient(120%_120%_at_100%_0%,rgba(251,146,60,.10)_0%,transparent_44%)]';
-        $readingBadgeClass = 'border-orange-200/70 bg-orange-50/90 text-orange-700 dark:border-orange-400/25 dark:bg-orange-950/40 dark:text-orange-200';
-        $readingDotClass = 'bg-gradient-to-br from-orange-400 to-orange-600';
         $readingDropCapClass = 'first-letter:text-orange-700 dark:first-letter:text-orange-300';
     } elseif ($isGreenTheme) {
         $readingAccentClass = 'bg-gradient-to-b from-emerald-400 via-green-500 to-teal-600';
         $readingCardGlowClass = 'bg-[radial-gradient(120%_120%_at_0%_0%,rgba(187,247,208,.28)_0%,transparent_46%),radial-gradient(120%_120%_at_100%_0%,rgba(167,243,208,.20)_0%,transparent_44%)] dark:bg-[radial-gradient(120%_120%_at_0%_0%,rgba(34,197,94,.14)_0%,transparent_46%),radial-gradient(120%_120%_at_100%_0%,rgba(45,212,191,.10)_0%,transparent_44%)]';
-        $readingBadgeClass = 'border-emerald-200/70 bg-emerald-50/90 text-emerald-700 dark:border-emerald-400/25 dark:bg-emerald-950/40 dark:text-emerald-200';
-        $readingDotClass = 'bg-gradient-to-br from-emerald-400 to-teal-600';
         $readingDropCapClass = 'first-letter:text-emerald-700 dark:first-letter:text-emerald-300';
     } else {
         $readingAccentClass = 'bg-gradient-to-b from-sky-400 via-indigo-500 to-violet-500';
         $readingCardGlowClass = 'bg-[radial-gradient(120%_120%_at_0%_0%,rgba(191,219,254,.30)_0%,transparent_46%),radial-gradient(120%_120%_at_100%_0%,rgba(199,210,254,.22)_0%,transparent_44%)] dark:bg-[radial-gradient(120%_120%_at_0%_0%,rgba(59,130,246,.14)_0%,transparent_46%),radial-gradient(120%_120%_at_100%_0%,rgba(129,140,248,.10)_0%,transparent_44%)]';
-        $readingBadgeClass = 'border-slate-200/80 bg-white/75 text-slate-500 dark:border-slate-700/60 dark:bg-slate-900/60 dark:text-slate-300';
-        $readingDotClass = 'bg-gradient-to-br from-sky-400 to-indigo-500';
         $readingDropCapClass = 'first-letter:text-indigo-700 dark:first-letter:text-blue-300';
     }
 
@@ -208,10 +199,12 @@
                         'titleSpacingClass' => 'space-y-2',
                     ])
 
-                    @include('slider.components.game-status')
+                    <div class="w-full {{ $gameCardWidth }} px-1.5 sm:px-2.5 lg:px-3 [&>#gameStatus]:mb-0">
+                        @include('slider.components.game-status', ['statusWidthClass' => 'max-w-none'])
+                    </div>
 
                     <section id="gameCard" class="relative w-full {{ $gameCardWidth }} flex-none select-none p-1.5 sm:p-2.5 lg:p-3">
-                        <div id="questionPanel" class="grid min-h-0 grid-cols-1 {{ $gameType === 'emoji' ? 'sm:grid-cols-[minmax(0,30%)_minmax(0,70%)]' : 'sm:grid-cols-12' }} items-stretch overflow-hidden rounded-[1.6rem] border border-slate-200/70 bg-white/75 shadow-[0_18px_55px_rgba(2,6,23,0.08)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60">
+                        <div id="questionPanel" class="grid min-h-0 grid-cols-1 {{ $content['question_panel_grid_class'] ?? ($gameType === 'emoji' ? 'sm:grid-cols-[minmax(0,29.4%)_minmax(0,70.6%)]' : 'sm:grid-cols-12') }} items-stretch overflow-hidden rounded-[1.25rem] border border-slate-200/70 bg-white/95 shadow-[0_14px_40px_rgba(15,23,42,0.07)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/90">
                             @if($hasQuestionMediaPanel)
                                 <div class="{{ $imagePanelColClass }}">
                                     @if($gameType === 'character_audios')
@@ -247,20 +240,13 @@
                                             <div id="mcaReadingCard" class="relative min-h-[230px] overflow-hidden rounded-[1.2rem] border border-slate-200/60 bg-white/65 px-3.5 py-3 shadow-sm backdrop-blur dark:border-slate-700/55 dark:bg-slate-950/25 sm:px-4 sm:py-3.5 {{ $readingCardGlowClass }}">
                                                 <div class="pointer-events-none absolute inset-y-3 left-0 w-1 rounded-full {{ $readingAccentClass }}"></div>
                                                 <div class="relative z-[1] pl-1.5">
-                                                    @if($showReadingBadge)
-                                                        <div class="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] shadow-sm {{ $readingBadgeClass }}">
-                                                            <span class="h-2 w-2 rounded-full {{ $readingDotClass }}"></span>
-                                                            <span>Reading Passage</span>
-                                                        </div>
-                                                    @endif
-
                                                     @if($readingTitle !== '')
                                                         <h2 class="mt-2.5 max-w-[28ch] text-xl font-black leading-[1.06] tracking-[-0.04em] text-slate-950 dark:text-white sm:text-2xl lg:text-[1.65rem]">
                                                             {{ $readingTitle }}
                                                         </h2>
                                                     @endif
 
-                                                    <div class="mt-3 grid gap-2 text-left {{ $readingCompact ? 'sm:gap-2' : 'sm:gap-2.5' }}">
+                                                    <div class="mt-3 grid gap-2 {{ $readingAlign === 'justify' ? 'text-justify' : 'text-left' }} {{ $readingCompact ? 'sm:gap-2' : 'sm:gap-2.5' }}">
                                                         @forelse($readingPassage as $paragraph)
                                                             @if($readingAllowHtml)
                                                                 <div class="min-w-0 text-sm font-semibold leading-[1.6] text-slate-600 dark:text-slate-300 sm:text-base lg:text-[1.03rem]
@@ -302,7 +288,7 @@
                                         </div>
 
                                     @else
-                                        <div class="flex min-h-[120px] items-center justify-center px-4 py-4 lg:h-full">
+                                        <div class="flex min-h-[120px] items-center justify-center p-4 sm:h-full sm:p-5">
                                             <div id="qEmoji" class="text-6xl sm:text-7xl leading-none select-none">👋</div>
                                         </div>
                                     @endif
@@ -311,12 +297,12 @@
 
                             <div class="{{ $answerPanelColClass }} {{ $hasQuestionMediaPanel ? 'border-t border-slate-200/70 dark:border-slate-800 sm:border-t-0 sm:border-l' : '' }}">
                                 <div class="{{ $answerPanelInnerClass }}">
-                                    <div class="flex items-center justify-between gap-2 sm:gap-3">
-                                        <div class="flex min-w-0 flex-col gap-1 text-left sm:flex-row sm:items-center sm:gap-2">
-                                            <div id="questionPromptLabel" class="min-w-0 text-[11px] font-black tracking-[-0.01em] text-slate-500 dark:text-slate-400 sm:text-sm">
+                                    <div class="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
+                                        <div class="flex min-w-0 flex-wrap items-center gap-2 text-left">
+                                            <div id="questionPromptLabel" class="min-w-0 rounded-xl bg-violet-50 px-3 py-1.5 text-sm font-bold leading-relaxed text-violet-700 dark:bg-violet-500/15 dark:text-violet-300 lg:text-base">
                                                 {{ $questionPromptLabel }}
                                             </div>
-                                            <span id="questionIndicator" class="inline-flex shrink-0 items-center justify-center rounded-full border border-slate-200/70 bg-white/75 px-2.5 py-1 text-[10px] font-black text-slate-500 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/45 dark:text-slate-300">
+                                            <span id="questionIndicator" class="inline-flex shrink-0 items-center justify-center rounded-full border border-slate-200/70 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-600 shadow-sm dark:border-slate-700/60 dark:bg-slate-800/60 dark:text-slate-300">
                                                 1 of 1
                                             </span>
                                         </div>
@@ -324,9 +310,9 @@
                                         <button
                                                 id="btnRevealCorrection"
                                                 type="button"
-                                                class="inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-[color:var(--mca-accent-border)] bg-[var(--mca-accent-bg)] px-2.5 py-1.5 text-[11px] font-black text-[color:var(--mca-accent-text)] shadow-sm transition duration-200 ease-out hover:scale-105 hover:bg-[var(--mca-accent-bg-hover)] active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--mca-accent-ring)] dark:border-[color:var(--mca-accent-border-dark)] dark:bg-[var(--mca-accent-bg-dark)] dark:text-[color:var(--mca-accent-text-dark)] dark:hover:bg-[var(--mca-accent-bg-hover-dark)] dark:focus-visible:ring-[color:var(--mca-accent-ring-dark)] sm:px-3 sm:text-xs"
+                                                class="inline-flex min-h-9 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-[color:var(--mca-accent-border)] bg-white px-4 py-2 text-xs font-bold text-[color:var(--mca-accent-text)] shadow-sm transition duration-200 ease-out hover:bg-[var(--mca-accent-bg-hover)] active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--mca-accent-ring)] dark:border-[color:var(--mca-accent-border-dark)] dark:bg-[var(--mca-accent-bg-dark)] dark:text-[color:var(--mca-accent-text-dark)] dark:hover:bg-[var(--mca-accent-bg-hover-dark)] dark:focus-visible:ring-[color:var(--mca-accent-ring-dark)] lg:px-5 lg:text-sm"
                                         >
-                                            Reveal correction
+                                            Show Answer
                                         </button>
                                     </div>
 
@@ -334,11 +320,11 @@
                                         @include('slider.components.audio-player')
                                     </div>
 
-                                    <div id="qPrompt" class="my-3 flex items-start gap-2.5 text-left text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-[1.08rem]">
-                                        <span id="qPromptNumber" class="inline-flex shrink-0 items-center justify-center rounded-full border border-slate-200/70 bg-white/80 px-2.5 py-1 text-xs font-black text-slate-600 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/40 dark:text-slate-200">
+                                    <div id="qPrompt" class="my-3 flex items-start gap-3 text-left text-base font-bold leading-[1.45] text-slate-900 dark:text-slate-100 sm:text-lg lg:text-xl">
+                                        <span id="qPromptNumber" class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200/70 bg-white text-sm font-bold text-slate-900 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/40 dark:text-slate-200">
                                             1.
                                         </span>
-                                        <span id="qPromptText" class="min-w-0">
+                                        <span id="qPromptText" class="min-w-0 pt-0.5">
                                             ...
                                         </span>
                                     </div>
@@ -347,38 +333,39 @@
                                 </div>
                             </div>
 
-                            <div class="col-span-full border-t border-slate-200/70 px-3 py-3 dark:border-slate-800 sm:px-4 lg:px-5">
+                            <div class="col-span-full border-t border-slate-200/70 bg-slate-50/40 px-3 py-3 dark:border-slate-800 dark:bg-slate-950/20 sm:px-4">
                                 <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
                                     <button
                                             id="btnRestart"
                                             type="button"
-                                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300/70 bg-white/75 px-3 py-2.5 text-xs font-black text-slate-600 shadow-sm transition duration-200 ease-out hover:scale-[1.02] hover:bg-white active:scale-95 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-200 dark:hover:bg-slate-800 sm:text-sm"
+                                            class="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition duration-200 ease-out hover:bg-slate-50 active:scale-95 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-200 dark:hover:bg-slate-800 md:text-sm lg:text-base"
                                     >
-                                        Restart
+                                        Restart Quiz
                                     </button>
 
                                     <button
                                             id="btnHint"
                                             type="button"
-                                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[color:var(--mca-accent-border)] bg-[var(--mca-accent-bg)] px-3 py-2.5 text-xs font-black text-[color:var(--mca-accent-text)] shadow-sm transition duration-200 ease-out hover:scale-[1.02] hover:bg-[var(--mca-accent-bg-hover)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-55 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--mca-accent-ring)] dark:border-[color:var(--mca-accent-border-dark)] dark:bg-[var(--mca-accent-bg-dark)] dark:text-[color:var(--mca-accent-text-dark)] dark:hover:bg-[var(--mca-accent-bg-hover-dark)] dark:focus-visible:ring-[color:var(--mca-accent-ring-dark)] sm:text-sm"
+                                            class="inline-flex min-h-11 w-full items-center justify-center gap-1 rounded-xl border border-[color:var(--mca-accent-border)] bg-[var(--mca-accent-bg)] px-3 py-2.5 text-xs font-semibold text-[color:var(--mca-accent-text)] shadow-sm transition duration-200 ease-out hover:bg-[var(--mca-accent-bg-hover)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-55 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--mca-accent-ring)] dark:border-[color:var(--mca-accent-border-dark)] dark:bg-[var(--mca-accent-bg-dark)] dark:text-[color:var(--mca-accent-text-dark)] dark:hover:bg-[var(--mca-accent-bg-hover-dark)] dark:focus-visible:ring-[color:var(--mca-accent-ring-dark)] md:text-sm lg:text-base"
                                     >
-                                        Hint (<span id="hintBadge">2</span>)
+                                        Hint <span aria-hidden="true">·</span> <span><span id="hintBadge">2</span> left</span>
                                     </button>
 
                                     <button
                                             id="btnPrev"
                                             type="button"
-                                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300/70 bg-white/75 px-3 py-2.5 text-xs font-black text-slate-600 shadow-sm transition duration-200 ease-out hover:scale-[1.02] hover:bg-white active:scale-95 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-200 dark:hover:bg-slate-800 sm:text-sm"
+                                            class="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-600 shadow-sm transition duration-200 ease-out hover:bg-slate-50 active:scale-95 disabled:bg-slate-100 dark:border-slate-700/70 dark:bg-slate-900/55 dark:text-slate-200 dark:hover:bg-slate-800 dark:disabled:bg-slate-800 md:text-sm lg:text-base"
                                     >
-                                        &lsaquo; Previous
+                                        Previous Question
                                     </button>
 
                                     <button
                                             id="btnNext"
                                             type="button"
-                                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-xs font-black text-white shadow-[0_10px_24px_rgba(79,70,229,.14)] transition duration-200 ease-out hover:scale-[1.03] active:scale-95 sm:text-sm {{ $primaryButtonClass }}"
+                                            class="inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-xs font-semibold text-white shadow-sm transition duration-200 ease-out hover:brightness-105 active:scale-95 md:text-sm lg:text-base {{ $primaryButtonClass }}"
                                     >
-                                        Next &rsaquo;
+                                        Next Question
+                                        <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
                                     </button>
                                 </div>
                             </div>
@@ -424,6 +411,23 @@
             const SHUFFLE_OPTIONS = @json($shuffleOptions);
             const QUESTION_PROMPT_LABEL = @json($questionPromptLabel);
             const GLOBAL_SCRIPT_LINES = @json($globalScriptLines);
+
+            // Fetch and decode upcoming pictures before Next changes the question.
+            // Retain the images for the lifetime of this quiz and deduplicate URLs.
+            const preloadedQuestionImages = new Map();
+            if (GAME_TYPE === 'image') {
+                const imageSources = [@json($content['image'] ?? ''), ...QUESTIONS.map(question => question.image)];
+                imageSources.forEach(src => {
+                    if (!src || preloadedQuestionImages.has(src)) return;
+                    const image = new Image();
+                    image.decoding = 'async';
+                    preloadedQuestionImages.set(src, image);
+                    image.src = src;
+                    if (typeof image.decode === 'function') {
+                        image.decode().catch(() => {});
+                    }
+                });
+            }
 
             let idx = 0;
             let firstTryCorrect = 0;
@@ -802,7 +806,10 @@
             }
 
             function formatCorrectionText(value) {
-                return escapeHtml(value)
+                const template = document.createElement('template');
+                template.innerHTML = String(value ?? '');
+
+                return escapeHtml(template.content.textContent || '')
                     .replace(/&lt;br\s*\/?&gt;/gi, '<br>')
                     .replace(/\r?\n/g, '<br>');
             }
@@ -822,11 +829,14 @@
                     ? 'font-black text-rose-700 dark:text-rose-300'
                     : 'font-black text-emerald-700 dark:text-emerald-300';
 
+                const explanation = String(question?.explanation ?? '').trim();
+
                 return `
                     <span>${formatCorrectionText(getQuestionPrompt(question))}</span>
                     ${answers.map((answer) => `
                         <span class="inline ${answerClass}">${escapeHtml(answer.label || answer.value || '')}</span>
                     `).join('')}
+                    ${explanation ? `<span class="mt-1 block text-xs font-semibold text-slate-600 dark:text-slate-300 sm:text-sm">${formatCorrectionText(explanation)}</span>` : ''}
                 `;
             }
 
@@ -965,6 +975,12 @@
                 );
             }
 
+            function getCorrectMode(question) {
+                return String(question?.correct_mode ?? 'all').toLowerCase() === 'any'
+                    ? 'any'
+                    : 'all';
+            }
+
             function setNavDisabledState(button, disabled) {
                 if (!button) return;
                 button.disabled = disabled;
@@ -1033,7 +1049,7 @@
                 button.type = 'button';
                 button.dataset.value = String(option.value);
                 button.setAttribute('aria-label', String(option.label || option.value || 'Answer option'));
-                button.className = "min-h-[48px] rounded-2xl border border-slate-200/70 bg-white/80 px-4 py-3 text-left text-sm font-bold leading-[1.35] text-slate-700 shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:border-[color:var(--mca-accent-border)] hover:text-slate-900 hover:shadow-md active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--mca-accent-ring)] dark:border-slate-700/60 dark:bg-slate-900/45 dark:text-slate-200 dark:hover:border-[color:var(--mca-accent-border-dark)] dark:hover:text-slate-50 dark:focus-visible:ring-[color:var(--mca-accent-ring-dark)] sm:text-base";
+                button.className = "min-h-[52px] rounded-[0.9rem] border border-slate-200 bg-white px-4 py-3 text-left text-base font-semibold leading-[1.35] text-slate-900 shadow-[0_2px_4px_rgba(15,23,42,0.05)] transition duration-200 ease-out hover:border-[color:var(--mca-accent-border)] hover:bg-slate-50 hover:shadow-md active:scale-[0.98] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--mca-accent-ring)] dark:border-slate-700/60 dark:bg-slate-900/45 dark:text-slate-200 dark:hover:border-[color:var(--mca-accent-border-dark)] dark:hover:bg-slate-800 dark:hover:text-slate-50 dark:focus-visible:ring-[color:var(--mca-accent-ring-dark)] lg:text-lg";
                 button.textContent = option.label;
                 button.onclick = () => answerChoice(option.value, button);
                 return button;
@@ -1157,7 +1173,9 @@
                 const qPromptText = document.getElementById('qPromptText');
                 const promptLabel = document.getElementById('questionPromptLabel');
                 if (qPromptNumber) qPromptNumber.textContent = `${idx + 1}.`;
-                if (qPromptText) qPromptText.textContent = getQuestionPrompt(q);
+                if (qPromptText) {
+                    qPromptText.replaceChildren(buildSafeScriptFragment(getQuestionPrompt(q)));
+                }
                 if (promptLabel) promptLabel.textContent = isPersonalQuestion(q) ? 'Choose your answer:' : QUESTION_PROMPT_LABEL;
                 updateStatusUI();
 
@@ -1224,6 +1242,7 @@
                 }
 
                 const expectedValues = getExpectedValues(q);
+                const correctMode = getCorrectMode(q);
 
                 if (expectedValues.has(actualValue)) {
                     const selectedValues = selectedCorrectValues.get(idx) || new Set();
@@ -1236,7 +1255,7 @@
                     markCorrect(button);
                     button.disabled = true;
 
-                    if (selectedValues.size >= expectedValues.size) {
+                    if (correctMode === 'any' || selectedValues.size >= expectedValues.size) {
                         completedQuestions.add(idx);
 
                         if (!wrongedQuestions.has(idx) && !hintedQuestions.has(idx)) {

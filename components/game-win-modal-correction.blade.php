@@ -4,7 +4,10 @@
     $modalTitleClass = trim((string) ($modalTitleClass ?? 'text-2xl font-black tracking-tight text-slate-950 dark:text-white sm:text-3xl'));
     $modalEmoji = $modalEmoji ?? '🎉';
     $modalEmojiHtml = $modalEmojiHtml ?? '';
-    $continueThemeClass = trim((string) (($theme['button_primary_color'] ?? 'bg-gradient-to-br from-indigo-600 to-blue-500')));
+    $continueThemeClass = trim((string) ($theme['button_primary_color'] ?? ''));
+    if ($continueThemeClass === '') {
+        $continueThemeClass = 'bg-gradient-to-br from-indigo-600 to-blue-500';
+    }
     $sectionOnly = !empty($section_only);
 
     $modalStats = $modalStats ?? [

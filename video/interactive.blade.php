@@ -1,17 +1,23 @@
 @php
     $content = $content ?? [];
-    $isQuizMode = (bool)($content['isQuiz'] ?? false);
+    $questions = $content['questions'] ?? [];
+    $subtitles = $content['subtitles'] ?? [];
+    $transcript = $content['transcript'] ?? [];
+    $hasQuestions = is_array($questions) && count($questions) > 0;
+    $hasSubtitles = is_array($subtitles) && count($subtitles) > 0;
+    $hasTranscript = (is_array($transcript) && count($transcript) > 0) || $hasSubtitles;
+    $isQuizMode = $hasQuestions && (bool)($content['isQuiz'] ?? false);
 
     $videoSrc = (string)($content['video'] ?? '');
     $normalizedVideoSrc = strtolower($videoSrc);
     $isHlsStream = str_contains($normalizedVideoSrc, '.m3u8');
     $videoMimeType = $isHlsStream ? 'application/x-mpegURL' : 'video/mp4';
 
-    $content['showTranscript'] = array_key_exists('showTranscript', $content)
+    $content['showTranscript'] = $hasTranscript && array_key_exists('showTranscript', $content)
         ? (bool)$content['showTranscript']
         : false;
 
-    $content['showCC'] = array_key_exists('showCC', $content)
+    $content['showCC'] = $hasSubtitles && array_key_exists('showCC', $content)
         ? (bool)$content['showCC']
         : false;
 @endphp
@@ -300,71 +306,83 @@
                             <span id="timeDisplay" class="order-2 sm:order-none text-[11px] font-bold text-slate-500 dark:text-slate-400 tabular-nums ml-auto">0:00 / 0:00</span>
 
                             <!-- Desktop transcript layout toggle -->
-                            <button
-                                    id="transcriptLayoutToggleBtn"
-                                    type="button"
-                                    class="transcript-btn hidden md:inline-flex order-3 sm:order-none items-center justify-center"
-                            >
-                                Show Transcript
-                            </button>
+                            @if($hasTranscript)
+                                <button
+                                        id="transcriptLayoutToggleBtn"
+                                        type="button"
+                                        class="transcript-btn hidden md:inline-flex order-3 sm:order-none items-center justify-center"
+                                >
+                                    Show Transcript
+                                </button>
+                            @endif
 
                             <!-- Mobile + Desktop controls -->
-                            <div class="controls-right-group order-4 flex w-full flex-wrap items-center justify-between gap-2 md:order-3 md:ml-auto md:w-auto md:flex-nowrap md:justify-start">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider transition-colors duration-300" id="watchLabel">Watch</span>
+                            @if($hasQuestions || $hasSubtitles || $hasTranscript)
+                                <div class="controls-right-group order-4 flex w-full flex-wrap items-center justify-between gap-2 md:order-3 md:ml-auto md:w-auto md:flex-nowrap md:justify-start">
+                                    @if($hasQuestions)
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-[10px] font-bold uppercase tracking-wider transition-colors duration-300" id="watchLabel">Watch</span>
 
-                                    <div class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
-                                        <input
-                                                type="checkbox"
-                                                name="toggle"
-                                                id="modeSwitch"
-                                                class="mode-switch-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 left-0 top-0 border-slate-300"
-                                                {{ !empty($content['isQuiz']) ? 'checked' : '' }}
-                                        />
-                                        <label for="modeSwitch" class="mode-switch-label block overflow-hidden h-5 rounded-full bg-slate-300 cursor-pointer transition-colors duration-300"></label>
+                                            <div class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+                                                <input
+                                                        type="checkbox"
+                                                        name="toggle"
+                                                        id="modeSwitch"
+                                                        class="mode-switch-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 left-0 top-0 border-slate-300"
+                                                        {{ $isQuizMode ? 'checked' : '' }}
+                                                />
+                                                <label for="modeSwitch" class="mode-switch-label block overflow-hidden h-5 rounded-full bg-slate-300 cursor-pointer transition-colors duration-300"></label>
+                                            </div>
+
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 transition-colors duration-300" id="quizLabel">Quiz</span>
+                                        </div>
+                                    @endif
+
+                                    <div class="flex items-center gap-2">
+                                        @if($hasSubtitles)
+                                            <button
+                                                    id="ccToggle"
+                                                    onclick="toggleCC()"
+                                                    class="cc-btn text-slate-400 transition-colors {{ !empty($content['showCC']) ? 'active' : '' }}"
+                                            >
+                                                CC
+                                            </button>
+                                        @endif
+
+                                        @if($hasTranscript)
+                                            <button
+                                                    id="mobileTranscriptLayoutToggleBtn"
+                                                    type="button"
+                                                    class="transcript-btn inline-flex md:hidden items-center justify-center"
+                                            >
+                                                Show Transcript
+                                            </button>
+                                        @endif
                                     </div>
-
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 transition-colors duration-300" id="quizLabel">Quiz</span>
                                 </div>
-
-                                <div class="flex items-center gap-2">
-                                    <button
-                                            id="ccToggle"
-                                            onclick="toggleCC()"
-                                            class="cc-btn text-slate-400 transition-colors {{ !empty($content['showCC']) ? 'active' : '' }}"
-                                    >
-                                        CC
-                                    </button>
-
-                                    <button
-                                            id="mobileTranscriptLayoutToggleBtn"
-                                            type="button"
-                                            class="transcript-btn inline-flex md:hidden items-center justify-center"
-                                    >
-                                        Show Transcript
-                                    </button>
-                                </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
 
                 <!-- RIGHT / BOTTOM: Transcript Panel -->
-                <aside id="transcriptPanel" class="w-full lg:w-[360px] xl:w-[420px] flex flex-col bg-white/95 dark:bg-slate-900/90 backdrop-blur-2xl border-t lg:border-t-0 lg:border-l border-slate-200/70 dark:border-slate-800 min-h-0">
-                    <div class="flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-200 dark:border-slate-800">
-                        <div>
-                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Transcript</h3>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400">Full script • click a line to jump</p>
+                @if($hasTranscript)
+                    <aside id="transcriptPanel" class="w-full lg:w-[360px] xl:w-[420px] flex flex-col bg-white/95 dark:bg-slate-900/90 backdrop-blur-2xl border-t lg:border-t-0 lg:border-l border-slate-200/70 dark:border-slate-800 min-h-0">
+                        <div class="flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-200 dark:border-slate-800">
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Transcript</h3>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400">Full script @if(collect($transcript)->contains(static fn ($line) => is_array($line) && isset($line['start'])) || $hasSubtitles) • click a timed line to jump @endif</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div id="transcriptBody" class="min-h-0 overflow-y-auto max-h-[34vh] lg:max-h-none lg:flex-1 p-2">
-                        <div id="transcriptList" class="space-y-1"></div>
-                        <div id="transcriptEmpty" class="hidden px-3 py-6 text-sm text-slate-500 dark:text-slate-400 text-center">
-                            No transcript available.
+                        <div id="transcriptBody" class="min-h-0 overflow-y-auto max-h-[34vh] lg:max-h-none lg:flex-1 p-2">
+                            <div id="transcriptList" class="space-y-1"></div>
+                            <div id="transcriptEmpty" class="hidden px-3 py-6 text-sm text-slate-500 dark:text-slate-400 text-center">
+                                No transcript available.
+                            </div>
                         </div>
-                    </div>
-                </aside>
+                    </aside>
+                @endif
             </div>
         </div>
     </div>
@@ -439,7 +457,7 @@
             score: 0,
             currentQ: null,
             isStarted: true,
-            isQuizMode: @json($content['isQuiz'] ?? false),
+            isQuizMode: @json($isQuizMode),
             isCCOn: @json($content['showCC']),
             currentSubtitleText: null,
             transcriptEntries: [],
@@ -608,7 +626,13 @@
                 : (Array.isArray(config.subtitles) ? config.subtitles : []);
 
             return raw
-                .map((item, idx) => ({
+                .map((item, idx) => typeof item === 'string' ? {
+                    idx,
+                    start: null,
+                    end: null,
+                    text: item.trim(),
+                    speaker: null
+                } : ({
                     idx,
                     start: Number(item.start ?? 0),
                     end: Number(item.end ?? (Number(item.start ?? 0) + 3)),
@@ -633,6 +657,13 @@
             if (transcriptEmpty) transcriptEmpty.classList.add('hidden');
 
             state.transcriptEntries.forEach((line, index) => {
+                if (line.start === null) {
+                    const paragraph = document.createElement('p');
+                    paragraph.className = 'px-3 py-2 text-base leading-relaxed text-slate-700 dark:text-slate-200';
+                    paragraph.textContent = line.text;
+                    transcriptList.appendChild(paragraph);
+                    return;
+                }
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'transcript-item w-full text-left rounded-lg border border-transparent px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/70';
@@ -668,7 +699,7 @@
             if (!transcriptList || !state.transcriptEntries.length) return;
 
             const t = getCurrentTime();
-            const newIndex = state.transcriptEntries.findIndex(line => t >= line.start && t <= line.end);
+            const newIndex = state.transcriptEntries.findIndex(line => line.start !== null && t >= line.start && t <= line.end);
 
             if (!force && newIndex === state.currentTranscriptIndex) return;
 
@@ -959,7 +990,8 @@
                     .filter(answer => answer !== undefined && answer !== null && String(answer).trim() !== '')
                     .map(answer => String(answer).trim().toLowerCase());
 
-                isCorrect = normalizedAccepted.includes(String(userAns).trim().toLowerCase());
+                isCorrect = q.accept_any_answer === true
+                    || normalizedAccepted.includes(String(userAns).trim().toLowerCase());
             } else if (q.type === 'true_false') {
                 if (userAns === null) return;
                 isCorrect = String(userAns).toLowerCase() === String(q.correct_answer).toLowerCase();
@@ -992,7 +1024,7 @@
             if (correct) {
                 playSound('success');
                 title.textContent = 'Correct!';
-                msg.textContent = 'Great job on this assessment.';
+                msg.textContent = q.feedback || 'Great job on this assessment.';
                 iconWrap.className = "w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full flex items-center justify-center mb-4 sm:mb-6 bg-emerald-100 text-emerald-600";
                 iconSlot.innerHTML = '<svg class="w-8 h-8 sm:w-10 sm:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>';
             } else {

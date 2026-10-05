@@ -71,15 +71,48 @@
             ];
         }
 
+        $classicWordBank = array_key_exists('word_bank', $content) && is_array($content['word_bank'])
+            ? array_values($content['word_bank'])
+            : $answers;
+        $classicBankAnswerIndexes = array_fill(0, count($classicWordBank), 0);
+        $availableClassicBankIndexes = array_keys($classicWordBank);
+
         foreach ($answers as $answerIndex => $answer) {
             $answerText = is_array($answer)
                 ? (string) ($answer['answer'] ?? $answer['text'] ?? '')
                 : (string) $answer;
+            $matchingBankOffset = null;
+
+            foreach ($availableClassicBankIndexes as $offset => $bankIndex) {
+                $bankItem = $classicWordBank[$bankIndex];
+                $bankText = is_array($bankItem)
+                    ? (string) ($bankItem['answer'] ?? $bankItem['text'] ?? '')
+                    : (string) $bankItem;
+
+                if ($normalizeAnswer($bankText) === $normalizeAnswer($answerText)) {
+                    $matchingBankOffset = $offset;
+                    $classicBankAnswerIndexes[$bankIndex] = $answerIndex + 1;
+                    break;
+                }
+            }
+
+            if ($matchingBankOffset === null) {
+                $classicWordBank[] = $answer;
+                $classicBankAnswerIndexes[] = $answerIndex + 1;
+            } else {
+                array_splice($availableClassicBankIndexes, $matchingBankOffset, 1);
+            }
+        }
+
+        foreach ($classicWordBank as $bankIndex => $bankItem) {
+            $answerText = is_array($bankItem)
+                ? (string) ($bankItem['answer'] ?? $bankItem['text'] ?? '')
+                : (string) $bankItem;
             $answersForJs[] = [
-                'id' => 'answer_' . ($answerIndex + 1),
+                'id' => 'answer_' . ($bankIndex + 1),
                 'text' => $answerText,
-                'audio' => is_array($answer) ? (string) ($answer['audio'] ?? $answer['sound'] ?? '') : '',
-                'answerIndex' => $answerIndex + 1,
+                'audio' => is_array($bankItem) ? (string) ($bankItem['audio'] ?? $bankItem['sound'] ?? '') : '',
+                'answerIndex' => $classicBankAnswerIndexes[$bankIndex] ?? 0,
             ];
             $answerTexts[] = $answerText;
         }
@@ -267,9 +300,22 @@
     $wideBankVisibleCap = max(0, (int) ($content['wide_bank_visible_cap'] ?? 12));
 
     $shuffleBank = (bool) ($content['shuffle_bank'] ?? true);
-    $bankChipStyle = trim((string) ($content['bank_chip_style'] ?? 'color'));
-    if (!in_array($bankChipStyle, ['neutral', 'color'], true)) {
-        $bankChipStyle = 'neutral';
+
+    $exercisePageSize = $isClassicSentenceMode ? max(0, (int) ($content['exercise_page_size'] ?? 0)) : 0;
+    $exercisePageCount = $exercisePageSize > 0 ? (int) ceil(count($answers) / $exercisePageSize) : 0;
+    if ($exercisePageSize > 0) {
+        $sentencePage = 0;
+        foreach ($sentenceItems as &$sentenceItem) {
+            foreach ($sentenceItem['tokens'] as $sentenceToken) {
+                if ($sentenceToken['type'] === 'blank') {
+                    $sentencePage = (int) floor(($sentenceToken['answer_index'] - 1) / $exercisePageSize);
+                    break;
+                }
+            }
+            // Dialogue lines without blanks stay with the preceding sentence.
+            $sentenceItem['page_index'] = $sentencePage;
+        }
+        unset($sentenceItem);
     }
 
     $sentenceCount = count($sentenceItems);
@@ -309,12 +355,6 @@
             0% { transform: translateY(0) scale(.8) rotate(0deg); opacity: 0; }
             15% { opacity: 1; }
             100% { transform: translateY(-34px) scale(1.12) rotate(10deg); opacity: 0; }
-        }
-
-        @keyframes ddbNavNudge {
-            0%, 100% { transform: translateX(0) scale(1); }
-            35% { transform: translateX(2px) scale(1.06); }
-            70% { transform: translateX(-1px) scale(1.02); }
         }
 
         #dragDropBlanksGame {
@@ -565,14 +605,34 @@
         }
 
         #ddbRevealAnswersBtn {
-            color: var(--ddb-accent-text) !important;
-            border-color: var(--ddb-accent-border) !important;
-            background: var(--ddb-accent-soft) !important;
-            box-shadow: 0 8px 22px var(--ddb-accent-ring) !important;
+            min-height: 2.25rem;
+            color: #4935df;
+            border-color: #dad7f2;
+            background: #fafaff;
+            border-radius: .75rem;
+            padding: .5rem 1.2rem;
+            font-weight: 800;
+            box-shadow: 0 1px 3px rgba(58, 45, 110, .08);
         }
 
-        #ddbRevealAnswersBtn:hover {
-            background: var(--ddb-accent-hover-bg) !important;
+        #ddbRevealAnswersBtn:hover:not(:disabled) {
+            border-color: #b9acee;
+            background: #f1edff;
+        }
+
+        .dark #ddbRevealAnswersBtn {
+            color: #c4b5fd;
+            border-color: #4a4569;
+            background: #25243b;
+        }
+
+        .dark #ddbRevealAnswersBtn:hover:not(:disabled) {
+            background: #302b4b;
+        }
+
+        #ddbRevealAnswersBtn:focus-visible {
+            outline: 2px solid #a99aee;
+            outline-offset: 2px;
         }
 
         .ddb-dragging {
@@ -807,6 +867,7 @@
             content: '';
             position: absolute;
             inset: 0;
+            border-radius: inherit;
             pointer-events: none;
             background: linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,0));
             opacity: .48;
@@ -912,59 +973,96 @@
             max-width: min(100%, 22rem);
         }
 
+        .ddb-draggable-item.ddb-neutral-answer,
+        #dragDropBlanksGame .ddb-draggable-item.ddb-neutral-answer {
+            gap: .8rem;
+            border-color: #d6d0ef;
+            border-radius: 1rem;
+            background: #f8f7ff;
+            color: #242052;
+            font-weight: 800;
+            box-shadow: 0 3px 8px rgba(58, 45, 110, .055);
+        }
+
+        .ddb-neutral-answer:not(.ddb-locked) {
+            min-height: 2.5rem;
+            padding: .45rem .75rem;
+        }
+
+        .ddb-neutral-answer:not(.ddb-locked)::before {
+            content: '';
+            flex: 0 0 16px;
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle, #6350df 2.5px, transparent 3px) 0 0 / 8px 8px;
+        }
+
+        #dragDropBlanksGame .ddb-neutral-answer:not(.ddb-locked):hover {
+            border-color: #b9acee;
+            background: #f1edff;
+        }
+
+        .dark .ddb-draggable-item.ddb-neutral-answer,
+        .dark #dragDropBlanksGame .ddb-draggable-item.ddb-neutral-answer {
+            border-color: #4a4569;
+            background: #25243b;
+            color: #eeeaff;
+        }
+
+        .dark .ddb-neutral-answer:not(.ddb-locked)::before {
+            background-image: radial-gradient(circle, #ae9bff 2.5px, transparent 3px);
+        }
+
+        .dark #dragDropBlanksGame .ddb-neutral-answer:not(.ddb-locked):hover { background: #302b4b; }
+
         .ddb-draggable-item:focus-visible,
         .ddb-pool-nav-btn:focus-visible {
             outline: 3px solid var(--ddb-accent-border);
             outline-offset: 2px;
         }
 
-        .ddb-pool-nav-btn.ddb-nav-hint {
-            color: var(--ddb-accent);
-            border-color: var(--ddb-accent-border);
-            background: var(--ddb-accent-soft);
-            box-shadow:
-                    0 0 0 4px var(--ddb-accent-ring),
-                    0 8px 18px var(--ddb-accent-shadow);
-            animation: ddbNavNudge 1.4s ease-in-out 3;
+        .ddb-bank-navigation {
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            min-height: 2.25rem;
+            border: 1px solid #dad7f2;
+            border-radius: .75rem;
+            background: #fafaff;
+            box-shadow: 0 1px 3px rgba(58, 45, 110, .08);
         }
 
-        .dark .ddb-pool-nav-btn.ddb-nav-hint {
-            color: var(--ddb-accent);
-            border-color: var(--ddb-accent-border);
-            background: var(--ddb-accent-soft);
-            box-shadow:
-                    0 0 0 4px var(--ddb-accent-ring),
-                    0 10px 20px var(--ddb-accent-shadow);
+        .ddb-pool-nav-btn {
+            width: 2.125rem;
+            height: 2.125rem;
+            flex: 0 0 auto;
+            border-radius: .65rem;
+            color: #4935df;
+            transition: background-color .15s ease, color .15s ease;
         }
 
-        .ddb-color-bank .ddb-draggable-item:not(.ddb-locked):not(.revealed-answer) {
-            color: #fff;
-            border-color: rgba(255,255,255,.22);
-            box-shadow: 0 8px 18px rgba(2,6,23,.12);
+        .ddb-pool-nav-btn:hover:not(:disabled) { background: #f1edff; }
+        .ddb-pool-nav-btn:disabled { color: #b7b5c8; cursor: not-allowed; }
+
+        #ddbPoolCount {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 1.125rem;
+            padding: 0 .65rem;
+            border-inline: 1px solid #e9e6f5;
+            color: #484260;
+            font-weight: 800;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
         }
 
-        .ddb-color-bank .ddb-draggable-item:not(.ddb-locked):not(.revealed-answer):hover {
-            box-shadow: 0 10px 22px rgba(2,6,23,.16);
-        }
-
-        .ddb-neutral-bank .ddb-draggable-item:not(.ddb-locked):not(.revealed-answer) {
-            color: rgb(30 41 59);
-            background: rgba(255,255,255,.94);
-            border-color: rgba(203,213,225,.88);
-            box-shadow: 0 7px 16px rgba(15,23,42,.10);
-        }
-
-        .dark .ddb-neutral-bank .ddb-draggable-item:not(.ddb-locked):not(.revealed-answer) {
-            color: rgb(248 250 252);
-            background: rgba(15,23,42,.88);
-            border-color: rgba(71,85,105,.85);
-            box-shadow: 0 8px 18px rgba(2,6,23,.34);
-        }
-
-        .ddb-neutral-bank .ddb-draggable-item:not(.ddb-locked):not(.revealed-answer):hover {
-            border-color: var(--ddb-accent-border);
-            box-shadow: 0 10px 20px var(--ddb-accent-ring);
-        }
+        #ddbPoolRail.ddb-show-all-bank #ddbPoolCount { border-inline: 0; }
+        .dark .ddb-bank-navigation { background: #25243b; border-color: #4a4569; }
+        .dark .ddb-pool-nav-btn { color: #c4b5fd; }
+        .dark .ddb-pool-nav-btn:hover:not(:disabled) { background: #302b4b; }
+        .dark .ddb-pool-nav-btn:disabled { color: #716c87; }
+        .dark #ddbPoolCount { color: #eeeaff; border-color: #4a4569; }
 
         .ddb-short-answer {
             flex: 0 1 auto;
@@ -1161,7 +1259,7 @@
 @endsection
 
 @section("content")
-    <main class="flex min-h-[100dvh] w-full flex-col items-center justify-center {{ $bankChipStyle === 'color' ? 'ddb-color-bank' : 'ddb-neutral-bank' }} {{ $compactCenter ? 'ddb-compact-center' : '' }} {{ $answerTileType === 'audio' ? 'ddb-answer-audio' : '' }}" id="dragDropBlanksGame" style="--ddb-sticky-bank-gap: {{ $stickyBankGapPx }}px;">
+    <main class="flex min-h-[100dvh] w-full flex-col items-center justify-center {{ $compactCenter ? 'ddb-compact-center' : '' }} {{ $answerTileType === 'audio' ? 'ddb-answer-audio' : '' }}" id="dragDropBlanksGame" style="--ddb-sticky-bank-gap: {{ $stickyBankGapPx }}px;">
         @include('slider.components.title-subtitle')
 
         @include('slider.components.game-status')
@@ -1232,7 +1330,7 @@
                                         @else
                                             <div class="flex flex-col gap-0">
                                                 @foreach($sentenceItems as $item)
-                                                    <div class="{{ $sentenceContainerClass }}">
+                                                    <div class="{{ $sentenceContainerClass }}" @if($exercisePageSize > 0) data-ddb-exercise-page="{{ $item['page_index'] }}" @if($item['page_index'] > 0) hidden @endif @endif>
                                                         <div class="ddb-sentence-line {{ $sentenceLineClass }} w-fit max-w-full px-1.5 py-0.5 text-base sm:text-lg lg:text-[1.15rem] font-semibold text-slate-900 dark:text-slate-100 !leading-[1.9] sm:!leading-[1.95] lg:!leading-[2]">
                                                             @foreach($item['tokens'] as $token)
                                                                 @if($token['type'] === 'html')
@@ -1264,13 +1362,12 @@
                     @include('slider.components.game-win-modal')
 
                     <div class="hidden">
-                        <div class="bg-slate-700 dark:bg-slate-600 bg-indigo-600 dark:bg-indigo-700 bg-sky-600 dark:bg-sky-700 bg-emerald-600 dark:bg-emerald-700 bg-violet-600 dark:bg-violet-700 bg-cyan-600 dark:bg-cyan-700"></div>
                         <div class="ring-2 ring-indigo-500/40 bg-indigo-50/60 dark:bg-indigo-500/10 ring-emerald-400/50 border-rose-300 bg-rose-50 text-rose-700 dark:bg-rose-900/25 dark:border-rose-900/40 dark:text-rose-200"></div>
                     </div>
 
                     <template id="ddbTileTpl">
                         <div
-                                class="ddb-draggable-item {{ $tileClass }} relative select-none touch-none cursor-grab rounded-xl px-3 py-2 pl-5 sm:px-3.5 sm:py-2 sm:pl-5 min-h-[34px] sm:min-h-[38px] text-[11px] sm:text-sm font-black text-white inline-flex w-auto max-w-full shrink-0 items-center justify-center text-center leading-tight shadow-[0_8px_18px_rgba(2,6,23,0.12)] border border-white/20 transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0 before:absolute before:left-2 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-white/55"
+                                class="ddb-draggable-item ddb-neutral-answer {{ $tileClass }} relative select-none touch-none cursor-grab text-[11px] sm:text-sm inline-flex w-auto max-w-full shrink-0 items-center justify-center text-center leading-tight border transition-transform duration-150 hover:-translate-y-0.5 active:translate-y-0"
                                 style="touch-action:none;"
                                 role="button"
                                 tabindex="0"
@@ -1284,21 +1381,21 @@
                 <div id="ddbPoolBar">
                     <div class="mx-auto w-full {{ $bankWidthClass }} px-0 pb-0">
                         <div id="ddbWordBankPanel"
-                             class="relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white/92 shadow-[0_8px_24px_rgba(2,6,23,0.06)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/82 {{ $wordBankPanelClass }}">
+                             class="relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white/95 shadow-[0_8px_24px_rgba(2,6,23,0.06)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/95 {{ $wordBankPanelClass }}">
                             <div class="relative ddb-bank-inner px-2.5 py-2 sm:px-4 sm:py-2.5">
 
                                 <div class="flex items-center justify-between gap-2">
-                                    <div class="flex items-center gap-2">
-                                        <button id="ddbPrevWordsBtn" type="button" class="ddb-pool-nav-btn {{ $showAllBankItems ? 'hidden' : '' }} inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200/70 bg-white/90 text-base font-black text-slate-600 shadow-sm transition disabled:cursor-not-allowed disabled:opacity-35 dark:border-slate-700/60 dark:bg-slate-900/85 dark:text-slate-200" aria-label="Previous words">
-                                            ‹
+                                    <div class="ddb-bank-navigation">
+                                        <button id="ddbPrevWordsBtn" type="button" class="ddb-pool-nav-btn {{ $showAllBankItems ? 'hidden' : '' }} inline-flex items-center justify-center" aria-label="{{ $exercisePageSize > 0 ? 'Previous part' : 'Previous words' }}">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m14 6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         </button>
 
-                                        <div id="ddbPoolCount" aria-live="polite" class="inline-flex items-center gap-1.5 rounded-full border border-slate-200/70 bg-white/75 px-2.5 py-1 text-[10px] font-black text-slate-600 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/50 dark:text-slate-100 sm:text-xs">
+                                        <div id="ddbPoolCount" aria-live="polite" class="text-[11px] sm:text-xs">
                                             0/0
                                         </div>
 
-                                        <button id="ddbNextWordsBtn" type="button" class="ddb-pool-nav-btn {{ $showAllBankItems ? 'hidden' : '' }} inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200/70 bg-white/90 text-base font-black text-slate-600 shadow-sm transition disabled:cursor-not-allowed disabled:opacity-35 dark:border-slate-700/60 dark:bg-slate-900/85 dark:text-slate-200" aria-label="Next words">
-                                            ›
+                                        <button id="ddbNextWordsBtn" type="button" class="ddb-pool-nav-btn {{ $showAllBankItems ? 'hidden' : '' }} inline-flex items-center justify-center" aria-label="{{ $exercisePageSize > 0 ? 'Next part' : 'Next words' }}">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m10 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         </button>
                                     </div>
 
@@ -1306,9 +1403,9 @@
                                         <button
                                                 type="button"
                                                 id="ddbRevealAnswersBtn"
-                                                class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300/70 bg-white/80 px-3 py-1.5 text-[11px] font-black text-slate-700 shadow-sm transition-colors duration-200 hover:bg-slate-50 active:scale-95 dark:border-slate-700/70 dark:bg-slate-900/70 dark:text-slate-100 dark:hover:bg-slate-800 sm:text-xs"
+                                                class="inline-flex items-center justify-center border text-[11px] transition-colors duration-200 active:scale-95 sm:text-xs"
                                         >
-                                            Reveal answers
+                                            Show Answer
                                         </button>
 
                                         <button
@@ -1339,6 +1436,8 @@
     <script>
         (function () {
             var ANSWERS = @json($answersForJs);
+            var EXERCISE_PAGE_SIZE = @json($exercisePageSize);
+            var EXERCISE_PAGE_COUNT = @json($exercisePageCount);
             var IS_SPEAKER_MATCHING_MODE = @json($isSpeakerMatchingMode);
             var DESKTOP_LAYOUT_BREAKPOINT = Number(@json($desktopLayoutBreakpoint));
             var ANSWER_TILE_TYPE = @json($answerTileType);
@@ -1346,7 +1445,6 @@
             var STICKY_BANK_GAP_PX = Number(@json($stickyBankGapPx));
             var SHOW_ALL_BANK_ITEMS = @json($showAllBankItems);
             var SHUFFLE_BANK = @json($shuffleBank);
-            var BANK_CHIP_STYLE = @json($bankChipStyle);
             var BANK_VISIBLE_CAP = Number(@json($bankVisibleCap));
             var MOBILE_BANK_VISIBLE_CAP = Number(@json($mobileBankVisibleCap));
             var TABLET_BANK_VISIBLE_CAP = Number(@json($tabletBankVisibleCap));
@@ -1513,6 +1611,7 @@
                 this._my = 0;
 
                 this.tileDeck = { all: [], active: [], waiting: [], history: [] };
+                this.activeExercisePage = 0;
                 this.resizeTimer = null;
 
                 this.handlePointerMove = this.handlePointerMove.bind(this);
@@ -1525,15 +1624,6 @@
                 this.showNextWords = this.showNextWords.bind(this);
                 this.handleRevealAnswers = this.handleRevealAnswers.bind(this);
                 this.handleRetakeTest = this.handleRetakeTest.bind(this);
-
-                this.tileSkins = [
-                    'bg-slate-700 dark:bg-slate-600',
-                    'bg-indigo-600 dark:bg-indigo-700',
-                    'bg-sky-600 dark:bg-sky-700',
-                    'bg-emerald-600 dark:bg-emerald-700',
-                    'bg-violet-600 dark:bg-violet-700',
-                    'bg-cyan-600 dark:bg-cyan-700'
-                ];
 
                 this.burstEmojis = ['✨', '🎉', '💫', '⭐', '👏'];
 
@@ -1611,7 +1701,11 @@
                 };
                 this.tileDeck.waiting = this.tileDeck.all.slice();
 
-                this.loadTiles();
+                if (EXERCISE_PAGE_SIZE > 0) {
+                    this.showExercisePage(0, false);
+                } else {
+                    this.loadTiles();
+                }
                 this.updatePoolCount();
                 this.updateActionButtons();
                 window.removeEventListener('resize', this.handleResize);
@@ -1665,7 +1759,7 @@
                 var progressEl = document.getElementById('tilesCount');
                 var correctEl = document.getElementById('correctCount');
                 var mistakesEl = document.getElementById('mistakesCount');
-                var total = ANSWERS.length;
+                var total = document.querySelectorAll('.ddb-blank-slot').length;
 
                 if (progressEl) progressEl.textContent = this.correctCount + '/' + total;
                 if (correctEl) correctEl.textContent = this.correctCount;
@@ -1713,7 +1807,8 @@
                 railRect = this.poolRail.getBoundingClientRect();
                 barHeight = Math.ceil(this.poolBar.offsetHeight || 0);
 
-                if (railRect.top > top) {
+                var expandedPageTooTall = EXERCISE_PAGE_SIZE > 0 && barHeight + top > window.innerHeight * 0.65;
+                if (railRect.top > top || expandedPageTooTall) {
                     this.poolRail.classList.remove('ddb-pool-fixed');
                     this.poolRail.style.removeProperty('--ddb-pool-height');
                     this.poolRail.style.removeProperty('--ddb-pool-top');
@@ -1742,7 +1837,7 @@
                 return WIDE_BANK_VISIBLE_CAP > 0 ? WIDE_BANK_VISIBLE_CAP : 12;
             };
 
-            DragDropBlanksGame.prototype.createTileNode = function(itemData, index){
+            DragDropBlanksGame.prototype.createTileNode = function(itemData){
                 var self = this;
                 var node = this.tileTpl.content.firstElementChild.cloneNode(true);
 
@@ -1795,12 +1890,6 @@
                     self.handlePointerDown(e, node);
                 });
 
-                if (BANK_CHIP_STYLE === 'color' && this.tileSkins.length > 0) {
-                    this.tileSkins[index % this.tileSkins.length].split(' ').forEach(function(cls){
-                        if (cls) node.classList.add(cls);
-                    });
-                }
-
                 return node;
             };
 
@@ -1809,6 +1898,18 @@
                 var desired = this.getVisibleWordLimit();
 
                 if (!deck) return;
+
+                if (EXERCISE_PAGE_SIZE > 0) {
+                    var pageIndex = this.activeExercisePage;
+                    var lockedIds = new Set(Array.prototype.slice.call(document.querySelectorAll('.ddb-blank-slot .ddb-locked')).map(function(tile){
+                        return tile.dataset.id;
+                    }));
+                    deck.active = deck.all.filter(function(item){
+                        return Math.floor((item.answerIndex - 1) / EXERCISE_PAGE_SIZE) === pageIndex && !lockedIds.has(item.id);
+                    });
+                    deck.waiting = [];
+                    return;
+                }
 
                 while (deck.active.length < desired && deck.waiting.length > 0) {
                     deck.active.push(deck.waiting.shift());
@@ -1825,8 +1926,8 @@
                 this.poolContent.innerHTML = '';
                 if (!deck) return;
 
-                deck.active.forEach(function(itemData, index){
-                    var node = self.createTileNode(itemData, index);
+                deck.active.forEach(function(itemData){
+                    var node = self.createTileNode(itemData);
                     self.poolContent.appendChild(node);
                 });
 
@@ -1838,15 +1939,25 @@
                 var deck = this.tileDeck;
                 if (!deck) return;
 
+                if (EXERCISE_PAGE_SIZE > 0) {
+                    if (this.prevWordsBtn) {
+                        this.prevWordsBtn.classList.remove('hidden');
+                        this.prevWordsBtn.disabled = this.activeExercisePage === 0;
+                    }
+                    if (this.nextWordsBtn) {
+                        this.nextWordsBtn.classList.remove('hidden');
+                        this.nextWordsBtn.disabled = this.activeExercisePage >= EXERCISE_PAGE_COUNT - 1;
+                    }
+                    return;
+                }
+
                 if (SHOW_ALL_BANK_ITEMS) {
                     if (this.prevWordsBtn) {
                         this.prevWordsBtn.classList.add('hidden');
-                        this.prevWordsBtn.classList.remove('ddb-nav-hint');
                         this.prevWordsBtn.disabled = true;
                     }
                     if (this.nextWordsBtn) {
                         this.nextWordsBtn.classList.add('hidden');
-                        this.nextWordsBtn.classList.remove('ddb-nav-hint');
                         this.nextWordsBtn.disabled = true;
                     }
                     return;
@@ -1856,14 +1967,12 @@
                     var hasPrevWords = deck.history.length > 0;
                     this.prevWordsBtn.classList.remove('hidden');
                     this.prevWordsBtn.disabled = !hasPrevWords;
-                    this.prevWordsBtn.classList.toggle('ddb-nav-hint', hasPrevWords);
                 }
 
                 if (this.nextWordsBtn) {
                     var hasNextWords = deck.waiting.length > 0;
                     this.nextWordsBtn.classList.remove('hidden');
                     this.nextWordsBtn.disabled = !hasNextWords;
-                    this.nextWordsBtn.classList.toggle('ddb-nav-hint', hasNextWords);
                 }
             };
 
@@ -1893,7 +2002,33 @@
                 this.updatePoolCount();
             };
 
+            DragDropBlanksGame.prototype.getCurrentBlanks = function(){
+                var pageIndex = this.activeExercisePage;
+                return Array.prototype.slice.call(document.querySelectorAll('.ddb-blank-slot')).filter(function(blank){
+                    if (!EXERCISE_PAGE_SIZE) return true;
+                    var sentence = blank.closest('[data-ddb-exercise-page]');
+                    return sentence && Number(sentence.dataset.ddbExercisePage) === pageIndex;
+                });
+            };
+
+            DragDropBlanksGame.prototype.showExercisePage = function(index, scrollToStart){
+                if (index < 0 || index >= EXERCISE_PAGE_COUNT || this.draggedItem || this.isRevealingAnswers) return;
+                this.activeExercisePage = index;
+                Array.prototype.slice.call(document.querySelectorAll('[data-ddb-exercise-page]')).forEach(function(sentence){
+                    sentence.hidden = Number(sentence.dataset.ddbExercisePage) !== index;
+                });
+                this.loadTiles();
+                this.updateActionButtons();
+                if (scrollToStart !== false && this.poolRail) {
+                    this.poolRail.scrollIntoView({ block: 'start', behavior: 'auto' });
+                }
+            };
+
             DragDropBlanksGame.prototype.showNextWords = function(){
+                if (EXERCISE_PAGE_SIZE > 0) {
+                    this.showExercisePage(this.activeExercisePage + 1);
+                    return;
+                }
                 if (SHOW_ALL_BANK_ITEMS) return;
 
                 var deck = this.tileDeck;
@@ -1915,6 +2050,10 @@
             };
 
             DragDropBlanksGame.prototype.showPrevWords = function(){
+                if (EXERCISE_PAGE_SIZE > 0) {
+                    this.showExercisePage(this.activeExercisePage - 1);
+                    return;
+                }
                 if (SHOW_ALL_BANK_ITEMS) return;
 
                 var deck = this.tileDeck;
@@ -1929,6 +2068,10 @@
             };
 
             DragDropBlanksGame.prototype.updatePoolCount = function(){
+                if (EXERCISE_PAGE_SIZE > 0) {
+                    if (this.poolCount) this.poolCount.textContent = 'Part ' + (this.activeExercisePage + 1) + ' of ' + EXERCISE_PAGE_COUNT;
+                    return;
+                }
                 var total = ANSWERS.length;
                 var locked = document.querySelectorAll('.ddb-blank-slot .ddb-draggable-item.ddb-locked').length;
                 var remaining = total - locked;
@@ -1937,11 +2080,14 @@
             };
 
             DragDropBlanksGame.prototype.getRemainingTileCount = function(){
+                if (EXERCISE_PAGE_SIZE > 0) {
+                    return this.getCurrentBlanks().filter(function(blank){ return blank.children.length === 0; }).length;
+                }
                 return ANSWERS.length - document.querySelectorAll('.ddb-blank-slot .ddb-draggable-item.ddb-locked').length;
             };
 
             DragDropBlanksGame.prototype.updateActionButtons = function(){
-                var canReveal = this.getRemainingTileCount() > 0 && !this.hasUsedReveal && !this.isRevealingAnswers && !this.gameCompleted && !this.isReviewingCorrection;
+                var canReveal = this.getRemainingTileCount() > 0 && (EXERCISE_PAGE_SIZE > 0 || !this.hasUsedReveal) && !this.isRevealingAnswers && !this.gameCompleted && !this.isReviewingCorrection;
                 var canRetake = this.hasUsedReveal || this.isReviewingCorrection;
 
                 if (this.revealAnswersBtn) {
@@ -1982,11 +2128,6 @@
                 if (!tile) return;
 
                 tile.classList.remove('ring-emerald-400/50');
-                this.tileSkins.forEach(function(skin){
-                    skin.split(' ').forEach(function(cls){
-                        if (cls) tile.classList.remove(cls);
-                    });
-                });
                 tile.classList.add(
                     'ring-slate-400/40',
                     'revealed-answer'
@@ -2219,7 +2360,7 @@
                     var dy = 0;
                     var distance;
 
-                    if (blank.children.length > 0) return;
+                    if (blank.children.length > 0 || !blank.getClientRects().length) return;
 
                     rect = blank.getBoundingClientRect();
 
@@ -2316,7 +2457,7 @@
 
                 blank.innerHTML = '';
                 blank.appendChild(item);
-                blank.style.minWidth = getInitialBlankMinWidth(blank);
+                blank.style.minWidth = IS_SPEAKER_MATCHING_MODE ? getInitialBlankMinWidth(blank) : '0px';
                 blank.style.width = IS_SPEAKER_MATCHING_MODE ? '' : 'fit-content';
                 blank.classList.remove('ddb-slot-ready');
                 this.normalizeTileForBlank(item);
@@ -2431,9 +2572,9 @@
                 var self = this;
                 var remainingAnswers;
 
-                if (this.draggedItem || this.isRevealingAnswers || this.gameCompleted || this.hasUsedReveal) return;
+                if (this.draggedItem || this.isRevealingAnswers || this.gameCompleted || (!EXERCISE_PAGE_SIZE && this.hasUsedReveal)) return;
 
-                remainingAnswers = Array.prototype.slice.call(document.querySelectorAll('.ddb-blank-slot')).filter(function(blank){
+                remainingAnswers = this.getCurrentBlanks().filter(function(blank){
                     return blank.children.length === 0;
                 });
 
@@ -2454,7 +2595,7 @@
                         text: answerData.text,
                         audio: answerData.audio || '',
                         answerIndex: answerData.answerIndex
-                    }, self.correctCount + self.mistakeCount);
+                    });
 
                     self.lockTileIntoBlank(item, blank, {
                         revealed: true,
@@ -2486,7 +2627,7 @@
             DragDropBlanksGame.prototype.checkComplete = function(options){
                 options = options || {};
 
-                var total = ANSWERS.length;
+                var total = document.querySelectorAll('.ddb-blank-slot').length;
                 var locked = document.querySelectorAll('.ddb-blank-slot .ddb-draggable-item.ddb-locked').length;
                 var self = this;
                 var shouldShowModal = options.showModal !== false;
@@ -2500,7 +2641,8 @@
                         playWin();
                     }
                     self.poolContent.innerHTML = '';
-                    if (self.poolCount) self.poolCount.textContent = '0/0';
+                    if (EXERCISE_PAGE_SIZE > 0) self.updatePoolCount();
+                    else if (self.poolCount) self.poolCount.textContent = '0/0';
                     self.updateNavButtons();
                     self.updateActionButtons();
                     self.updatePoolSticky();

@@ -124,6 +124,18 @@
 
 @section('title', $pageTitle)
 
+@section('style')
+    @parent
+    <style>
+        .vocab-card.sentence-row { flex-direction: row; align-items: center; gap: 16px; min-height: 82px; max-width: none; padding: 18px 20px; border-radius: 18px; border-left: 3px solid #818cf8; }
+        .sentence-row .sentence-controls { width: auto; order: 2; flex-shrink: 0; }
+        .sentence-row .sentence-badge { display: none; }
+        .sentence-row .sentence-copy { margin-top: 0; }
+        .sentence-row .sentence-copy > p:first-child { font-size: 18px; line-height: 1.5; }
+        .sentence-row .speak-btn { width: 40px; height: 40px; }
+    </style>
+@endsection
+
 @section('content')
     <div class="relative flex min-h-[100dvh] w-full items-start overflow-x-hidden overflow-y-auto lg:items-center">
         <main class="mx-auto w-full max-w-[1440px] px-4 pb-14 pt-7 sm:px-6 sm:pb-16 sm:pt-9 lg:-mt-2 lg:px-8 lg:pt-10">
@@ -201,7 +213,7 @@
                                     <article
                                             role="button"
                                             tabindex="0"
-                                            class="vocab-card group relative flex w-full max-w-[28rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[1.6rem] border border-white/75 bg-white/85 shadow-[0_10px_28px_-24px_rgba(15,23,42,0.45)] ring-1 ring-slate-200/70 outline-none transform-gpu will-change-transform transition-[transform,border-color,background-color] duration-200 ease-out sm:hover:-translate-y-0.5 sm:hover:border-slate-300/80 sm:hover:bg-white/95 focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/85 dark:ring-white/10 dark:shadow-[0_14px_34px_-28px_rgba(0,0,0,0.72)] dark:hover:bg-slate-900/95 {{ $usesImageLayout ? ($usesImageOverlay ? 'aspect-[5/4]' : '') : 'min-h-[6.25rem] px-3.5 py-3.5 sm:min-h-[7rem] sm:px-4 sm:py-4 lg:px-5 lg:py-5' }}"
+                                            class="vocab-card {{ !$usesImageLayout && ($content['text_card_style'] ?? '') === 'row' ? 'sentence-row' : '' }} group relative flex w-full max-w-[28rem] justify-self-center min-w-0 cursor-pointer select-none flex-col overflow-hidden rounded-[1.6rem] border border-white/75 bg-white/85 shadow-[0_10px_28px_-24px_rgba(15,23,42,0.45)] ring-1 ring-slate-200/70 outline-none transform-gpu will-change-transform transition-[transform,border-color,background-color] duration-200 ease-out sm:hover:-translate-y-0.5 sm:hover:border-slate-300/80 sm:hover:bg-white/95 focus-visible:ring-4 focus-visible:ring-cyan-400/25 dark:border-white/10 dark:bg-slate-900/85 dark:ring-white/10 dark:shadow-[0_14px_34px_-28px_rgba(0,0,0,0.72)] dark:hover:bg-slate-900/95 {{ $usesImageLayout ? ($usesImageOverlay ? 'aspect-[5/4]' : '') : 'min-h-[6.25rem] px-3.5 py-3.5 sm:min-h-[7rem] sm:px-4 sm:py-4 lg:px-5 lg:py-5' }}"
                                             data-card-type="{{ $itemCardType }}"
                                             data-popup="{{ $itemPopup }}"
                                             data-image-layout="{{ $usesImageLayout ? '1' : '0' }}"
@@ -292,10 +304,12 @@
                                                 </div>
                                             @endif
                                         @else
-                                            <div class="flex w-full items-center justify-between gap-3">
-                                                <div class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-base leading-none shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-800 dark:ring-slate-700 sm:h-9 sm:w-9 sm:text-lg">
-                                                    {{ $emoji !== '' ? $emoji : $fallbackLetter }}
-                                                </div>
+                                            <div class="sentence-controls flex w-full items-center justify-between gap-3">
+                                                @if($content['show_text_badge'] ?? true)
+                                                    <div class="sentence-badge inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-base leading-none shadow-sm ring-1 ring-slate-200/70 dark:bg-slate-800 dark:ring-slate-700 sm:h-9 sm:w-9 sm:text-lg">
+                                                        {{ $emoji !== '' ? $emoji : $fallbackLetter }}
+                                                    </div>
+                                                @endif
 
                                                 @if($sound !== '')
                                                     <button
@@ -317,7 +331,7 @@
                                                 @endif
                                             </div>
 
-                                            <div class="mt-3 min-w-0 flex-1">
+                                            <div class="sentence-copy mt-3 min-w-0 flex-1">
                                                 <p class="min-w-0 break-words text-sm font-extrabold leading-tight text-slate-900 dark:text-slate-100 sm:text-[0.95rem] lg:text-base">
                                                     {!! $displayText !!}
                                                 </p>
@@ -711,8 +725,8 @@
                 const titleHtml = card.dataset.titleHtml || card.dataset.title || "";
                 const title = card.dataset.title || "";
                 const script = card.dataset.script || "";
-                const subtitle = card.dataset.subtitle || (normalizeText(script) === normalizeText(title) ? "" : script);
                 const example = card.dataset.example || "";
+                const subtitle = card.dataset.subtitle || (normalizeText(script) === normalizeText(title) ? "" : script);
                 const image = card.dataset.image || "";
                 const sound = card.dataset.audio || "";
                 const emoji = card.dataset.emoji || "";
@@ -811,8 +825,8 @@
                 const titleHtml = card.dataset.titleHtml || card.dataset.title || "";
                 const title = card.dataset.title || "";
                 const script = card.dataset.script || "";
-                const subtitle = card.dataset.subtitle || (normalizeText(script) === normalizeText(title) ? "" : script);
                 const example = card.dataset.example || "";
+                const subtitle = card.dataset.subtitle || (normalizeText(script) === normalizeText(title) ? "" : script);
                 const sound = card.dataset.audio || "";
                 const emoji = card.dataset.emoji || "";
                 const groupTitle = card.dataset.groupTitle || "";

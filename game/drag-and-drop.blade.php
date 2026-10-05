@@ -1,5 +1,5 @@
 <?php
-$type = $content['type'] ?? 'emoji';
+$type = $content['type'] ?? 'text';
 $poolItemType = $content['pool_item_type'] ?? 'text';
 ?>
 @extends('slider.simple-layout')
@@ -8,11 +8,6 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
         @keyframes popIn { 0% { transform: scale(.96); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
         @keyframes waveGrowth { 0%,100% { height: 6px; } 50% { height: 16px; } }
-        @keyframes ddNavNudge {
-            0%, 100% { transform: translateX(0) scale(1); }
-            35% { transform: translateX(2px) scale(1.06); }
-            70% { transform: translateX(-1px) scale(1.02); }
-        }
 
         :root {
             --pool-safe-space: 0px;
@@ -31,6 +26,48 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
             user-select: none !important;
             -webkit-user-select: none !important;
             cursor: grabbing !important;
+        }
+
+        .draggable-item.dd-neutral-answer {
+            gap: .8rem;
+            border-color: #d6d0ef;
+            border-radius: 1rem;
+            background: #f8f7ff;
+            color: #242052;
+            font-weight: 800;
+            box-shadow: 0 3px 8px rgba(58, 45, 110, .055);
+        }
+
+        .dd-neutral-answer:not(.placed-item) {
+            min-height: 2.5rem;
+            padding: .45rem .75rem;
+        }
+
+        .dd-neutral-answer:not(.placed-item)::before {
+            content: '';
+            flex: 0 0 16px;
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle, #6350df 2.5px, transparent 3px) 0 0 / 8px 8px;
+        }
+
+        .dd-neutral-answer:not(.placed-item):hover {
+            border-color: #b9acee;
+            background: #f1edff;
+        }
+
+        .dark .draggable-item.dd-neutral-answer {
+            border-color: #4a4569;
+            background: #25243b;
+            color: #eeeaff;
+        }
+
+        .dark .dd-neutral-answer:not(.placed-item)::before {
+            background-image: radial-gradient(circle, #ae9bff 2.5px, transparent 3px);
+        }
+
+        .dark .dd-neutral-answer:not(.placed-item):hover {
+            background: #302b4b;
         }
 
         .dragging {
@@ -58,23 +95,82 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
             outline-color: rgba(252,165,165,.82);
         }
 
-        .pool-nav-btn.pool-nav-hint {
-            color: rgb(79,70,229);
-            border-color: rgba(99,102,241,.35);
-            background: rgba(238,242,255,.96);
-            box-shadow:
-                    0 0 0 4px rgba(99,102,241,.10),
-                    0 8px 18px rgba(79,70,229,.16);
-            animation: ddNavNudge 1.4s ease-in-out 3;
+        #revealAnswersBtn {
+            min-height: 2.25rem;
+            color: #4935df;
+            border-color: #dad7f2;
+            background: #fafaff;
+            border-radius: .75rem;
+            padding: .5rem 1.2rem;
+            font-weight: 800;
+            box-shadow: 0 1px 3px rgba(58, 45, 110, .08);
         }
 
-        .dark .pool-nav-btn.pool-nav-hint {
-            color: rgb(224,231,255);
-            border-color: rgba(129,140,248,.45);
-            background: rgba(67,56,202,.34);
-            box-shadow:
-                    0 0 0 4px rgba(129,140,248,.12),
-                    0 10px 20px rgba(2,6,23,.28);
+        #revealAnswersBtn:hover:not(:disabled) {
+            border-color: #b9acee;
+            background: #f1edff;
+        }
+
+        .dark #revealAnswersBtn {
+            color: #c4b5fd;
+            border-color: #4a4569;
+            background: #25243b;
+        }
+
+        .dark #revealAnswersBtn:hover:not(:disabled) {
+            background: #302b4b;
+        }
+
+        #revealAnswersBtn:focus-visible {
+            outline: 2px solid #a99aee;
+            outline-offset: 2px;
+        }
+
+        .dd-bank-navigation {
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            min-height: 2.25rem;
+            border: 1px solid #dad7f2;
+            border-radius: .75rem;
+            background: #fafaff;
+            box-shadow: 0 1px 3px rgba(58, 45, 110, .08);
+        }
+
+        .pool-nav-btn {
+            width: 2.125rem;
+            height: 2.125rem;
+            flex: 0 0 auto;
+            border-radius: .65rem;
+            color: #4935df;
+            transition: background-color .15s ease, color .15s ease;
+        }
+
+        .pool-nav-btn:hover:not(:disabled) { background: #f1edff; }
+        .pool-nav-btn:disabled { color: #b7b5c8; cursor: not-allowed; }
+
+        #poolCount {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 1.125rem;
+            padding: 0 .65rem;
+            border-inline: 1px solid #e9e6f5;
+            color: #484260;
+            font-weight: 800;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .dark .dd-bank-navigation { background: #25243b; border-color: #4a4569; }
+        .dark .pool-nav-btn { color: #c4b5fd; }
+        .dark .pool-nav-btn:hover:not(:disabled) { background: #302b4b; }
+        .dark .pool-nav-btn:disabled { color: #716c87; }
+        .dark #poolCount { color: #eeeaff; border-color: #4a4569; }
+
+        .pool-nav-btn:focus-visible {
+            outline: 2px solid #a99aee;
+            outline-offset: 2px;
         }
 
         #poolBar[data-pool-placement="top"] {
@@ -150,11 +246,6 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
             border-color: var(--dd-revealed-border) !important;
             color: var(--dd-revealed-text) !important;
             box-shadow: 0 0 0 2px var(--dd-revealed-ring), 0 10px 22px rgba(15,23,42,.08) !important;
-        }
-
-        .draggable-item.revealed-answer::before {
-            background: currentColor !important;
-            opacity: .45;
         }
 
         .slot.revealed-slot {
@@ -355,6 +446,7 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
         $categoryMaxWidthOverride = $content['category_max_width'] ?? null;
         $categoryContentGridClass = $content['category_content_grid_class'] ?? null;
         $initialVisibleSlots = max(1, (int) ($content['initial_visible_slots'] ?? 1));
+        $showCategoryLabels = (bool) ($content['show_category_labels'] ?? false);
 
         foreach ($categoriesSource as $cat => $categoryData) {
             if ($type === 'image') {
@@ -366,20 +458,15 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                 continue;
             }
 
-            $emoji = null;
             $items = [];
 
             if (is_array($categoryData) && array_key_exists('items', $categoryData)) {
                 $items = is_array($categoryData['items']) ? $categoryData['items'] : [];
-                if (array_key_exists('emoji', $categoryData)) {
-                    $emoji = $categoryData['emoji'];
-                }
             } else {
                 $items = is_array($categoryData) ? $categoryData : [];
             }
 
             $normalizedCategories[$cat] = [
-                'emoji' => $emoji,
                 'items' => $items,
             ];
         }
@@ -400,6 +487,8 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
         } else {
             $wideCols = 6;
         }
+
+        $wideCols = max(1, min($effectiveCategoryCount, (int) ($content['category_columns_xl'] ?? $wideCols)));
 
         $categoryGridStyle = sprintf(
             '--dd-cols-mobile:%d; --dd-cols-sm:%d; --dd-cols-lg:%d; --dd-cols-xl:%d;',
@@ -430,6 +519,11 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
             ? $poolPlacement
             : ($isImagePoolType ? 'bottom' : 'top');
         $isTopPool = $poolPlacement === 'top';
+        $readingPassage = isset($content['passage']) && is_array($content['passage'])
+            ? array_values(array_filter($content['passage'], static fn ($paragraph) => is_string($paragraph) && trim($paragraph) !== ''))
+            : [];
+        $hasReadingPassage = count($readingPassage) > 0;
+        $readingPassageTitle = $content['passage_title'] ?? $content['reading_title'] ?? 'Reading passage';
     @endphp
 
 
@@ -440,7 +534,23 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                 @include('slider.components.game-status')
             </div>
 
-            <section id="ddGameColumn" class="{{ $isTopPool ? 'order-3' : 'order-2' }} flex min-h-0 w-full flex-1 flex-col items-center">
+            <div class="{{ $isTopPool ? 'order-3' : 'order-2' }} {{ $hasReadingPassage ? 'grid lg:grid-cols-[minmax(280px,0.8fr)_minmax(0,1.45fr)]' : 'flex' }} min-h-0 w-full flex-1 items-start gap-4">
+                @if($hasReadingPassage)
+                    <aside class="mt-3 w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-white/90 shadow-sm backdrop-blur dark:border-slate-700/70 dark:bg-slate-950/45 lg:sticky lg:top-24">
+                        <div class="border-b border-slate-200/75 bg-slate-50/95 px-4 py-3 dark:border-slate-700/65 dark:bg-slate-900/85 sm:px-5">
+                            <h2 class="text-base font-black tracking-[-0.02em] text-slate-900 dark:text-white sm:text-lg">
+                                {{ $readingPassageTitle }}
+                            </h2>
+                        </div>
+                        <div class="max-h-[42dvh] space-y-3 overflow-y-auto px-4 py-4 text-sm font-semibold leading-relaxed text-slate-700 dark:text-slate-200 sm:px-5 sm:text-base lg:max-h-[calc(100dvh-18rem)]">
+                            @foreach($readingPassage as $paragraph)
+                                <p>{{ $paragraph }}</p>
+                            @endforeach
+                        </div>
+                    </aside>
+                @endif
+
+                <section id="ddGameColumn" class="flex min-h-0 w-full flex-1 flex-col items-center">
                 @if($type === 'image')
                     <div
                             class="dd-categories-grid mt-3 grid w-full {{ $categoryMaxWidth }} gap-2 sm:gap-3 lg:gap-3"
@@ -478,16 +588,32 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                                         </div>
                                     @endif
 
-                                    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-slate-950/20 via-slate-950/5 to-transparent dark:from-slate-950/28"></div>
+                                    @unless($showCategoryLabels)
+                                        <div class="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-slate-950/20 via-slate-950/5 to-transparent dark:from-slate-950/28"></div>
 
-                                    <div class="category-content absolute inset-x-0 bottom-0 flex w-full items-center justify-center p-1.5 sm:p-2" data-dropzone="1">
+                                        <div class="category-content absolute inset-x-0 bottom-0 flex w-full items-center justify-center p-1.5 sm:p-2" data-dropzone="1">
+                                            @if(count($config['items']) > 0)
+                                                @for($slotIndex = 0; $slotIndex < min(count($config['items']), $initialVisibleSlots); $slotIndex++)
+                                                    <div class="slot {{ $isImagePoolType ? 'mx-auto aspect-square w-[100px] sm:w-[112px] lg:w-[118px]' : 'w-full min-h-[36px] sm:min-h-[42px]' }} rounded-xl border border-dashed border-slate-300/80 bg-white/85 shadow-inner dark:border-slate-300/50 dark:bg-slate-100/85" data-slot="1"></div>
+                                                @endfor
+                                            @endif
+                                        </div>
+                                    @endunless
+                                </div>
+
+                                @if($showCategoryLabels)
+                                    <div class="border-t border-slate-200/70 bg-white/95 px-2 py-2 text-center text-xs font-black leading-tight text-slate-900 dark:border-slate-700/60 dark:bg-slate-950/90 dark:text-slate-50 sm:text-sm">
+                                        {{ $cat }}
+                                    </div>
+
+                                    <div class="category-content flex w-full items-center justify-center border-t border-slate-200/60 bg-slate-50/90 p-1.5 dark:border-slate-700/55 dark:bg-slate-900/75 sm:p-2" data-dropzone="1">
                                         @if(count($config['items']) > 0)
                                             @for($slotIndex = 0; $slotIndex < min(count($config['items']), $initialVisibleSlots); $slotIndex++)
-                                                <div class="slot {{ $isImagePoolType ? 'mx-auto aspect-square w-[100px] sm:w-[112px] lg:w-[118px]' : 'w-full min-h-[36px] sm:min-h-[42px]' }} rounded-xl border border-dashed border-slate-300/80 bg-white/85 shadow-inner dark:border-slate-300/50 dark:bg-slate-100/85" data-slot="1"></div>
+                                                <div class="slot {{ $isImagePoolType ? 'mx-auto aspect-square w-[100px] sm:w-[112px] lg:w-[118px]' : 'w-full min-h-[36px] sm:min-h-[42px]' }} rounded-xl border border-dashed border-slate-300/80 bg-white/95 shadow-inner dark:border-slate-300/50 dark:bg-slate-100/90" data-slot="1"></div>
                                             @endfor
                                         @endif
                                     </div>
-                                </div>
+                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -499,7 +625,6 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                     >
                         @foreach($normalizedCategories as $cat => $categoryConfig)
                             @php
-                                $emoji = $categoryConfig['emoji'] ?? null;
                                 $slotCount = is_array($categoryConfig['items'] ?? null) ? count($categoryConfig['items']) : 0;
                                 $isSingleSlot = $slotCount === 1;
                             @endphp
@@ -511,11 +636,6 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                             >
                                 <div class="relative flex min-h-[160px] flex-col px-3 py-3 sm:min-h-[180px] sm:px-4 sm:py-4 lg:min-h-[190px]">
                                     <div class="flex items-center justify-center gap-2">
-                                        @if($emoji !== null && $emoji !== '')
-                                            <div class="grid h-9 w-9 place-items-center rounded-xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-100 sm:h-10 sm:w-10">
-                                                <span class="text-lg leading-none sm:text-xl">{{ $emoji }}</span>
-                                            </div>
-                                        @endif
                                         <div class="text-sm font-black tracking-[-0.02em] text-slate-900 dark:text-slate-50 sm:text-base">
                                             {{ $cat }}
                                         </div>
@@ -556,19 +676,18 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                         </div>
                     @else
                         <div
-                                class="draggable-item relative select-none touch-none cursor-grab rounded-xl px-3 py-2 pl-5 sm:px-3.5 sm:py-2 sm:pl-5 min-h-[34px] sm:min-h-[38px] text-[11px] sm:text-sm font-black text-white
-                                   flex items-center justify-center text-center leading-tight
-                                   shadow-[0_8px_18px_rgba(2,6,23,0.12)] border border-white/20
-                                   before:absolute before:left-2 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-white/55"
+                                class="draggable-item dd-neutral-answer relative select-none touch-none cursor-grab text-[11px] sm:text-sm
+                                   flex items-center justify-center text-center leading-tight border"
                                 style="touch-action:none;"
                         ></div>
                     @endif
                 </template>
-            </section>
+                </section>
+            </div>
 
             <div id="poolBar" data-pool-placement="{{ $poolPlacement }}" class="{{ $isTopPool ? 'order-2 sticky top-0 z-[900] px-0 py-2 sm:py-3' : 'order-3 fixed inset-x-0 bottom-0 z-[1500] px-2 pb-2 sm:px-4 sm:pb-3' }}">
                 <div class="mx-auto w-full {{ $isTopPool ? 'max-w-6xl' : 'max-w-5xl' }}">
-                    <div class="relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white/92 {{ $isTopPool ? 'shadow-[0_8px_24px_rgba(2,6,23,0.06)]' : 'shadow-[0_-10px_28px_rgba(2,6,23,0.08)]' }} backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/82">
+                    <div class="relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white/95 {{ $isTopPool ? 'shadow-[0_8px_24px_rgba(2,6,23,0.06)]' : 'shadow-[0_-10px_28px_rgba(2,6,23,0.08)]' }} backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/95">
                         <div class="relative px-2.5 py-2 sm:px-4 sm:py-2.5">
                             @if(!$isTopPool)
                                 <div class="flex items-center justify-center sm:hidden">
@@ -577,27 +696,27 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                             @endif
 
                             <div class="{{ $isTopPool ? '' : 'mt-2 sm:mt-0' }} flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-1.5 sm:gap-2">
+                                <div class="dd-bank-navigation">
                                     <button
                                             type="button"
                                             id="poolPrevBtn"
-                                            class="pool-nav-btn inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200/70 bg-white/90 text-base font-black text-slate-600 shadow-sm transition disabled:cursor-not-allowed disabled:opacity-35 dark:border-slate-700/60 dark:bg-slate-900/85 dark:text-slate-200"
+                                            class="pool-nav-btn inline-flex items-center justify-center"
                                             aria-label="Show previous sentences"
                                     >
-                                        ‹
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m14 6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </button>
 
-                                    <div id="poolCount" class="inline-flex items-center gap-1.5 rounded-full border border-slate-200/70 bg-white/75 px-2.5 py-1 text-[10px] font-black text-slate-600 shadow-sm dark:border-slate-700/60 dark:bg-slate-900/50 dark:text-slate-100 sm:text-xs">
+                                    <div id="poolCount" aria-live="polite" class="text-[11px] sm:text-xs">
                                         0/0
                                     </div>
 
                                     <button
                                             type="button"
                                             id="poolNextBtn"
-                                            class="pool-nav-btn inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200/70 bg-white/90 text-base font-black text-slate-600 shadow-sm transition disabled:cursor-not-allowed disabled:opacity-35 dark:border-slate-700/60 dark:bg-slate-900/85 dark:text-slate-200"
+                                            class="pool-nav-btn inline-flex items-center justify-center"
                                             aria-label="Show more sentences"
                                     >
-                                        ›
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m10 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                     </button>
                                 </div>
 
@@ -605,9 +724,9 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                                     <button
                                             type="button"
                                             id="revealAnswersBtn"
-                                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300/70 bg-white/80 px-3 py-1.5 text-[11px] font-black text-slate-700 shadow-sm transition-colors duration-200 hover:bg-slate-50 active:scale-95 dark:border-slate-700/70 dark:bg-slate-900/70 dark:text-slate-100 dark:hover:bg-slate-800 sm:text-xs"
+                                            class="inline-flex items-center justify-center border text-[11px] transition-colors duration-200 active:scale-95 sm:text-xs"
                                     >
-                                        Reveal answers
+                                        Show Answer
                                     </button>
 
                                     <button
@@ -810,14 +929,27 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
             if (POOL_PLACEMENT !== 'top') return;
 
             const poolBar = document.getElementById('poolBar');
-            const gameColumn = document.getElementById('ddGameColumn');
-            if (!poolBar || !gameColumn || !topPoolStickyMarker) return;
+            if (!poolBar || !topPoolStickyMarker) return;
 
             const offset = getTopPoolOffset();
             const shouldStick = topPoolStickyMarker.getBoundingClientRect().top <= offset;
+            const isStuck = poolBar.classList.contains('is-stuck');
 
-            poolBar.classList.toggle('is-stuck', shouldStick);
-            gameColumn.style.paddingTop = shouldStick ? `${poolBar.offsetHeight + 12}px` : '';
+            // Keep the pool's space in the document when it becomes fixed.
+            // Changing padding on the game column here caused the browser's scroll
+            // anchoring to move the page back up on some scrolls.
+            if (shouldStick && !isStuck) {
+                topPoolStickyMarker.style.height = `${poolBar.offsetHeight}px`;
+                poolBar.classList.add('is-stuck');
+            } else if (shouldStick && isStuck) {
+                const poolHeight = `${poolBar.offsetHeight}px`;
+                if (topPoolStickyMarker.style.height !== poolHeight) {
+                    topPoolStickyMarker.style.height = poolHeight;
+                }
+            } else if (!shouldStick && isStuck) {
+                poolBar.classList.remove('is-stuck');
+                topPoolStickyMarker.style.height = '0px';
+            }
         }
 
         function setupTopPoolSticky() {
@@ -918,17 +1050,6 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                 this.handlePoolNext = this.handlePoolNext.bind(this);
                 this.handleRevealAnswers = this.handleRevealAnswers.bind(this);
                 this.handleRetakeTest = this.handleRetakeTest.bind(this);
-
-                this.tileSkins = [
-                    'bg-slate-700 dark:bg-slate-600',
-                    'bg-indigo-600 dark:bg-indigo-700',
-                    'bg-sky-600 dark:bg-sky-700',
-                    'bg-emerald-600 dark:bg-emerald-700',
-                    'bg-violet-600 dark:bg-violet-700',
-                    'bg-cyan-600 dark:bg-cyan-700',
-                ];
-
-                this.imageTileSkins = ['bg-slate-700', 'bg-indigo-600', 'bg-sky-600', 'bg-emerald-600'];
 
                 this.poolPrevBtn?.addEventListener('click', this.handlePoolPrev);
                 this.poolNextBtn?.addEventListener('click', this.handlePoolNext);
@@ -1187,7 +1308,6 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                                 items.push({
                                     image: item.image,
                                     text: itemText,
-                                    emoji: item.emoji || '',
                                     alt: item.alt || itemText || `${key} ${itemIndex + 1}`,
                                     category: key,
                                     id: Math.random().toString(36).slice(2, 11)
@@ -1206,7 +1326,7 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
 
                 items = this.shuffle(items);
 
-                items.forEach((itemData, i) => {
+                items.forEach((itemData) => {
                     const node = this.tileTpl.content.firstElementChild.cloneNode(true);
                     node.dataset.category = itemData.category;
                     node.dataset.id = itemData.id;
@@ -1223,15 +1343,13 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                             }, { once: true });
                         }
                         if (label && IMAGE_TEXT_STYLE === 'overlay' && itemData.text) {
-                            label.textContent = itemData.emoji ? `${itemData.text} ${itemData.emoji}` : itemData.text;
+                            label.textContent = itemData.text;
                             node.classList.add('has-image-overlay-text');
                         }
                         node.setAttribute('aria-label', itemData.alt || '');
                         node.title = itemData.alt || '';
                     } else {
-                        const skins = this.isImageType ? this.imageTileSkins : this.tileSkins;
                         node.textContent = itemData.text;
-                        node.classList.add(...skins[i % skins.length].split(' '));
                     }
 
                     node.dataset.baseClass = node.className;
@@ -1365,14 +1483,6 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                         return;
                     }
 
-                    if (isSingleVisibleSlot) {
-                        slot.style.width = '100%';
-                        slot.style.maxWidth = '100%';
-                        slot.style.display = 'grid';
-                        slot.style.flex = '0 0 100%';
-                        return;
-                    }
-
                     this.sizeTextSlotToContent(slot);
                 });
             }
@@ -1487,12 +1597,9 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                 if (!this.poolPrevBtn || !this.poolNextBtn) return;
 
                 const shouldShow = isMobilePool && totalTiles > cap;
-                this.poolPrevBtn.classList.toggle('hidden', !shouldShow);
-                this.poolNextBtn.classList.toggle('hidden', !shouldShow);
-
                 if (!shouldShow) {
-                    this.poolPrevBtn.classList.remove('pool-nav-hint');
-                    this.poolNextBtn.classList.remove('pool-nav-hint');
+                    this.poolPrevBtn.disabled = true;
+                    this.poolNextBtn.disabled = true;
                     return;
                 }
 
@@ -1502,8 +1609,6 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
 
                 this.poolPrevBtn.disabled = !hasPrevItems;
                 this.poolNextBtn.disabled = !hasNextItems;
-                this.poolPrevBtn.classList.toggle('pool-nav-hint', hasPrevItems);
-                this.poolNextBtn.classList.toggle('pool-nav-hint', hasNextItems);
             }
 
             handlePoolPrev(){
@@ -1609,7 +1714,6 @@ $poolItemType = $content['pool_item_type'] ?? 'text';
                     return;
                 }
 
-                tile.classList.remove(...this.tileSkins.flatMap((skin) => skin.split(' ')));
                 tile.classList.add(
                     'max-w-full',
                     'flex',

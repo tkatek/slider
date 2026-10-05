@@ -180,6 +180,67 @@
             min-width: 0;
         }
 
+        .discussion-page .objective-label {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 7px 12px;
+            border: 1px solid #c7d2fe;
+            border-radius: 10px;
+            background: #eef2ff;
+            background-clip: border-box;
+            color: #4338ca;
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.25;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+        .discussion-page .card-theme-two .objective-label {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1d4ed8;
+        }
+        .discussion-page .card-theme-three .objective-label {
+            background: #f0f9ff;
+            border-color: #bae6fd;
+            color: #0369a1;
+        }
+        .dark .discussion-page .objective-label {
+            background: #252450;
+            border-color: #4338ca;
+            color: #c7d2fe;
+        }
+        .dark .discussion-page .card-theme-two .objective-label {
+            background: #172e50;
+            border-color: #1e40af;
+            color: #bfdbfe;
+        }
+        .dark .discussion-page .card-theme-three .objective-label {
+            background: #103247;
+            border-color: #075985;
+            color: #bae6fd;
+        }
+        .slide-theme-orange .discussion-page .objective-label {
+            background: #fff7ed;
+            border-color: #fed7aa;
+            color: #9a3412;
+        }
+        .slide-theme-green .discussion-page .objective-label {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+            color: #047857;
+        }
+        .dark .slide-theme-orange .discussion-page .objective-label {
+            background: #431f16;
+            border-color: #9a3412;
+            color: #fed7aa;
+        }
+        .dark .slide-theme-green .discussion-page .objective-label {
+            background: #10332b;
+            border-color: #065f46;
+            color: #a7f3d0;
+        }
     </style>
 @endsection
 
@@ -187,7 +248,6 @@
     @php
         $primaryGradient = trim((string) ($theme['primary_color'] ?? 'bg-[image:var(--top-bar-gradient)]'));
         $buttonGradient = trim((string) ($theme['button_primary_color'] ?? 'bg-[image:var(--top-bar-gradient)]'));
-        $labelClass = 'mb-1 block bg-clip-text text-[0.65rem] font-black uppercase tracking-[0.22em] text-transparent ' . $primaryGradient;
         $cardStyles = ['card-theme-one', 'card-theme-two', 'card-theme-three'];
         $practiceDotClass = $buttonGradient;
 
@@ -204,31 +264,8 @@
                             @endphp
                             @include('slider.components.title-subtitle')
 
-                            @if($supportItems !== [])
-                                <div class="mb-3 rounded-[18px] border border-slate-200/80 bg-white/70 p-3 text-left shadow-[0_14px_28px_-24px_rgba(15,23,42,0.24)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:p-4">
-                                    @if($supportTitle !== '')
-                                        <p class="bg-clip-text text-[0.62rem] font-black uppercase tracking-[0.2em] text-transparent {{ $primaryGradient }}">
-                                            {{ $supportTitle }}
-                                        </p>
-                                    @endif
-
-                                    <ul class="mt-2 space-y-1.5">
-                                        @foreach($supportItems as $phrase)
-                                            @php
-                                                $phraseText = trim((string) $phrase);
-                                            @endphp
-
-                                            @if($phraseText !== '')
-                                                <li class="flex items-start gap-2.5">
-                                                    <span class="mt-[0.42rem] h-2 w-2 shrink-0 rounded-full shadow-sm {{ $practiceDotClass }}"></span>
-                                                    <span class="text-sm font-extrabold leading-[1.3] text-slate-700 dark:text-slate-200 sm:text-[0.95rem]">
-                                                        {!! $phraseText !!}
-                                                    </span>
-                                                </li>
-                                            @endif
-                                        @endforeach
-                                    </ul>
-                                </div>
+                            @if(empty($content['questions_before_support']))
+                                @include('slider.other.discussion-support')
                             @endif
 
                             <div class="grid grid-cols-1 gap-3 sm:gap-4">
@@ -238,20 +275,27 @@
                                         $emoji = trim((string)($card['emoji'] ?? ''));
                                         $label = trim((string)($card['label'] ?? ''));
                                         $text = trim((string)($card['text'] ?? ''));
+                                        $sound = trim((string)($card['sound'] ?? ''));
                                     @endphp
 
                                     <article class="objective-card {{ $style }} rounded-[24px] border border-white/70 bg-white/70 p-4 text-left shadow-[0_16px_34px_-24px_rgba(15,23,42,0.18)] backdrop-blur-md dark:border-white/10 dark:bg-white/5 sm:min-h-[100px] sm:p-5">
                                         <div class="relative z-10 flex h-full flex-col justify-center">
                                             <div class="objective-heading">
+                                                @if(!empty($content['numbered']))
+                                                    <span class="objective-chip inline-flex h-8 w-8 items-center justify-center rounded-xl text-sm font-extrabold text-white shadow-sm {{ $buttonGradient }}">
+                                                        {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}
+                                                    </span>
+                                                @elseif($emoji !== '')
                                                 <div class="objective-chip inline-flex w-fit items-center">
                                                     <span class="text-2xl sm:text-3xl leading-none">
                                                         {{ $emoji }}
                                                     </span>
                                                 </div>
+                                                @endif
 
-                                                <div class="objective-text">
+                                                <div class="objective-text flex-1">
                                                     @if($label !== '')
-                                                        <span class="{{ $labelClass }}">
+                                                        <span class="objective-label">
                                                             {{ $label }}
                                                         </span>
                                                     @endif
@@ -262,11 +306,36 @@
                                                         </p>
                                                     @endif
                                                 </div>
+                                                @if($sound !== '')
+                                                <button
+                                                        type="button"
+                                                        class="audio-btn inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full {{ $buttonGradient }} text-white shadow-lg shadow-slate-900/15 ring-1 ring-white/25 transition hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-300/40 dark:shadow-black/25 sm:h-10 sm:w-10"
+                                                        aria-label="Play audio"
+                                                        aria-pressed="false"
+                                                        data-sound="{{ $sound }}"
+                                                >
+                                                    <svg class="js-static-icon h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                        <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                                    </svg>
+
+                                                    <span class="js-wave-wrap hidden items-center gap-0.5" aria-hidden="true">
+                                                        <span class="h-1.5 w-[2px] animate-pulse rounded-full bg-current"></span>
+                                                        <span class="h-3.5 w-[2px] animate-pulse rounded-full bg-current [animation-delay:120ms]"></span>
+                                                        <span class="h-2.5 w-[2px] animate-pulse rounded-full bg-current [animation-delay:240ms]"></span>
+                                                    </span>
+                                                </button>
+                                                @endif
                                             </div>
                                         </div>
                                     </article>
                                 @endforeach
                             </div>
+
+                            @if(!empty($content['questions_before_support']))
+                                <div class="mt-4">
+                                    @include('slider.other.discussion-support')
+                                </div>
+                            @endif
                         </div>
 
                         <div class="discussion-image-wrap w-full mx-auto max-w-[300px] sm:max-w-[420px] lg:max-w-[460px]">
@@ -274,7 +343,7 @@
                                 <div class="discussion-frame-one pointer-events-none absolute inset-0 -translate-x-3.5 translate-y-3.5 rounded-[26px] border-2"></div>
                                 <div class="discussion-frame-two pointer-events-none absolute inset-0 translate-x-3.5 -translate-y-3.5 rounded-[26px] border border-dashed"></div>
 
-                                <div class="discussion-image-shell relative aspect-square w-full overflow-hidden rounded-[22px]">
+                                <div class="discussion-image-shell relative {{ $content['image_aspect_class'] ?? 'aspect-square' }} w-full overflow-hidden rounded-[22px]">
                                     <div class="discussion-image-bg absolute inset-0"></div>
                                     <div class="discussion-glow-one absolute -left-10 -top-10 h-36 w-36 rounded-full blur-2xl"></div>
                                     <div class="discussion-glow-two absolute -right-10 -bottom-10 h-40 w-40 rounded-full blur-2xl"></div>
@@ -282,7 +351,7 @@
                                     <img
                                             src="{{ $image }}"
                                             alt="{{ $imageAlt }}"
-                                            class="relative z-10 block h-full w-full object-cover select-none"
+                                            class="relative z-10 block h-full w-full {{ $content['image_fit_class'] ?? 'object-cover' }} select-none"
                                             loading="lazy"
                                             draggable="false"
                                     >
@@ -299,6 +368,101 @@
 @section('script')
     @parent
     <script>
+        (function () {
+            const KEY = "__BEC_GLOBAL_SLIDER_AUDIO__";
+
+            if (!window[KEY]) {
+                const audio = new Audio();
+                audio.preload = "auto";
+                audio.crossOrigin = "anonymous";
+
+                let activeButton = null;
+
+                function setPlaying(button, isPlaying) {
+                    if (!button) return;
+                    button.setAttribute('aria-pressed', String(isPlaying));
+                    button.setAttribute('aria-label', isPlaying ? 'Stop audio' : 'Play audio');
+
+                    button.querySelector(".js-static-icon")?.classList.toggle("hidden", isPlaying);
+                    button.querySelector(".js-wave-wrap")?.classList.toggle("hidden", !isPlaying);
+                    button.querySelector(".js-wave-wrap")?.classList.toggle("flex", isPlaying);
+                }
+
+                function clearActive() {
+                    if (activeButton) {
+                        setPlaying(activeButton, false);
+                        activeButton = null;
+                    }
+                }
+
+                function stop() {
+                    try {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    } catch (e) {}
+
+                    clearActive();
+                }
+
+                function play(src, button) {
+                    if (!src) return;
+
+                    const resolved = new URL(src, window.location.href).toString();
+
+                    if (activeButton === button && !audio.paused && audio.src === resolved) {
+                        stop();
+                        return;
+                    }
+
+                    stop();
+
+                    try {
+                        if (audio.src !== resolved) audio.src = resolved;
+
+                        audio.currentTime = 0;
+                        activeButton = button;
+                        setPlaying(activeButton, true);
+
+                        const promise = audio.play();
+
+                        if (promise && typeof promise.catch === "function") {
+                            promise.catch(() => stop());
+                        }
+                    } catch (e) {
+                        stop();
+                    }
+                }
+
+                audio.addEventListener("ended", stop);
+                audio.addEventListener("pause", () => {
+                    if (audio.currentTime === 0 || audio.ended) {
+                        clearActive();
+                    }
+                });
+                audio.addEventListener("error", stop);
+
+                window[KEY] = { audio, play, stop };
+            }
+
+            window.stopSlideAudio = function () {
+                window[KEY].stop();
+            };
+
+            if (!window.__BEC_AUDIO_DELEGATE__) {
+                window.__BEC_AUDIO_DELEGATE__ = true;
+
+                document.addEventListener("click", (event) => {
+                    const button = event.target.closest(".audio-btn");
+                    if (!button) return;
+
+                    event.preventDefault();
+
+                    const src = button.dataset.sound || button.getAttribute("data-sound") || "";
+                    window[KEY].play(src, button);
+                });
+            }
+        })();
+
         document.addEventListener("DOMContentLoaded", () => {
             const viewport = document.getElementById("slideViewport");
             const shell = document.getElementById("slideShell");
@@ -329,6 +493,7 @@
             }
 
             window.resetSlide = () => {
+                window.stopSlideAudio();
                 syncLayoutMode();
             };
 

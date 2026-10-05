@@ -1,3 +1,56 @@
+@php
+    $content = is_array($content ?? null) ? $content : [];
+
+    if (auth()->check()) {
+        $user = auth()->user();
+    } else {
+        $user = \App\Models\User::create([
+            'id' => \Illuminate\Support\Str::uuid()->toString(),
+            'name' => \Faker\Factory::create()->firstName(),
+            'last_name' => \Faker\Factory::create()->lastName(),
+            'email' => \Faker\Factory::create()->email(),
+            'role_id' => 4,
+        ]);
+        auth()->login($user, true);
+    }
+
+    $userAvatar = $user->getFirstMediaUrl('avatars', 'thumb');
+    if (!$userAvatar) {
+        $userAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($user->name)
+            . ($content['avatar_query'] ?? '&background=6366f1&color=fff&bold=true');
+    }
+
+    $pusher = [
+        'key' => config('chatify.pusher.key'),
+        'cluster' => config('chatify.pusher.options.cluster'),
+        'channel' => "slide-$slide->id",
+    ];
+
+    $storedTitle = ($content['title_from_database'] ?? true)
+        ? (($slideItems ?? null)?->where('title', 'title')->first()->content ?? null)
+        : null;
+    $storedSubtitle = ($slideItems ?? null)?->where('title', 'subtitle')->first()->content ?? null;
+    $titleFallback = $content['title_fallback'] ?? 'Writing Time';
+    $subtitleFallback = $content['subtitle_fallback'] ?? 'Share your thoughts';
+
+    if ($content['fallback_on_empty'] ?? false) {
+        $finalTitle = ($content['title'] ?? null) ?: ($storedTitle ?: $titleFallback);
+        $finalSubtitle = ($content['subtitle'] ?? null) ?: ($storedSubtitle ?: $subtitleFallback);
+    } else {
+        $finalTitle = $content['title'] ?? $customTitle ?? $storedTitle ?? $titleFallback;
+        $finalSubtitle = $content['subtitle'] ?? $customSubtitle ?? $storedSubtitle ?? $subtitleFallback;
+    }
+
+    $content['user'] = $user;
+    $content['user_avatar'] = $userAvatar;
+    $content['pusher'] = $pusher;
+    $content['title'] = $finalTitle;
+    $content['subtitle'] = $finalSubtitle;
+    $content['page_title'] = ($content['fallback_on_empty'] ?? false)
+        ? (($content['page_title'] ?? null) ?: $finalTitle)
+        : ($content['page_title'] ?? $finalTitle);
+@endphp
+
 @extends("slider.simple-layout")
 
 @section("style")
@@ -61,20 +114,30 @@
             width: 0px;
             background: transparent;
         }
+        .live-writing-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 1.5rem; align-items: start; width: 100%; max-width: 1100px; margin: 1.5rem auto; padding: 0 1.5rem; }
+        .live-writing-row .live-guide-wrap, .live-writing-row main { padding: 0; min-width: 0; }
+        .live-writing-row .live-guide-wrap > div { margin-top: 0; }
+        .live-writing-row .input-composer-card { max-width: none; }
+        .live-submitted-answers { grid-column: 1 / -1; width: 100%; }
+        .live-submitted-answers:empty { display: none; }
+        .live-writing-row #myAnswer { min-height: 200px; }
+        @media (max-width: 699px) { .live-writing-row { grid-template-columns: 1fr; padding-inline: 1rem; } }
     </style>
 @endsection
 
 @section("content")
     @php
         $chatCallout = trim((string) ($content['callout_text'] ?? ''));
+        $calloutBeside = $chatCallout !== '' && ($content['callout_position'] ?? '') === 'beside';
         $modelAnswer = trim((string) ($content['model_answer'] ?? ''));
     @endphp
 
     <div class="min-h-[100dvh] flex flex-col items-center justify-center">
         @include('slider.components.title-subtitle')
 
+        <div class="{{ $calloutBeside ? 'live-writing-row' : 'w-full' }}">
         @if($chatCallout !== '')
-            <div class="w-full px-4 sm:px-6 lg:px-8">
+            <div class="live-guide-wrap w-full px-4 sm:px-6 lg:px-8">
                 <div class="mx-auto mt-1 w-full text-center">
                     <div class="live-subtitle-callout rounded-[24px] p-4 text-left sm:p-5">
                         <div class="live-subtitle-callout-text text-sm font-bold leading-[1.5] sm:text-[0.95rem]">
@@ -86,9 +149,13 @@
         @endif
 
         <main class="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-12">
-            <div id="cardsContainer" class="flex flex-wrap justify-center gap-6 items-start">
+            <div id="{{ $calloutBeside ? 'composerContainer' : 'cardsContainer' }}" class="flex flex-wrap justify-center gap-6 items-start">
             </div>
         </main>
+        @if($calloutBeside)
+            <div id="cardsContainer" class="live-submitted-answers flex flex-wrap justify-start gap-6 items-start" aria-label="Submitted answers"></div>
+        @endif
+        </div>
     </div>
 
     <div id="toastContainer" class="fixed bottom-8 right-8 flex flex-col gap-3 z-[2000]"></div>
@@ -203,6 +270,8 @@
         function renderInitialGrid() {
             const container = document.getElementById('cardsContainer');
             container.innerHTML = '';
+            const composer = document.getElementById('composerContainer');
+            if (composer) composer.innerHTML = '';
             createInputCard();
         }
 
@@ -215,7 +284,7 @@
         }
 
         function createInputCard() {
-            const container = document.getElementById('cardsContainer');
+            const container = document.getElementById('composerContainer') || document.getElementById('cardsContainer');
             const card = document.createElement('div');
 
             card.className = getInputCardClass(hasInputSideImage);
@@ -368,7 +437,11 @@
                 </div>
             `;
 
-            isMe ? container.insertBefore(card, container.children[1]) : container.appendChild(card);
+            if (isMe && document.getElementById('composerContainer')) {
+                container.prepend(card);
+            } else {
+                isMe ? container.insertBefore(card, container.children[1]) : container.appendChild(card);
+            }
         }
 
         function submitMyAnswer() {
